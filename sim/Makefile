@@ -5,9 +5,9 @@ SIM ?= ghdl
 TOPLEVEL_LANG ?= vhdl
 GUI = 1
 SCRIPT_FILE =
-SIM_ARGS = --wave=nco.ghw
+SIM_ARGS = --wave=msk_top.ghw
 
-SRC = src
+SRC = ../src
 
 VHDL_SOURCES += $(SRC)/nco.vhd $(SRC)/sin_cos_lut.vhd $(SRC)/msk_modulator.vhd $(SRC)/costas_loop.vhd $(SRC)/msk_demodulator.vhd $(SRC)/msk_top.vhd
 # use VHDL_SOURCES for VHDL files
