@@ -9,7 +9,14 @@ SIM_ARGS = --wave=msk_top.ghw
 
 SRC = ../src
 
-VHDL_SOURCES += $(SRC)/nco.vhd $(SRC)/sin_cos_lut.vhd $(SRC)/msk_modulator.vhd $(SRC)/costas_loop.vhd $(SRC)/msk_demodulator.vhd $(SRC)/msk_top.vhd
+VHDL_SOURCES += $(SRC)/nco.vhd \
+				$(SRC)/sin_cos_lut.vhd \
+				$(SRC)/msk_modulator.vhd \
+				$(SRC)/costas_loop.vhd \
+				$(SRC)/msk_demodulator.vhd \
+				$(SRC)/msk_top.vhd \
+				$(SRC)/loop_filter.vhd
+				
 # use VHDL_SOURCES for VHDL files
 
 # TOPLEVEL is the name of the toplevel module in your Verilog or VHDL file
