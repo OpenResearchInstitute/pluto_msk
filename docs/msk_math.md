@@ -157,6 +157,12 @@ again we only care about the DC component, which when the phases are aligned is 
 sin(0) term becomes sin(Δφ) a constant.
 
 
+cos(2𝝿f1t)*sin(2𝝿f1t) = 1/2 [ sin(2𝝿f2t + 2𝝿f1t) - sin(2𝝿f2t - 2𝝿f1t) ]
+					  = 1/2 [ sin(2𝝿(f2+f1)t) - sin(2𝝿(f2-f1)t) ]
+
+
+cos(2𝝿f1t)*sin(2𝝿f1t) = -1/2 [ sin(2𝝿f2t + 2𝝿f1t) - sin(2𝝿f2t - 2𝝿f1t) ]
+					  = -1/2 [ sin(2𝝿(f2+f1)t) - sin(2𝝿(f2-f1)t) ]
 
 
 
