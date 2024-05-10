@@ -86,7 +86,7 @@ async def msk_test_1(dut):
 
     dut._log.info("starting...")
 
-    while sim_time < 2000:
+    while sim_time < 5000:
 
         if dut.tx_req.value == 1:
             dut.tx_data.value = random.randrange(1000) % 2
