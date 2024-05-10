@@ -66,7 +66,7 @@ BEGIN
 			END IF;
 
 			IF rx_valid_int = '1' THEN
-				sent_data <= sent_data_pipe(2);
+				sent_data <= sent_data_pipe(3);
 				received_data <= rx_data_int;
 			END IF;
 
@@ -87,8 +87,6 @@ BEGIN
 		PORT MAP (
 			clk 			=> clk,
 			init 			=> init,
-
-			tclk_out		=> tclk,
 
 			freq_word_tclk 	=> freq_word_ft,
 			freq_word_f1 	=> freq_word_f1,
@@ -111,8 +109,6 @@ BEGIN
 		PORT MAP (
 			clk 			=> clk,
 			init 			=> init,
-
-			tclk 			=> tclk,
 	
 			rx_freq_word_f1 => freq_word_f1,
 			rx_freq_word_f2	=> freq_word_f2,
