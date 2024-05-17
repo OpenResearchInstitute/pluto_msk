@@ -49,6 +49,7 @@ async def msk_test_1(dut):
 
     tx_samples = []
     tx_time = []
+    offset = 0
 
     await cocotb.start(Clock(dut.clk, 10, units="ns").start())
 
@@ -68,6 +69,14 @@ async def msk_test_1(dut):
     dut.freq_word_ft.value = int(bitrate / sample_rate * 2.0**32)
     dut.freq_word_f1.value = int(f1 / sample_rate * 2.0**32);
     dut.freq_word_f2.value = int(f2 / sample_rate * 2.0**32);
+    dut.lpf_p_gain.value = 3
+    dut.lpf_i_gain.value = 3
+    dut.lpf_freeze.value = 0
+    dut.lpf_zero.value = 0
+    dut.lpf_alpha.value = 2
+
+    dut.loopback_ena = 1
+
     dut.tx_data.value = 0
 
     await Timer(100, units="ns")
@@ -86,7 +95,7 @@ async def msk_test_1(dut):
 
     dut._log.info("starting...")
 
-    while sim_time < 5000:
+    while sim_time < 25000:
 
         if dut.tx_req.value == 1:
             dut.tx_data.value = random.randrange(1000) % 2
@@ -96,10 +105,9 @@ async def msk_test_1(dut):
         tx_samples.append(dut.tx_samples.value.signed_integer)
         tx_time.append(sim_time)
 
-        sim_time = get_sim_time("us")
+        offset = offset + 1
 
-    # S    = np.fft.fft(tx_samples)
-    # freq = np.fft.fftfreq(len(tx_samples), tx_time[1] - tx_time[0])
+        sim_time = get_sim_time("us")
 
     tx_samples_arr = np.asarray(tx_samples)
     tx_samples_2   = tx_samples_arr * tx_samples_arr
