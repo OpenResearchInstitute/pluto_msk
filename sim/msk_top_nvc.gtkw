@@ -1,0 +1,74 @@
+[*]
+[*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
+[*] Sat May 18 07:41:09 2024
+[*]
+[dumpfile] "msk_top.ghw"
+[dumpfile_mtime] "Sat May 18 07:38:40 2024"
+[dumpfile_size] 89696625
+[savefile] "/Users/nonlinear/Dev/msk/sim/msk_top_nvc.gtkw"
+[timestart] 0
+[size] 1296 742
+[pos] -1 -1
+*-42.845928 28410230000000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[markername] AA
+[markername] BB
+[markername] CC
+[markername] DD
+[markername] EE
+[markername] FF
+[markername] GG
+[markername] HH
+[markername] II
+[markername] JJ
+[markername] KK
+[markername] LL
+[markername] MM
+[markername] NN
+[markername] OO
+[markername] PP
+[markername] QQ
+[markername] RR
+[markername] SS
+[markername] TT
+[markername] UU
+[markername] VV
+[markername] WW
+[markername] XX
+[markername] YY
+[markername] ZZ
+[treeopen] msk_top.
+[treeopen] msk_top.u_dem.
+[treeopen] msk_top.u_dem.u_f1.
+[treeopen] msk_top.u_mod.
+[sst_width] 253
+[signals_width] 264
+[sst_expanded] 1
+[sst_vpaned_height] 209
+@28
+msk_top.sent_data
+@22
+msk_top.sent_data_pipe[0:3]
+@29
+msk_top.rx_data
+@28
+msk_top.bit_error
+@10420
+msk_top.u_dem.u_f1.rx_sin_filt_acc[31:0]
+@420
+msk_top.u_dem.u_f1.rx_sin_dump[31:0]
+@28
+msk_top.u_dem.u_f1.error_valid
+@420
+msk_top.u_dem.u_f1.rx_error_w[15:0]
+@10420
+msk_top.u_dem.u_f1.u_loopfilter.i_acc[31:0]
+msk_top.u_dem.u_f1.u_loopfilter.i_val[31:0]
+msk_top.u_dem.u_f1.u_loopfilter.p_val[15:0]
+msk_top.u_dem.u_f1.u_loopfilter.lpf_adjust[31:0]
+@28
+msk_top.u_dem.u_f1.u_loopfilter.lpf_adj_valid
+@22
+msk_top.u_dem.u_f1.u_loopfilter.lpf_i_gain[15:0]
+msk_top.u_dem.u_f1.u_loopfilter.lpf_p_gain[15:0]
+[pattern_trace] 1
+[pattern_trace] 0

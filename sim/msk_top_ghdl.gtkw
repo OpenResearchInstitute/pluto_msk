@@ -1,0 +1,347 @@
+[*]
+[*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
+[*] Sat May 18 06:10:33 2024
+[*]
+[dumpfile] "msk_top.ghw"
+[dumpfile_mtime] "Sat May 18 06:00:05 2024"
+[dumpfile_size] 1421204359
+[savefile] "/Users/nonlinear/Dev/msk/sim/msk_top.gtkw"
+[timestart] 0
+[size] 1512 835
+[pos] -1 -1
+*-40.964737 2170000000000 126930000000 127330000000 127730000000 128130000000 128530000000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[markername] AA
+[markername] BB
+[markername] CC
+[markername] DD
+[markername] EE
+[markername] FF
+[markername] GG
+[markername] HH
+[markername] II
+[markername] JJ
+[markername] KK
+[markername] LL
+[markername] MM
+[markername] NN
+[markername] OO
+[markername] PP
+[markername] QQ
+[markername] RR
+[markername] SS
+[markername] TT
+[markername] UU
+[markername] VV
+[markername] WW
+[markername] XX
+[markername] YY
+[markername] ZZ
+[treeopen] top.
+[treeopen] top.msk_top.
+[treeopen] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.
+[treeopen] top.msk_top.u_mod.
+[sst_width] 253
+[signals_width] 307
+[sst_expanded] 1
+[sst_vpaned_height] 582
+@28
+top.msk_top.clk
+top.msk_top.init
+top.msk_top.u_dem.u_f1.tclk
+top.msk_top.tx_req_int
+#{top.msk_top.tx_data[1:0]} top.msk_top.tx_data[1] top.msk_top.tx_data[0]
+@20000
+-
+-
+@28
+top.msk_top.sent_data
+top.msk_top.received_data
+top.msk_top.bit_error
+@800200
+-Modulator
+@c00022
+#{top.msk_top.u_mod.tclk_dly[0:3]} top.msk_top.u_mod.tclk_dly[0] top.msk_top.u_mod.tclk_dly[1] top.msk_top.u_mod.tclk_dly[2] top.msk_top.u_mod.tclk_dly[3]
+@28
+top.msk_top.u_mod.tclk_dly[0]
+top.msk_top.u_mod.tclk_dly[1]
+top.msk_top.u_mod.tclk_dly[2]
+top.msk_top.u_mod.tclk_dly[3]
+@1401200
+-group_end
+@28
+top.msk_top.u_mod.tx_data_reg
+@420
+#{top.msk_top.u_mod.d_val[1:0]} top.msk_top.u_mod.d_val[1] top.msk_top.u_mod.d_val[0]
+#{top.msk_top.u_mod.d_dly[1:0]} top.msk_top.u_mod.d_dly[1] top.msk_top.u_mod.d_dly[0]
+#{top.msk_top.u_mod.d_pos[1:0]} top.msk_top.u_mod.d_pos[1] top.msk_top.u_mod.d_pos[0]
+#{top.msk_top.u_mod.d_neg[1:0]} top.msk_top.u_mod.d_neg[1] top.msk_top.u_mod.d_neg[0]
+@28
+top.msk_top.u_mod.b_n
+@420
+#{top.msk_top.u_mod.d_n_b[1:0]} top.msk_top.u_mod.d_n_b[1] top.msk_top.u_mod.d_n_b[0]
+#{top.msk_top.u_mod.d_s1[3:0]} top.msk_top.u_mod.d_s1[1] top.msk_top.u_mod.d_s1[0]
+#{top.msk_top.u_mod.d_s2[3:0]} top.msk_top.u_mod.d_s2[1] top.msk_top.u_mod.d_s2[0]
+@10420
+#{top.msk_top.u_mod.s1[11:0]} top.msk_top.u_mod.s1[11] top.msk_top.u_mod.s1[10] top.msk_top.u_mod.s1[9] top.msk_top.u_mod.s1[8] top.msk_top.u_mod.s1[7] top.msk_top.u_mod.s1[6] top.msk_top.u_mod.s1[5] top.msk_top.u_mod.s1[4] top.msk_top.u_mod.s1[3] top.msk_top.u_mod.s1[2] top.msk_top.u_mod.s1[1] top.msk_top.u_mod.s1[0]
+@20000
+-
+-
+@10420
+#{top.msk_top.u_mod.s2[11:0]} top.msk_top.u_mod.s2[11] top.msk_top.u_mod.s2[10] top.msk_top.u_mod.s2[9] top.msk_top.u_mod.s2[8] top.msk_top.u_mod.s2[7] top.msk_top.u_mod.s2[6] top.msk_top.u_mod.s2[5] top.msk_top.u_mod.s2[4] top.msk_top.u_mod.s2[3] top.msk_top.u_mod.s2[2] top.msk_top.u_mod.s2[1] top.msk_top.u_mod.s2[0]
+@20000
+-
+-
+@10420
+#{top.msk_top.u_mod.carrier_cos_f1[11:0]} top.msk_top.u_mod.carrier_cos_f1[11] top.msk_top.u_mod.carrier_cos_f1[10] top.msk_top.u_mod.carrier_cos_f1[9] top.msk_top.u_mod.carrier_cos_f1[8] top.msk_top.u_mod.carrier_cos_f1[7] top.msk_top.u_mod.carrier_cos_f1[6] top.msk_top.u_mod.carrier_cos_f1[5] top.msk_top.u_mod.carrier_cos_f1[4] top.msk_top.u_mod.carrier_cos_f1[3] top.msk_top.u_mod.carrier_cos_f1[2] top.msk_top.u_mod.carrier_cos_f1[1] top.msk_top.u_mod.carrier_cos_f1[0]
+@20000
+-
+-
+@10420
+#{top.msk_top.u_mod.carrier_cos_f2[11:0]} top.msk_top.u_mod.carrier_cos_f2[11] top.msk_top.u_mod.carrier_cos_f2[10] top.msk_top.u_mod.carrier_cos_f2[9] top.msk_top.u_mod.carrier_cos_f2[8] top.msk_top.u_mod.carrier_cos_f2[7] top.msk_top.u_mod.carrier_cos_f2[6] top.msk_top.u_mod.carrier_cos_f2[5] top.msk_top.u_mod.carrier_cos_f2[4] top.msk_top.u_mod.carrier_cos_f2[3] top.msk_top.u_mod.carrier_cos_f2[2] top.msk_top.u_mod.carrier_cos_f2[1] top.msk_top.u_mod.carrier_cos_f2[0]
+@20000
+-
+-
+@28
+top.msk_top.u_mod.ptt
+@10420
+#{top.msk_top.u_mod.tx_samples[11:0]} top.msk_top.u_mod.tx_samples[11] top.msk_top.u_mod.tx_samples[10] top.msk_top.u_mod.tx_samples[9] top.msk_top.u_mod.tx_samples[8] top.msk_top.u_mod.tx_samples[7] top.msk_top.u_mod.tx_samples[6] top.msk_top.u_mod.tx_samples[5] top.msk_top.u_mod.tx_samples[4] top.msk_top.u_mod.tx_samples[3] top.msk_top.u_mod.tx_samples[2] top.msk_top.u_mod.tx_samples[1] top.msk_top.u_mod.tx_samples[0]
+@20000
+-
+-
+@1000200
+-Modulator
+@800200
+-F1 Costas Loop
+@c00200
+-Out-of-Phase Arm
+@10420
+#{top.msk_top.u_dem.u_f1.car_sin[11:0]} top.msk_top.u_dem.u_f1.car_sin[11] top.msk_top.u_dem.u_f1.car_sin[10] top.msk_top.u_dem.u_f1.car_sin[9] top.msk_top.u_dem.u_f1.car_sin[8] top.msk_top.u_dem.u_f1.car_sin[7] top.msk_top.u_dem.u_f1.car_sin[6] top.msk_top.u_dem.u_f1.car_sin[5] top.msk_top.u_dem.u_f1.car_sin[4] top.msk_top.u_dem.u_f1.car_sin[3] top.msk_top.u_dem.u_f1.car_sin[2] top.msk_top.u_dem.u_f1.car_sin[1] top.msk_top.u_dem.u_f1.car_sin[0]
+#{top.msk_top.u_dem.u_f1.rx_sin[23:0]} top.msk_top.u_dem.u_f1.rx_sin[23] top.msk_top.u_dem.u_f1.rx_sin[22] top.msk_top.u_dem.u_f1.rx_sin[21] top.msk_top.u_dem.u_f1.rx_sin[20] top.msk_top.u_dem.u_f1.rx_sin[19] top.msk_top.u_dem.u_f1.rx_sin[18] top.msk_top.u_dem.u_f1.rx_sin[17] top.msk_top.u_dem.u_f1.rx_sin[16] top.msk_top.u_dem.u_f1.rx_sin[15] top.msk_top.u_dem.u_f1.rx_sin[14] top.msk_top.u_dem.u_f1.rx_sin[13] top.msk_top.u_dem.u_f1.rx_sin[12] top.msk_top.u_dem.u_f1.rx_sin[11] top.msk_top.u_dem.u_f1.rx_sin[10] top.msk_top.u_dem.u_f1.rx_sin[9] top.msk_top.u_dem.u_f1.rx_sin[8] top.msk_top.u_dem.u_f1.rx_sin[7] top.msk_top.u_dem.u_f1.rx_sin[6] top.msk_top.u_dem.u_f1.rx_sin[5] top.msk_top.u_dem.u_f1.rx_sin[4] top.msk_top.u_dem.u_f1.rx_sin[3] top.msk_top.u_dem.u_f1.rx_sin[2] top.msk_top.u_dem.u_f1.rx_sin[1] top.msk_top.u_dem.u_f1.rx_sin[0]
+@20000
+-
+-
+@10420
+#{top.msk_top.u_dem.u_f1.rx_sin_filt_acc[31:0]} top.msk_top.u_dem.u_f1.rx_sin_filt_acc[31] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[30] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[29] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[28] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[27] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[26] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[25] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[24] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[23] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[22] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[21] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[20] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[19] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[18] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[17] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[16] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[15] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[14] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[13] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[12] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[11] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[10] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[9] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[8] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[7] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[6] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[5] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[4] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[3] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[2] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[1] top.msk_top.u_dem.u_f1.rx_sin_filt_acc[0]
+#{top.msk_top.u_dem.u_f1.rx_sin_acc[31:0]} top.msk_top.u_dem.u_f1.rx_sin_acc[31] top.msk_top.u_dem.u_f1.rx_sin_acc[30] top.msk_top.u_dem.u_f1.rx_sin_acc[29] top.msk_top.u_dem.u_f1.rx_sin_acc[28] top.msk_top.u_dem.u_f1.rx_sin_acc[27] top.msk_top.u_dem.u_f1.rx_sin_acc[26] top.msk_top.u_dem.u_f1.rx_sin_acc[25] top.msk_top.u_dem.u_f1.rx_sin_acc[24] top.msk_top.u_dem.u_f1.rx_sin_acc[23] top.msk_top.u_dem.u_f1.rx_sin_acc[22] top.msk_top.u_dem.u_f1.rx_sin_acc[21] top.msk_top.u_dem.u_f1.rx_sin_acc[20] top.msk_top.u_dem.u_f1.rx_sin_acc[19] top.msk_top.u_dem.u_f1.rx_sin_acc[18] top.msk_top.u_dem.u_f1.rx_sin_acc[17] top.msk_top.u_dem.u_f1.rx_sin_acc[16] top.msk_top.u_dem.u_f1.rx_sin_acc[15] top.msk_top.u_dem.u_f1.rx_sin_acc[14] top.msk_top.u_dem.u_f1.rx_sin_acc[13] top.msk_top.u_dem.u_f1.rx_sin_acc[12] top.msk_top.u_dem.u_f1.rx_sin_acc[11] top.msk_top.u_dem.u_f1.rx_sin_acc[10] top.msk_top.u_dem.u_f1.rx_sin_acc[9] top.msk_top.u_dem.u_f1.rx_sin_acc[8] top.msk_top.u_dem.u_f1.rx_sin_acc[7] top.msk_top.u_dem.u_f1.rx_sin_acc[6] top.msk_top.u_dem.u_f1.rx_sin_acc[5] top.msk_top.u_dem.u_f1.rx_sin_acc[4] top.msk_top.u_dem.u_f1.rx_sin_acc[3] top.msk_top.u_dem.u_f1.rx_sin_acc[2] top.msk_top.u_dem.u_f1.rx_sin_acc[1] top.msk_top.u_dem.u_f1.rx_sin_acc[0]
+@420
+#{top.msk_top.u_dem.u_f1.rx_sin_dump[31:0]} top.msk_top.u_dem.u_f1.rx_sin_dump[31] top.msk_top.u_dem.u_f1.rx_sin_dump[30] top.msk_top.u_dem.u_f1.rx_sin_dump[29] top.msk_top.u_dem.u_f1.rx_sin_dump[28] top.msk_top.u_dem.u_f1.rx_sin_dump[27] top.msk_top.u_dem.u_f1.rx_sin_dump[26] top.msk_top.u_dem.u_f1.rx_sin_dump[25] top.msk_top.u_dem.u_f1.rx_sin_dump[24] top.msk_top.u_dem.u_f1.rx_sin_dump[23] top.msk_top.u_dem.u_f1.rx_sin_dump[22] top.msk_top.u_dem.u_f1.rx_sin_dump[21] top.msk_top.u_dem.u_f1.rx_sin_dump[20] top.msk_top.u_dem.u_f1.rx_sin_dump[19] top.msk_top.u_dem.u_f1.rx_sin_dump[18] top.msk_top.u_dem.u_f1.rx_sin_dump[17] top.msk_top.u_dem.u_f1.rx_sin_dump[16] top.msk_top.u_dem.u_f1.rx_sin_dump[15] top.msk_top.u_dem.u_f1.rx_sin_dump[14] top.msk_top.u_dem.u_f1.rx_sin_dump[13] top.msk_top.u_dem.u_f1.rx_sin_dump[12] top.msk_top.u_dem.u_f1.rx_sin_dump[11] top.msk_top.u_dem.u_f1.rx_sin_dump[10] top.msk_top.u_dem.u_f1.rx_sin_dump[9] top.msk_top.u_dem.u_f1.rx_sin_dump[8] top.msk_top.u_dem.u_f1.rx_sin_dump[7] top.msk_top.u_dem.u_f1.rx_sin_dump[6] top.msk_top.u_dem.u_f1.rx_sin_dump[5] top.msk_top.u_dem.u_f1.rx_sin_dump[4] top.msk_top.u_dem.u_f1.rx_sin_dump[3] top.msk_top.u_dem.u_f1.rx_sin_dump[2] top.msk_top.u_dem.u_f1.rx_sin_dump[1] top.msk_top.u_dem.u_f1.rx_sin_dump[0]
+@28
+top.msk_top.u_dem.u_f1.rx_cos_slice
+@1401200
+-Out-of-Phase Arm
+@28
+top.msk_top.u_dem.error_valid_f1
+@420
+#{top.msk_top.u_dem.u_f1.rx_error[31:0]} top.msk_top.u_dem.u_f1.rx_error[31] top.msk_top.u_dem.u_f1.rx_error[30] top.msk_top.u_dem.u_f1.rx_error[29] top.msk_top.u_dem.u_f1.rx_error[28] top.msk_top.u_dem.u_f1.rx_error[27] top.msk_top.u_dem.u_f1.rx_error[26] top.msk_top.u_dem.u_f1.rx_error[25] top.msk_top.u_dem.u_f1.rx_error[24] top.msk_top.u_dem.u_f1.rx_error[23] top.msk_top.u_dem.u_f1.rx_error[22] top.msk_top.u_dem.u_f1.rx_error[21] top.msk_top.u_dem.u_f1.rx_error[20] top.msk_top.u_dem.u_f1.rx_error[19] top.msk_top.u_dem.u_f1.rx_error[18] top.msk_top.u_dem.u_f1.rx_error[17] top.msk_top.u_dem.u_f1.rx_error[16] top.msk_top.u_dem.u_f1.rx_error[15] top.msk_top.u_dem.u_f1.rx_error[14] top.msk_top.u_dem.u_f1.rx_error[13] top.msk_top.u_dem.u_f1.rx_error[12] top.msk_top.u_dem.u_f1.rx_error[11] top.msk_top.u_dem.u_f1.rx_error[10] top.msk_top.u_dem.u_f1.rx_error[9] top.msk_top.u_dem.u_f1.rx_error[8] top.msk_top.u_dem.u_f1.rx_error[7] top.msk_top.u_dem.u_f1.rx_error[6] top.msk_top.u_dem.u_f1.rx_error[5] top.msk_top.u_dem.u_f1.rx_error[4] top.msk_top.u_dem.u_f1.rx_error[3] top.msk_top.u_dem.u_f1.rx_error[2] top.msk_top.u_dem.u_f1.rx_error[1] top.msk_top.u_dem.u_f1.rx_error[0]
+@c00200
+-In-Phase Arm
+@10420
+#{top.msk_top.u_dem.u_f1.car_cos[11:0]} top.msk_top.u_dem.u_f1.car_cos[11] top.msk_top.u_dem.u_f1.car_cos[10] top.msk_top.u_dem.u_f1.car_cos[9] top.msk_top.u_dem.u_f1.car_cos[8] top.msk_top.u_dem.u_f1.car_cos[7] top.msk_top.u_dem.u_f1.car_cos[6] top.msk_top.u_dem.u_f1.car_cos[5] top.msk_top.u_dem.u_f1.car_cos[4] top.msk_top.u_dem.u_f1.car_cos[3] top.msk_top.u_dem.u_f1.car_cos[2] top.msk_top.u_dem.u_f1.car_cos[1] top.msk_top.u_dem.u_f1.car_cos[0]
+#{top.msk_top.u_dem.u_f1.rx_cos[23:0]} top.msk_top.u_dem.u_f1.rx_cos[23] top.msk_top.u_dem.u_f1.rx_cos[22] top.msk_top.u_dem.u_f1.rx_cos[21] top.msk_top.u_dem.u_f1.rx_cos[20] top.msk_top.u_dem.u_f1.rx_cos[19] top.msk_top.u_dem.u_f1.rx_cos[18] top.msk_top.u_dem.u_f1.rx_cos[17] top.msk_top.u_dem.u_f1.rx_cos[16] top.msk_top.u_dem.u_f1.rx_cos[15] top.msk_top.u_dem.u_f1.rx_cos[14] top.msk_top.u_dem.u_f1.rx_cos[13] top.msk_top.u_dem.u_f1.rx_cos[12] top.msk_top.u_dem.u_f1.rx_cos[11] top.msk_top.u_dem.u_f1.rx_cos[10] top.msk_top.u_dem.u_f1.rx_cos[9] top.msk_top.u_dem.u_f1.rx_cos[8] top.msk_top.u_dem.u_f1.rx_cos[7] top.msk_top.u_dem.u_f1.rx_cos[6] top.msk_top.u_dem.u_f1.rx_cos[5] top.msk_top.u_dem.u_f1.rx_cos[4] top.msk_top.u_dem.u_f1.rx_cos[3] top.msk_top.u_dem.u_f1.rx_cos[2] top.msk_top.u_dem.u_f1.rx_cos[1] top.msk_top.u_dem.u_f1.rx_cos[0]
+@20000
+-
+-
+@10420
+#{top.msk_top.u_dem.u_f1.rx_cos_filt_acc[31:0]} top.msk_top.u_dem.u_f1.rx_cos_filt_acc[31] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[30] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[29] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[28] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[27] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[26] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[25] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[24] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[23] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[22] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[21] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[20] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[19] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[18] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[17] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[16] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[15] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[14] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[13] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[12] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[11] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[10] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[9] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[8] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[7] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[6] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[5] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[4] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[3] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[2] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[1] top.msk_top.u_dem.u_f1.rx_cos_filt_acc[0]
+#{top.msk_top.u_dem.u_f1.rx_cos_acc[31:0]} top.msk_top.u_dem.u_f1.rx_cos_acc[31] top.msk_top.u_dem.u_f1.rx_cos_acc[30] top.msk_top.u_dem.u_f1.rx_cos_acc[29] top.msk_top.u_dem.u_f1.rx_cos_acc[28] top.msk_top.u_dem.u_f1.rx_cos_acc[27] top.msk_top.u_dem.u_f1.rx_cos_acc[26] top.msk_top.u_dem.u_f1.rx_cos_acc[25] top.msk_top.u_dem.u_f1.rx_cos_acc[24] top.msk_top.u_dem.u_f1.rx_cos_acc[23] top.msk_top.u_dem.u_f1.rx_cos_acc[22] top.msk_top.u_dem.u_f1.rx_cos_acc[21] top.msk_top.u_dem.u_f1.rx_cos_acc[20] top.msk_top.u_dem.u_f1.rx_cos_acc[19] top.msk_top.u_dem.u_f1.rx_cos_acc[18] top.msk_top.u_dem.u_f1.rx_cos_acc[17] top.msk_top.u_dem.u_f1.rx_cos_acc[16] top.msk_top.u_dem.u_f1.rx_cos_acc[15] top.msk_top.u_dem.u_f1.rx_cos_acc[14] top.msk_top.u_dem.u_f1.rx_cos_acc[13] top.msk_top.u_dem.u_f1.rx_cos_acc[12] top.msk_top.u_dem.u_f1.rx_cos_acc[11] top.msk_top.u_dem.u_f1.rx_cos_acc[10] top.msk_top.u_dem.u_f1.rx_cos_acc[9] top.msk_top.u_dem.u_f1.rx_cos_acc[8] top.msk_top.u_dem.u_f1.rx_cos_acc[7] top.msk_top.u_dem.u_f1.rx_cos_acc[6] top.msk_top.u_dem.u_f1.rx_cos_acc[5] top.msk_top.u_dem.u_f1.rx_cos_acc[4] top.msk_top.u_dem.u_f1.rx_cos_acc[3] top.msk_top.u_dem.u_f1.rx_cos_acc[2] top.msk_top.u_dem.u_f1.rx_cos_acc[1] top.msk_top.u_dem.u_f1.rx_cos_acc[0]
+@420
+#{top.msk_top.u_dem.u_f1.rx_cos_dump[31:0]} top.msk_top.u_dem.u_f1.rx_cos_dump[31] top.msk_top.u_dem.u_f1.rx_cos_dump[30] top.msk_top.u_dem.u_f1.rx_cos_dump[29] top.msk_top.u_dem.u_f1.rx_cos_dump[28] top.msk_top.u_dem.u_f1.rx_cos_dump[27] top.msk_top.u_dem.u_f1.rx_cos_dump[26] top.msk_top.u_dem.u_f1.rx_cos_dump[25] top.msk_top.u_dem.u_f1.rx_cos_dump[24] top.msk_top.u_dem.u_f1.rx_cos_dump[23] top.msk_top.u_dem.u_f1.rx_cos_dump[22] top.msk_top.u_dem.u_f1.rx_cos_dump[21] top.msk_top.u_dem.u_f1.rx_cos_dump[20] top.msk_top.u_dem.u_f1.rx_cos_dump[19] top.msk_top.u_dem.u_f1.rx_cos_dump[18] top.msk_top.u_dem.u_f1.rx_cos_dump[17] top.msk_top.u_dem.u_f1.rx_cos_dump[16] top.msk_top.u_dem.u_f1.rx_cos_dump[15] top.msk_top.u_dem.u_f1.rx_cos_dump[14] top.msk_top.u_dem.u_f1.rx_cos_dump[13] top.msk_top.u_dem.u_f1.rx_cos_dump[12] top.msk_top.u_dem.u_f1.rx_cos_dump[11] top.msk_top.u_dem.u_f1.rx_cos_dump[10] top.msk_top.u_dem.u_f1.rx_cos_dump[9] top.msk_top.u_dem.u_f1.rx_cos_dump[8] top.msk_top.u_dem.u_f1.rx_cos_dump[7] top.msk_top.u_dem.u_f1.rx_cos_dump[6] top.msk_top.u_dem.u_f1.rx_cos_dump[5] top.msk_top.u_dem.u_f1.rx_cos_dump[4] top.msk_top.u_dem.u_f1.rx_cos_dump[3] top.msk_top.u_dem.u_f1.rx_cos_dump[2] top.msk_top.u_dem.u_f1.rx_cos_dump[1] top.msk_top.u_dem.u_f1.rx_cos_dump[0]
+@1401200
+-In-Phase Arm
+@420
+#{top.msk_top.u_dem.u_f1.rx_cos_t[31:0]} top.msk_top.u_dem.u_f1.rx_cos_t[31] top.msk_top.u_dem.u_f1.rx_cos_t[30] top.msk_top.u_dem.u_f1.rx_cos_t[29] top.msk_top.u_dem.u_f1.rx_cos_t[28] top.msk_top.u_dem.u_f1.rx_cos_t[27] top.msk_top.u_dem.u_f1.rx_cos_t[26] top.msk_top.u_dem.u_f1.rx_cos_t[25] top.msk_top.u_dem.u_f1.rx_cos_t[24] top.msk_top.u_dem.u_f1.rx_cos_t[23] top.msk_top.u_dem.u_f1.rx_cos_t[22] top.msk_top.u_dem.u_f1.rx_cos_t[21] top.msk_top.u_dem.u_f1.rx_cos_t[20] top.msk_top.u_dem.u_f1.rx_cos_t[19] top.msk_top.u_dem.u_f1.rx_cos_t[18] top.msk_top.u_dem.u_f1.rx_cos_t[17] top.msk_top.u_dem.u_f1.rx_cos_t[16] top.msk_top.u_dem.u_f1.rx_cos_t[15] top.msk_top.u_dem.u_f1.rx_cos_t[14] top.msk_top.u_dem.u_f1.rx_cos_t[13] top.msk_top.u_dem.u_f1.rx_cos_t[12] top.msk_top.u_dem.u_f1.rx_cos_t[11] top.msk_top.u_dem.u_f1.rx_cos_t[10] top.msk_top.u_dem.u_f1.rx_cos_t[9] top.msk_top.u_dem.u_f1.rx_cos_t[8] top.msk_top.u_dem.u_f1.rx_cos_t[7] top.msk_top.u_dem.u_f1.rx_cos_t[6] top.msk_top.u_dem.u_f1.rx_cos_t[5] top.msk_top.u_dem.u_f1.rx_cos_t[4] top.msk_top.u_dem.u_f1.rx_cos_t[3] top.msk_top.u_dem.u_f1.rx_cos_t[2] top.msk_top.u_dem.u_f1.rx_cos_t[1] top.msk_top.u_dem.u_f1.rx_cos_t[0]
+@28
+top.msk_top.u_dem.u_f1.u_loopfilter.lpf_err_valid
+@420
+#{top.msk_top.u_dem.u_f1.u_loopfilter.lpf_err[15:0]} top.msk_top.u_dem.u_f1.u_loopfilter.lpf_err[15] top.msk_top.u_dem.u_f1.u_loopfilter.lpf_err[14] top.msk_top.u_dem.u_f1.u_loopfilter.lpf_err[13] top.msk_top.u_dem.u_f1.u_loopfilter.lpf_err[12] top.msk_top.u_dem.u_f1.u_loopfilter.lpf_err[11] top.msk_top.u_dem.u_f1.u_loopfilter.lpf_err[10] top.msk_top.u_dem.u_f1.u_loopfilter.lpf_err[9] top.msk_top.u_dem.u_f1.u_loopfilter.lpf_err[8] top.msk_top.u_dem.u_f1.u_loopfilter.lpf_err[7] top.msk_top.u_dem.u_f1.u_loopfilter.lpf_err[6] top.msk_top.u_dem.u_f1.u_loopfilter.lpf_err[5] top.msk_top.u_dem.u_f1.u_loopfilter.lpf_err[4] top.msk_top.u_dem.u_f1.u_loopfilter.lpf_err[3] top.msk_top.u_dem.u_f1.u_loopfilter.lpf_err[2] top.msk_top.u_dem.u_f1.u_loopfilter.lpf_err[1] top.msk_top.u_dem.u_f1.u_loopfilter.lpf_err[0]
+@800200
+-Loop Filter
+@28
+top.msk_top.u_dem.u_f1.u_loopfilter.lpf_err_valid_d
+top.msk_top.u_dem.u_f1.u_loopfilter.lpf_zero
+top.msk_top.u_dem.u_f1.u_loopfilter.lpf_freeze
+@22
+#{top.msk_top.u_dem.u_f1.lpf_i_gain[15:0]} top.msk_top.u_dem.u_f1.lpf_i_gain[15] top.msk_top.u_dem.u_f1.lpf_i_gain[14] top.msk_top.u_dem.u_f1.lpf_i_gain[13] top.msk_top.u_dem.u_f1.lpf_i_gain[12] top.msk_top.u_dem.u_f1.lpf_i_gain[11] top.msk_top.u_dem.u_f1.lpf_i_gain[10] top.msk_top.u_dem.u_f1.lpf_i_gain[9] top.msk_top.u_dem.u_f1.lpf_i_gain[8] top.msk_top.u_dem.u_f1.lpf_i_gain[7] top.msk_top.u_dem.u_f1.lpf_i_gain[6] top.msk_top.u_dem.u_f1.lpf_i_gain[5] top.msk_top.u_dem.u_f1.lpf_i_gain[4] top.msk_top.u_dem.u_f1.lpf_i_gain[3] top.msk_top.u_dem.u_f1.lpf_i_gain[2] top.msk_top.u_dem.u_f1.lpf_i_gain[1] top.msk_top.u_dem.u_f1.lpf_i_gain[0]
+#{top.msk_top.u_dem.u_f1.lpf_p_gain[15:0]} top.msk_top.u_dem.u_f1.lpf_p_gain[15] top.msk_top.u_dem.u_f1.lpf_p_gain[14] top.msk_top.u_dem.u_f1.lpf_p_gain[13] top.msk_top.u_dem.u_f1.lpf_p_gain[12] top.msk_top.u_dem.u_f1.lpf_p_gain[11] top.msk_top.u_dem.u_f1.lpf_p_gain[10] top.msk_top.u_dem.u_f1.lpf_p_gain[9] top.msk_top.u_dem.u_f1.lpf_p_gain[8] top.msk_top.u_dem.u_f1.lpf_p_gain[7] top.msk_top.u_dem.u_f1.lpf_p_gain[6] top.msk_top.u_dem.u_f1.lpf_p_gain[5] top.msk_top.u_dem.u_f1.lpf_p_gain[4] top.msk_top.u_dem.u_f1.lpf_p_gain[3] top.msk_top.u_dem.u_f1.lpf_p_gain[2] top.msk_top.u_dem.u_f1.lpf_p_gain[1] top.msk_top.u_dem.u_f1.lpf_p_gain[0]
+@10420
+#{top.msk_top.u_dem.u_f2.u_loopfilter.p_val[15:0]} top.msk_top.u_dem.u_f2.u_loopfilter.p_val[15] top.msk_top.u_dem.u_f2.u_loopfilter.p_val[14] top.msk_top.u_dem.u_f2.u_loopfilter.p_val[13] top.msk_top.u_dem.u_f2.u_loopfilter.p_val[12] top.msk_top.u_dem.u_f2.u_loopfilter.p_val[11] top.msk_top.u_dem.u_f2.u_loopfilter.p_val[10] top.msk_top.u_dem.u_f2.u_loopfilter.p_val[9] top.msk_top.u_dem.u_f2.u_loopfilter.p_val[8] top.msk_top.u_dem.u_f2.u_loopfilter.p_val[7] top.msk_top.u_dem.u_f2.u_loopfilter.p_val[6] top.msk_top.u_dem.u_f2.u_loopfilter.p_val[5] top.msk_top.u_dem.u_f2.u_loopfilter.p_val[4] top.msk_top.u_dem.u_f2.u_loopfilter.p_val[3] top.msk_top.u_dem.u_f2.u_loopfilter.p_val[2] top.msk_top.u_dem.u_f2.u_loopfilter.p_val[1] top.msk_top.u_dem.u_f2.u_loopfilter.p_val[0]
+#{top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[31:0]} top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[31] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[30] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[29] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[28] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[27] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[26] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[25] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[24] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[23] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[22] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[21] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[20] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[19] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[18] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[17] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[16] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[15] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[14] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[13] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[12] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[11] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[10] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[9] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[8] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[7] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[6] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[5] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[4] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[3] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[2] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[1] top.msk_top.u_dem.u_f2.u_loopfilter.i_acc[0]
+@420
+#{top.msk_top.u_dem.u_f2.u_loopfilter.i_val[31:0]} top.msk_top.u_dem.u_f2.u_loopfilter.i_val[31] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[30] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[29] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[28] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[27] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[26] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[25] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[24] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[23] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[22] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[21] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[20] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[19] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[18] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[17] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[16] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[15] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[14] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[13] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[12] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[11] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[10] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[9] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[8] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[7] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[6] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[5] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[4] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[3] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[2] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[1] top.msk_top.u_dem.u_f2.u_loopfilter.i_val[0]
+@1000200
+-Loop Filter
+@28
+top.msk_top.u_dem.u_f1.u_loopfilter.lpf_adj_valid
+@10420
+#{top.msk_top.u_dem.u_f1.lpf_adjust[31:0]} top.msk_top.u_dem.u_f1.lpf_adjust[31] top.msk_top.u_dem.u_f1.lpf_adjust[30] top.msk_top.u_dem.u_f1.lpf_adjust[29] top.msk_top.u_dem.u_f1.lpf_adjust[28] top.msk_top.u_dem.u_f1.lpf_adjust[27] top.msk_top.u_dem.u_f1.lpf_adjust[26] top.msk_top.u_dem.u_f1.lpf_adjust[25] top.msk_top.u_dem.u_f1.lpf_adjust[24] top.msk_top.u_dem.u_f1.lpf_adjust[23] top.msk_top.u_dem.u_f1.lpf_adjust[22] top.msk_top.u_dem.u_f1.lpf_adjust[21] top.msk_top.u_dem.u_f1.lpf_adjust[20] top.msk_top.u_dem.u_f1.lpf_adjust[19] top.msk_top.u_dem.u_f1.lpf_adjust[18] top.msk_top.u_dem.u_f1.lpf_adjust[17] top.msk_top.u_dem.u_f1.lpf_adjust[16] top.msk_top.u_dem.u_f1.lpf_adjust[15] top.msk_top.u_dem.u_f1.lpf_adjust[14] top.msk_top.u_dem.u_f1.lpf_adjust[13] top.msk_top.u_dem.u_f1.lpf_adjust[12] top.msk_top.u_dem.u_f1.lpf_adjust[11] top.msk_top.u_dem.u_f1.lpf_adjust[10] top.msk_top.u_dem.u_f1.lpf_adjust[9] top.msk_top.u_dem.u_f1.lpf_adjust[8] top.msk_top.u_dem.u_f1.lpf_adjust[7] top.msk_top.u_dem.u_f1.lpf_adjust[6] top.msk_top.u_dem.u_f1.lpf_adjust[5] top.msk_top.u_dem.u_f1.lpf_adjust[4] top.msk_top.u_dem.u_f1.lpf_adjust[3] top.msk_top.u_dem.u_f1.lpf_adjust[2] top.msk_top.u_dem.u_f1.lpf_adjust[1] top.msk_top.u_dem.u_f1.lpf_adjust[0]
+@c00200
+-NCO
+@28
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adj_zero
+@420
+#{top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[31:0]} top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[31] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[30] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[29] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[28] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[27] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[26] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[25] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[24] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[23] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[22] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[21] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[20] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[19] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[18] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[17] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[16] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[15] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[14] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[13] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[12] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[11] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[10] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[9] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[8] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[7] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[6] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[5] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[4] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[3] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[2] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[1] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_word[0]
+@28
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adj_valid
+@c00420
+#{top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[31:0]} top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[31] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[30] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[29] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[28] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[27] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[26] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[25] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[24] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[23] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[22] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[21] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[20] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[19] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[18] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[17] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[16] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[15] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[14] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[13] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[12] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[11] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[10] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[9] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[8] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[7] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[6] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[5] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[4] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[3] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[2] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[1] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[0]
+@28
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[31]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[30]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[29]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[28]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[27]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[26]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[25]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[24]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[23]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[22]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[21]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[20]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[19]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[18]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[17]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[16]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[15]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[14]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[13]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[12]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[11]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[10]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[9]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[8]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[7]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[6]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[5]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[4]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[3]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[2]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[1]
+top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[0]
+@1401200
+-group_end
+@420
+#{top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[31:0]} top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[31] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[30] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[29] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[28] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[27] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[26] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[25] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[24] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[23] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[22] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[21] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[20] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[19] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[18] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[17] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[16] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[15] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[14] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[13] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[12] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[11] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[10] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[9] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[8] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[7] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[6] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[5] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[4] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[3] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[2] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[1] top.msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[0]
+#{top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[31:0]} top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[31] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[30] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[29] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[28] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[27] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[26] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[25] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[24] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[23] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[22] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[21] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[20] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[19] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[18] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[17] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[16] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[15] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[14] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[13] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[12] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[11] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[10] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[9] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[8] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[7] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[6] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[5] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[4] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[3] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[2] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[1] top.msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[0]
+@10024
+#{top.msk_top.u_dem.u_f1.u_carrier_nco.phase[31:0]} top.msk_top.u_dem.u_f1.u_carrier_nco.phase[31] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[30] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[29] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[28] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[27] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[26] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[25] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[24] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[23] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[22] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[21] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[20] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[19] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[18] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[17] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[16] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[15] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[14] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[13] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[12] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[11] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[10] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[9] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[8] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[7] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[6] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[5] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[4] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[3] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[2] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[1] top.msk_top.u_dem.u_f1.u_carrier_nco.phase[0]
+@1401200
+-NCO
+@10420
+#{top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.sin_out[11:0]} top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.sin_out[11] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.sin_out[10] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.sin_out[9] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.sin_out[8] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.sin_out[7] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.sin_out[6] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.sin_out[5] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.sin_out[4] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.sin_out[3] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.sin_out[2] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.sin_out[1] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.sin_out[0]
+#{top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.cos_out[11:0]} top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.cos_out[11] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.cos_out[10] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.cos_out[9] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.cos_out[8] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.cos_out[7] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.cos_out[6] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.cos_out[5] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.cos_out[4] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.cos_out[3] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.cos_out[2] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.cos_out[1] top.msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.cos_out[0]
+@1000200
+-F1 Costas Loop
+@c00200
+-F2 Costas Loop
+@10420
+#{top.msk_top.u_dem.u_f2.car_cos[11:0]} top.msk_top.u_dem.u_f2.car_cos[11] top.msk_top.u_dem.u_f2.car_cos[10] top.msk_top.u_dem.u_f2.car_cos[9] top.msk_top.u_dem.u_f2.car_cos[8] top.msk_top.u_dem.u_f2.car_cos[7] top.msk_top.u_dem.u_f2.car_cos[6] top.msk_top.u_dem.u_f2.car_cos[5] top.msk_top.u_dem.u_f2.car_cos[4] top.msk_top.u_dem.u_f2.car_cos[3] top.msk_top.u_dem.u_f2.car_cos[2] top.msk_top.u_dem.u_f2.car_cos[1] top.msk_top.u_dem.u_f2.car_cos[0]
+@20000
+-
+-
+@10420
+#{top.msk_top.u_dem.u_f2.rx_sin[23:0]} top.msk_top.u_dem.u_f2.rx_sin[23] top.msk_top.u_dem.u_f2.rx_sin[22] top.msk_top.u_dem.u_f2.rx_sin[21] top.msk_top.u_dem.u_f2.rx_sin[20] top.msk_top.u_dem.u_f2.rx_sin[19] top.msk_top.u_dem.u_f2.rx_sin[18] top.msk_top.u_dem.u_f2.rx_sin[17] top.msk_top.u_dem.u_f2.rx_sin[16] top.msk_top.u_dem.u_f2.rx_sin[15] top.msk_top.u_dem.u_f2.rx_sin[14] top.msk_top.u_dem.u_f2.rx_sin[13] top.msk_top.u_dem.u_f2.rx_sin[12] top.msk_top.u_dem.u_f2.rx_sin[11] top.msk_top.u_dem.u_f2.rx_sin[10] top.msk_top.u_dem.u_f2.rx_sin[9] top.msk_top.u_dem.u_f2.rx_sin[8] top.msk_top.u_dem.u_f2.rx_sin[7] top.msk_top.u_dem.u_f2.rx_sin[6] top.msk_top.u_dem.u_f2.rx_sin[5] top.msk_top.u_dem.u_f2.rx_sin[4] top.msk_top.u_dem.u_f2.rx_sin[3] top.msk_top.u_dem.u_f2.rx_sin[2] top.msk_top.u_dem.u_f2.rx_sin[1] top.msk_top.u_dem.u_f2.rx_sin[0]
+@20000
+-
+-
+-
+@420
+#{top.msk_top.u_dem.u_f2.rx_sin_acc[31:0]} top.msk_top.u_dem.u_f2.rx_sin_acc[31] top.msk_top.u_dem.u_f2.rx_sin_acc[30] top.msk_top.u_dem.u_f2.rx_sin_acc[29] top.msk_top.u_dem.u_f2.rx_sin_acc[28] top.msk_top.u_dem.u_f2.rx_sin_acc[27] top.msk_top.u_dem.u_f2.rx_sin_acc[26] top.msk_top.u_dem.u_f2.rx_sin_acc[25] top.msk_top.u_dem.u_f2.rx_sin_acc[24] top.msk_top.u_dem.u_f2.rx_sin_acc[23] top.msk_top.u_dem.u_f2.rx_sin_acc[22] top.msk_top.u_dem.u_f2.rx_sin_acc[21] top.msk_top.u_dem.u_f2.rx_sin_acc[20] top.msk_top.u_dem.u_f2.rx_sin_acc[19] top.msk_top.u_dem.u_f2.rx_sin_acc[18] top.msk_top.u_dem.u_f2.rx_sin_acc[17] top.msk_top.u_dem.u_f2.rx_sin_acc[16] top.msk_top.u_dem.u_f2.rx_sin_acc[15] top.msk_top.u_dem.u_f2.rx_sin_acc[14] top.msk_top.u_dem.u_f2.rx_sin_acc[13] top.msk_top.u_dem.u_f2.rx_sin_acc[12] top.msk_top.u_dem.u_f2.rx_sin_acc[11] top.msk_top.u_dem.u_f2.rx_sin_acc[10] top.msk_top.u_dem.u_f2.rx_sin_acc[9] top.msk_top.u_dem.u_f2.rx_sin_acc[8] top.msk_top.u_dem.u_f2.rx_sin_acc[7] top.msk_top.u_dem.u_f2.rx_sin_acc[6] top.msk_top.u_dem.u_f2.rx_sin_acc[5] top.msk_top.u_dem.u_f2.rx_sin_acc[4] top.msk_top.u_dem.u_f2.rx_sin_acc[3] top.msk_top.u_dem.u_f2.rx_sin_acc[2] top.msk_top.u_dem.u_f2.rx_sin_acc[1] top.msk_top.u_dem.u_f2.rx_sin_acc[0]
+#{top.msk_top.u_dem.u_f2.rx_sin_dump[31:0]} top.msk_top.u_dem.u_f2.rx_sin_dump[31] top.msk_top.u_dem.u_f2.rx_sin_dump[30] top.msk_top.u_dem.u_f2.rx_sin_dump[29] top.msk_top.u_dem.u_f2.rx_sin_dump[28] top.msk_top.u_dem.u_f2.rx_sin_dump[27] top.msk_top.u_dem.u_f2.rx_sin_dump[26] top.msk_top.u_dem.u_f2.rx_sin_dump[25] top.msk_top.u_dem.u_f2.rx_sin_dump[24] top.msk_top.u_dem.u_f2.rx_sin_dump[23] top.msk_top.u_dem.u_f2.rx_sin_dump[22] top.msk_top.u_dem.u_f2.rx_sin_dump[21] top.msk_top.u_dem.u_f2.rx_sin_dump[20] top.msk_top.u_dem.u_f2.rx_sin_dump[19] top.msk_top.u_dem.u_f2.rx_sin_dump[18] top.msk_top.u_dem.u_f2.rx_sin_dump[17] top.msk_top.u_dem.u_f2.rx_sin_dump[16] top.msk_top.u_dem.u_f2.rx_sin_dump[15] top.msk_top.u_dem.u_f2.rx_sin_dump[14] top.msk_top.u_dem.u_f2.rx_sin_dump[13] top.msk_top.u_dem.u_f2.rx_sin_dump[12] top.msk_top.u_dem.u_f2.rx_sin_dump[11] top.msk_top.u_dem.u_f2.rx_sin_dump[10] top.msk_top.u_dem.u_f2.rx_sin_dump[9] top.msk_top.u_dem.u_f2.rx_sin_dump[8] top.msk_top.u_dem.u_f2.rx_sin_dump[7] top.msk_top.u_dem.u_f2.rx_sin_dump[6] top.msk_top.u_dem.u_f2.rx_sin_dump[5] top.msk_top.u_dem.u_f2.rx_sin_dump[4] top.msk_top.u_dem.u_f2.rx_sin_dump[3] top.msk_top.u_dem.u_f2.rx_sin_dump[2] top.msk_top.u_dem.u_f2.rx_sin_dump[1] top.msk_top.u_dem.u_f2.rx_sin_dump[0]
+#{top.msk_top.u_dem.u_f2.rx_sin_t[31:0]} top.msk_top.u_dem.u_f2.rx_sin_t[31] top.msk_top.u_dem.u_f2.rx_sin_t[30] top.msk_top.u_dem.u_f2.rx_sin_t[29] top.msk_top.u_dem.u_f2.rx_sin_t[28] top.msk_top.u_dem.u_f2.rx_sin_t[27] top.msk_top.u_dem.u_f2.rx_sin_t[26] top.msk_top.u_dem.u_f2.rx_sin_t[25] top.msk_top.u_dem.u_f2.rx_sin_t[24] top.msk_top.u_dem.u_f2.rx_sin_t[23] top.msk_top.u_dem.u_f2.rx_sin_t[22] top.msk_top.u_dem.u_f2.rx_sin_t[21] top.msk_top.u_dem.u_f2.rx_sin_t[20] top.msk_top.u_dem.u_f2.rx_sin_t[19] top.msk_top.u_dem.u_f2.rx_sin_t[18] top.msk_top.u_dem.u_f2.rx_sin_t[17] top.msk_top.u_dem.u_f2.rx_sin_t[16] top.msk_top.u_dem.u_f2.rx_sin_t[15] top.msk_top.u_dem.u_f2.rx_sin_t[14] top.msk_top.u_dem.u_f2.rx_sin_t[13] top.msk_top.u_dem.u_f2.rx_sin_t[12] top.msk_top.u_dem.u_f2.rx_sin_t[11] top.msk_top.u_dem.u_f2.rx_sin_t[10] top.msk_top.u_dem.u_f2.rx_sin_t[9] top.msk_top.u_dem.u_f2.rx_sin_t[8] top.msk_top.u_dem.u_f2.rx_sin_t[7] top.msk_top.u_dem.u_f2.rx_sin_t[6] top.msk_top.u_dem.u_f2.rx_sin_t[5] top.msk_top.u_dem.u_f2.rx_sin_t[4] top.msk_top.u_dem.u_f2.rx_sin_t[3] top.msk_top.u_dem.u_f2.rx_sin_t[2] top.msk_top.u_dem.u_f2.rx_sin_t[1] top.msk_top.u_dem.u_f2.rx_sin_t[0]
+@28
+top.msk_top.u_dem.u_f2.rx_cos_slice
+@420
+#{top.msk_top.u_dem.u_f2.rx_error[31:0]} top.msk_top.u_dem.u_f2.rx_error[31] top.msk_top.u_dem.u_f2.rx_error[30] top.msk_top.u_dem.u_f2.rx_error[29] top.msk_top.u_dem.u_f2.rx_error[28] top.msk_top.u_dem.u_f2.rx_error[27] top.msk_top.u_dem.u_f2.rx_error[26] top.msk_top.u_dem.u_f2.rx_error[25] top.msk_top.u_dem.u_f2.rx_error[24] top.msk_top.u_dem.u_f2.rx_error[23] top.msk_top.u_dem.u_f2.rx_error[22] top.msk_top.u_dem.u_f2.rx_error[21] top.msk_top.u_dem.u_f2.rx_error[20] top.msk_top.u_dem.u_f2.rx_error[19] top.msk_top.u_dem.u_f2.rx_error[18] top.msk_top.u_dem.u_f2.rx_error[17] top.msk_top.u_dem.u_f2.rx_error[16] top.msk_top.u_dem.u_f2.rx_error[15] top.msk_top.u_dem.u_f2.rx_error[14] top.msk_top.u_dem.u_f2.rx_error[13] top.msk_top.u_dem.u_f2.rx_error[12] top.msk_top.u_dem.u_f2.rx_error[11] top.msk_top.u_dem.u_f2.rx_error[10] top.msk_top.u_dem.u_f2.rx_error[9] top.msk_top.u_dem.u_f2.rx_error[8] top.msk_top.u_dem.u_f2.rx_error[7] top.msk_top.u_dem.u_f2.rx_error[6] top.msk_top.u_dem.u_f2.rx_error[5] top.msk_top.u_dem.u_f2.rx_error[4] top.msk_top.u_dem.u_f2.rx_error[3] top.msk_top.u_dem.u_f2.rx_error[2] top.msk_top.u_dem.u_f2.rx_error[1] top.msk_top.u_dem.u_f2.rx_error[0]
+#{top.msk_top.u_dem.u_f2.rx_error_w[15:0]} top.msk_top.u_dem.u_f2.rx_error_w[15] top.msk_top.u_dem.u_f2.rx_error_w[14] top.msk_top.u_dem.u_f2.rx_error_w[13] top.msk_top.u_dem.u_f2.rx_error_w[12] top.msk_top.u_dem.u_f2.rx_error_w[11] top.msk_top.u_dem.u_f2.rx_error_w[10] top.msk_top.u_dem.u_f2.rx_error_w[9] top.msk_top.u_dem.u_f2.rx_error_w[8] top.msk_top.u_dem.u_f2.rx_error_w[7] top.msk_top.u_dem.u_f2.rx_error_w[6] top.msk_top.u_dem.u_f2.rx_error_w[5] top.msk_top.u_dem.u_f2.rx_error_w[4] top.msk_top.u_dem.u_f2.rx_error_w[3] top.msk_top.u_dem.u_f2.rx_error_w[2] top.msk_top.u_dem.u_f2.rx_error_w[1] top.msk_top.u_dem.u_f2.rx_error_w[0]
+#{top.msk_top.u_dem.u_f2.u_loopfilter.lpf_err[15:0]} top.msk_top.u_dem.u_f2.u_loopfilter.lpf_err[15] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_err[14] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_err[13] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_err[12] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_err[11] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_err[10] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_err[9] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_err[8] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_err[7] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_err[6] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_err[5] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_err[4] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_err[3] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_err[2] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_err[1] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_err[0]
+#{top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[31:0]} top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[31] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[30] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[29] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[28] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[27] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[26] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[25] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[24] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[23] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[22] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[21] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[20] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[19] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[18] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[17] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[16] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[15] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[14] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[13] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[12] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[11] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[10] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[9] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[8] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[7] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[6] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[5] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[4] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[3] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[2] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[1] top.msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[0]
+#{top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[31:0]} top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[31] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[30] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[29] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[28] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[27] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[26] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[25] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[24] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[23] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[22] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[21] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[20] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[19] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[18] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[17] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[16] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[15] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[14] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[13] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[12] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[11] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[10] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[9] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[8] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[7] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[6] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[5] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[4] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[3] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[2] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[1] top.msk_top.u_dem.u_f2.u_carrier_nco.freq_adjust_q[0]
+#{top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[31:0]} top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[31] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[30] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[29] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[28] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[27] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[26] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[25] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[24] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[23] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[22] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[21] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[20] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[19] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[18] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[17] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[16] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[15] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[14] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[13] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[12] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[11] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[10] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[9] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[8] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[7] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[6] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[5] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[4] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[3] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[2] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[1] top.msk_top.u_dem.u_f2.u_carrier_nco.phase_delta_adjusted[0]
+@10420
+#{top.msk_top.u_dem.u_f2.rx_cos[23:0]} top.msk_top.u_dem.u_f2.rx_cos[23] top.msk_top.u_dem.u_f2.rx_cos[22] top.msk_top.u_dem.u_f2.rx_cos[21] top.msk_top.u_dem.u_f2.rx_cos[20] top.msk_top.u_dem.u_f2.rx_cos[19] top.msk_top.u_dem.u_f2.rx_cos[18] top.msk_top.u_dem.u_f2.rx_cos[17] top.msk_top.u_dem.u_f2.rx_cos[16] top.msk_top.u_dem.u_f2.rx_cos[15] top.msk_top.u_dem.u_f2.rx_cos[14] top.msk_top.u_dem.u_f2.rx_cos[13] top.msk_top.u_dem.u_f2.rx_cos[12] top.msk_top.u_dem.u_f2.rx_cos[11] top.msk_top.u_dem.u_f2.rx_cos[10] top.msk_top.u_dem.u_f2.rx_cos[9] top.msk_top.u_dem.u_f2.rx_cos[8] top.msk_top.u_dem.u_f2.rx_cos[7] top.msk_top.u_dem.u_f2.rx_cos[6] top.msk_top.u_dem.u_f2.rx_cos[5] top.msk_top.u_dem.u_f2.rx_cos[4] top.msk_top.u_dem.u_f2.rx_cos[3] top.msk_top.u_dem.u_f2.rx_cos[2] top.msk_top.u_dem.u_f2.rx_cos[1] top.msk_top.u_dem.u_f2.rx_cos[0]
+@20000
+-
+-
+-
+@420
+#{top.msk_top.u_dem.u_f2.rx_cos_acc[31:0]} top.msk_top.u_dem.u_f2.rx_cos_acc[31] top.msk_top.u_dem.u_f2.rx_cos_acc[30] top.msk_top.u_dem.u_f2.rx_cos_acc[29] top.msk_top.u_dem.u_f2.rx_cos_acc[28] top.msk_top.u_dem.u_f2.rx_cos_acc[27] top.msk_top.u_dem.u_f2.rx_cos_acc[26] top.msk_top.u_dem.u_f2.rx_cos_acc[25] top.msk_top.u_dem.u_f2.rx_cos_acc[24] top.msk_top.u_dem.u_f2.rx_cos_acc[23] top.msk_top.u_dem.u_f2.rx_cos_acc[22] top.msk_top.u_dem.u_f2.rx_cos_acc[21] top.msk_top.u_dem.u_f2.rx_cos_acc[20] top.msk_top.u_dem.u_f2.rx_cos_acc[19] top.msk_top.u_dem.u_f2.rx_cos_acc[18] top.msk_top.u_dem.u_f2.rx_cos_acc[17] top.msk_top.u_dem.u_f2.rx_cos_acc[16] top.msk_top.u_dem.u_f2.rx_cos_acc[15] top.msk_top.u_dem.u_f2.rx_cos_acc[14] top.msk_top.u_dem.u_f2.rx_cos_acc[13] top.msk_top.u_dem.u_f2.rx_cos_acc[12] top.msk_top.u_dem.u_f2.rx_cos_acc[11] top.msk_top.u_dem.u_f2.rx_cos_acc[10] top.msk_top.u_dem.u_f2.rx_cos_acc[9] top.msk_top.u_dem.u_f2.rx_cos_acc[8] top.msk_top.u_dem.u_f2.rx_cos_acc[7] top.msk_top.u_dem.u_f2.rx_cos_acc[6] top.msk_top.u_dem.u_f2.rx_cos_acc[5] top.msk_top.u_dem.u_f2.rx_cos_acc[4] top.msk_top.u_dem.u_f2.rx_cos_acc[3] top.msk_top.u_dem.u_f2.rx_cos_acc[2] top.msk_top.u_dem.u_f2.rx_cos_acc[1] top.msk_top.u_dem.u_f2.rx_cos_acc[0]
+#{top.msk_top.u_dem.u_f2.rx_cos_dump[31:0]} top.msk_top.u_dem.u_f2.rx_cos_dump[31] top.msk_top.u_dem.u_f2.rx_cos_dump[30] top.msk_top.u_dem.u_f2.rx_cos_dump[29] top.msk_top.u_dem.u_f2.rx_cos_dump[28] top.msk_top.u_dem.u_f2.rx_cos_dump[27] top.msk_top.u_dem.u_f2.rx_cos_dump[26] top.msk_top.u_dem.u_f2.rx_cos_dump[25] top.msk_top.u_dem.u_f2.rx_cos_dump[24] top.msk_top.u_dem.u_f2.rx_cos_dump[23] top.msk_top.u_dem.u_f2.rx_cos_dump[22] top.msk_top.u_dem.u_f2.rx_cos_dump[21] top.msk_top.u_dem.u_f2.rx_cos_dump[20] top.msk_top.u_dem.u_f2.rx_cos_dump[19] top.msk_top.u_dem.u_f2.rx_cos_dump[18] top.msk_top.u_dem.u_f2.rx_cos_dump[17] top.msk_top.u_dem.u_f2.rx_cos_dump[16] top.msk_top.u_dem.u_f2.rx_cos_dump[15] top.msk_top.u_dem.u_f2.rx_cos_dump[14] top.msk_top.u_dem.u_f2.rx_cos_dump[13] top.msk_top.u_dem.u_f2.rx_cos_dump[12] top.msk_top.u_dem.u_f2.rx_cos_dump[11] top.msk_top.u_dem.u_f2.rx_cos_dump[10] top.msk_top.u_dem.u_f2.rx_cos_dump[9] top.msk_top.u_dem.u_f2.rx_cos_dump[8] top.msk_top.u_dem.u_f2.rx_cos_dump[7] top.msk_top.u_dem.u_f2.rx_cos_dump[6] top.msk_top.u_dem.u_f2.rx_cos_dump[5] top.msk_top.u_dem.u_f2.rx_cos_dump[4] top.msk_top.u_dem.u_f2.rx_cos_dump[3] top.msk_top.u_dem.u_f2.rx_cos_dump[2] top.msk_top.u_dem.u_f2.rx_cos_dump[1] top.msk_top.u_dem.u_f2.rx_cos_dump[0]
+#{top.msk_top.u_dem.u_f2.rx_cos_t[31:0]} top.msk_top.u_dem.u_f2.rx_cos_t[31] top.msk_top.u_dem.u_f2.rx_cos_t[30] top.msk_top.u_dem.u_f2.rx_cos_t[29] top.msk_top.u_dem.u_f2.rx_cos_t[28] top.msk_top.u_dem.u_f2.rx_cos_t[27] top.msk_top.u_dem.u_f2.rx_cos_t[26] top.msk_top.u_dem.u_f2.rx_cos_t[25] top.msk_top.u_dem.u_f2.rx_cos_t[24] top.msk_top.u_dem.u_f2.rx_cos_t[23] top.msk_top.u_dem.u_f2.rx_cos_t[22] top.msk_top.u_dem.u_f2.rx_cos_t[21] top.msk_top.u_dem.u_f2.rx_cos_t[20] top.msk_top.u_dem.u_f2.rx_cos_t[19] top.msk_top.u_dem.u_f2.rx_cos_t[18] top.msk_top.u_dem.u_f2.rx_cos_t[17] top.msk_top.u_dem.u_f2.rx_cos_t[16] top.msk_top.u_dem.u_f2.rx_cos_t[15] top.msk_top.u_dem.u_f2.rx_cos_t[14] top.msk_top.u_dem.u_f2.rx_cos_t[13] top.msk_top.u_dem.u_f2.rx_cos_t[12] top.msk_top.u_dem.u_f2.rx_cos_t[11] top.msk_top.u_dem.u_f2.rx_cos_t[10] top.msk_top.u_dem.u_f2.rx_cos_t[9] top.msk_top.u_dem.u_f2.rx_cos_t[8] top.msk_top.u_dem.u_f2.rx_cos_t[7] top.msk_top.u_dem.u_f2.rx_cos_t[6] top.msk_top.u_dem.u_f2.rx_cos_t[5] top.msk_top.u_dem.u_f2.rx_cos_t[4] top.msk_top.u_dem.u_f2.rx_cos_t[3] top.msk_top.u_dem.u_f2.rx_cos_t[2] top.msk_top.u_dem.u_f2.rx_cos_t[1] top.msk_top.u_dem.u_f2.rx_cos_t[0]
+@1401200
+-F2 Costas Loop
+@800200
+-Data Decode
+@28
+top.msk_top.u_dem.u_f1.tclk
+@c00022
+#{top.msk_top.u_dem.tclk_dly[0:3]} top.msk_top.u_dem.tclk_dly[0] top.msk_top.u_dem.tclk_dly[1] top.msk_top.u_dem.tclk_dly[2] top.msk_top.u_dem.tclk_dly[3]
+@28
+top.msk_top.u_dem.tclk_dly[0]
+top.msk_top.u_dem.tclk_dly[1]
+top.msk_top.u_dem.tclk_dly[2]
+top.msk_top.u_dem.tclk_dly[3]
+@1401200
+-group_end
+@28
+top.msk_top.u_dem.cclk
+@420
+#{top.msk_top.u_dem.data_f1[15:0]} top.msk_top.u_dem.data_f1[15] top.msk_top.u_dem.data_f1[14] top.msk_top.u_dem.data_f1[13] top.msk_top.u_dem.data_f1[12] top.msk_top.u_dem.data_f1[11] top.msk_top.u_dem.data_f1[10] top.msk_top.u_dem.data_f1[9] top.msk_top.u_dem.data_f1[8] top.msk_top.u_dem.data_f1[7] top.msk_top.u_dem.data_f1[6] top.msk_top.u_dem.data_f1[5] top.msk_top.u_dem.data_f1[4] top.msk_top.u_dem.data_f1[3] top.msk_top.u_dem.data_f1[2] top.msk_top.u_dem.data_f1[1] top.msk_top.u_dem.data_f1[0]
+#{top.msk_top.u_dem.data_f1_t[15:0]} top.msk_top.u_dem.data_f1_t[15] top.msk_top.u_dem.data_f1_t[14] top.msk_top.u_dem.data_f1_t[13] top.msk_top.u_dem.data_f1_t[12] top.msk_top.u_dem.data_f1_t[11] top.msk_top.u_dem.data_f1_t[10] top.msk_top.u_dem.data_f1_t[9] top.msk_top.u_dem.data_f1_t[8] top.msk_top.u_dem.data_f1_t[7] top.msk_top.u_dem.data_f1_t[6] top.msk_top.u_dem.data_f1_t[5] top.msk_top.u_dem.data_f1_t[4] top.msk_top.u_dem.data_f1_t[3] top.msk_top.u_dem.data_f1_t[2] top.msk_top.u_dem.data_f1_t[1] top.msk_top.u_dem.data_f1_t[0]
+#{top.msk_top.u_dem.data_f1_sum[15:0]} top.msk_top.u_dem.data_f1_sum[15] top.msk_top.u_dem.data_f1_sum[14] top.msk_top.u_dem.data_f1_sum[13] top.msk_top.u_dem.data_f1_sum[12] top.msk_top.u_dem.data_f1_sum[11] top.msk_top.u_dem.data_f1_sum[10] top.msk_top.u_dem.data_f1_sum[9] top.msk_top.u_dem.data_f1_sum[8] top.msk_top.u_dem.data_f1_sum[7] top.msk_top.u_dem.data_f1_sum[6] top.msk_top.u_dem.data_f1_sum[5] top.msk_top.u_dem.data_f1_sum[4] top.msk_top.u_dem.data_f1_sum[3] top.msk_top.u_dem.data_f1_sum[2] top.msk_top.u_dem.data_f1_sum[1] top.msk_top.u_dem.data_f1_sum[0]
+#{top.msk_top.u_dem.data_f2[15:0]} top.msk_top.u_dem.data_f2[15] top.msk_top.u_dem.data_f2[14] top.msk_top.u_dem.data_f2[13] top.msk_top.u_dem.data_f2[12] top.msk_top.u_dem.data_f2[11] top.msk_top.u_dem.data_f2[10] top.msk_top.u_dem.data_f2[9] top.msk_top.u_dem.data_f2[8] top.msk_top.u_dem.data_f2[7] top.msk_top.u_dem.data_f2[6] top.msk_top.u_dem.data_f2[5] top.msk_top.u_dem.data_f2[4] top.msk_top.u_dem.data_f2[3] top.msk_top.u_dem.data_f2[2] top.msk_top.u_dem.data_f2[1] top.msk_top.u_dem.data_f2[0]
+#{top.msk_top.u_dem.data_f2_t[15:0]} top.msk_top.u_dem.data_f2_t[15] top.msk_top.u_dem.data_f2_t[14] top.msk_top.u_dem.data_f2_t[13] top.msk_top.u_dem.data_f2_t[12] top.msk_top.u_dem.data_f2_t[11] top.msk_top.u_dem.data_f2_t[10] top.msk_top.u_dem.data_f2_t[9] top.msk_top.u_dem.data_f2_t[8] top.msk_top.u_dem.data_f2_t[7] top.msk_top.u_dem.data_f2_t[6] top.msk_top.u_dem.data_f2_t[5] top.msk_top.u_dem.data_f2_t[4] top.msk_top.u_dem.data_f2_t[3] top.msk_top.u_dem.data_f2_t[2] top.msk_top.u_dem.data_f2_t[1] top.msk_top.u_dem.data_f2_t[0]
+@40000420
+[fpshift_count] 0
+#{top.msk_top.u_dem.data_f2_sum[15:0]} top.msk_top.u_dem.data_f2_sum[15] top.msk_top.u_dem.data_f2_sum[14] top.msk_top.u_dem.data_f2_sum[13] top.msk_top.u_dem.data_f2_sum[12] top.msk_top.u_dem.data_f2_sum[11] top.msk_top.u_dem.data_f2_sum[10] top.msk_top.u_dem.data_f2_sum[9] top.msk_top.u_dem.data_f2_sum[8] top.msk_top.u_dem.data_f2_sum[7] top.msk_top.u_dem.data_f2_sum[6] top.msk_top.u_dem.data_f2_sum[5] top.msk_top.u_dem.data_f2_sum[4] top.msk_top.u_dem.data_f2_sum[3] top.msk_top.u_dem.data_f2_sum[2] top.msk_top.u_dem.data_f2_sum[1] top.msk_top.u_dem.data_f2_sum[0]
+@420
+#{top.msk_top.u_dem.data_sum[15:0]} top.msk_top.u_dem.data_sum[15] top.msk_top.u_dem.data_sum[14] top.msk_top.u_dem.data_sum[13] top.msk_top.u_dem.data_sum[12] top.msk_top.u_dem.data_sum[11] top.msk_top.u_dem.data_sum[10] top.msk_top.u_dem.data_sum[9] top.msk_top.u_dem.data_sum[8] top.msk_top.u_dem.data_sum[7] top.msk_top.u_dem.data_sum[6] top.msk_top.u_dem.data_sum[5] top.msk_top.u_dem.data_sum[4] top.msk_top.u_dem.data_sum[3] top.msk_top.u_dem.data_sum[2] top.msk_top.u_dem.data_sum[1] top.msk_top.u_dem.data_sum[0]
+@28
+#{top.msk_top.tx_data[1:0]} top.msk_top.tx_data[1] top.msk_top.tx_data[0]
+top.msk_top.u_dem.data_bit
+top.msk_top.rx_valid
+top.msk_top.rx_data
+@1000200
+-Data Decode
+@c00200
+-Clock Recovery
+@10420
+#{top.msk_top.u_dem.rx_sin_f2[11:0]} top.msk_top.u_dem.rx_sin_f2[11] top.msk_top.u_dem.rx_sin_f2[10] top.msk_top.u_dem.rx_sin_f2[9] top.msk_top.u_dem.rx_sin_f2[8] top.msk_top.u_dem.rx_sin_f2[7] top.msk_top.u_dem.rx_sin_f2[6] top.msk_top.u_dem.rx_sin_f2[5] top.msk_top.u_dem.rx_sin_f2[4] top.msk_top.u_dem.rx_sin_f2[3] top.msk_top.u_dem.rx_sin_f2[2] top.msk_top.u_dem.rx_sin_f2[1] top.msk_top.u_dem.rx_sin_f2[0]
+@20000
+-
+@10420
+#{top.msk_top.u_dem.rx_sin_f1[11:0]} top.msk_top.u_dem.rx_sin_f1[11] top.msk_top.u_dem.rx_sin_f1[10] top.msk_top.u_dem.rx_sin_f1[9] top.msk_top.u_dem.rx_sin_f1[8] top.msk_top.u_dem.rx_sin_f1[7] top.msk_top.u_dem.rx_sin_f1[6] top.msk_top.u_dem.rx_sin_f1[5] top.msk_top.u_dem.rx_sin_f1[4] top.msk_top.u_dem.rx_sin_f1[3] top.msk_top.u_dem.rx_sin_f1[2] top.msk_top.u_dem.rx_sin_f1[1] top.msk_top.u_dem.rx_sin_f1[0]
+@20000
+-
+@10420
+#{top.msk_top.u_dem.rx_cos_f2[11:0]} top.msk_top.u_dem.rx_cos_f2[11] top.msk_top.u_dem.rx_cos_f2[10] top.msk_top.u_dem.rx_cos_f2[9] top.msk_top.u_dem.rx_cos_f2[8] top.msk_top.u_dem.rx_cos_f2[7] top.msk_top.u_dem.rx_cos_f2[6] top.msk_top.u_dem.rx_cos_f2[5] top.msk_top.u_dem.rx_cos_f2[4] top.msk_top.u_dem.rx_cos_f2[3] top.msk_top.u_dem.rx_cos_f2[2] top.msk_top.u_dem.rx_cos_f2[1] top.msk_top.u_dem.rx_cos_f2[0]
+@20000
+-
+@10420
+#{top.msk_top.u_dem.rx_cos_f1[11:0]} top.msk_top.u_dem.rx_cos_f1[11] top.msk_top.u_dem.rx_cos_f1[10] top.msk_top.u_dem.rx_cos_f1[9] top.msk_top.u_dem.rx_cos_f1[8] top.msk_top.u_dem.rx_cos_f1[7] top.msk_top.u_dem.rx_cos_f1[6] top.msk_top.u_dem.rx_cos_f1[5] top.msk_top.u_dem.rx_cos_f1[4] top.msk_top.u_dem.rx_cos_f1[3] top.msk_top.u_dem.rx_cos_f1[2] top.msk_top.u_dem.rx_cos_f1[1] top.msk_top.u_dem.rx_cos_f1[0]
+@20000
+-
+@10420
+#{top.msk_top.u_dem.rx_cos_f1_sin_f2[23:0]} top.msk_top.u_dem.rx_cos_f1_sin_f2[23] top.msk_top.u_dem.rx_cos_f1_sin_f2[22] top.msk_top.u_dem.rx_cos_f1_sin_f2[21] top.msk_top.u_dem.rx_cos_f1_sin_f2[20] top.msk_top.u_dem.rx_cos_f1_sin_f2[19] top.msk_top.u_dem.rx_cos_f1_sin_f2[18] top.msk_top.u_dem.rx_cos_f1_sin_f2[17] top.msk_top.u_dem.rx_cos_f1_sin_f2[16] top.msk_top.u_dem.rx_cos_f1_sin_f2[15] top.msk_top.u_dem.rx_cos_f1_sin_f2[14] top.msk_top.u_dem.rx_cos_f1_sin_f2[13] top.msk_top.u_dem.rx_cos_f1_sin_f2[12] top.msk_top.u_dem.rx_cos_f1_sin_f2[11] top.msk_top.u_dem.rx_cos_f1_sin_f2[10] top.msk_top.u_dem.rx_cos_f1_sin_f2[9] top.msk_top.u_dem.rx_cos_f1_sin_f2[8] top.msk_top.u_dem.rx_cos_f1_sin_f2[7] top.msk_top.u_dem.rx_cos_f1_sin_f2[6] top.msk_top.u_dem.rx_cos_f1_sin_f2[5] top.msk_top.u_dem.rx_cos_f1_sin_f2[4] top.msk_top.u_dem.rx_cos_f1_sin_f2[3] top.msk_top.u_dem.rx_cos_f1_sin_f2[2] top.msk_top.u_dem.rx_cos_f1_sin_f2[1] top.msk_top.u_dem.rx_cos_f1_sin_f2[0]
+@20000
+-
+@10420
+#{top.msk_top.u_dem.rx_cos_f2_sin_f1[23:0]} top.msk_top.u_dem.rx_cos_f2_sin_f1[23] top.msk_top.u_dem.rx_cos_f2_sin_f1[22] top.msk_top.u_dem.rx_cos_f2_sin_f1[21] top.msk_top.u_dem.rx_cos_f2_sin_f1[20] top.msk_top.u_dem.rx_cos_f2_sin_f1[19] top.msk_top.u_dem.rx_cos_f2_sin_f1[18] top.msk_top.u_dem.rx_cos_f2_sin_f1[17] top.msk_top.u_dem.rx_cos_f2_sin_f1[16] top.msk_top.u_dem.rx_cos_f2_sin_f1[15] top.msk_top.u_dem.rx_cos_f2_sin_f1[14] top.msk_top.u_dem.rx_cos_f2_sin_f1[13] top.msk_top.u_dem.rx_cos_f2_sin_f1[12] top.msk_top.u_dem.rx_cos_f2_sin_f1[11] top.msk_top.u_dem.rx_cos_f2_sin_f1[10] top.msk_top.u_dem.rx_cos_f2_sin_f1[9] top.msk_top.u_dem.rx_cos_f2_sin_f1[8] top.msk_top.u_dem.rx_cos_f2_sin_f1[7] top.msk_top.u_dem.rx_cos_f2_sin_f1[6] top.msk_top.u_dem.rx_cos_f2_sin_f1[5] top.msk_top.u_dem.rx_cos_f2_sin_f1[4] top.msk_top.u_dem.rx_cos_f2_sin_f1[3] top.msk_top.u_dem.rx_cos_f2_sin_f1[2] top.msk_top.u_dem.rx_cos_f2_sin_f1[1] top.msk_top.u_dem.rx_cos_f2_sin_f1[0]
+@20000
+-
+@10420
+#{top.msk_top.u_dem.dclk_slv[23:0]} top.msk_top.u_dem.dclk_slv[23] top.msk_top.u_dem.dclk_slv[22] top.msk_top.u_dem.dclk_slv[21] top.msk_top.u_dem.dclk_slv[20] top.msk_top.u_dem.dclk_slv[19] top.msk_top.u_dem.dclk_slv[18] top.msk_top.u_dem.dclk_slv[17] top.msk_top.u_dem.dclk_slv[16] top.msk_top.u_dem.dclk_slv[15] top.msk_top.u_dem.dclk_slv[14] top.msk_top.u_dem.dclk_slv[13] top.msk_top.u_dem.dclk_slv[12] top.msk_top.u_dem.dclk_slv[11] top.msk_top.u_dem.dclk_slv[10] top.msk_top.u_dem.dclk_slv[9] top.msk_top.u_dem.dclk_slv[8] top.msk_top.u_dem.dclk_slv[7] top.msk_top.u_dem.dclk_slv[6] top.msk_top.u_dem.dclk_slv[5] top.msk_top.u_dem.dclk_slv[4] top.msk_top.u_dem.dclk_slv[3] top.msk_top.u_dem.dclk_slv[2] top.msk_top.u_dem.dclk_slv[1] top.msk_top.u_dem.dclk_slv[0]
+@20000
+-
+@10420
+#{top.msk_top.u_dem.cclk_slv[23:0]} top.msk_top.u_dem.cclk_slv[23] top.msk_top.u_dem.cclk_slv[22] top.msk_top.u_dem.cclk_slv[21] top.msk_top.u_dem.cclk_slv[20] top.msk_top.u_dem.cclk_slv[19] top.msk_top.u_dem.cclk_slv[18] top.msk_top.u_dem.cclk_slv[17] top.msk_top.u_dem.cclk_slv[16] top.msk_top.u_dem.cclk_slv[15] top.msk_top.u_dem.cclk_slv[14] top.msk_top.u_dem.cclk_slv[13] top.msk_top.u_dem.cclk_slv[12] top.msk_top.u_dem.cclk_slv[11] top.msk_top.u_dem.cclk_slv[10] top.msk_top.u_dem.cclk_slv[9] top.msk_top.u_dem.cclk_slv[8] top.msk_top.u_dem.cclk_slv[7] top.msk_top.u_dem.cclk_slv[6] top.msk_top.u_dem.cclk_slv[5] top.msk_top.u_dem.cclk_slv[4] top.msk_top.u_dem.cclk_slv[3] top.msk_top.u_dem.cclk_slv[2] top.msk_top.u_dem.cclk_slv[1] top.msk_top.u_dem.cclk_slv[0]
+@20000
+-
+@28
+top.msk_top.u_dem.cclk
+top.msk_top.u_dem.dclk
+@1401200
+-Clock Recovery
+@28
+top.msk_top.u_dem.dclk
+[pattern_trace] 1
+[pattern_trace] 0
