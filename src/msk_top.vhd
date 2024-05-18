@@ -84,9 +84,9 @@ BEGIN
 				received_data <= rx_data_int;
 			END IF;
 
-			bit_error <= sent_data XOR received_data;
+			bit_error <= NOT (sent_data XOR received_data);
 
-			ASSERT sent_data = received_data REPORT "Data Mismatch" SEVERITY WARNING;
+			ASSERT sent_data = NOT received_data REPORT "Data Mismatch" SEVERITY WARNING;
 
 		END IF;
 	END PROCESS data_check;
