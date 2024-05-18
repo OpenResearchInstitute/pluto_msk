@@ -29,6 +29,8 @@ ENTITY msk_top IS
 
 		loopback_ena 	: IN  std_logic;
 
+		ptt 			: IN  std_logic;
+
 		tx_req 			: OUT std_logic;
 		tx_data 		: IN  std_logic_vector(1 DOWNTO 0);
 
@@ -103,6 +105,8 @@ BEGIN
 			freq_word_tclk 	=> freq_word_ft,
 			freq_word_f1 	=> freq_word_f1,
 			freq_word_f2	=> freq_word_f2,
+
+			ptt 			=> ptt,
 
 			tx_data 		=> tx_data(0),
 			tx_req 			=> tx_req_int,
