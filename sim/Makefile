@@ -1,7 +1,7 @@
 # Makefile
 
 # defaults
-SIM ?= ghdl
+SIM ?= nvc
 TOPLEVEL_LANG ?= vhdl
 GUI = 1
 SCRIPT_FILE =
@@ -16,7 +16,7 @@ VHDL_SOURCES += $(SRC)/nco.vhd \
 				$(SRC)/msk_demodulator.vhd \
 				$(SRC)/msk_top.vhd \
 				$(SRC)/loop_filter.vhd
-				
+
 # use VHDL_SOURCES for VHDL files
 
 # TOPLEVEL is the name of the toplevel module in your Verilog or VHDL file

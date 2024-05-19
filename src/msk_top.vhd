@@ -57,7 +57,8 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL received_data 	: std_logic;
 	SIGNAL sent_data_pipe 	: std_logic_vector(0 TO 3);
 
-	SIGNAL bit_error 		: std_logic;
+	SIGNAL bit_error_0_phase	: std_logic;
+	SIGNAL bit_error_180_phase	: std_logic;
 
 BEGIN 
 
@@ -84,9 +85,10 @@ BEGIN
 				received_data <= rx_data_int;
 			END IF;
 
-			bit_error <= NOT (sent_data XOR received_data);
+			bit_error_0_phase <= sent_data XOR received_data;
+			bit_error_180_phase <= NOT (sent_data XOR received_data);
 
-			ASSERT sent_data = NOT received_data REPORT "Data Mismatch" SEVERITY WARNING;
+			ASSERT bit_error_0_phase = '0' OR bit_error_180_phase = '0' REPORT "Data Mismatch" SEVERITY WARNING;
 
 		END IF;
 	END PROCESS data_check;
