@@ -12,10 +12,11 @@ SRC = ../src
 VHDL_SOURCES += $(SRC)/nco.vhd \
 				$(SRC)/sin_cos_lut.vhd \
 				$(SRC)/msk_modulator.vhd \
+				$(SRC)/loop_filter.vhd \
 				$(SRC)/costas_loop.vhd \
 				$(SRC)/msk_demodulator.vhd \
-				$(SRC)/msk_top.vhd \
-				$(SRC)/loop_filter.vhd
+				$(SRC)/axi_ctrlif.vhd \
+				$(SRC)/msk_top.vhd
 
 # use VHDL_SOURCES for VHDL files
 
