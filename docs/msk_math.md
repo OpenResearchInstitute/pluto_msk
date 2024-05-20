@@ -136,17 +136,17 @@ we are only interested in the DC value
 as part of the Costas loops the receive samples are also mixed with f1 and f2 at 90 degree phase (sin)
 
 
- cos(2𝝿f1t)*sin(2𝝿f1t)
--cos(2𝝿f1t)*sin(2𝝿f1t)
- cos(2𝝿f2t)*sin(2𝝿f1t)
--cos(2𝝿f2t)*sin(2𝝿f1t)
+ cos(2𝝿f1t)*sin(2𝝿f1t + theta)
+-cos(2𝝿f1t)*sin(2𝝿f1t + theta)
+ cos(2𝝿f2t)*sin(2𝝿f1t + theta)
+-cos(2𝝿f2t)*sin(2𝝿f1t + theta)
 
 
 The four resulting values are
 
-cos(2𝝿f1t)*sin(2𝝿f1t) = 1/2 [ sin(2𝝿f1t + 2𝝿f1t) - sin(2𝝿f1t - 2𝝿f1t) ]
-					  = 1/2 [ sin(4𝝿f1t) - sin(0) ]
-					  = 1/2 sin(4𝝿f1t)
+cos(2𝝿f1t)*sin(2𝝿f1t) = 1/2 [ sin(2𝝿f1t + 2𝝿f1t + theta) - sin(2𝝿f1t - 2𝝿f1t + theta) ]
+					  = 1/2 [ sin(4𝝿f1t + theta) - sin(theta) ]
+					  = 1/2 sin(4𝝿f1t + theta)
 
 
 -cos(2𝝿f1t)*sin(2𝝿f1t) = -1/2 [ sin(2𝝿f1t + 2𝝿f1t) - sin(2𝝿f1t - 2𝝿f1t) ]
