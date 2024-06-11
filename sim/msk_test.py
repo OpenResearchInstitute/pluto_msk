@@ -240,6 +240,116 @@ class msk:
         self.dut._log.info("...tx sample capture - done")
 
 
+class prbs:
+
+    def __init__(self, dut, clk, rx_data, rx_dvalid, width=8, seed=255, prbs=31):
+
+
+        self.dut = dut 
+        self.clk = clk 
+        self.rx_data = rx_data 
+        self.rx_dvalid = rx_dvalid
+
+        self.width = width
+        self.seed = seed 
+
+        self.state_gen = seed
+        self.state_mon = 0
+
+        self.sim_run = False
+
+        self.sync = 4
+        self.data_count = 0
+        self.err_count = 0
+
+        if prbs == 31:
+            self.taps = [31, 28]
+
+
+    async def init_gen(self):
+
+        await RisingEdge(self.clk)
+
+        self.state_gen = self.seed
+
+
+    async def gen(self):
+
+        state = self.state_gen
+
+        for i in range(self.width):
+            bit = ((state >> 31) ^ (state >> 28)) & 1
+            state = ((state << 1) | bit) & ((2**32) -1)
+
+        self.state_gen = state & ((2**32) -1)
+
+        #print("gen: ", hex(state))
+
+        #print("tx_data: ", hex(self.state_gen & 0xFF))
+
+        return (self.state_gen & 0xFF)
+
+
+    async def resync(self):
+
+        self.sync = 4
+        self.data_count = 0
+        self.err_count = 0
+
+
+    async def mon(self, data):
+
+        #print("rx data: ", hex(data))
+
+        if self.sync > 0:
+            self.state_mon = ((self.state_mon << 8) | data) & ((2**32) -1)
+            self.sync -= 1
+            print("sync: ", self.sync)
+            #print("mon sync: ", hex(self.state_mon))
+        else:
+            #print("mon state at start: ", hex(self.state_mon))
+            state = self.state_mon
+            #print("mon: ", hex(state))
+            for i in range(self.width):
+                bit = ((state >> 31) ^ (state >> 28)) & 1
+                #print("bit: ", bit)
+                state = ((state << 1) | bit) & ((2**32) -1)
+                #print("update state: ", hex(state))
+
+            self.state_mon = state
+            self.data_count += self.width
+
+            #print("mon: ", hex(state))
+
+            errored_bits = (self.state_mon & 0xFF) ^ data
+
+            if errored_bits > 0:
+                for i in range(self.width):
+                    self.err_count += ((errored_bits >> i) & 1)
+                print("error count: ", self.err_count, "; data count: ", self.data_count, "; BER = ", 100*round(self.err_count/self.data_count, 3), "%")
+
+        #assert errored_bits == 0, "PRBS: Bit-error(s)" 
+
+
+    async def check_data(self):
+
+        self.dut._log.info("prbs mon - waiting for start...")
+
+        while self.sim_run == False:
+            await RisingEdge(self.clk)
+
+        self.dut._log.info("prbs mon - starting...")
+
+        while self.sim_run:
+            if self.rx_dvalid.value == 1:
+                rx_data = self.rx_data.value.to_unsigned()
+                await self.mon(rx_data)
+            await RisingEdge(self.clk)
+
+        self.dut._log.info("...prbs mon - done")
+
+
+
 @cocotb.test()
 async def msk_test_1(dut):
 
@@ -248,7 +358,7 @@ async def msk_test_1(dut):
 
     bitrate = 1e6
     freq_if = 10e6
-    sample_rate = 3*61.46e6
+    sample_rate = 61.46e6
     sample_per = int(1/sample_rate * 1e9)
 
     await cocotb.start(Clock(dut.clk, sample_per, units="ns").start())
@@ -266,7 +376,7 @@ async def msk_test_1(dut):
     await axi.init()
     await axis.init()
 
-    await axi.write( 0, 1)                                         # tun on init
+    await axi.write( 0, 1)                                         # assert on init
 
     await axi.write( 8, 1)                                         # loopback
     await axi.write(12, int(bitrate / sample_rate * 2.0**32))      # bit rate frequency word
@@ -274,12 +384,17 @@ async def msk_test_1(dut):
     await axi.write(20, int(f2 / sample_rate * 2.0**32))           # F2 frequency word
     await axi.write(24, (50 << 16) + 20)                             # p-gain / i-gain
     await axi.write(28, (2 << 16))                                   # low-pass filter alpha
+    await axi.write(32, 8)
+    await axi.write(36, 8)
 
     await Timer(100, units="ns")
 
     await RisingEdge(dut.clk)
 
     await axi.write(0, 0)                                         # turn off init
+    dut.tx_enable.value = 1
+    dut.rx_enable.value = 1
+    dut.rx_svalid.value = 1
 
     await RisingEdge(dut.clk)
 
@@ -287,22 +402,43 @@ async def msk_test_1(dut):
     await axi.write(4, 1)
 
     msksim = msk(dut, dut.clk, dut.tx_samples)
+    pn = prbs(dut, dut.clk, dut.rx_data, dut.rx_dvalid)
 
     await cocotb.start(msksim.tx_sample_capture())
+    await cocotb.start(pn.check_data())
+
 
     sim_time = get_sim_time("us")
     sim_start = sim_time
+    sim_time_d = sim_time
 
     dut._log.info("starting...")
 
     msksim.sim_run = True
+    pn.sim_run = True
 
-    while sim_time < sim_start + 30000:
+    pn.sync = 100
 
-        await axis.send(random.randrange(1000) % 256)
+    while sim_time < sim_start + 5000:
+
+        if sim_time_d <= sim_start + 1000 and sim_time >= sim_start + 1000:
+            await pn.resync()
+
+        if sim_time_d <= sim_start + 2000 and sim_time >= sim_start + 2000:
+            await pn.resync()
+
+        if sim_time_d <= sim_start + 3000 and sim_time >= sim_start + 3000:
+            await pn.resync()
+
+        if sim_time_d <= sim_start + 4000 and sim_time >= sim_start + 4000:
+            await pn.resync()
+
+        await axis.send(await pn.gen())
+        sim_time_d = sim_time
         sim_time = get_sim_time("us")
 
     msksim.sim_run = False
+    pn.sim_run = False
 
     await RisingEdge(dut.clk)
 

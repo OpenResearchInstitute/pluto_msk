@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
-[*] Sat May 18 07:41:09 2024
+[*] Thu May 23 18:03:50 2024
 [*]
 [dumpfile] "msk_top.ghw"
-[dumpfile_mtime] "Sat May 18 07:38:40 2024"
-[dumpfile_size] 89696625
+[dumpfile_mtime] "Thu May 23 06:35:37 2024"
+[dumpfile_size] 43400273
 [savefile] "/Users/nonlinear/Dev/msk/sim/msk_top_nvc.gtkw"
-[timestart] 0
-[size] 1296 742
+[timestart] 735470000000
+[size] 1288 600
 [pos] -1 -1
-*-42.845928 28410230000000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+*-31.450550 739056000000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 [markername] AA
 [markername] BB
 [markername] CC
@@ -38,37 +38,184 @@
 [markername] ZZ
 [treeopen] msk_top.
 [treeopen] msk_top.u_dem.
-[treeopen] msk_top.u_dem.u_f1.
-[treeopen] msk_top.u_mod.
-[sst_width] 253
-[signals_width] 264
+[treeopen] msk_top.u_dem.u_f2.
+[sst_width] 298
+[signals_width] 383
 [sst_expanded] 1
-[sst_vpaned_height] 209
+[sst_vpaned_height] 159
 @28
-msk_top.sent_data
-@22
-msk_top.sent_data_pipe[0:3]
-@29
-msk_top.rx_data
-@28
-msk_top.bit_error
+msk_top.u_mod.clk
+msk_top.u_mod.init
+msk_top.u_mod.tclk
+msk_top.tx_req
+@c00200
+-Modulator
+@420
+msk_top.u_mod.tx_data
+msk_top.u_mod.d_val[2:0]
+msk_top.u_mod.d_dly[2:0]
+msk_top.u_mod.d_pos[1:0]
+msk_top.u_mod.d_neg[1:0]
+msk_top.u_mod.b_val[1:0]
+msk_top.u_mod.d_n_b[1:0]
+msk_top.u_mod.d_s1[1:0]
+msk_top.u_mod.d_s2[1:0]
 @10420
+msk_top.u_mod.carrier_cos_f1[11:0]
+msk_top.u_mod.carrier_cos_f2[11:0]
+msk_top.u_mod.s1[11:0]
+msk_top.u_mod.s2[11:0]
+msk_top.u_mod.tx_samples[11:0]
+@20000
+-
+-
+@1401200
+-Modulator
+@c00200
+-F1 Clock Recovery
+-F1 Costas I-arm (in-phase)
+@10420
+msk_top.u_dem.u_f1.rx_cos[23:0]
+msk_top.u_dem.u_f1.rx_cos_filt_acc[31:0]
+msk_top.u_dem.u_f1.rx_cos_acc[31:0]
+@420
+msk_top.u_dem.u_f1.rx_cos_dump[31:0]
+msk_top.u_dem.u_f1.rx_cos_t[31:0]
+@1401200
+-F1 Costas I-arm (in-phase)
+@c00200
+-F1 Costas Q-arm (quadrature-phase)
+@10420
+msk_top.u_dem.u_f1.rx_sin[23:0]
 msk_top.u_dem.u_f1.rx_sin_filt_acc[31:0]
+msk_top.u_dem.u_f1.rx_sin_acc[31:0]
 @420
 msk_top.u_dem.u_f1.rx_sin_dump[31:0]
+msk_top.u_dem.u_f1.rx_sin_t[31:0]
+msk_top.u_dem.u_f1.rx_sin_t_neg[31:0]
+@28
+msk_top.u_dem.u_f1.rx_cos_slice
+@420
+msk_top.u_dem.u_f1.rx_error[31:0]
 @28
 msk_top.u_dem.u_f1.error_valid
 @420
 msk_top.u_dem.u_f1.rx_error_w[15:0]
-@10420
-msk_top.u_dem.u_f1.u_loopfilter.i_acc[31:0]
-msk_top.u_dem.u_f1.u_loopfilter.i_val[31:0]
-msk_top.u_dem.u_f1.u_loopfilter.p_val[15:0]
-msk_top.u_dem.u_f1.u_loopfilter.lpf_adjust[31:0]
-@28
-msk_top.u_dem.u_f1.u_loopfilter.lpf_adj_valid
-@22
+@1401200
+-F1 Costas Q-arm (quadrature-phase)
+@800200
+-F1 Costas Loop Filter
+@24
 msk_top.u_dem.u_f1.u_loopfilter.lpf_i_gain[15:0]
 msk_top.u_dem.u_f1.u_loopfilter.lpf_p_gain[15:0]
+@28
+msk_top.u_dem.u_f1.u_loopfilter.lpf_err_valid
+@420
+msk_top.u_dem.u_f1.u_loopfilter.lpf_err[15:0]
+@10420
+msk_top.u_dem.u_f1.u_loopfilter.p_val[15:0]
+msk_top.u_dem.u_f1.u_loopfilter.i_val[31:0]
+msk_top.u_dem.u_f1.u_loopfilter.i_acc[31:0]
+@28
+msk_top.u_dem.u_f1.u_loopfilter.lpf_adj_valid
+@10420
+msk_top.u_dem.u_f1.u_loopfilter.lpf_adjust[31:0]
+@1000200
+-F1 Costas Loop Filter
+@1401200
+-F1 Clock Recovery
+@c00200
+-F2 Clock Recovery
+-F1 Costas I-arm (in-phase)
+@10420
+msk_top.u_dem.u_f2.rx_cos[23:0]
+msk_top.u_dem.u_f2.rx_cos_filt_acc[31:0]
+msk_top.u_dem.u_f2.rx_cos_acc[31:0]
+@420
+msk_top.u_dem.u_f2.rx_cos_dump[31:0]
+msk_top.u_dem.u_f2.rx_cos_t[31:0]
+@1401200
+-F1 Costas I-arm (in-phase)
+@c00200
+-F2 Costas Q-arm (quadrature-phase)
+@10420
+msk_top.u_dem.u_f2.rx_sin[23:0]
+msk_top.u_dem.u_f2.rx_sin_filt_acc[31:0]
+msk_top.u_dem.u_f2.rx_sin_acc[31:0]
+@420
+msk_top.u_dem.u_f2.rx_sin_dump[31:0]
+msk_top.u_dem.u_f2.rx_sin_t[31:0]
+msk_top.u_dem.u_f2.rx_sin_t_neg[31:0]
+msk_top.u_dem.u_f2.rx_error[31:0]
+@28
+msk_top.u_dem.u_f2.rx_cos_slice
+msk_top.u_dem.u_f2.error_valid
+@420
+msk_top.u_dem.u_f2.rx_error_w[15:0]
+@1401200
+-F2 Costas Q-arm (quadrature-phase)
+@c00200
+-F2 Costas Loop Filter
+@420
+msk_top.u_dem.u_f2.u_loopfilter.lpf_i_gain[15:0]
+msk_top.u_dem.u_f2.u_loopfilter.lpf_p_gain[15:0]
+@28
+msk_top.u_dem.u_f2.u_loopfilter.lpf_err_valid
+@420
+msk_top.u_dem.u_f2.u_loopfilter.lpf_err[15:0]
+@10420
+msk_top.u_dem.u_f2.u_loopfilter.p_val[15:0]
+msk_top.u_dem.u_f2.u_loopfilter.i_val[31:0]
+msk_top.u_dem.u_f2.u_loopfilter.i_acc[31:0]
+@28
+msk_top.u_dem.u_f2.u_loopfilter.lpf_adj_valid
+@10420
+msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[31:0]
+@1401200
+-F2 Costas Loop Filter
+-F2 Clock Recovery
+@c00200
+-Data Decode
+@200
+-F1 Data Decode
+@420
+msk_top.u_dem.data_f1[15:0]
+msk_top.u_dem.data_f1_signed[15:0]
+msk_top.u_dem.data_f1_t[15:0]
+msk_top.u_dem.data_f1_sum[15:0]
+@200
+-F2 Data Decode
+@28
+msk_top.u_dem.cclk
+@420
+msk_top.u_dem.data_f2[15:0]
+msk_top.u_dem.data_f2_signed[15:0]
+msk_top.u_dem.data_f2_t[15:0]
+msk_top.u_dem.data_f2_sum[15:0]
+@200
+-Data Decode
+@420
+msk_top.u_dem.data_sum[15:0]
+@28
+msk_top.u_dem.data_bit
+msk_top.u_dem.rx_valid
+msk_top.u_dem.rx_data
+@1401200
+-Data Decode
+@c00200
+-Error Valid Decode
+@200
+-F1 or F2 Enable
+@28
+msk_top.u_dem.data_bit
+msk_top.u_dem.data_bit_dly
+msk_top.u_dem.f1_f2_sel
+msk_top.u_dem.error_valid_f1
+msk_top.u_dem.error_valid_f2
+@1401200
+-Error Valid Decode
+@28
+msk_top.tx_data_bit_d3
+msk_top.rx_bit_n
 [pattern_trace] 1
 [pattern_trace] 0
