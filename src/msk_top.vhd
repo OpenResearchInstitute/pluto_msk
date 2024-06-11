@@ -49,11 +49,11 @@ ENTITY msk_top IS
 		tx_valid 		: IN std_logic;
 		tx_samples 		: OUT std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 
+		rx_enable 		: IN std_logic;
+		rx_svalid 		: IN std_logic;
 		rx_samples 		: IN  std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 
-		tx_data_bit_d3 	: OUT std_logic;
-
-		rx_valid 		: OUT std_logic;
+		rx_dvalid 		: OUT std_logic;
 		rx_data 		: OUT std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0)
 	);
 END ENTITY msk_top;
@@ -64,13 +64,14 @@ ARCHITECTURE struct OF msk_top IS
 	TYPE reg_array IS ARRAY(0 TO C_NUM_REG -1) OF std_logic_vector(C_S_AXI_DATA_WIDTH -1 DOWNTO 0);
 	SIGNAL csr_array 		: reg_array;
 
-	SIGNAL tx_samples_int	: std_logic_vector(12 -1 DOWNTO 0);
+	SIGNAL tx_samples_int	: std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 	SIGNAL rx_samples_mux	: std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 	SIGNAL tx_req 		 	: std_logic;
 	SIGNAL tclk 			: std_logic;
 	SIGNAL tx_data_bit 		: std_logic;
 	SIGNAL tx_data_bit_d1 	: std_logic;
 	SIGNAL tx_data_bit_d2 	: std_logic;
+	SIGNAL tx_data_bit_d3 	: std_logic;
 
 	SIGNAL s_axis_tready_int: std_logic;
 	SIGNAL rx_bit   		: std_logic;
@@ -92,6 +93,8 @@ ARCHITECTURE struct OF msk_top IS
 
 	SIGNAL ptt 				: std_logic;
 	SIGNAL init 			: std_logic;
+
+	SIGNAL tx_data_w 		: std_logic_vector(7 DOWNTO 0);
 
 	SIGNAL loopback_ena 	: std_logic;
 
@@ -166,7 +169,7 @@ BEGIN
 
 			IF tx_req = '1' THEN
 
-				IF bit_index = S_AXIS_DATA_W -1 THEN
+				IF bit_index = to_integer(unsigned(tx_data_w)) -1 THEN
 					tx_data 	<= tx_data_axi;
 					bit_index	<= 0;
 					saxis_req 	<= NOT saxis_req;
@@ -200,7 +203,7 @@ BEGIN
 			NCO_W 			=> NCO_W,
 			PHASE_W 		=> PHASE_W,
 			SINUSOID_W 		=> SINUSOID_W,
-			SAMPLE_W 		=> 12
+			SAMPLE_W 		=> SAMPLE_W
 		)
 		PORT MAP (
 			clk 			=> clk,
@@ -215,6 +218,8 @@ BEGIN
 			tx_data 		=> tx_data_bit,
 			tx_req 			=> tx_req,
 
+			tx_enable 		=> tx_enable,
+			tx_valid 		=> tx_valid,
 			tx_samples	 	=> tx_samples_int		
 		);
 
@@ -224,7 +229,7 @@ BEGIN
 	BEGIN
 		IF clk'EVENT AND clk = '1' THEN
 
-			rx_valid <= '0';
+			rx_dvalid <= '0';
 
 			IF rx_bit_valid = '1' THEN
 
@@ -234,7 +239,7 @@ BEGIN
 
 				IF bit_count = "111" THEN
 					rx_data(SAMPLE_W -1 DOWNTO 0) 	<= std_logic_vector(resize(rx_data_sr, SAMPLE_W));
-					rx_valid 	<= '1';
+					rx_dvalid 	<= '1';
 				END IF;
 
 			END IF;
@@ -243,7 +248,7 @@ BEGIN
 				bit_count		<= to_signed(1, bit_count'LENGTH);
 				rx_data_sr 		<= (OTHERS => '0');
 				rx_data 		<= (OTHERS => '0');
-				rx_valid 		<= '0';
+				rx_dvalid 		<= '0';
 			END IF;
 
 		END IF;
@@ -351,5 +356,7 @@ BEGIN
 	lpf_freeze 		<= csr_array(7)(0);
 	lpf_zero   		<= csr_array(7)(1);
 	lpf_alpha  		<= csr_array(7)(2*GAIN_W -1 DOWNTO GAIN_W);
+
+	tx_data_w 		<= csr_array(8)(7 DOWNTO 0);
 
 END ARCHITECTURE struct;
