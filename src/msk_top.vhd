@@ -77,8 +77,8 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL rx_bit   		: std_logic;
 	SIGNAL rx_bit_n 		: std_logic;
 	SIGNAL rx_bit_valid 	: std_logic;
-	SIGNAL bit_count 		: signed(2 DOWNTO 0);
-	SIGNAL rx_data_sr 		: signed(7 DOWNTO 0);
+	SIGNAL bit_count 		: NATURAL RANGE 0 TO S_AXIS_DATA_W -1;
+	SIGNAL rx_data_int 		: std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
 
 	SIGNAL sent_data 		: std_logic;
 	SIGNAL received_data 	: std_logic;
@@ -95,6 +95,7 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL init 			: std_logic;
 
 	SIGNAL tx_data_w 		: std_logic_vector(7 DOWNTO 0);
+	SIGNAL rx_data_w 		: std_logic_vector(7 DOWNTO 0);
 
 	SIGNAL loopback_ena 	: std_logic;
 
@@ -226,27 +227,30 @@ BEGIN
 	rx_bit_n <= NOT rx_bit;
 
 	ser2par_proc : PROCESS (clk)
+		VARIABLE bit_width : INTEGER;
 	BEGIN
 		IF clk'EVENT AND clk = '1' THEN
+
+			bit_width := to_integer(unsigned(rx_data_w));
 
 			rx_dvalid <= '0';
 
 			IF rx_bit_valid = '1' THEN
 
-				rx_data_sr 	<= shift_right(rx_data_sr, 1);
-				rx_data_sr(7) <= rx_bit_n;
-				bit_count 	<= bit_count + 1;
+				rx_data_int(bit_count) 	<= rx_bit_n;
+				bit_count 				<= bit_count + 1;
 
-				IF bit_count = "111" THEN
-					rx_data(SAMPLE_W -1 DOWNTO 0) 	<= std_logic_vector(resize(rx_data_sr, SAMPLE_W));
+				IF bit_count = bit_width -1 THEN
+					bit_count 	<= 0;
+					rx_data 	<= rx_data_int;
 					rx_dvalid 	<= '1';
 				END IF;
 
 			END IF;
 
 			IF init = '1' THEN
-				bit_count		<= to_signed(1, bit_count'LENGTH);
-				rx_data_sr 		<= (OTHERS => '0');
+				bit_count		<= 0;
+				rx_data_int 	<= (OTHERS => '0');
 				rx_data 		<= (OTHERS => '0');
 				rx_dvalid 		<= '0';
 			END IF;
@@ -275,10 +279,12 @@ BEGIN
 			lpf_zero 		=> lpf_zero,
 			lpf_alpha 		=> lpf_alpha,
 
+			rx_enable 		=> rx_enable,
+			rx_svalid 		=> rx_svalid,
 			rx_samples 		=> rx_samples_mux(11 DOWNTO 0),
 
 			rx_data 		=> rx_bit,
-			rx_valid 		=> rx_bit_valid
+			rx_dvalid 		=> rx_bit_valid
 		);
 
 	u_axi_if : ENTITY work.axi_ctrlif(Behavioral)
@@ -358,5 +364,6 @@ BEGIN
 	lpf_alpha  		<= csr_array(7)(2*GAIN_W -1 DOWNTO GAIN_W);
 
 	tx_data_w 		<= csr_array(8)(7 DOWNTO 0);
+	rx_data_w 		<= csr_array(9)(7 DOWNTO 0);
 
 END ARCHITECTURE struct;
