@@ -9,9 +9,9 @@ ENTITY msk_top IS
 		NCO_W 				: NATURAL := 32;
 		PHASE_W 			: NATURAL := 10;
 		SINUSOID_W 			: NATURAL := 12;
-		SAMPLE_W 			: NATURAL := 12;
+		SAMPLE_W 			: NATURAL := 16;
 		GAIN_W 				: NATURAL := 16;
-		S_AXIS_DATA_W 		: NATURAL := 8;
+		S_AXIS_DATA_W 		: NATURAL := 64;
 		C_NUM_REG			: NATURAL := 32;
 		C_S_AXI_DATA_WIDTH	: NATURAL := 32;
 		C_S_AXI_ADDR_WIDTH	: NATURAL := 32
@@ -45,13 +45,16 @@ ENTITY msk_top IS
 		s_axis_tready   : OUT std_logic;
 		s_axis_tdata	: IN  std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
 
-		tx_enable 		: OUT std_logic;
+		tx_enable 		: IN std_logic;
+		tx_valid 		: IN std_logic;
 		tx_samples 		: OUT std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 
 		rx_samples 		: IN  std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 
+		tx_data_bit_d3 	: OUT std_logic;
+
 		rx_valid 		: OUT std_logic;
-		rx_data 		: OUT std_logic
+		rx_data 		: OUT std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0)
 	);
 END ENTITY msk_top;
 
@@ -61,15 +64,21 @@ ARCHITECTURE struct OF msk_top IS
 	TYPE reg_array IS ARRAY(0 TO C_NUM_REG -1) OF std_logic_vector(C_S_AXI_DATA_WIDTH -1 DOWNTO 0);
 	SIGNAL csr_array 		: reg_array;
 
-	SIGNAL tx_samples_int	: std_logic_vector(SAMPLE_W -1 DOWNTO 0);
+	SIGNAL tx_samples_int	: std_logic_vector(12 -1 DOWNTO 0);
 	SIGNAL rx_samples_mux	: std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 	SIGNAL tx_req 		 	: std_logic;
 	SIGNAL tclk 			: std_logic;
 	SIGNAL tx_data_bit 		: std_logic;
+	SIGNAL tx_data_bit_d1 	: std_logic;
+	SIGNAL tx_data_bit_d2 	: std_logic;
 
 	SIGNAL s_axis_tready_int: std_logic;
-	SIGNAL rx_data_int 		: std_logic;
-	SIGNAL rx_valid_int 	: std_logic;
+	SIGNAL rx_bit   		: std_logic;
+	SIGNAL rx_bit_n 		: std_logic;
+	SIGNAL rx_bit_valid 	: std_logic;
+	SIGNAL bit_count 		: signed(2 DOWNTO 0);
+	SIGNAL rx_data_sr 		: signed(7 DOWNTO 0);
+
 	SIGNAL sent_data 		: std_logic;
 	SIGNAL received_data 	: std_logic;
 	SIGNAL sent_data_pipe 	: std_logic_vector(0 TO 3);
@@ -118,10 +127,7 @@ BEGIN
 
 	tx_samples 	<= tx_samples_int;
 
-	rx_data 	<= rx_data_int;
-	rx_valid 	<= rx_valid_int;
-
-	rx_samples_mux <= tx_samples_int WHEN loopback_ena = '1' ELSE rx_samples;
+	rx_samples_mux <= std_logic_vector(resize(signed(tx_samples_int), 16)) WHEN loopback_ena = '1' ELSE rx_samples;
 
 	saxis_cdc : PROCESS (s_axis_aclk)
 		VARIABLE v_axi_req_ena : std_logic;
@@ -170,6 +176,10 @@ BEGIN
 					
 				tx_data_bit <= tx_data(bit_index);
 
+				tx_data_bit_d1 <= tx_data_bit;
+				tx_data_bit_d2 <= tx_data_bit_d1;
+				tx_data_bit_d3 <= tx_data_bit_d2;
+
 			END IF;
 
 			IF init = '1' THEN
@@ -177,6 +187,9 @@ BEGIN
 				tx_data 		<= (OTHERS => '0');
 				bit_index 		<= 0;
 				tx_data_bit 	<= '0';
+				tx_data_bit_d1	<= '0';
+				tx_data_bit_d2	<= '0';
+				tx_data_bit_d3	<= '0';
 			END IF;
 
 		END IF;
@@ -187,7 +200,7 @@ BEGIN
 			NCO_W 			=> NCO_W,
 			PHASE_W 		=> PHASE_W,
 			SINUSOID_W 		=> SINUSOID_W,
-			SAMPLE_W 		=> SAMPLE_W
+			SAMPLE_W 		=> 12
 		)
 		PORT MAP (
 			clk 			=> clk,
@@ -205,13 +218,44 @@ BEGIN
 			tx_samples	 	=> tx_samples_int		
 		);
 
+	rx_bit_n <= NOT rx_bit;
+
+	ser2par_proc : PROCESS (clk)
+	BEGIN
+		IF clk'EVENT AND clk = '1' THEN
+
+			rx_valid <= '0';
+
+			IF rx_bit_valid = '1' THEN
+
+				rx_data_sr 	<= shift_right(rx_data_sr, 1);
+				rx_data_sr(7) <= rx_bit_n;
+				bit_count 	<= bit_count + 1;
+
+				IF bit_count = "111" THEN
+					rx_data(SAMPLE_W -1 DOWNTO 0) 	<= std_logic_vector(resize(rx_data_sr, SAMPLE_W));
+					rx_valid 	<= '1';
+				END IF;
+
+			END IF;
+
+			IF init = '1' THEN
+				bit_count		<= to_signed(1, bit_count'LENGTH);
+				rx_data_sr 		<= (OTHERS => '0');
+				rx_data 		<= (OTHERS => '0');
+				rx_valid 		<= '0';
+			END IF;
+
+		END IF;
+	END PROCESS ser2par_proc;
+
 
 	u_dem : ENTITY work.msk_demodulator(rtl)
 		GENERIC MAP (
 			NCO_W 			=> NCO_W,
 			PHASE_W 		=> PHASE_W,
 			SINUSOID_W 		=> SINUSOID_W,
-			SAMPLE_W 		=> SAMPLE_W
+			SAMPLE_W 		=> 12
 		)
 		PORT MAP (
 			clk 			=> clk,
@@ -226,10 +270,10 @@ BEGIN
 			lpf_zero 		=> lpf_zero,
 			lpf_alpha 		=> lpf_alpha,
 
-			rx_samples 		=> rx_samples_mux,
+			rx_samples 		=> rx_samples_mux(11 DOWNTO 0),
 
-			rx_data 		=> rx_data_int,
-			rx_valid 		=> rx_valid_int
+			rx_data 		=> rx_bit,
+			rx_valid 		=> rx_bit_valid
 		);
 
 	u_axi_if : ENTITY work.axi_ctrlif(Behavioral)
