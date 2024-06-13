@@ -1,5 +1,58 @@
-# test_my_design.py (simple)
+#------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------
+#--  _______                             ________                                            ______
+#--  __  __ \________ _____ _______      ___  __ \_____ _____________ ______ ___________________  /_
+#--  _  / / /___  __ \_  _ \__  __ \     __  /_/ /_  _ \__  ___/_  _ \_  __ `/__  ___/_  ___/__  __ \
+#--  / /_/ / __  /_/ //  __/_  / / /     _  _, _/ /  __/_(__  ) /  __// /_/ / _  /    / /__  _  / / /
+#--  \____/  _  .___/ \___/ /_/ /_/      /_/ |_|  \___/ /____/  \___/ \__,_/  /_/     \___/  /_/ /_/
+#--          /_/
+#--                   ________                _____ _____ _____         _____
+#--                   ____  _/_______ __________  /____(_)__  /_____  ____  /______
+#--                    __  /  __  __ \__  ___/_  __/__  / _  __/_  / / /_  __/_  _ \
+#--                   __/ /   _  / / /_(__  ) / /_  _  /  / /_  / /_/ / / /_  /  __/
+#--                   /___/   /_/ /_/ /____/  \__/  /_/   \__/  \__,_/  \__/  \___/
+#--
+#------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------
+#-- Copyright
+#------------------------------------------------------------------------------------------------------
+#--
+#-- Copyright 2024 by M. Wishek <matthew@wishek.com>
+#--
+#------------------------------------------------------------------------------------------------------
+#-- License
+#------------------------------------------------------------------------------------------------------
+#--
+#-- This source describes Open Hardware and is licensed under the CERN-OHL-W v2.
+#--
+#-- You may redistribute and modify this source and make products using it under
+#-- the terms of the CERN-OHL-W v2 (https://ohwr.org/cern_ohl_w_v2.txt).
+#--
+#-- This source is distributed WITHOUT ANY EXPRESS OR IMPLIED WARRANTY, INCLUDING
+#-- OF MERCHANTABILITY, SATISFACTORY QUALITY AND FITNESS FOR A PARTICULAR PURPOSE.
+#-- Please see the CERN-OHL-W v2 for applicable conditions.
+#--
+#-- Source location: TBD
+#--
+#-- As per CERN-OHL-W v2 section 4.1, should You produce hardware based on this
+#-- source, You must maintain the Source Location visible on the external case of
+#-- the products you make using this source.
+#--
+#------------------------------------------------------------------------------------------------------
+#-- Description
+#------------------------------------------------------------------------------------------------------
+#--
+#-- This file implements a Cocotb based Python testbench for testing the MSK Modem
+#--
+#------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------
 
+#------------------------------------------------------------------------------------------------------
+#         __   __   __  ___  __ 
+# | |\/| |__) /  \ |__)  |  (_  
+# | |  | |    \__/ | \   |  __) 
+#                               
+#------------------------------------------------------------------------------------------------------
 import cocotb
 from cocotb.triggers import Timer, RisingEdge
 from cocotb.clock    import Clock
@@ -8,6 +61,14 @@ from cocotb.utils    import get_sim_time
 import random
 import numpy as np 
 import matplotlib.pyplot as plt
+
+
+#------------------------------------------------------------------------------------------------------
+#  __       __  ___    __            __ ___    __        __ 
+# |__) |   /  \  |    |_  /  \ |\ | /    |  | /  \ |\ | (_  
+# |    |__ \__/  |    |   \__/ | \| \__  |  | \__/ | \| __) 
+#                                                           
+#------------------------------------------------------------------------------------------------------
 
 def fftPlot(sig, dt=None, plot=True):
     # Here it's assumes analytic signal (real signal...) - so only half of the axis is required
@@ -43,6 +104,14 @@ def fftPlot(sig, dt=None, plot=True):
         plt.show()
 
     return sigFFTPos, freqAxisPos
+
+
+#------------------------------------------------------------------------------------------------------
+#             __    __        __              __ ___  __  __     __   __      
+#  /\  \_/ | (_    |__) /  \ (_    |\/|  /\  (_   |  |_  |__)   |__) |_  |\/| 
+# /--\ / \ | __)   |__) \__/ __)   |  | /--\ __)  |  |__ | \    |__) |   |  | 
+#                                                                             
+#------------------------------------------------------------------------------------------------------
 
 class axis_bus:
 
@@ -95,6 +164,13 @@ class axis_bus:
 
         self.tvalid = 0
 
+
+#------------------------------------------------------------------------------------------------------
+#                                     __        __              __ ___  __  __     __   __      
+#  /\  \_/ |  |__|  __ |   . |_  _   |__) /  \ (_    |\/|  /\  (_   |  |_  |__)   |__) |_  |\/| 
+# /--\ / \ |     |     |__ | |_ (-   |__) \__/ __)   |  | /--\ __)  |  |__ | \    |__) |   |  | 
+#                                                                                               
+#------------------------------------------------------------------------------------------------------
 
 class axi_bus:
 
@@ -210,6 +286,14 @@ class axi_bus:
 
         self.awvalid.value = 0
 
+
+#------------------------------------------------------------------------------------------------------
+#       __                              __             
+# |\/| (_  |_/   |\/|  _   _|  _  _    /   |  _   _  _ 
+# |  | __) | \   |  | (_) (_| (- |||   \__ | (_| _) _) 
+#                                                      
+#------------------------------------------------------------------------------------------------------
+
 class msk:
 
     def __init__(self, dut, clk, tx_sample_bus):
@@ -240,6 +324,13 @@ class msk:
         self.dut._log.info("...tx sample capture - done")
 
 
+#------------------------------------------------------------------------------------------------------
+#  __   __   __   __    __                                              __                    
+# |__) |__) |__) (_    / _   _  _   _  _  _  |_  _   _    _   _   _|   /   |_   _  _ |   _  _ 
+# |    | \  |__) __)   \__) (- | ) (- |  (_| |_ (_) |    (_| | ) (_|   \__ | ) (- (_ |( (- |  
+#                                                                                             
+#------------------------------------------------------------------------------------------------------
+
 class prbs:
 
     def __init__(self, dut, clk, rx_data, rx_dvalid, width=8, seed=255, prbs=31):
@@ -261,6 +352,9 @@ class prbs:
         self.sync = 4
         self.data_count = 0
         self.err_count = 0
+
+        self.ones_count = 0
+        self.zeros_count = 0
 
         if prbs == 31:
             self.taps = [31, 28]
@@ -287,7 +381,12 @@ class prbs:
 
         #print("tx_data: ", hex(self.state_gen & 0xFF))
 
-        return (self.state_gen & 0xFF)
+        data = self.state_gen & 0xFF
+
+        self.ones_count += data.bit_count()
+        self.zeros_count += 8 - data.bit_count()
+
+        return data
 
 
     async def resync(self):
@@ -299,12 +398,16 @@ class prbs:
 
     async def mon(self, data):
 
+        timenow = get_sim_time("us")
+
+        #print("------ Monitor ------")
+        #print("Time: ", timenow)
         #print("rx data: ", hex(data))
 
         if self.sync > 0:
             self.state_mon = ((self.state_mon << 8) | data) & ((2**32) -1)
             self.sync -= 1
-            print("sync: ", self.sync)
+            #print("sync: ", self.sync)
             #print("mon sync: ", hex(self.state_mon))
         else:
             #print("mon state at start: ", hex(self.state_mon))
@@ -326,7 +429,7 @@ class prbs:
             if errored_bits > 0:
                 for i in range(self.width):
                     self.err_count += ((errored_bits >> i) & 1)
-                print("error count: ", self.err_count, "; data count: ", self.data_count, "; BER = ", 100*round(self.err_count/self.data_count, 3), "%")
+                print("Time: ", timenow, "us; error count: ", self.err_count, "; data count: ", self.data_count, "; BER = ", 100*round(self.err_count/self.data_count, 3), "%")
 
         #assert errored_bits == 0, "PRBS: Bit-error(s)" 
 
@@ -350,23 +453,30 @@ class prbs:
 
 
 
+#------------------------------------------------------------------------------------------------------
+#       __                             ___          
+# |\/| (_  |_/   |\/|  _   _|  _  _     |   _  _ |_ 
+# |  | __) | \   |  | (_) (_| (- |||    |  (- _) |_ 
+#                                                   
+#------------------------------------------------------------------------------------------------------
+
 @cocotb.test()
 async def msk_test_1(dut):
 
     tx_samples = []
     tx_time = []
 
-    bitrate = 1e6
-    freq_if = 10e6
-    sample_rate = 61.46e6
+    bitrate = 54200
+    freq_if = bitrate * 20
+    sample_rate = 61.44e6
     sample_per = int(1/sample_rate * 1e9)
 
     await cocotb.start(Clock(dut.clk, sample_per, units="ns").start())
 
-    f1 =  9e6
-    f2 = 11e6
+    f1 = freq_if - bitrate
+    f2 = freq_if + bitrate
 
-    FFT = 8192
+    FFT = 8192 * 4
 
     await RisingEdge(dut.clk)
 
@@ -375,6 +485,11 @@ async def msk_test_1(dut):
 
     await axi.init()
     await axis.init()
+    
+    dut.tx_enable.value = 1
+    dut.rx_enable.value = 1
+    dut.rx_svalid.value = 1
+    dut.tx_valid.value  = 1
 
     await axi.write( 0, 1)                                         # assert on init
 
@@ -392,9 +507,6 @@ async def msk_test_1(dut):
     await RisingEdge(dut.clk)
 
     await axi.write(0, 0)                                         # turn off init
-    dut.tx_enable.value = 1
-    dut.rx_enable.value = 1
-    dut.rx_svalid.value = 1
 
     await RisingEdge(dut.clk)
 
@@ -419,19 +531,19 @@ async def msk_test_1(dut):
 
     pn.sync = 100
 
-    while sim_time < sim_start + 5000:
-
-        if sim_time_d <= sim_start + 1000 and sim_time >= sim_start + 1000:
-            await pn.resync()
-
-        if sim_time_d <= sim_start + 2000 and sim_time >= sim_start + 2000:
-            await pn.resync()
-
-        if sim_time_d <= sim_start + 3000 and sim_time >= sim_start + 3000:
-            await pn.resync()
+    while sim_time < sim_start + 10000:
 
         if sim_time_d <= sim_start + 4000 and sim_time >= sim_start + 4000:
             await pn.resync()
+
+        # if sim_time_d <= sim_start + 2000 and sim_time >= sim_start + 2000:
+            # await pn.resync()
+# 
+        # if sim_time_d <= sim_start + 3000 and sim_time >= sim_start + 3000:
+            # await pn.resync()
+# 
+        # if sim_time_d <= sim_start + 4000 and sim_time >= sim_start + 4000:
+            # await pn.resync()
 
         await axis.send(await pn.gen())
         sim_time_d = sim_time
@@ -447,6 +559,13 @@ async def msk_test_1(dut):
 
     tx_samples_arr = np.asarray(tx_samples)
     tx_samples_2   = tx_samples_arr * tx_samples_arr
+
+    print("Ones: ", pn.ones_count)
+    print("Zeros: ", pn.zeros_count)
+
+    print("Bit errors: ", pn.err_count)
+    print("Bit count:  ", pn.data_count)
+    print("BER:        ", pn.err_count/pn.data_count)
 
     blackman_window = np.blackman(len(tx_samples))
 
