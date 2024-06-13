@@ -12,7 +12,7 @@ SRC = ../src
 VHDL_SOURCES += $(SRC)/nco.vhd \
 				$(SRC)/sin_cos_lut.vhd \
 				$(SRC)/msk_modulator.vhd \
-				$(SRC)/loop_filter.vhd \
+				$(SRC)/pi_controller.vhd \
 				$(SRC)/costas_loop.vhd \
 				$(SRC)/msk_demodulator.vhd \
 				$(SRC)/axi_ctrlif.vhd \
