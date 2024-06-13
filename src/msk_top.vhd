@@ -147,17 +147,19 @@ ARCHITECTURE struct OF msk_top IS
 
 	SIGNAL s_axis_tready_int: std_logic;
 	SIGNAL rx_bit   		: std_logic;
-	SIGNAL rx_bit_n 		: std_logic;
+	SIGNAL rx_bit_corr 		: std_logic;
 	SIGNAL rx_bit_valid 	: std_logic;
-	SIGNAL bit_count 		: NATURAL RANGE 0 TO S_AXIS_DATA_W -1;
+	SIGNAL rx_bit_index 	: NATURAL RANGE 0 TO S_AXIS_DATA_W -1;
+	SIGNAL rx_data_valid  	: std_logic;
 	SIGNAL rx_data_int 		: std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
+	SIGNAL rx_invert 		: std_logic;
+
+	SIGNAL rx_data_cmp 		: std_logic;
+	SIGNAL data_error 		: std_logic;
 
 	SIGNAL sent_data 		: std_logic;
 	SIGNAL received_data 	: std_logic;
 	SIGNAL sent_data_pipe 	: std_logic_vector(0 TO 3);
-
-	SIGNAL bit_error_0_phase	: std_logic;
-	SIGNAL bit_error_180_phase	: std_logic;
 
 	SIGNAL bit_index 		: NATURAL RANGE 0 TO S_AXIS_DATA_W -1;
 	SIGNAL tx_data 			: std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
@@ -273,6 +275,10 @@ BEGIN
 				tx_data_bit_d2 <= tx_data_bit_d1;
 				tx_data_bit_d3 <= tx_data_bit_d2;
 
+				rx_data_cmp    <= rx_bit;
+
+				data_error 	   <= rx_data_cmp XOR tx_data_bit_d3;
+
 			END IF;
 
 			IF init = '1' THEN
@@ -331,7 +337,7 @@ BEGIN
 ------------------------------------------------------------------------------------------------------
 -- Rx Serial To Parallel
 
-	rx_bit_n <= NOT rx_bit;
+	rx_bit_corr <= rx_bit WHEN rx_invert = '0' ELSE NOT rx_bit;
 
 	ser2par_proc : PROCESS (clk)
 		VARIABLE bit_width : INTEGER;
@@ -344,19 +350,27 @@ BEGIN
 
 			IF rx_bit_valid = '1' THEN
 
-				rx_data_int(bit_count) 	<= rx_bit_n;
-				bit_count 				<= bit_count + 1;
+				rx_data_int(rx_bit_index) 	<= rx_bit_corr;
+				rx_bit_index 				<= rx_bit_index + 1;
 
-				IF bit_count = bit_width -1 THEN
-					bit_count 	<= 0;
-					rx_data 	<= rx_data_int;
-					rx_dvalid 	<= '1';
+				IF rx_bit_index = bit_width -1 THEN
+					rx_bit_index	<= 0;
+					rx_data_valid	<= '1';
 				END IF;
 
 			END IF;
 
+			IF rx_data_valid = '1' THEN
+
+				rx_dvalid 		<= '1';
+				rx_data 		<= rx_data_int;
+				rx_data_int(bit_width -1 DOWNTO 1) <= (OTHERS => '0');
+				rx_data_valid 	<= '0';
+
+			END IF;
+
 			IF init = '1' THEN
-				bit_count		<= 0;
+				rx_bit_index	<= 6;
 				rx_data_int 	<= (OTHERS => '0');
 				rx_data 		<= (OTHERS => '0');
 				rx_dvalid 		<= '0';
@@ -485,6 +499,7 @@ BEGIN
 	init 			<= csr_array(0)(0);
 	ptt  			<= csr_array(1)(0);
 	loopback_ena 	<= csr_array(2)(0);
+	rx_invert 		<= csr_array(2)(1);
 
 	freq_word_ft 	<= csr_array(3);
 	freq_word_f1 	<= csr_array(4);
