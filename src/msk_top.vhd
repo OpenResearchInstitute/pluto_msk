@@ -103,6 +103,8 @@ ENTITY msk_top IS
 		s_axi_bresp		: out std_logic_vector(1 downto 0);
 		s_axi_bvalid	: out std_logic;
 		s_axi_awready	: out std_logic;
+		s_axi_awprot 	: in  std_logic_vector(2 DOWNTO 0);
+		s_axi_arprot 	: in  std_logic_vector(2 DOWNTO 0);
 
 		s_axis_aresetn 	: IN  std_logic;
 		s_axis_aclk 	: IN  std_logic;
