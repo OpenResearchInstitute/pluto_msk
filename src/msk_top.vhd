@@ -108,9 +108,9 @@ ENTITY msk_top IS
 
 		s_axis_aresetn 	: IN  std_logic;
 		s_axis_aclk 	: IN  std_logic;
-		s_axis_tvalid 	: IN  std_logic;
-		s_axis_tready   : OUT std_logic;
-		s_axis_tdata	: IN  std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
+		s_axis_valid 	: IN  std_logic;
+		s_axis_ready    : OUT std_logic;
+		s_axis_data		: IN  std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
 
 		tx_enable 		: IN std_logic;
 		tx_valid 		: IN std_logic;
@@ -212,7 +212,7 @@ BEGIN
 ------------------------------------------------------------------------------------------------------
 -- S-AXIS Interface
 
-	s_axis_tready	<= s_axis_tready_int;
+	s_axis_ready	<= s_axis_tready_int;
 
 	tx_samples 	<= tx_samples_int;
 
@@ -233,9 +233,9 @@ BEGIN
 				s_axis_tready_int 	<= '1';
 			END IF;
 
-			IF s_axis_tready_int = '1' AND s_axis_tvalid = '1' THEN
+			IF s_axis_tready_int = '1' AND s_axis_valid = '1' THEN
 				s_axis_tready_int 	<= '0';
-				tx_data_axi 		<= s_axis_tdata;
+				tx_data_axi 		<= s_axis_data;
 			END IF;
 
 			IF s_axis_aresetn = '0' THEN

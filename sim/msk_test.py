@@ -125,9 +125,9 @@ class axis_bus:
 
         self.aclk           = dut.s_axis_aclk
         self.aresetn        = dut.s_axis_aresetn
-        self.tvalid         = dut.s_axis_tvalid
-        self.tready         = dut.s_axis_tready
-        self.tdata          = dut.s_axis_tdata
+        self.tvalid         = dut.s_axis_valid
+        self.tready         = dut.s_axis_ready
+        self.tdata          = dut.s_axis_data
 
         self.aresetn.value  = 1
         self.tvalid.value   = 0 
@@ -156,13 +156,13 @@ class axis_bus:
 
         await RisingEdge(self.aclk)
 
-        self.dut.s_axis_tvalid.value = 1
+        self.dut.s_axis_valid.value = 1
         self.tdata.value = data
 
         while self.tready.value == 0:
             await RisingEdge(self.aclk)
 
-        self.tvalid = 0
+        self.tvalid.value = 0
 
 
 #------------------------------------------------------------------------------------------------------
