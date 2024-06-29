@@ -5,6 +5,11 @@ SIM ?= nvc
 TOPLEVEL_LANG ?= vhdl
 GUI = 1
 SCRIPT_FILE =
+
+ifeq ($(SIM),ghdl)
+	COMPILE_ARGS = --std=08
+endif
+
 SIM_ARGS = --wave=msk_top.ghw
 
 SRC = ../src
