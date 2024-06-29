@@ -255,10 +255,13 @@ class axi_bus:
 
         await RisingEdge(self.aclk)
 
-        while self.rvalid.value == 0 or self.arready.value == 0:
+        while self.arready.value == 0:
             await RisingEdge(self.aclk)
 
-        self.arvalid = 0
+        self.arvalid.value = 0
+
+        while self.rvalid.value == 0:
+            await RisingEdge(self.aclk)
 
         return self.rdata.value.integer
 
@@ -491,27 +494,30 @@ async def msk_test_1(dut):
     dut.rx_svalid.value = 1
     dut.tx_valid.value  = 1
 
-    await axi.write( 0, 1)                                         # assert on init
+    await axi.write( 4, 1)                                         # assert on init
 
-    await axi.write( 8, 1)                                         # loopback
-    await axi.write(12, int(bitrate / sample_rate * 2.0**32))      # bit rate frequency word
-    await axi.write(16, int(f1 / sample_rate * 2.0**32))           # F1 frequency word
-    await axi.write(20, int(f2 / sample_rate * 2.0**32))           # F2 frequency word
-    await axi.write(24, (50 << 16) + 20)                             # p-gain / i-gain
-    await axi.write(28, (2 << 16))                                   # low-pass filter alpha
-    await axi.write(32, 8)
+    await axi.write(12, 1)                                         # loopback
+    await axi.write(16, int(bitrate / sample_rate * 2.0**32))      # bit rate frequency word
+    await axi.write(20, int(f1 / sample_rate * 2.0**32))           # F1 frequency word
+    await axi.write(24, int(f2 / sample_rate * 2.0**32))           # F2 frequency word
+    await axi.write(28, (50 << 16) + 20)                             # p-gain / i-gain
+    await axi.write(32, (2 << 16))                                   # low-pass filter alpha
     await axi.write(36, 8)
+    await axi.write(40, 8)
+
+    hash_id = await axi.read(0)
+    print("Hash ID: ", hex(hash_id))
 
     await Timer(100, units="ns")
 
     await RisingEdge(dut.clk)
 
-    await axi.write(0, 0)                                         # turn off init
+    await axi.write(4, 0)                                         # turn off init
 
     await RisingEdge(dut.clk)
 
     await Timer(105, "us")
-    await axi.write(4, 1)
+    await axi.write(8, 1)
 
     msksim = msk(dut, dut.clk, dut.tx_samples)
     pn = prbs(dut, dut.clk, dut.rx_data, dut.rx_dvalid)

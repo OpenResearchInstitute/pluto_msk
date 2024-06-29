@@ -71,6 +71,7 @@ USE ieee.numeric_std.ALL;
 
 ENTITY msk_top IS 
 	GENERIC (
+		HASH_ID 			: std_logic_vector := X"AAAA5555";
 		NCO_W 				: NATURAL := 32;
 		PHASE_W 			: NATURAL := 10;
 		SINUSOID_W 			: NATURAL := 12;
@@ -474,46 +475,48 @@ BEGIN
 ------------------------------------------------------------------------------------------------------
 -- Config/Status
 
+	demod_sync_lock <= '0';
+
 	csr_proc : PROCESS (s_axi_aclk, s_axi_aresetn)
 	BEGIN
 		IF s_axi_aresetn = '0' THEN
-			csr_array <= (OTHERS => (OTHERS => '0'));
+			csr_array 	<= (OTHERS => (OTHERS => '0'));
+			csr_rd_data <= (OTHERS => '0');
+			csr_rd_stb 	<= '0';
 		ELSIF s_axi_aclk = '1' THEN
 
 			csr_wr_ack <= '0';
-			csr_rd_ack <= '0';
 
 			IF csr_wr_stb = '1' THEN 
 				csr_array(csr_wr_addr) <= csr_wr_data;
 				csr_wr_ack <= '1';
 			END IF;
 
-			IF csr_rd_stb = '1' THEN
-				csr_rd_data <= csr_array(csr_rd_addr);
-				csr_rd_stb 	<= '1';
-			END IF;
+			csr_rd_data <= csr_array(csr_rd_addr);
+			csr_rd_stb  <= '1';
 
+			csr_array(0) 	 <= HASH_ID;
 			csr_array(16)(0) <= demod_sync_lock;
 
 		END IF;
 	END PROCESS csr_proc;
 
-	init 			<= csr_array(0)(0);
-	ptt  			<= csr_array(1)(0);
-	loopback_ena 	<= csr_array(2)(0);
-	rx_invert 		<= csr_array(2)(1);
+	init 			<= csr_array(1)(0);
+	ptt  			<= csr_array(2)(0);
+	loopback_ena 	<= csr_array(3)(0);
+	rx_invert 		<= csr_array(3)(1);
 
-	freq_word_ft 	<= csr_array(3);
-	freq_word_f1 	<= csr_array(4);
-	freq_word_f2 	<= csr_array(5);
+	freq_word_ft 	<= csr_array(4);
+	freq_word_f1 	<= csr_array(5);
+	freq_word_f2 	<= csr_array(6);
 
-	lpf_i_gain 		<= csr_array(6)(GAIN_W -1 DOWNTO 0);
-	lpf_p_gain 		<= csr_array(6)(2*GAIN_W -1 DOWNTO GAIN_W);
-	lpf_freeze 		<= csr_array(7)(0);
-	lpf_zero   		<= csr_array(7)(1);
-	lpf_alpha  		<= csr_array(7)(2*GAIN_W -1 DOWNTO GAIN_W);
+	lpf_i_gain 		<= csr_array(7)(GAIN_W -1 DOWNTO 0);
+	lpf_p_gain 		<= csr_array(7)(2*GAIN_W -1 DOWNTO GAIN_W);
+	lpf_freeze 		<= csr_array(8)(0);
+	lpf_zero   		<= csr_array(8)(1);
+	lpf_alpha  		<= csr_array(8)(2*GAIN_W -1 DOWNTO GAIN_W);
 
-	tx_data_w 		<= csr_array(8)(7 DOWNTO 0);
-	rx_data_w 		<= csr_array(9)(7 DOWNTO 0);
+	tx_data_w 		<= csr_array(9)(7 DOWNTO 0);
+	rx_data_w 		<= csr_array(10)(7 DOWNTO 0);
 
 END ARCHITECTURE struct;
