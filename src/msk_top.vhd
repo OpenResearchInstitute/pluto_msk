@@ -138,6 +138,7 @@ ARCHITECTURE struct OF msk_top IS
 
 	TYPE reg_array IS ARRAY(0 TO C_NUM_REG -1) OF std_logic_vector(C_S_AXI_DATA_WIDTH -1 DOWNTO 0);
 	SIGNAL csr_array 		: reg_array;
+	SIGNAL csr_array_axi 	: reg_array;
 
 	SIGNAL tx_samples_int	: std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 	SIGNAL rx_samples_mux	: std_logic_vector(SAMPLE_W -1 DOWNTO 0);
@@ -193,14 +194,33 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL saxis_req_sync	: std_logic;
 	SIGNAL saxis_req_d 		: std_logic;
 
+	SIGNAL csr_resetn 		: std_logic;
+	SIGNAL csr_resetn_meta	: std_logic;
+
+	TYPE axi_rd_states IS (IDLE, STROBE, ACK);
+	SIGNAL axi_rd_state 	: axi_rd_states; 
+
+	SIGNAL csr_rd_addr_axi 	: NATURAL RANGE 0 TO C_NUM_REG -1;
 	SIGNAL csr_rd_addr		: NATURAL RANGE 0 TO C_NUM_REG -1;
+	SIGNAL csr_rd_data_axi 	: std_logic_vector(C_S_AXI_DATA_WIDTH -1 DOWNTO 0);
 	SIGNAL csr_rd_data		: std_logic_vector(C_S_AXI_DATA_WIDTH -1 DOWNTO 0);
-	SIGNAL csr_rd_ack		: std_logic;
-	SIGNAL csr_rd_stb		: std_logic;
-	SIGNAL csr_wr_addr		: NATURAL RANGE 0 TO C_NUM_REG -1;
-	SIGNAL csr_wr_data		: std_logic_vector(C_S_AXI_DATA_WIDTH -1 DOWNTO 0);
-	SIGNAL csr_wr_ack		: std_logic;
-	SIGNAL csr_wr_stb		: std_logic;
+	SIGNAL csr_rd_ack 	 	: std_logic;
+	SIGNAL csr_rd_ack_axi 	: std_logic;
+	SIGNAL csr_rd_ack_meta	: std_logic;
+	SIGNAL csr_rd_ack_sync	: std_logic;
+	SIGNAL csr_rd_stb 	 	: std_logic;
+	SIGNAL csr_rd_stb_axi 	: std_logic;
+	SIGNAL csr_rd_stb_meta  : std_logic;
+	SIGNAL csr_rd_stb_sync  : std_logic;
+	SIGNAL csr_rd_req_axi 	: std_logic;
+	SIGNAL csr_rd_req_meta	: std_logic;
+	SIGNAL csr_rd_req_sync	: std_logic;
+	SIGNAL csr_wr_addr_axi  : NATURAL RANGE 0 TO C_NUM_REG -1;
+	SIGNAL csr_wr_data_axi  : std_logic_vector(C_S_AXI_DATA_WIDTH -1 DOWNTO 0);
+	SIGNAL csr_wr_ack_axi   : std_logic;
+	SIGNAL csr_wr_stb_axi   : std_logic;
+	SIGNAL csr_wr_stb_meta  : std_logic;
+	SIGNAL csr_wr_stb_sync  : std_logic;
 
 BEGIN 
 
@@ -455,15 +475,16 @@ BEGIN
 			s_axi_bvalid	=> s_axi_bvalid,
 			s_axi_awready	=> s_axi_awready,
 
-			rd_addr			=> csr_rd_addr,
-			rd_data			=> csr_rd_data,
-			rd_ack 			=> csr_rd_ack,
-			rd_stb 			=> csr_rd_stb,
+			rd_addr			=> csr_rd_addr_axi,
+			rd_data			=> csr_rd_data_axi,
+			rd_ack 			=> csr_rd_ack_axi,
+			rd_stb 			=> csr_rd_stb_axi,
+			rd_req 			=> csr_rd_req_axi,
 
-			wr_addr 		=> csr_wr_addr,
-			wr_data 		=> csr_wr_data,
-			wr_ack  		=> csr_wr_ack,
-			wr_stb  		=> csr_wr_stb
+			wr_addr 		=> csr_wr_addr_axi,
+			wr_data 		=> csr_wr_data_axi,
+			wr_ack  		=> csr_wr_ack_axi,
+			wr_stb  		=> csr_wr_stb_axi
 		);
 
 
@@ -477,26 +498,116 @@ BEGIN
 
 	demod_sync_lock <= '0';
 
-	csr_proc : PROCESS (s_axi_aclk, s_axi_aresetn)
+	csr_axi_proc : PROCESS (s_axi_aclk, s_axi_aresetn)
 	BEGIN
 		IF s_axi_aresetn = '0' THEN
-			csr_array 	<= (OTHERS => (OTHERS => '0'));
-			csr_rd_data <= (OTHERS => '0');
-			csr_rd_stb 	<= '0';
-		ELSIF s_axi_aclk = '1' THEN
+			csr_wr_ack_axi 	<= '0';
+			csr_array_axi 	<= (OTHERS => (OTHERS => '0'));
+			csr_rd_data_axi	<= (OTHERS => '0');
+			csr_rd_stb_meta	<= '0';
+			csr_rd_stb_sync	<= '0';
+			csr_rd_stb_axi	<= '0';
+			csr_rd_ack 		<= '0';
+		ELSIF s_axi_aclk'EVENT AND s_axi_aclk = '1' THEN
 
-			csr_wr_ack <= '0';
+			csr_wr_ack_axi		<= '0';
 
-			IF csr_wr_stb = '1' THEN 
-				csr_array(csr_wr_addr) <= csr_wr_data;
-				csr_wr_ack <= '1';
+			IF csr_wr_stb_axi = '1' THEN 
+				csr_array_axi(csr_wr_addr_axi) 
+								<= csr_wr_data_axi;
+				csr_wr_ack_axi	<= '1';
 			END IF;
 
-			csr_rd_data <= csr_array(csr_rd_addr);
-			csr_rd_stb  <= '1';
+			csr_rd_stb_meta 	<= csr_rd_stb;
+			csr_rd_stb_sync		<= csr_rd_stb_meta;
 
-			csr_array(0) 	 <= HASH_ID;
-			csr_array(16)(0) <= demod_sync_lock;
+			CASE axi_rd_state IS 
+
+				WHEN IDLE => 
+
+					csr_rd_ack <= '0';
+
+					IF csr_rd_req_axi = '1' THEN
+						axi_rd_state <= STROBE;
+					END IF;
+
+				WHEN STROBE =>
+
+					IF csr_rd_stb_sync = '1' THEN
+						csr_rd_stb_axi 	<= '1';
+						csr_rd_data_axi <= csr_rd_data;
+						axi_rd_state <= ACK;
+					END IF;
+
+				WHEN ACK => 
+
+					csr_rd_stb_axi 	<= '0';
+					csr_rd_ack 		<= '1';
+
+					IF csr_rd_stb_sync = '0' THEN
+						axi_rd_state <= IDLE;
+					END IF;
+
+				WHEN OTHERS =>
+
+					axi_rd_state <= IDLE;
+
+			END CASE;
+
+		END IF;
+	END PROCESS csr_axi_proc;
+
+	csr_reset_proc : PROCESS (clk, s_axi_aresetn)
+	BEGIN
+		IF s_axi_aresetn = '0' THEN
+			csr_resetn 		<= '0';
+			csr_resetn_meta <= '0';
+		ELSIF clk'EVENT AND clk = '1' THEN
+			csr_resetn_meta <= '1';
+			csr_resetn 		<= csr_resetn_meta;
+		END IF;
+	END PROCESS csr_reset_proc;
+
+	csr_proc : PROCESS (clk)
+	BEGIN
+		IF csr_resetn = '0' THEN
+			csr_rd_stb 		<= '0';
+			csr_wr_stb_meta <= '0';
+			csr_wr_stb_sync <= '0';
+			csr_rd_req_meta <= '0';
+			csr_rd_req_sync <= '0';
+			csr_rd_ack_meta <= '0';
+			csr_rd_ack_sync <= '0';
+			csr_array 		<= (OTHERS => (OTHERS => '0'));
+			csr_rd_data 	<= (OTHERS => '0');
+		ELSIF clk'EVENT AND clk = '1' THEN
+
+			csr_wr_stb_meta <= csr_wr_stb_axi;
+			csr_wr_stb_sync <= csr_wr_stb_meta;
+
+			csr_rd_req_meta <= csr_rd_req_axi;
+			csr_rd_req_sync <= csr_rd_req_meta;
+
+			csr_rd_ack_meta <= csr_rd_ack_axi OR csr_rd_ack;
+			csr_rd_ack_sync <= csr_rd_ack_meta;
+
+			IF csr_wr_stb_sync = '1' THEN
+				csr_array 	<= csr_array_axi;
+			END IF;
+
+			IF csr_rd_req_sync = '1' THEN
+				csr_rd_addr <= csr_rd_addr_axi;
+				csr_rd_stb 	<= '1';
+			END IF;
+
+			IF csr_rd_ack_sync = '1' THEN
+				csr_rd_stb 	<= '0';
+			END IF;
+
+			csr_rd_data		<= csr_array(csr_rd_addr);
+
+			csr_array(0)		<= HASH_ID;
+			csr_array(16)(0)	<= demod_sync_lock;
 
 		END IF;
 	END PROCESS csr_proc;

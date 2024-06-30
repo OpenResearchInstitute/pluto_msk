@@ -263,6 +263,8 @@ class axi_bus:
         while self.rvalid.value == 0:
             await RisingEdge(self.aclk)
 
+        self.rready.value = 0
+
         return self.rdata.value.integer
 
 
@@ -281,13 +283,16 @@ class axi_bus:
 
         await RisingEdge(self.aclk)
 
-        while self.awready == 0:
+        while self.awready.value == 0 or self.wready.value == 0:
             await RisingEdge(self.aclk)
+
+        self.awvalid.value = 0
+        self.wvalid.value = 0
 
         while self.bvalid.value == 0:
             await RisingEdge(self.aclk)
 
-        self.awvalid.value = 0
+        self.bready.value = 0
 
 
 #------------------------------------------------------------------------------------------------------
