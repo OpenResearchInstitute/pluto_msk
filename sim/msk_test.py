@@ -208,6 +208,9 @@ class axi_bus:
         self.bresp     = dut.s_axi_bresp  
         self.bvalid    = dut.s_axi_bvalid 
 
+        self.awprot    = dut.s_axi_awprot
+        self.arprot    = dut.s_axi_arprot
+
 
         self.awaddr.value = 0
         self.awvalid.value = 0
@@ -222,6 +225,9 @@ class axi_bus:
         self.arvalid.value = 0
 
         self.rready.value = 0
+
+        self.awprot.value = 0
+        self.arprot.value = 0
 
 
     async def init(self):
@@ -275,18 +281,20 @@ class axi_bus:
         self.awvalid.value = 1
         self.awaddr.value = addr
 
+        while self.awready.value == 0:
+             await RisingEdge(self.aclk)
+
+        self.awvalid.value = 0
+
         self.wstrb.value = 15
         self.wdata.value = data
         self.wvalid.value = 1
 
         self.bready.value = 1
 
-        await RisingEdge(self.aclk)
-
-        while self.awready.value == 0 or self.wready.value == 0:
+        while self.wready.value == 0:
             await RisingEdge(self.aclk)
 
-        self.awvalid.value = 0
         self.wvalid.value = 0
 
         while self.bvalid.value == 0:
@@ -484,6 +492,10 @@ async def msk_test_1(dut):
     f1 = freq_if - bitrate
     f2 = freq_if + bitrate
 
+    print("Bit Rate NCO Freq Word: ", hex(int(bitrate / sample_rate * 2.0**32)))
+    print("F1 NCO Freq Word: ", hex(int(f1 / sample_rate * 2.0**32)))
+    print("F2 NCO Freq Word: ", hex(int(f2 / sample_rate * 2.0**32)))
+
     FFT = 8192 * 4
 
     await RisingEdge(dut.clk)
@@ -494,8 +506,8 @@ async def msk_test_1(dut):
     await axi.init()
     await axis.init()
     
-    dut.tx_enable.value = 1
-    dut.rx_enable.value = 1
+    dut.tx_enable.value = 0
+    dut.rx_enable.value = 0
     dut.rx_svalid.value = 1
     dut.tx_valid.value  = 1
 
@@ -512,6 +524,22 @@ async def msk_test_1(dut):
 
     hash_id = await axi.read(0)
     print("Hash ID: ", hex(hash_id))
+
+    data = await axi.read(4)
+    print(hex(data))
+    data = await axi.read(0)
+    print(hex(data))
+    data = await axi.read(12)
+    print(hex(data))
+    data = await axi.read(0)
+    print(hex(data))
+    data = await axi.read(16)
+    print(hex(data))
+    data = await axi.read(0)
+    print(hex(data))
+    data = await axi.read(20)
+    print(hex(data))
+
 
     await Timer(100, units="ns")
 
@@ -546,6 +574,9 @@ async def msk_test_1(dut):
 
         if sim_time_d <= sim_start + 4000 and sim_time >= sim_start + 4000:
             await pn.resync()
+            data = await axi.read(12)
+            data = data + 0x80000000
+            await axi.write(12, data)
 
         # if sim_time_d <= sim_start + 2000 and sim_time >= sim_start + 2000:
             # await pn.resync()
@@ -559,6 +590,13 @@ async def msk_test_1(dut):
         await axis.send(await pn.gen())
         sim_time_d = sim_time
         sim_time = get_sim_time("us")
+
+        data = await axi.read(64)
+        print("Status 1: ", hex(data))
+        data = await axi.read(68)
+        print("Tx Bit Count: ", data)
+        data = await axi.read(72)
+        print("Tx Enabled: ", data)
 
     msksim.sim_run = False
     pn.sim_run = False
