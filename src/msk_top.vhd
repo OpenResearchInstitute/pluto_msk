@@ -668,7 +668,9 @@ BEGIN
 				csr_array(18) 		<= (OTHERS => '0');
 				csr_array(3)(31) 	<= '0';
 			ELSE
-				csr_array(17) 		<= std_logic_vector(unsigned(csr_array(17)) + tx_req);
+				IF tx_req = '1' THEN
+					csr_array(17)	<= std_logic_vector(unsigned(csr_array(17)) + 1);
+				END IF;
 				IF tx_enable = '1' THEN
 					csr_array(18)	<= std_logic_vector(unsigned(csr_array(18)) + 1);
 				ELSE
