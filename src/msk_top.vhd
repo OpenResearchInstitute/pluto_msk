@@ -148,6 +148,7 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL tx_data_bit_d1 	: std_logic;
 	SIGNAL tx_data_bit_d2 	: std_logic;
 	SIGNAL tx_data_bit_d3 	: std_logic;
+	SIGNAL tx_data_bit_d4 	: std_logic;
 
 	SIGNAL s_axis_tready_int: std_logic;
 	SIGNAL rx_bit   		: std_logic;
@@ -223,8 +224,18 @@ ARCHITECTURE struct OF msk_top IS
 
 	SIGNAL clear_counts 	: std_logic;
 
-BEGIN 
+	SIGNAL prbs_data_bit	: std_logic;
+	SIGNAL prbs_sel			: std_logic;
+	SIGNAL prbs_err_insert 	: std_logic;
+	SIGNAL prbs_poly		: std_logic_vector(31 DOWNTO 0);
+	SIGNAL prbs_initial 	: std_logic_vector(31 DOWNTO 0);
+	SIGNAL prbs_err_mask 	: std_logic_vector(31 DOWNTO 0);
+	SIGNAL prbs_clear		: std_logic;
+	SIGNAL prbs_sync 		: std_logic;
+	SIGNAL prbs_bits 		: std_logic_vector(31 DOWNTO 0);
+	SIGNAL prbs_errs 		: std_logic_vector(31 DOWNTO 0);
 
+BEGIN 
 
 ------------------------------------------------------------------------------------------------------
 --  __                 __          ___  __  __   __       __  __ 
@@ -298,10 +309,11 @@ BEGIN
 				tx_data_bit_d1 <= tx_data_bit;
 				tx_data_bit_d2 <= tx_data_bit_d1;
 				tx_data_bit_d3 <= tx_data_bit_d2;
+				tx_data_bit_d4 <= tx_data_bit_d3;
 
 				rx_data_cmp    <= rx_bit;
 
-				data_error 	   <= rx_data_cmp XOR tx_data_bit_d3;
+				data_error 	   <= rx_data_cmp XOR tx_data_bit_d4;
 
 			END IF;
 
@@ -318,6 +330,24 @@ BEGIN
 		END IF;
 	END PROCESS par2ser_proc;
 
+	u_prbs_gen : ENTITY work.prbs_gen(rtl)
+		GENERIC MAP (
+			DATA_W 			=>  1,
+			GENERATOR_W		=> 32,
+			GENERATOR_BITS 	=>  5
+		)
+		PORT MAP (
+			clk 			=> clk,
+			init 			=> init,
+			initial_state 	=> prbs_initial,
+			polynomial 		=> prbs_poly,
+			error_insert 	=> prbs_err_insert,
+			error_mask 		=> prbs_err_mask(1 -1 DOWNTO 0),
+			prbs_sel 		=> prbs_sel,
+			data_in(0)		=> tx_data_bit,
+			data_req		=> tx_req,
+			data_out(0)		=> prbs_data_bit
+		);
 
 ------------------------------------------------------------------------------------------------------
 --       __             __   __                ___  __   __  
@@ -344,7 +374,7 @@ BEGIN
 
 			ptt 			=> ptt,
 
-			tx_data 		=> tx_data_bit,
+			tx_data 		=> prbs_data_bit,
 			tx_req 			=> tx_req,
 
 			tx_enable 		=> tx_enable OR loopback_ena,
@@ -442,20 +472,37 @@ BEGIN
 
 
 ------------------------------------------------------------------------------------------------------
---  __                         ___  __  __   __       __  __ 
--- (_   __  /\  \_/ |   | |\ |  |  |_  |__) |_   /\  /   |_  
--- __)     /--\ / \ |   | | \|  |  |__ | \  |   /--\ \__ |__ 
---                                                                                                                            
+--  _   _   _   __          _       
+-- |_) |_) |_) (_     |\/| / \ |\ | 
+-- |   | \ |_) __)    |  | \_/ | \| 
 ------------------------------------------------------------------------------------------------------
--- S-AXI Interface
+-- PRBS GEN/MON
 
+	u_prbs_mon : ENTITY work.prbs_mon(rtl)
+		GENERIC MAP (
+			DATA_W 			=>  1,
+			GENERATOR_W		=> 32,
+			GENERATOR_BITS 	=>  5
+		)
+		PORT MAP (
+			clk 			=> clk,
+			init 			=> init,
+			sync 			=> prbs_sync,
+			initial_state 	=> prbs_initial,
+			polynomial 		=> prbs_poly,
+			count_reset 	=> prbs_clear,
+			data_count 		=> prbs_bits,
+			error_count 	=> prbs_errs,
+			data_in(0)		=> rx_bit,
+			data_in_valid	=> rx_bit_valid
+		);
 
 
 ------------------------------------------------------------------------------------------------------
---  __  __        __    __      __ ___      ___       __ 
--- /   /  \ |\ | |_  | / _   / (_   |   /\   |  /  \ (_  
--- \__ \__/ | \| |   | \__) /  __)  |  /--\  |  \__/ __) 
---                                                                                                                        
+--  __          ___     _  _        _ ___  __     __ ___    ___     __ 
+-- (_ __ /\  \/  |     /  / \ |\ | |_  |  /__  / (_   |  /\  | | | (_  
+-- __)  /--\ /\ _|_    \_ \_/ | \| |  _|_ \_| /  __)  | /--\ | |_| __) 
+--                                                                                                                                  
 ------------------------------------------------------------------------------------------------------
 -- Config/Status
 
@@ -623,11 +670,22 @@ BEGIN
 			ELSE
 				csr_array(17) 		<= std_logic_vector(unsigned(csr_array(17)) + tx_req);
 				IF tx_enable = '1' THEN
-					csr_array(18)	<= std_logic_vector(unsigned(csr_array(17)) + 1);
+					csr_array(18)	<= std_logic_vector(unsigned(csr_array(18)) + 1);
 				ELSE
-					csr_array(18)	<= std_logic_vector(unsigned(csr_array(17)) - 1);
+					csr_array(18)	<= std_logic_vector(unsigned(csr_array(19)) - 1);
 				END IF;
 			END IF;
+			IF prbs_err_insert = '1' THEN
+				csr_array(11)(1) <= '0';
+			END IF;
+			IF prbs_clear = '1' THEN
+				csr_array(15)(0) <= '0';
+			END IF;
+			IF prbs_sync = '1' THEN
+				csr_array(15)(1) <= '0';
+			END IF;
+			csr_array(19) <= prbs_bits;
+			csr_array(20) <= prbs_errs;
 
 		END IF;
 	END PROCESS csr_proc;
@@ -650,5 +708,16 @@ BEGIN
 
 	tx_data_w 		<= csr_array(9)(7 DOWNTO 0);
 	rx_data_w 		<= csr_array(10)(7 DOWNTO 0);
+
+	prbs_sel		<= csr_array(11)(0);
+	prbs_err_insert <= csr_array(11)(1);
+
+	prbs_poly		<= csr_array(12);
+	prbs_initial 	<= csr_array(13);
+	prbs_err_mask 	<= csr_array(14);
+
+	prbs_clear		<= csr_array(15)(0);
+	prbs_sync 		<= csr_array(15)(1);
+
 
 END ARCHITECTURE struct;

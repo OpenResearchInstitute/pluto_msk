@@ -521,25 +521,15 @@ async def msk_test_1(dut):
     await axi.write(32, (2 << 16))                                   # low-pass filter alpha
     await axi.write(36, 8)
     await axi.write(40, 8)
+    await axi.write(44, 1)                                          # Select PRBS data path
+    await axi.write(48, (1 << 31) + (1 << 28))                      # Polynomial 
+    await axi.write(52, 65535)                                      # initial state
+    await axi.write(56, 1)                                          # Error Mask
+    await axi.write(60, 0)
+
 
     hash_id = await axi.read(0)
     print("Hash ID: ", hex(hash_id))
-
-    data = await axi.read(4)
-    print(hex(data))
-    data = await axi.read(0)
-    print(hex(data))
-    data = await axi.read(12)
-    print(hex(data))
-    data = await axi.read(0)
-    print(hex(data))
-    data = await axi.read(16)
-    print(hex(data))
-    data = await axi.read(0)
-    print(hex(data))
-    data = await axi.read(20)
-    print(hex(data))
-
 
     await Timer(100, units="ns")
 
@@ -566,21 +556,23 @@ async def msk_test_1(dut):
     dut._log.info("starting...")
 
     msksim.sim_run = True
-    pn.sim_run = True
+#    pn.sim_run = True
 
-    pn.sync = 100
+#    pn.sync = 100
 
     while sim_time < sim_start + 10000:
 
-        if sim_time_d <= sim_start + 4000 and sim_time >= sim_start + 4000:
-            await pn.resync()
+        if sim_time_d <= sim_start + 1000 and sim_time >= sim_start + 1000:
+            #await pn.resync()
             data = await axi.read(12)
             data = data + 0x80000000
             await axi.write(12, data)
+            await axi.write(60, 2)
 
-        # if sim_time_d <= sim_start + 2000 and sim_time >= sim_start + 2000:
-            # await pn.resync()
-# 
+        if sim_time_d <= sim_start + 5000 and sim_time >= sim_start + 5000:
+            await axi.write(44, 3)
+            await axi.write(44, 1)
+
         # if sim_time_d <= sim_start + 3000 and sim_time >= sim_start + 3000:
             # await pn.resync()
 # 
@@ -599,7 +591,7 @@ async def msk_test_1(dut):
         print("Tx Enabled: ", data)
 
     msksim.sim_run = False
-    pn.sim_run = False
+    # pn.sim_run = False
 
     await RisingEdge(dut.clk)
 
@@ -612,9 +604,15 @@ async def msk_test_1(dut):
     print("Ones: ", pn.ones_count)
     print("Zeros: ", pn.zeros_count)
 
-    print("Bit errors: ", pn.err_count)
-    print("Bit count:  ", pn.data_count)
-    print("BER:        ", pn.err_count/pn.data_count)
+    errs = await axi.read(80)
+    print("Bit errors: ", errs)
+    bits = await axi.read(76)
+    print("Bit count:  ", bits)
+    print("BER:        ", (1.0*errs)/bits)
+
+    # print("Bit errors: ", pn.err_count)
+    # print("Bit count:  ", pn.data_count)
+    # print("BER:        ", pn.err_count/pn.data_count)
 
     blackman_window = np.blackman(len(tx_samples))
 

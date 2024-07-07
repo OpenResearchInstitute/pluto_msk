@@ -20,7 +20,8 @@ VHDL_SOURCES += $(SRC)/nco.vhd \
 				$(SRC)/pi_controller.vhd \
 				$(SRC)/costas_loop.vhd \
 				$(SRC)/msk_demodulator.vhd \
-				$(SRC)/axi_ctrlif.vhd \
+				$(SRC)/prbs_gen.vhd \
+				$(SRC)/prbs_mon.vhd \
 				$(SRC)/msk_top.vhd
 
 # use VHDL_SOURCES for VHDL files
