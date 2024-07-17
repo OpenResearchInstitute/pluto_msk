@@ -1,0 +1,15 @@
+sim/*png
+.ipynb_checkpoints/
+gnuradio/*png
+__pycache__/
+*.o
+sim_build/
+results.xml
+*.ghw
+msk_top
+*.bkp
+.DS_Store
+work/
+*.ghw.hier
+docs/images/
+.asciidoctor/
