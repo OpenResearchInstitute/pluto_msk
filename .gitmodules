@@ -1,0 +1,15 @@
+[submodule "msk_demodulator"]
+	path = msk_demodulator
+	url = https://github.com/OpenResearchInstitute/msk_demodulator.git
+[submodule "msk_modulator"]
+	path = msk_modulator
+	url = https://github.com/OpenResearchInstitute/msk_modulator.git
+[submodule "nco"]
+	path = nco
+	url = https://github.com/OpenResearchInstitute/nco.git
+[submodule "pi_controller"]
+	path = pi_controller
+	url = https://github.com/OpenResearchInstitute/pi_controller.git
+[submodule "prbs"]
+	path = prbs
+	url = https://github.com/OpenResearchInstitute/prbs.git
