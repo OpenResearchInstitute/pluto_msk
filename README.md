@@ -15,7 +15,7 @@ The following ORI library components are used as submodules to this repository:
 ## Building
 
 1. git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
-2. cd pluto_msk/project/pluto
+2. cd pluto_msk/projects/pluto/
 3. source /opt/Xilinx/Vivado/2022.2/settings64.sh
 4. make 
 
