@@ -20,4 +20,4 @@ GENERIC_DEPS += ../prbs/src/prbs_mon.vhd
 XILINX_DEPS += msk_top_ip.tcl
 
 
-include ../../hdl/library/scripts/library.mk
+include ../hdl/library/scripts/library.mk

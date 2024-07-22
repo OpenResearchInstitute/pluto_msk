@@ -1,7 +1,7 @@
 # ip
 #   "src/axi_ctrlif.vhd" 
 
-source ../../hdl/scripts/adi_env.tcl
+source ../hdl/scripts/adi_env.tcl
 source $ad_hdl_dir/library/scripts/adi_ip_xilinx.tcl
 
 adi_ip_create msk_top
@@ -29,6 +29,7 @@ adi_add_bus "s_axis" "slave" \
     {"s_axis_data" "TDATA"} \
   ]
 adi_add_bus_clock "s_axis_aclk" "s_axis" "s_axis_aresetn"
+
 
 ipx::save_core [ipx::current_core]
 
