@@ -12,7 +12,12 @@ The following ORI library components are used as submodules to this repository:
 4. [pi_controller](https://github.com/OpenResearchInstitute/pi_controller)
 5. [prbs](https://github.com/OpenResearchInstitute/prbs)
 
+## Building
 
+1. git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
+2. cd pluto_msk/project/pluto
+3. source /opt/Xilinx/Vivado/2022.2/settings64.sh
+4. make 
 
 ## MSK Modem Architecture
 
