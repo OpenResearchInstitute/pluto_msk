@@ -16,3 +16,12 @@
 [submodule "hdl"]
 	path = hdl
 	url = https://github.com/analogdevicesinc/hdl
+[submodule "firmware/buildroot"]
+	path = firmware/buildroot
+	url = https://github.com/analogdevicesinc/buildroot
+[submodule "firmware/linux"]
+	path = firmware/linux
+	url = https://github.com/analogdevicesinc/linux
+[submodule "firmware/u-boot-xlnx"]
+	path = firmware/u-boot-xlnx
+	url = https://github.com/analogdevicesinc/u-boot-xlnx
