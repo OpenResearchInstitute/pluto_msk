@@ -51,8 +51,38 @@ You can check which version of Vivado is currently being used as follows.
 $ which vivado
 /tools/Xilinx/Vivado/2022.2/bin/vivado
 ```
+Change directories to the PLUTO project directory and run make. 
 
+```
+/hdl/projects/pluto$ make
+```
+A useful log file for information, warnings, and errors is pluto_vivado.log
 
+This repository is organized as an out of tree module.
+
+Key lines in system_bd.tcl are:
+
+https://github.com/OpenResearchInstitute/pluto_msk/blob/942aa516f8cc30af73a5a0c9ce3f8266012989e8/projects/pluto/system_bd.tcl#L7-19
+
+```
+set_property ip_repo_paths [list $ad_hdl_dir/library ../../library]  [current_fileset]
+update_ip_catalog
+```
+The ip_repo_paths property lets us create a custom IP catalog for use with Vivado. It defines the path to one or more directories containing user-defined intellectual property (IP), like our blocks. The specified directories, and any sub-directories, are searched for files to add to the Vivado IP catalog. The property is assigned to the current fileset of the current project. 
+
+ip_repo_paths will look for a <component>.xml file, where <component> is the name of the IP to add to the catalog. This XML file lists the files that define the module. Subdirectories are searched through. We don't have to list out each individual module's <component>.xml.
+
+Where does our component.xml file come from? It's create by the msk_top_ip.tcl file. A version can be found here:
+https://github.com/OpenResearchInstitute/pluto_msk/blob/main/library/msk_top_ip.tcl
+
+Setting the ip_repo_paths property needs to be followed by update_ip_catalog. 
+
+Example syntax:
+
+```
+set_property IP_REPO_PATHS {c:/Data/Designs C:/myIP} [current_fileset]
+update_ip_catalog
+```
 
 
 ## Roadmap
