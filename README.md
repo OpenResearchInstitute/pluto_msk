@@ -24,6 +24,23 @@ The following ORI library components are used as submodules to this repository:
 
 ## Development Quickstart
 
+Here is a set of instructions for getting this minimum shift keying (MSK) transceiver implementation to work on a PLUTO SDR. 
+
+Clone the hardware description language reference design from Analog Devices GitHub.
+
+```git clone https://github.com/analogdevicesinc/hdl```
+
+Change directory into hdl. To match what we did, check out the 2022.2 branch of this repository. If you're using another version of Vivado, choose the branch corresponding to your Vivado version that you are using for development.  
+
+```git checkout hdl_2022_r2```
+
+Clone this pluto_msk repository.
+
+```git clone https://github.com/OpenResearchInstitute/pluto_msk```
+
+If there's a branch you are particularly interested in, then go ahead and check that branch out. 
+
+
 
 ## Roadmap
 
