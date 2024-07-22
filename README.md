@@ -32,7 +32,7 @@ Clone this pluto_msk repository.
 git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk.git
 ```
 
-Change directory into the hdl submodule directory. To match versions with what we did, check out the 2022.2 branch of the hdl repository. If you're using another version of Vivado, choose the branch corresponding to your Vivado version that you are using for development.  
+To match versions with what we did, use the 2022.2 branch of the hdl repository. This branch should be the default when the repository is cloned. If you're using another version of Vivado, then you will need to choose the branch corresponding to your Vivado version that you are using for development. Here is an example of how to do that. 
 
 ```
 /pluto_msk/hdl$ git checkout hdl_2022_r2 
@@ -41,13 +41,11 @@ branch 'hdl_2022_r2' set up to track 'origin/hdl_2022_r2'.
 Switched to a new branch 'hdl_2022_r2'
 ```
 
-If there's a branch you are particularly interested in, then go ahead and check that branch out.
-
 If you are working on ORI virtual machine, then source the version of Vivado needed as follows. 
 
 ```$ source /tools/Xilinx/Vivado/2022.2/settings.sh```
 
-You can check which version of Vivado as follows. 
+You can check which version of Vivado is currently being used as follows. 
 
 ```
 $ which vivado
