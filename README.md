@@ -26,19 +26,33 @@ The following ORI library components are used as submodules to this repository:
 
 Here is a set of instructions for getting this minimum shift keying (MSK) transceiver implementation to work on a PLUTO SDR. 
 
-Clone the hardware description language reference design from Analog Devices GitHub.
-
-```git clone https://github.com/analogdevicesinc/hdl```
-
-Change directory into hdl. To match what we did, check out the 2022.2 branch of this repository. If you're using another version of Vivado, choose the branch corresponding to your Vivado version that you are using for development.  
-
-```git checkout hdl_2022_r2```
-
 Clone this pluto_msk repository.
 
-```git clone https://github.com/OpenResearchInstitute/pluto_msk```
+```git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk.git
+```
 
-If there's a branch you are particularly interested in, then go ahead and check that branch out. 
+Change directory into the hdl submodule directory. To match versions with what we did, check out the 2022.2 branch of the hdl repository. If you're using another version of Vivado, choose the branch corresponding to your Vivado version that you are using for development.  
+
+```
+/pluto_msk/hdl$ git checkout hdl_2022_r2 
+Previous HEAD position was 1978df298 axi_dac_interpolate: Improve the ctrl logic
+branch 'hdl_2022_r2' set up to track 'origin/hdl_2022_r2'.
+Switched to a new branch 'hdl_2022_r2'
+```
+
+If there's a branch you are particularly interested in, then go ahead and check that branch out.
+
+If you are working on ORI virtual machine, then source the version of Vivado needed as follows. 
+
+```$ source /tools/Xilinx/Vivado/2022.2/settings.sh```
+
+You can check which version of Vivado as follows. 
+
+```
+$ which vivado
+/tools/Xilinx/Vivado/2022.2/bin/vivado
+```
+
 
 
 
