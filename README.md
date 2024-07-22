@@ -28,7 +28,8 @@ Here is a set of instructions for getting this minimum shift keying (MSK) transc
 
 Clone this pluto_msk repository.
 
-```git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk.git
+```
+git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk.git
 ```
 
 Change directory into the hdl submodule directory. To match versions with what we did, check out the 2022.2 branch of the hdl repository. If you're using another version of Vivado, choose the branch corresponding to your Vivado version that you are using for development.  
