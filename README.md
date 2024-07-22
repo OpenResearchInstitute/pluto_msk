@@ -32,7 +32,7 @@ Clone this pluto_msk repository.
 git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk.git
 ```
 
-To match versions with what we did, use the 2022.2 branch of the hdl repository. This branch should be the default when the repository is cloned. If you're using another version of Vivado, then you will need to choose the branch corresponding to your Vivado version that you are using for development. Here is an example of how to do that. 
+The repository should clone to the latest stable PLUTO firmware release commit. Here is an example of how to change to another branch of the hdl reference design. hdl_2022_r2 was used for VHDL development. Don't change branches of hdl unless you have to.
 
 ```
 /pluto_msk/hdl$ git checkout hdl_2022_r2 
