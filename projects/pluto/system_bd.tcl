@@ -3,7 +3,11 @@
 #set_property FILE_TYPE {VHDL 2008} [get_files *.vhd] 
 source $ad_hdl_dir/projects/common/xilinx/adi_fir_filter_bd.tcl
 source $ad_hdl_dir/library/axi_tdd/scripts/axi_tdd.tcl
-source ../../library/msk_top_ip.tcl
+
+set_property ip_repo_paths [list $ad_hdl_dir/library ../../library]  [current_fileset]
+
+update_ip_catalog
+#source ../../library/msk_top_ip.tcl
 
 # default ports
 

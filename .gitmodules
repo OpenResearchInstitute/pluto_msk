@@ -13,3 +13,6 @@
 [submodule "prbs"]
 	path = prbs
 	url = https://github.com/OpenResearchInstitute/prbs.git
+[submodule "hdl"]
+	path = hdl
+	url = https://github.com/analogdevicesinc/hdl

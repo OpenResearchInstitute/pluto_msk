@@ -25,3 +25,6 @@ The following ORI library components are used as submodules to this repository:
 
 ## Contributors
 
+## ADI add custom IP
+
+https://wiki.analog.com/resources/fpga/docs/hdl/creating_new_ip_guide
