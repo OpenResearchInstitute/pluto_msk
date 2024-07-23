@@ -13,6 +13,7 @@ The following ORI library components are used as submodules to this repository:
 5. [prbs](https://github.com/OpenResearchInstitute/prbs)
 
 ## Building
+In oder to build fpga bitstream, you need to install first Vivado. Recommended version is 2022.2. In this documentation vivado installtion path is assumed to be /opt/Xilinx/Vivado. If it is on an other directory, change the path (for example /tools/Xilinx/Vivado on keroppi) 
 ### First, clone this repo with all submodules
 git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 ### building bitstream only
@@ -20,8 +21,9 @@ git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 2. source /opt/Xilinx/Vivado/2022.2/settings64.sh
 3. make
 ### complete firmware
-1. cd pluto_msk/firmware
-2. make
+1. Check if your vivado path is correct on this line https://github.com/OpenResearchInstitute/pluto_msk/blob/871bd130de0e6d462138bc6d2981b1c65897a0ca/firmware/Makefile#L19 
+2. cd pluto_msk/firmware
+3. make
 
 ## MSK Modem Architecture
 
