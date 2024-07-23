@@ -13,11 +13,15 @@ The following ORI library components are used as submodules to this repository:
 5. [prbs](https://github.com/OpenResearchInstitute/prbs)
 
 ## Building
-
-1. git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
-2. cd pluto_msk/projects/pluto/
-3. source /opt/Xilinx/Vivado/2022.2/settings64.sh
-4. make 
+### First, clone this repo with all submodules
+git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
+### building bitstream only
+1. cd pluto_msk/projects/pluto/
+2. source /opt/Xilinx/Vivado/2022.2/settings64.sh
+3. make
+### complete firmware
+1. cd pluto_msk/firmware
+2. make
 
 ## MSK Modem Architecture
 
