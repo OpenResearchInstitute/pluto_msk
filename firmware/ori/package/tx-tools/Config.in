@@ -1,0 +1,10 @@
+config BR2_PACKAGE_TX-TOOLS
+        bool "tx-tools"
+        depends on BR2_TOOLCHAIN_HAS_THREADS
+        depends on BR2_PACKAGE_SOAPYSDR
+        help
+          tx_sdr tool for transmitting data to SDRs, based on rtl_sdr from librtlsdr, and rx_sdr from rx_tools, using the SoapySDR vendor-neutral SDR support library, intended to support a wide range of TX-capable devices. 
+
+          https://github.com/triq-org/tx_tools
+comment "tx_tools needs a toolchain w/ threads"
+        depends on !BR2_TOOLCHAIN_HAS_THREADS

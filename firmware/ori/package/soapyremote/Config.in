@@ -1,0 +1,7 @@
+config BR2_PACKAGE_SOAPYREMOTE
+	bool "soapyremote"
+#	select BR2_PACKAGE_SOAPYSDR
+	help
+	  Use any Soapy SDR remotely
+
+	  https://github.com/pothosware/SoapyRemote.git

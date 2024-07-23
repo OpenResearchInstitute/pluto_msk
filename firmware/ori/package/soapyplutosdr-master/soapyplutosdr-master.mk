@@ -1,0 +1,26 @@
+################################################################################
+#
+# SoapyPlutoSDR
+#
+################################################################################
+SOAPYPLUTOSDR_MASTER_VERSION = soapyplutosdr-master
+SOAPYPLUTOSDR_MASTER_SOURCE_BASENAME = SoapyPlutoSDR-master
+SOAPYPLUTOSDR_MASTER_SOURCE =$(SOAPYPLUTOSDR_MASTER_SOURCE_BASENAME).zip
+SOAPYPLUTOSDR_MASTER_SITE = $(call github,pothosware,SoapyPlutoSDR,master)
+SOAPYPLUTOSDR_MASTER_INSTALL_STAGING = YES
+SOAPYPLUTOSDR_MASTER_LICENSE = Boost Software License 1.0
+SOAPYPLUTOSDR_MASTER_LICENSE_FILES = LICENSE_1_0.txt
+#SOAPYPLUTOSDR_MASTER_DEPENDENCIES = python
+#SOAPYPLUTOSDR_MASTER_CONF_OPTS = -DENABLE_PYTHON3=OFF -DENABLE_PYTHON=OFF
+# -DCFLAGS=$(TARGET_CC) -DCXXFLAGS=$(TARGET_CXX)
+
+define SOAPYPLUTOSDR_MASTER_EXTRACT_CMDS
+    echo $(@D)
+    unzip $(DL_DIR)/$(SOAPYPLUTOSDR_MASTER_VERSION)/$(SOAPYPLUTOSDR_MASTER_SOURCE_BASENAME).zip -d $(@D)
+    mv $(@D)/$(SOAPYPLUTOSDR_MASTER_SOURCE_BASENAME)/* $(@D)
+ #   rmdir $(@D)/$(SOAPYPLUTOSDR_MASTER_SOURCE_BASENAME)
+endef
+
+$(eval $(cmake-package))
+
+

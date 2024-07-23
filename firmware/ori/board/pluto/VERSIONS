@@ -1,0 +1,4 @@
+device-fw b340
+buildroot 2022.02.3-adi-5712-gf70f4a
+linux adi-xilinx-2020.1-175882-ge14e351
+u-boot-xlnx v0.20-PlutoSDR-25-g90401c

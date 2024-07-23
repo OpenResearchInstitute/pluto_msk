@@ -1,0 +1,12 @@
+config BR2_PACKAGE_LAMABLEU_APPS
+	bool "LamaBleu-apps"
+	depends on BR2_PACKAGE_LIBIIO
+#	select BR2_PACKAGE_LAMABLEU_APPS
+
+	help
+	  Some tools for ADALM-Pluto
+		http://github.com/LamaBleu
+
+
+
+

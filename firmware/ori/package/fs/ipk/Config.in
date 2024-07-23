@@ -1,0 +1,13 @@
+config BR2_TARGET_ROOTFS_IPK_REPO
+ bool "Ipk repository with packages"
+ default y
+ help
+  Create a repository compatible with opkg/dpkg tools.
+
+  Each selected packages is splitted in 4 parts:
+     - main package with debug symbols stripped off
+     - debug symbols
+     - development files
+     - documentation files
+     - locales
+ 

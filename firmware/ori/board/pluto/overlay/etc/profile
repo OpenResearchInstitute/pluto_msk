@@ -1,0 +1,8 @@
+if [ "$PS1" ]; then
+	if [ "`id -u`" -eq 0 ]; then
+		export PS1="\e[0;32m[\h:\w]\# \e[m"
+	else
+		export PS1='$ '
+	fi
+fi
+

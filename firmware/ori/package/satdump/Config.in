@@ -1,0 +1,13 @@
+config BR2_PACKAGE_SATDUMP
+	bool "satdump-master"
+	depends on BR2_PACKAGE_VOLK
+	depends on BR2_PACKAGE_LIBPNG
+	depends on BR2_PACKAGE_TIFF
+	depends on BR2_PACKAGE_JEMALLOC
+	help
+	  generic satellite data processing software
+	  github (release)
+
+	  https://github.com/SatDump/SatDump
+
+	  

@@ -1,0 +1,7 @@
+config BR2_PACKAGE_SOAPYSDR
+	bool "soapysdr"
+#	select BR2_PACKAGE_PYTHON
+	help
+	  Vendor and platform neutral SDR support library
+           
+	  https://github.com/pothosware/SoapySDR.git

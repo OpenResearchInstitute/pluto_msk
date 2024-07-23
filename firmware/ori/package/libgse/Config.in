@@ -1,0 +1,6 @@
+config BR2_PACKAGE_LIBGSE
+	bool "libgse"
+	help
+	  LibGSE.
+
+	  https://github.com/CNES/libgse

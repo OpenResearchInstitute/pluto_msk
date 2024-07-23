@@ -1,0 +1,17 @@
+config BR2_PACKAGE_CHARON
+    bool "charon"
+    select BR2_PACKAGE_BATCTL
+    select BR2_PACKAGE_BRIDGE_UTILS
+    select BR2_PACKAGE_FFTWF
+    select BR2_PACKAGE_IPERF3
+    select BR2_PACKAGE_IPROUTE2
+    select BR2_PACKAGE_LIQUID_DSP
+    select BR2_PACKAGE_TUNCTL
+    select BR2_PACKAGE_UTIL_LINUX
+    select BR2_PACKAGE_UTIL_LINUX_SCHEDUTILS
+    select BR2_PACKAGE_LIBFEC
+    select BR2_PACKAGE_LIBTUNTAP
+    help
+      Enable your Pluto SDR to become a stand-alone OFDM transceiver with batman-adv mesh network routing capabilities
+
+      https://github.com/tvelliott/charon

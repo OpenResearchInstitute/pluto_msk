@@ -1,0 +1,54 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 712443f..a65212a 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -19,7 +19,6 @@ endif()
+ # -------------------
+ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
+ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
+-set(CMAKE_INSTALL_PREFIX "/usr/local/")
+ set(${CMAKE_SYSTEM_NAME} True)
+ 
+ # Global CPP definitions
+@@ -36,18 +35,10 @@ set(SOURCES_LIST
+ # OS families specific things
+ # ---------------------------
+ if(UNIX)
+-    # Unix specific include directories
+-    # ---------------------------------
+-    include_directories(
+-        "${CMAKE_CURRENT_SOURCE_DIR}"
+-        /usr/include/
+-        /usr/local/include
+-    )
+-    
+     # Unix specific definitions
+     # -------------------------
+     add_definitions(-DUnix)
+-    
++
+     # Unix specific source files
+     # --------------------------
+     set(SOURCES_LIST ${SOURCES_LIST} tuntap-unix.c )
+@@ -57,7 +48,7 @@ if(Windows)
+     # Windows specific definitions
+     # ----------------------------
+     add_definitions(-DWindows)
+-    
++
+     # Windows specific source files
+     # -----------------------------
+     set(SOURCES_LIST ${SOURCES_LIST} tuntap-windows.c )
+@@ -67,7 +58,6 @@ endif(Windows)
+ # ------------------
+ if(UNIX)
+     if(Linux)
+-        set(CMAKE_INSTALL_PREFIX "/usr/")
+         add_definitions(-D_GNU_SOURCE)
+         set(SOURCES_LIST ${SOURCES_LIST} tuntap-unix-linux.c)
+     elseif (OpenBSD)
+@@ -133,4 +123,3 @@ include(CMakeLists.txt.local OPTIONAL)
+ if (ENABLE_REGRESS)
+     include(regress/CMakeLists.txt)
+ endif (ENABLE_REGRESS)
+-

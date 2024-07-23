@@ -1,0 +1,11 @@
+config BR2_PACKAGE_LUARADIO_BASIC
+        bool "luaradio-basic"
+       select BR2_PACKAGE_LUAJIT
+
+        help
+         A lightweight, embeddable software-defined radio framework built on LuaJIT 
+
+
+	  http://luaradio.io
+
+ 

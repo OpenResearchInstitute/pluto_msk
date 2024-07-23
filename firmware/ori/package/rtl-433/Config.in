@@ -1,0 +1,10 @@
+config BR2_PACKAGE_RTL_433
+        bool "rtl-433"
+        depends on BR2_TOOLCHAIN_HAS_THREADS
+        depends on BR2_PACKAGE_SOAPYSDR
+        help
+          Program to decode traffic from Devices that are broadcasting on 433.9 MHz like temperature sensors 
+
+          https://github.com/merbanan/rtl_433
+comment "rtl_433 needs a toolchain w/ threads"
+        depends on !BR2_TOOLCHAIN_HAS_THREADS

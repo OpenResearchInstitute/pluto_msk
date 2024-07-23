@@ -1,0 +1,9 @@
+config BR2_PACKAGE_NNG
+	bool "nng-master"
+	help
+	  NNG: Lightweight Messaging Library
+	  github (release)
+
+	  https://github.com/nanomsg/nng
+
+	  

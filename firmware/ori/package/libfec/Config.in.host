@@ -1,0 +1,6 @@
+config BR2_PACKAGE_HOST_LIBFEC
+    bool "host-libfec"
+    help
+      This package provides a set of functions that implement several popular forward error correction (FEC) algorithms and several low-level routines useful in modems implemented with digital signal processing (DSP).
+
+      https://github.com/quiet/libfec

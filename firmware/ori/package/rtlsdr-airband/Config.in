@@ -1,0 +1,10 @@
+config BR2_PACKAGE_RTLSDR_AIRBAND
+        bool "rtlsdr-airband"
+        depends on BR2_TOOLCHAIN_HAS_THREADS
+        depends on BR2_PACKAGE_SOAPYSDR
+        help
+          RTLSDR-Airband receives analog radio voice channels and produces audio streams which can be routed to various outputs, such as online streaming services like LiveATC.net.  
+
+          https://github.com/szpajder/RTLSDR-Airband
+comment "RTLSDR_Airband needs a toolchain w/ threads"
+        depends on !BR2_TOOLCHAIN_HAS_THREADS

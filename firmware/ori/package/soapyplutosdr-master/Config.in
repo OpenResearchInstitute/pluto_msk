@@ -1,0 +1,8 @@
+config BR2_PACKAGE_SOAPYPLUTOSDR_MASTER
+	bool "soapyplutosdr-master"
+	depends on BR2_TOOLCHAIN_HAS_THREADS
+	select BR2_PACKAGE_LIBIIO
+	select BR2_PACKAGE_LIBAD9361_IIO
+	help
+	  Soapy SDR plugin for PlutoSDR
+	  https://github.com/pothosware/SoapyPlutoSDR

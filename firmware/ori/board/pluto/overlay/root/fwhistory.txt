@@ -1,0 +1,59 @@
+b3406b7 - Mon Jul 22 22:30:47 2024 +0200 : Add firmware submodules
+942aa51 - Mon Jul 22 19:35:30 2024 +0000 : Update README.md
+4c0ea7c - Mon Jul 22 19:11:04 2024 +0000 : Update README.md
+a75fd44 - Mon Jul 22 19:06:30 2024 +0000 : Update README.md
+c3e8a2c - Mon Jul 22 19:04:19 2024 +0000 : Update README.md
+304af0e - Mon Jul 22 18:51:40 2024 +0000 : Update README.md
+31fb9de - Mon Jul 22 13:26:26 2024 +0200 : Fix library include path
+836102f - Mon Jul 22 12:25:38 2024 +0200 : Update README.md - TYpo
+e043cd3 - Mon Jul 22 12:23:49 2024 +0200 : Add building direction to readme
+a142ad6 - Mon Jul 22 12:14:01 2024 +0200 : Test hdl submodule
+5a74c41 - Mon Jul 22 12:04:18 2024 +0200 : First local working out of tree library
+bf446b4 - Sun Jul 21 23:14:18 2024 +0200 : Initial out of tree trial
+c2167a2 - Thu Jul 18 04:19:26 2024 +0000 : Updated README.md
+cfc37a6 - Wed Jul 17 18:36:09 2024 -0600 : Add README.md
+71d0357 - Wed Jul 17 23:38:25 2024 +0000 : add submodules
+c39d1f6 - Wed Jul 17 23:12:36 2024 +0000 : Create LICENSE.md
+eb1fe92 - Wed Jul 17 22:37:29 2024 +0000 : add .gitignore
+bf02ccd - Sun Jul 7 10:51:08 2024 -0600 : Update status register addition due to Vivado complaint
+f954254 - Sun Jul 7 01:21:12 2024 -0600 : Add PRBS modules to msk_top
+fce0ec0 - Sat Jul 6 01:14:50 2024 -0600 : Re-factor AXI interface, and add status readback for confirming operation in the FPGA
+4e07e2f - Sun Jun 30 00:28:05 2024 -0600 : Improve config/status registers clock domain crossings
+0e79c6a - Sat Jun 29 17:37:58 2024 -0600 : Added HASH_ID generic, updated register addresses, added HASH_ID readback, updated S-AXI readlogic
+74b7ea1 - Sat Jun 29 15:41:05 2024 -0600 : Add conditional compile flag for GHDL
+eb3e7e7 - Mon Jun 17 14:18:11 2024 -0600 : Update s-axis signal names
+8bbfabb - Mon Jun 17 13:01:51 2024 -0600 : Add s_axi_awport and s_axi_arprot ports to entity
+42d73ea - Thu Jun 13 02:10:04 2024 -0600 : Changed entity name for pi_controller and updated files where used
+652df44 - Wed Jun 12 20:45:27 2024 -0600 : Update simulation
+00f79ae - Wed Jun 12 19:41:09 2024 -0600 : Added enable/valid signals as a clock enable to all clocked processes; also made updated to serial to parallel converter. There is still an issue in this block, but works if initial state is aligned with transmitter.
+3b204d6 - Tue Jun 11 00:41:41 2024 -0600 : Add header, license, copyright, comment blocks to all HDL source files.
+6107ef4 - Mon Jun 10 20:34:50 2024 -0600 : Add DrawIO drawings for Tx Chain
+07d0eb4 - Mon Jun 10 20:33:52 2024 -0600 : Simulation updates
+9e4f0e2 - Mon Jun 10 20:32:13 2024 -0600 : Update MSK Top and Demodulator to use enable from axi_ad9361 and update rx_valid for data output to rx_dvalid and use rx_svalid for rx sample input valid.
+216f01b - Mon Jun 10 19:15:52 2024 -0600 : Made tx data width configurable, number of bits on s-axis-data
+e4617d4 - Mon Jun 10 18:20:09 2024 -0600 : Updated top-level ports
+6bab9be - Mon May 20 15:21:07 2024 -0600 : Add timing diagrams for Tx interface
+ab184d2 - Mon May 20 15:18:53 2024 -0600 : Updated MSK Top-Level diagram
+d286645 - Mon May 20 15:18:31 2024 -0600 : Update for msk_math.md
+bc1984b - Mon May 20 15:18:00 2024 -0600 : Updated simulation to use AXI-S for data and AXI for configuration
+d0d41b9 - Mon May 20 15:16:05 2024 -0600 : Added AXI-S interface to Tx; added AXI for configuration/status; Added configuration registers; Added Tx Par2Ser converter.
+ea3314a - Sat May 18 21:37:27 2024 -0600 : Simulaton updates
+2e44064 - Sat May 18 01:42:51 2024 -0600 : Inverted data check, as in latest simulation data output is inverted
+74ee8c3 - Sat May 18 01:40:49 2024 -0600 : Simulation updates
+38e161e - Fri May 17 23:16:15 2024 -0600 : Add PTT for modulator; remove modulating multiplier and replace with mux
+b4f767c - Thu May 16 20:31:33 2024 -0600 : Update simulation
+5067594 - Thu May 16 20:30:58 2024 -0600 : Add Lyx file for MSK math
+925380a - Thu May 16 20:26:34 2024 -0600 : Update configuration inputs, add loopback_ena signal and mux.
+0dc6f0d - Fri May 10 01:07:01 2024 -0600 : Remove tclk from msk_top and adjust data latency for matching
+c0ecc59 - Fri May 10 01:04:38 2024 -0600 : Math document update
+4de0ce4 - Fri May 10 01:04:15 2024 -0600 : Simulation updates
+429dc38 - Thu May 9 00:18:40 2024 -0600 : Update msk_top block diagram
+b9d08df - Wed May 8 12:29:08 2024 -0600 : Add Drawio diagrams (and pngs) to docs
+d0819ff - Wed May 8 12:28:00 2024 -0600 : Simulation updates
+4cb31ce - Mon May 6 14:28:06 2024 -0600 : Simulation updates
+ebfdfe7 - Mon May 6 14:21:16 2024 -0600 : Initial commits for documentation and diagrams
+bce8101 - Mon May 6 14:18:35 2024 -0600 : Add GNU Radio files for reference
+3c86946 - Mon May 6 14:14:06 2024 -0600 : Initial MSK Simulation commit
+a622f7b - Mon May 6 14:12:48 2024 -0600 : Housekeeping
+f7503c3 - Mon May 6 13:57:13 2024 -0600 : Updates to MSK Top-level for Massey modulator
+8c6da46 - Mon May 6 00:05:15 2024 -0600 : Initial commit for MSK top-level using modulator s(t) = Icoscos + Qsinsin approach.

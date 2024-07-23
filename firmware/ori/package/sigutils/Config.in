@@ -1,0 +1,10 @@
+config BR2_PACKAGE_SIGUTILS
+        bool "sigutils"
+        depends on BR2_TOOLCHAIN_HAS_THREADS
+#        depends on BR2_PACKAGE_SNDFILE
+        help
+          The sigutils library is a digital signal processing library written in C, designed for blind signal analysis and automatic demodulation in GNU/Linux.
+
+          https://github.com/BatchDrake/sigutils
+comment "sigutils needs a toolchain w/ threads"
+        depends on !BR2_TOOLCHAIN_HAS_THREADS
