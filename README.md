@@ -31,9 +31,9 @@ git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 
 The control and status registers (CSR) are organized as an array. 
 
-|Directionality | Array Address | Name          | Summary |
-| -------- | ----------------- |------------- | ------------- |
-| output |csr_array(0) | HASH_ID | set to 0xaaaa5555 in the hardware |
+|Directionality | Location Within the Array    | Name          | Summary |
+| ------------- | ----------------- | --------------|------------- |
+| output |csr_array(0)   | HASH_ID | set to 0xaaaa5555 in the hardware |
 | input |csr_array(1)(0) | init | initializes or is part of initialization for many blocks |
 | input |csr_array(2)(0) | ptt | push to talk |
 | input |csr_array(3)(0) | loopback_ena | loopback enable |
@@ -41,7 +41,7 @@ The control and status registers (CSR) are organized as an array.
 | input |csr_array(4) | freq_word_ft | value of the frequency for symbol time (mapped to freq_word_tclk) |
 | input |csr_array(5) | freq_word_f1 | value of the frequency for the lower MSK tone |
 | input |csr_array(6) | freq_word_f2 | value of the frequency for the higher MSK tone |
-||csr_array(7)(15:0) |  lpf_i_gain | low pass filter gain value |
+||csr_array(7)(15:0)  |  lpf_i_gain | low pass filter gain value |
 ||csr_array(7)(31:16) | lpf_p_gain| low pass filter gain value |
 ||csr_array(8)(0) | lpf_freeze| low pass filter value |
 ||csr_array(8)(1) | lpf_zero| low pass filter value |
