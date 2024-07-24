@@ -27,6 +27,35 @@ git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 
 ## MSK Modem Architecture
 
+### Control and Status Registers
+
+The control and status registers (CSR) are organized as an array. 
+
+|Directionality | Array Address | Name          | Summary |
+| ------------- | ------------- |------------- | ------------- |
+||csr_array(0) | HASH_ID | set to 0xaaaa5555 in the hardware |
+||csr_array(1)(0) | init | initializes or is part of initialization for many blocks |
+||csr_array(2)(0) | ptt | push to talk |
+||csr_array(3)(0) | loopback_ena | loopback enable. Transmit looped back to Receive. |
+||csr_array(3)(31) | rx_invert | controls whether rx_bit is inverted or not before assigned to rx_bit_corr |
+||csr_array(4) | freq_word_ft | value of the frequency for symbol time (mapped to freq_word_tclk) |
+||csr_array(5) | freq_word_f1 | value of the frequency for the lower MSK tone |
+||csr_array(6) | freq_word_f2 | value of the frequency for the higher MSK tone |
+||csr_array(7)(15:0) |  lpf_i_gain | low pass filter gain value |
+||csr_array(7)(31:16) | lpf_p_gain| low pass filter gain value |
+||csr_array(8)(0) | lpf_freeze| low pass filter value |
+||csr_array(8)(1) | lpf_zero| low pass filter value |
+||csr_array(8)(31:16) | lpf_alpha| low pass filter value |
+||csr_array(9)(7:0) | tx_data_w| sets bit width in transmitter parallel to serial circuit |
+||csr_array(10)(7:0) | rx_data_w| sets bit width in receiver serial to parallel circuit |
+||csr_array(11)(0) | prbs_sel| pseudo random bit sequence select |
+||csr_array(11)(1) | prbs_err_insert| pseudo random bit sequence error insert (?) |
+||csr_array(12) | prbs_poly| pseudo random bit sequence polynomial |
+||csr_array(13) | prbs_initial| pseudo random bit sequence initial value |
+||csr_array(14) | prbs_err_mask| pseudo random bit sequence error mask |
+||csr_array(15)(0) | prbs_clear| pseudo random bit sequence clear |
+||csr_array(15)(1) | prbs_sync| pseudo random bit sequence sync |
+
 
 ## Development Quickstart
 
