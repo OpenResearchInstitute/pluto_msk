@@ -38,9 +38,9 @@ The control and status registers (CSR) are organized as an array.
 | 0x0008     | 0            | input          |csr_array(2)(0)                  | ptt            | push to talk |
 | 0x000c     | 0            | input          |csr_array(3)(0)                  | loopback_ena   | loopback enable |
 | 0x000c     | 31           | input          |csr_array(3)(31)                 | rx_invert      | rx_bit_corr takes the value of rx_bit when rx_invert is 0 and rx_bit_corr takes the value of NOT rx_bit when rx_invert is 1 |
-| 0x0010     | 0:31         | input          |csr_array(4)                     | freq_word_ft   | value of the frequency for symbol time (0x39d037) (mapped to freq_word_tclk)| 
-| 0x0014     | 0:31         | input          |csr_array(5)                     | freq_word_f1   | value of the frequency for the higher MSK tone (0x44a740e)|
-| 0x0018     | 0:31         | input          |csr_array(6)                     | freq_word_f2   | value of the frequency for the lower MSK tone (0x4be147b)|
+| 0x0010     | 0:31         | input          |csr_array(4)                     | freq_word_ft   | value of the frequency for symbol time (0x39d037) (mapped to freq_word_tclk) and generated as hex(int(bitrate/sample_rate *2.0**32)| 
+| 0x0014     | 0:31         | input          |csr_array(5)                     | freq_word_f1   | value of the frequency for the higher MSK tone (0x44a740e) and generated as hex(int((bitrate*20)-bitrate)/sample_rate *2.0**32)|
+| 0x0018     | 0:31         | input          |csr_array(6)                     | freq_word_f2   | value of the frequency for the lower MSK tone (0x4be147b) hex(int((bitrate*20)+bitrate)/sample_rate *2.0**32)|
 | 0x001c     | 0:15         |                |csr_array(7)(15:0)               | lpf_i_gain    | low pass filter gain value |
 | 0x001c     | 16:31        |                |csr_array(7)(31:16)              | lpf_p_gain     | low pass filter gain value |
 | 0x0020     | 0            |                |csr_array(8)(0)                  | lpf_freeze     | low pass filter value |
