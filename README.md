@@ -37,7 +37,7 @@ The control and status registers (CSR) are organized as an array.
 | input |csr_array(1)(0) | init | initializes or is part of initialization for many blocks |
 | input |csr_array(2)(0) | ptt | push to talk |
 | input |csr_array(3)(0) | loopback_ena | loopback enable |
-| input |csr_array(3)(31) | rx_invert | controls whether rx_bit is inverted or not before assigned to rx_bit_corr |
+| input |csr_array(3)(31) | rx_invert | rx_bit_corr takes the value of rx_bit when rx_invert is 0 and rx_bit_corr takes the value of NOT rx_bit when rx_invert is 1 |
 | input |csr_array(4) | freq_word_ft | value of the frequency for symbol time (mapped to freq_word_tclk) |
 | input |csr_array(5) | freq_word_f1 | value of the frequency for the lower MSK tone |
 | input |csr_array(6) | freq_word_f2 | value of the frequency for the higher MSK tone |
