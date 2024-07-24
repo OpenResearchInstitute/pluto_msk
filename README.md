@@ -32,7 +32,7 @@ git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 The control and status registers (CSR) are organized as an array. 
 
 |Directionality | Array Address | Name          | Summary |
-| ------------- | ------------- |------------- | ------------- |
+| -------- | ----------------- |------------- | ------------- |
 | output |csr_array(0) | HASH_ID | set to 0xaaaa5555 in the hardware |
 | input |csr_array(1)(0) | init | initializes or is part of initialization for many blocks |
 | input |csr_array(2)(0) | ptt | push to talk |
