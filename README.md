@@ -29,7 +29,7 @@ git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 
 ### Control and Status Registers
 
-The control and status registers (CSR) are organized as an array. 
+The control and status registers (CSR) are organized as an array. Base address is currently 0x43c00000.
 
 | Hex Offset | Bit Position | Directionality | Location Within the VHDL Array  | Name           | Summary |
 | ---------- | ------------ | -------------- | ------------------------------- | -------------- | ------- |
