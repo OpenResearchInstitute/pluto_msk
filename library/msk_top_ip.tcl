@@ -5,9 +5,11 @@ source ../hdl/scripts/adi_env.tcl
 source $ad_hdl_dir/library/scripts/adi_ip_xilinx.tcl
 
 adi_ip_create msk_top
+
+read_vhdl -library "desyrdl" "../rdl/vhdl/desyrdl/pkg_desyrdl_common.vhd"
+
 #set_property FILE_TYPE {VHDL 2008} [get_files $ad_hdl_dir/library/msk_top/src/*.vhd]
 adi_ip_files msk_top [list \
-  "../rdl/vhdl/desyrdl/pkg_desyrdl_common.vhd" \
   "../rdl/vhdl/msk_top_regs/msk_top_regs_decoder_axi4l.vhd" \
   "../rdl/vhdl/msk_top_regs/pkg_msk_top_regs.vhd" \
   "../rdl/vhdl/msk_top_regs/msk_top_regs.vhd" \
