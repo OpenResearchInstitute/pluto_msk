@@ -1,0 +1,124 @@
+reg msk_hash_lo {
+    regwidth = 32;
+    accesswidth = 32;
+    field { sw = r; hw = na; } hash_id_lo[31:0] = 0xAAAA5555;
+        hash_id_lo->desc = "Lower 32-bits of Hash ID";
+};
+
+reg msk_hash_hi {
+    regwidth = 32;
+    accesswidth = 32;
+    field { sw = r; hw = na; } hash_id_hi[31:0] = 0x5555AAAA;
+        hash_id_hi->desc = "Upper 32-bits of Hash ID";
+};
+
+reg msk_init {
+    regwidth = 32;
+    desc = "0 -> Normal modem operation; 1 -> Puts modem in initialization state";
+    field { sw = rw; hw=r; } init = 1;
+};
+
+reg msk_ctrl {
+    regwidth = 32;
+    desc = "MSK Controls";
+    field { sw = rw; hw = r; } ptt = 0;
+        ptt->desc = "0 -> PTT Disabled; 1 -> PTT Enabled";
+    field { sw = rw; hw = r; } loopback_ena = 0;
+        loopback_ena->desc = "0 -> Modem loopback disabled; 1 -> Modem loopback enabled";
+    field { sw = rw; hw = r; } rx_invert = 0;
+        rx_invert->desc = "0 -> Rx data normal; 1 -> Rx data inverted";
+    field { sw = rw; hw = r; singlepulse = true; } clear_counts = 0;
+        clear_counts->desc = "Clear Tx Bit Counter and Tx Enable Counter";
+};
+
+reg msk_stat_0 {
+    regwidth = 32;
+    field { sw = r; hw = w; } demod_sync_lock=0;
+    field { sw = r; hw = w; } tx_enable=0;
+    field { sw = r; hw = w; } rx_enable=0;
+};
+
+signal { signalwidth = 1; } tx_req;
+signal { signalwidth = 1; } tx_enable;
+signal { signalwidth = 1; } tx_enable_n;
+field tx_bit_cntr { counter; incrvalue=1'b1; incr = tx_req; sw = r; };
+field tx_ena_cntr { counter; incrvalue=1'b1; incr = tx_enable; decrvalue=1'b1; decr = tx_enable_n; sw = r; };
+
+reg msk_stat_1 {
+    regwidth = 32;
+    tx_bit_cntr data_req_count[16]=0;
+};
+
+reg msk_stat_2 {
+    regwidth = 32;
+    tx_ena_cntr data_req_count[16]=0;
+};
+
+reg config_32 {
+    regwidth = 32;
+    field { sw = rw; hw = r; } config_data[31:0] = 0;
+};
+
+reg lpf_config_0 {
+    regwidth = 32;
+    field { sw = rw; hw = r; } lpf_freeze = 0;
+    field { sw = rw; hw = r; } lpf_zero = 0;
+    field { sw = rw; hw = r; } lpf_alpha[31:16] = 0;
+};
+
+reg lpf_config_1 {
+    regwidth = 32;
+    field { sw = rw; hw = r; } i_gain[15:0] = 0;
+    field { sw = rw; hw = r; } p_gain[31:16] = 0;
+};
+
+reg data_width {
+    regwidth = 32;
+    field { sw = rw; hw = r; } data_width[7:0] = 8;
+};
+
+reg prbs_ctrl {
+    regwidth = 32;
+    field { sw = rw; hw = r; } prbs_sel = 0;
+    field { sw = w; hw = r; singlepulse = true; } prbs_error_insert = 0;
+    field { sw = w; hw = r; singlepulse = true; } prbs_clear = 0;
+    field { sw = w; hw = r; singlepulse = true; } prbs_sync = 0;    
+};
+
+reg stat_32 {
+    regwidth = 32;
+    field { sw = r; hw = w; } status_data[31:0];
+};
+
+addrmap msk_top_regs {
+    desc="MSK Modem Configuration and Status Registers";
+    lsb0;
+    default accesswidth=32;
+    addressing=compact;
+
+    desyrdl_interface = "AXI4L";
+    desyrdl_access_channel = 0;
+
+    msk_hash_lo Hash_ID_Low;
+        Hash_ID_Low->desc = "A hash generated at build time to uniquely identify FPGA builds.";
+    msk_hash_hi Hash_ID_High;
+        Hash_ID_High->desc = "A hash generated at build time to uniquely identify FPGA builds.";
+    msk_init MSK_Init;
+    msk_ctrl MSK_Control;
+    msk_stat_0 MSK_Status;
+    msk_stat_1 Tx_Bit_Count;
+    msk_stat_2 Tx_Enable_Count;
+    config_32 Fb_FreqWord;
+    config_32 F1_FreqWord;
+    config_32 F2_FreqWord;
+    lpf_config_0 LPF_Config_0;
+    lpf_config_1 LPF_Config_1;
+    data_width Tx_Data_Width;
+    data_width Rx_Data_Width;
+    prbs_ctrl PRBS_Control;
+    config_32 PRBS_Initial_State;
+    config_32 PRBS_Polynomial;
+    config_32 PRBS_Error_Mask;
+    stat_32 PRBS_Bit_Count;
+    stat_32 PRBS_Error_Count;
+};
