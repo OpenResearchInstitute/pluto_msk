@@ -14,14 +14,14 @@ SIM_ARGS = --wave=msk_top.ghw
 
 SRC = ../src
 
-VHDL_SOURCES += $(SRC)/nco.vhd \
-				$(SRC)/sin_cos_lut.vhd \
-				$(SRC)/msk_modulator.vhd \
-				$(SRC)/pi_controller.vhd \
-				$(SRC)/costas_loop.vhd \
-				$(SRC)/msk_demodulator.vhd \
-				$(SRC)/prbs_gen.vhd \
-				$(SRC)/prbs_mon.vhd \
+VHDL_SOURCES += ../nco/src/nco.vhd \
+				../nco/src/sin_cos_lut.vhd \
+				../msk_modulator/src/msk_modulator.vhd \
+				../pi_controller/src/pi_controller.vhd \
+				../msk_demodulator/src/costas_loop.vhd \
+				../msk_demodulator/src/msk_demodulator.vhd \
+				../prbs/src/prbs_gen.vhd \
+				../prbs/src/prbs_mon.vhd \
 				$(SRC)/msk_top.vhd
 
 # use VHDL_SOURCES for VHDL files
