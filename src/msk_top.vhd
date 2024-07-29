@@ -192,9 +192,6 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL saxis_req_sync	: std_logic;
 	SIGNAL saxis_req_d 		: std_logic;
 
-	SIGNAL csr_resetn 		: std_logic;
-	SIGNAL csr_resetn_meta	: std_logic;
-
 	SIGNAL clear_counts 	: std_logic;
 
 	SIGNAL prbs_data_bit	: std_logic;
