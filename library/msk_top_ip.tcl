@@ -12,10 +12,11 @@ adi_ip_files msk_top [list \
   "../msk_demodulator/src/msk_demodulator.vhd" \
   "../msk_modulator/src/msk_modulator.vhd" \
   "../src/msk_top.vhd" \
+  "../src/msk_top_csr.vhd" \
   "../nco/src/nco.vhd" \
   "../prbs/src/prbs_gen.vhd" \
   "../prbs/src/prbs_mon.vhd" \
-  "../nco/src/sin_cos_lut.vhd"]
+  "../nco/src/sin_cos_lut.vhd" ]
 
 # use this command if we have AXI lite interface for register control
 adi_ip_properties msk_top
