@@ -607,15 +607,11 @@ async def msk_test_1(dut):
 
     await RisingEdge(dut.clk)
 
-    await Timer(105, "us")
-    await axi.write(8, 1)
-
     msksim = msk(dut, dut.clk, dut.tx_samples)
-    pn = prbs(dut, dut.clk, dut.rx_data, dut.rx_dvalid)
+    # pn = prbs(dut, dut.clk, dut.rx_data, dut.rx_dvalid)
 
     await cocotb.start(msksim.tx_sample_capture())
-    await cocotb.start(pn.check_data())
-
+    # await cocotb.start(pn.check_data())
 
     sim_time = get_sim_time("us")
     sim_start = sim_time
@@ -624,22 +620,30 @@ async def msk_test_1(dut):
     dut._log.info("starting...")
 
     msksim.sim_run = True
-#    pn.sim_run = True
 
+#    pn.sim_run = True
 #    pn.sync = 100
 
     while sim_time < sim_start + 10000:
 
-        if sim_time_d <= sim_start + 1000 and sim_time >= sim_start + 1000:
-            #await pn.resync()
-            data = await axi.read(12)
-            data = data + 0x80000000
-            await axi.write(12, data)
-            await axi.write(60, 2)
+        # if sim_time_d <= sim_start + 1000 and sim_time >= sim_start + 1000:
+        #     data = await regs.read("msk_top_regs", "PRBS_Control")
+        #     data = data | 0x4
+        #     dut.s_axi_wvalid.value = 1
+        #     dut.s_axi_awvalid.value = 1
+        #     await regs.write("msk_top_regs", "PRBS_Control", data)    
 
         if sim_time_d <= sim_start + 5000 and sim_time >= sim_start + 5000:
-            await axi.write(44, 3)
-            await axi.write(44, 1)
+            data = await regs.read("msk_top_regs", "PRBS_Control")
+            data = data | 0x8
+            dut.s_axi_wvalid.value = 1
+            dut.s_axi_awvalid.value = 1
+            await regs.write("msk_top_regs", "PRBS_Control", data)    
+            data = await regs.read("msk_top_regs", "PRBS_Control")
+            data = data & 0xFFFFFFF7
+            dut.s_axi_wvalid.value = 1
+            dut.s_axi_awvalid.value = 1
+            await regs.write("msk_top_regs", "PRBS_Control", data)    
 
         # if sim_time_d <= sim_start + 3000 and sim_time >= sim_start + 3000:
             # await pn.resync()
@@ -647,16 +651,16 @@ async def msk_test_1(dut):
         # if sim_time_d <= sim_start + 4000 and sim_time >= sim_start + 4000:
             # await pn.resync()
 
-        await axis.send(await pn.gen())
+        # await axis.send(await pn.gen())
         sim_time_d = sim_time
         sim_time = get_sim_time("us")
 
-        data = await axi.read(64)
+        data = await regs.read("msk_top_regs", "MSK_Status")
         print("Status 1: ", hex(data))
-        data = await axi.read(68)
-        print("Tx Bit Count: ", data)
-        data = await axi.read(72)
-        print("Tx Enabled: ", data)
+        # data = await regs.read("msk_top_regs", "Tx_Bit_Count")
+        # print("Tx Bit Count: ", data)
+        # data = await regs.read("msk_top_regs", "Tx_Enable_Count")
+        # print("Tx Enabled: ", data)
 
     msksim.sim_run = False
     # pn.sim_run = False
@@ -669,12 +673,12 @@ async def msk_test_1(dut):
     tx_samples_arr = np.asarray(tx_samples)
     tx_samples_2   = tx_samples_arr * tx_samples_arr
 
-    print("Ones: ", pn.ones_count)
-    print("Zeros: ", pn.zeros_count)
+    # print("Ones: ", pn.ones_count)
+    # print("Zeros: ", pn.zeros_count)
 
-    errs = await axi.read(80)
+    errs = await regs.read("msk_top_regs", "PRBS_Error_Count")
     print("Bit errors: ", errs)
-    bits = await axi.read(76)
+    bits = await regs.read("msk_top_regs", "PRBS_Bit_Count")
     print("Bit count:  ", bits)
     print("BER:        ", (1.0*errs)/bits)
 

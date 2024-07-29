@@ -200,7 +200,7 @@ BEGIN
     pi_addrmap.Tx_Enable_Count.tx_ena_cntr.incr <= tx_enable;
     pi_addrmap.Tx_Enable_Count.tx_ena_cntr.decr <= NOT tx_enable;
     pi_addrmap.PRBS_Bit_Count.status_data.data <= prbs_bits;
-    pi_addrmap.PRBS_Error_Count.status_data.data <= NOT prbs_errs;
+    pi_addrmap.PRBS_Error_Count.status_data.data <= prbs_errs;
 
     init 			<= po_addrmap.MSK_Init.init.data(0);
     ptt 			<= po_addrmap.MSK_Control.ptt_desc_209a923a.data(0);

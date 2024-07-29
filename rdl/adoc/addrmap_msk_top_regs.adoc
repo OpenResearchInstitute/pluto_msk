@@ -20,8 +20,8 @@
     _demod_sync_lock_ [0:0] sw:RO uint : ++++++ +
     _tx_enable_ [1:1] sw:RO uint : ++++++ +
     _rx_enable_ [2:2] sw:RO uint : ++++++ +
-| Tx_Bit_Count                             |    1 |   16 |     uint | RO | +++None+++ +
-| Tx_Enable_Count                          |    1 |   16 |     uint | RO | +++None+++ +
+| Tx_Bit_Count                             |    1 |   32 |     uint | RO | +++None+++ +
+| Tx_Enable_Count                          |    1 |   32 |     uint | RO | +++None+++ +
 | Fb_FreqWord                              |    1 |   32 |     uint | RW | +++None+++ +
 | F1_FreqWord                              |    1 |   32 |     uint | RW | +++None+++ +
 | F2_FreqWord                              |    1 |   32 |     uint | RW | +++None+++ +

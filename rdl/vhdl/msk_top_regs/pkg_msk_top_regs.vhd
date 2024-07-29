@@ -213,12 +213,12 @@ package pkg_msk_top_regs is
   -- register type: msk_stat_1
   -----------------------------------------------
   type t_field_signals_msk_stat_1_tx_bit_cntr_in is record
-    data : std_logic_vector(16-1 downto 0); --
+    data : std_logic_vector(32-1 downto 0); --
     incr : std_logic; --
   end record;
 
   type t_field_signals_msk_stat_1_tx_bit_cntr_out is record
-    data : std_logic_vector(16-1 downto 0); --
+    data : std_logic_vector(32-1 downto 0); --
   end record; --
 
   -- The actual register types
@@ -236,13 +236,13 @@ package pkg_msk_top_regs is
   -- register type: msk_stat_2
   -----------------------------------------------
   type t_field_signals_msk_stat_2_tx_ena_cntr_in is record
-    data : std_logic_vector(16-1 downto 0); --
+    data : std_logic_vector(32-1 downto 0); --
     incr : std_logic; --
     decr : std_logic; --
   end record;
 
   type t_field_signals_msk_stat_2_tx_ena_cntr_out is record
-    data : std_logic_vector(16-1 downto 0); --
+    data : std_logic_vector(32-1 downto 0); --
   end record; --
 
   -- The actual register types
@@ -916,7 +916,6 @@ architecture rtl of msk_top_regs_msk_stat_1 is
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
 begin
   --
-  data_out(C_DATA_WIDTH-1 downto 16) <= (others => '0'); --
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
@@ -924,21 +923,21 @@ begin
 
   ------------------------------------------------------------STORAGE
   tx_bit_cntr_storage: block
-    signal l_field_reg   : std_logic_vector(16-1 downto 0) :=
-                           std_logic_vector(to_signed(0,16));
+    signal l_field_reg   : std_logic_vector(32-1 downto 0) :=
+                           std_logic_vector(to_signed(0,32));
     signal l_incrvalue   : natural;
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,16));
+          l_field_reg <= std_logic_vector(to_signed(0,32));
         else
           -- HW --
           l_field_reg <= pi_reg.tx_bit_cntr.data;
           -- counter
           if  pi_reg.tx_bit_cntr.incr = '1' then
-            l_field_reg <= std_logic_vector(unsigned(l_field_reg) + to_unsigned(l_incrvalue, 16));
+            l_field_reg <= std_logic_vector(unsigned(l_field_reg) + to_unsigned(l_incrvalue, 32));
           end if;
           -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
         end if;
@@ -946,7 +945,7 @@ begin
     end process;
     --
     po_reg.tx_bit_cntr.data <= l_field_reg; --
-    data_out(15 downto 0) <= l_field_reg;
+    data_out(31 downto 0) <= l_field_reg;
 
     l_incrvalue <= 1;
   end block tx_bit_cntr_storage;
@@ -980,7 +979,6 @@ architecture rtl of msk_top_regs_msk_stat_2 is
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
 begin
   --
-  data_out(C_DATA_WIDTH-1 downto 16) <= (others => '0'); --
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
@@ -988,8 +986,8 @@ begin
 
   ------------------------------------------------------------STORAGE
   tx_ena_cntr_storage: block
-    signal l_field_reg   : std_logic_vector(16-1 downto 0) :=
-                           std_logic_vector(to_signed(0,16));
+    signal l_field_reg   : std_logic_vector(32-1 downto 0) :=
+                           std_logic_vector(to_signed(0,32));
     signal l_incrvalue   : natural;
     signal l_decrvalue   : natural;
   begin
@@ -997,16 +995,16 @@ begin
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,16));
+          l_field_reg <= std_logic_vector(to_signed(0,32));
         else
           -- HW --
           l_field_reg <= pi_reg.tx_ena_cntr.data;
           -- counter
           if  pi_reg.tx_ena_cntr.incr = '1' then
-            l_field_reg <= std_logic_vector(unsigned(l_field_reg) + to_unsigned(l_incrvalue, 16));
+            l_field_reg <= std_logic_vector(unsigned(l_field_reg) + to_unsigned(l_incrvalue, 32));
           end if;
           if  pi_reg.tx_ena_cntr.decr = '1' then
-            l_field_reg <= std_logic_vector(unsigned(l_field_reg) - to_unsigned(l_decrvalue, 16));
+            l_field_reg <= std_logic_vector(unsigned(l_field_reg) - to_unsigned(l_decrvalue, 32));
           end if;
           -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
         end if;
@@ -1014,7 +1012,7 @@ begin
     end process;
     --
     po_reg.tx_ena_cntr.data <= l_field_reg; --
-    data_out(15 downto 0) <= l_field_reg;
+    data_out(31 downto 0) <= l_field_reg;
 
     l_incrvalue <= 1;
     l_decrvalue <= 1;

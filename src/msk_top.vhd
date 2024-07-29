@@ -481,7 +481,6 @@ BEGIN
 -- Config/Status
 
 	demod_sync_lock <= '0';
-	prbs_clear <= '0';
 
 	u_msk_top_csr : ENTITY work.msk_top_csr(rtl)
 	GENERIC MAP (

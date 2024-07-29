@@ -46,12 +46,12 @@ field tx_ena_cntr { counter; incrvalue=1'b1; incr = tx_enable; decrvalue=1'b1; d
 
 reg msk_stat_1 {
     regwidth = 32;
-    tx_bit_cntr data_req_count[16]=0;
+    tx_bit_cntr data_req_count[31:0]=0;
 };
 
 reg msk_stat_2 {
     regwidth = 32;
-    tx_ena_cntr data_req_count[16]=0;
+    tx_ena_cntr data_req_count[31:0]=0;
 };
 
 reg config_32 {
