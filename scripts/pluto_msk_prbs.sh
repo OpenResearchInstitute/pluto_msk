@@ -28,11 +28,9 @@ devmem 0x43C00038 32 0x1
 # PRBS Polynomial
 devmem 0x43C00040 32 0x90000000
 # PRBS Initial State
-devmem 0x43C0003C 32 0xFF
-devmem 0x43C00040 8 0xFF
+devmem 0x43C0003C 32 0xFFFF
 # PRBS Error Mask
-devmem 0x43C00044 32 0x0
-devmem 0x43C00048 8 0x1
+devmem 0x43C00044 32 0x1
 # deassert init
 devmem 0x43C00008 32 0x0
 
@@ -56,3 +54,25 @@ devmem 0x43C0004C
 devmem 0x43C00048
 devmem 0x43C0004C
 
+# Enable PTT, Enable Loopback, and RX Invert
+devmem 0x43C0000C 32 0x7
+
+# read prbs
+devmem 0x43C00048
+devmem 0x43C0004C
+devmem 0x43C00048
+devmem 0x43C0004C
+devmem 0x43C00048
+devmem 0x43C0004C
+
+# resync PRBS
+devmem 0x43C00038 32 0x9
+devmem 0x43C00038 32 0x1
+
+# read prbs
+devmem 0x43C00048
+devmem 0x43C0004C
+devmem 0x43C00048
+devmem 0x43C0004C
+devmem 0x43C00048
+devmem 0x43C0004C
