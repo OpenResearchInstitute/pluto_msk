@@ -48,6 +48,13 @@ user	5m58,976s
 sys	0m17,079s
 ```
 
+If you update the firmware and rebuild on chococat VM, the new build takes:
+```
+real	111m34.245s
+user	12m18.919s
+sys	9m16.466s
+```
+
 ### complete firmware
 1. Check if your vivado path is correct on this line https://github.com/OpenResearchInstitute/pluto_msk/blob/871bd130de0e6d462138bc6d2981b1c65897a0ca/firmware/Makefile#L19 
 2. cd pluto_msk/firmware
