@@ -33,6 +33,13 @@ sys	11m9.086s
 2. cd pluto_msk/firmware
 3. make
 
+For reference, on the chococat VM, this takes:
+```
+real	370m53.093s
+user	77m38.923s
+sys	39m46.236s
+```
+
 ## MSK Modem Architecture
 
 ### Control and Status Registers
