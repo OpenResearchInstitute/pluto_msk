@@ -21,11 +21,21 @@ git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 2. source /opt/Xilinx/Vivado/2022.2/settings64.sh
 3. make
 
-For reference, on the chococat VM, this takes:
+For reference, on the chococat VM, the main branch takes:
 ```
 real	128m34.908s
 user	20m41.893s
 sys	11m9.086s
+```
+If you update the VHDL code or choose another branch and rebuild on chococat VM, the new branch takes:
+```
+Cleaning msk_top library ...
+Building msk_top library [/home/abraxas3d/documentation-friday3/pluto_msk/library/msk_top_ip.log] ... OK
+Building pluto project [/home/abraxas3d/documentation-friday3/pluto_msk/projects/pluto/pluto_vivado.log] ... OK
+
+real	54m40.380s
+user	13m58.697s
+sys	5m10.603s
 ```
 
 ### complete firmware
