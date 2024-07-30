@@ -37,6 +37,16 @@ real	54m40.380s
 user	13m58.697s
 sys	5m10.603s
 ```
+Same process on I7_9700 (not vm)
+```
+Cleaning msk_top library ...
+Building msk_top library [/home/hp-z2-dev/prog/ori-opulent/plutosdr-fw/pluto_msk/library/msk_top_ip.log] ... OK
+Building pluto project [/home/hp-z2-dev/prog/ori-opulent/plutosdr-fw/pluto_msk/projects/pluto/pluto_vivado.log] ... OK
+
+real	6m6,197s
+user	5m58,976s
+sys	0m17,079s
+```
 
 ### complete firmware
 1. Check if your vivado path is correct on this line https://github.com/OpenResearchInstitute/pluto_msk/blob/871bd130de0e6d462138bc6d2981b1c65897a0ca/firmware/Makefile#L19 
@@ -49,7 +59,6 @@ real	370m53.093s
 user	77m38.923s
 sys	39m46.236s
 ```
-
 ## MSK Modem Architecture
 
 ### Control and Status Registers
