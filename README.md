@@ -20,6 +20,14 @@ git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 1. cd pluto_msk/projects/pluto/
 2. source /opt/Xilinx/Vivado/2022.2/settings64.sh
 3. make
+
+For reference, on the chococat VM, this takes:
+```
+real	128m34.908s
+user	20m41.893s
+sys	11m9.086s
+```
+
 ### complete firmware
 1. Check if your vivado path is correct on this line https://github.com/OpenResearchInstitute/pluto_msk/blob/871bd130de0e6d462138bc6d2981b1c65897a0ca/firmware/Makefile#L19 
 2. cd pluto_msk/firmware
