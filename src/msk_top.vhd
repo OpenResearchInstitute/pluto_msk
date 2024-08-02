@@ -75,6 +75,7 @@ ENTITY msk_top IS
 		HASH_ID_LO 			: std_logic_vector := X"AAAA5555";
 		HASH_ID_HI 			: std_logic_vector := X"FFFFCCCC";
 		NCO_W 				: NATURAL := 32;
+		ACC_W 				: NATURAL := 32;
 		PHASE_W 			: NATURAL := 10;
 		SINUSOID_W 			: NATURAL := 12;
 		SAMPLE_W 			: NATURAL := 16;
@@ -184,6 +185,9 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL lpf_freeze 		: std_logic;
 	SIGNAL lpf_zero   		: std_logic;
 	SIGNAL lpf_alpha  		: std_logic_vector(GAIN_W -1 DOWNTO 0);
+
+	SIGNAL lpf_accum_f1 	: std_logic_vector(ACC_W -1 DOWNTO 0);
+	SIGNAL lpf_accum_f2 	: std_logic_vector(ACC_W -1 DOWNTO 0);
 
 	SIGNAL demod_sync_lock  : std_logic;
 
@@ -415,6 +419,7 @@ BEGIN
 	u_dem : ENTITY work.msk_demodulator(rtl)
 		GENERIC MAP (
 			NCO_W 			=> NCO_W,
+			ACC_W 			=> ACC_W,
 			PHASE_W 		=> PHASE_W,
 			SINUSOID_W 		=> SINUSOID_W,
 			SAMPLE_W 		=> 12
@@ -431,6 +436,9 @@ BEGIN
 			lpf_freeze 	 	=> lpf_freeze,
 			lpf_zero 		=> lpf_zero,
 			lpf_alpha 		=> lpf_alpha,
+
+			lpf_accum_f1 	=> lpf_accum_f1,
+			lpf_accum_f2 	=> lpf_accum_f2,
 
 			rx_enable 		=> rx_enable OR loopback_ena,
 			rx_svalid 		=> rx_svalid,
@@ -485,6 +493,7 @@ BEGIN
 		HASH_ID_HI 			=> HASH_ID_HI,
 		GAIN_W 				=> GAIN_W,
 		NCO_W 				=> NCO_W,
+		ACC_W 				=> ACC_W,
 		COUNTER_W 			=> 32,
 		GENERATOR_W 		=> 32,
 		C_S_AXI_DATA_WIDTH	=> C_S_AXI_DATA_WIDTH,
@@ -521,6 +530,9 @@ BEGIN
 		tx_req 			=> tx_req,
 		prbs_bits		=> prbs_bits,
 		prbs_errs		=> prbs_errs,
+		lpf_accum_f1 	=> lpf_accum_f1,
+		lpf_accum_f2 	=> lpf_accum_f2,
+
 
 		init 			=> init,
 		ptt 			=> ptt,

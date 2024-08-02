@@ -655,8 +655,10 @@ async def msk_test_1(dut):
         sim_time_d = sim_time
         sim_time = get_sim_time("us")
 
-        data = await regs.read("msk_top_regs", "MSK_Status")
-        print("Status 1: ", hex(data))
+        data = await regs.read("msk_top_regs", "LPF_Accum_F1")
+        print("F1 Acc: ", hex(data))
+        data = await regs.read("msk_top_regs", "LPF_Accum_F2")
+        print("F2 Acc: ", hex(data))
         # data = await regs.read("msk_top_regs", "Tx_Bit_Count")
         # print("Tx Bit Count: ", data)
         # data = await regs.read("msk_top_regs", "Tx_Enable_Count")

@@ -9,7 +9,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 - Absolute Address: 0x0
 - Base Offset: 0x0
-- Size: 0x43C00050
+- Size: 0x43C00058
 
 |  Offset  |  Identifier  |        Name       |
 |----------|--------------|-------------------|
@@ -19,7 +19,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 - Absolute Address: 0x43C00000
 - Base Offset: 0x43C00000
-- Size: 0x50
+- Size: 0x58
 
 <p>MSK Modem Configuration and Status Registers</p>
 
@@ -45,6 +45,8 @@ Don't override. Generated from: Pluto_MSK_Modem
 | 0x44 |  PRBS_Error_Mask |                        PRBS Control 3                       |
 | 0x48 |  PRBS_Bit_Count  |                        PRBS Status 0                        |
 | 0x4C | PRBS_Error_Count |                        PRBS Status 1                        |
+| 0x50 |   LPF_Accum_F1   |                 F1 PI Controller Accumulator                |
+| 0x54 |   LPF_Accum_F2   |                 F2 PI Controller Accumulator                |
 
 ### Hash_ID_Low register
 
@@ -429,3 +431,35 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 <p>Number of errored-bits received by the PRBS monitor since last sync
 BER can be calculated as the ratio of received bits to errored-bits</p>
+
+### LPF_Accum_F1 register
+
+- Absolute Address: 0x43C00050
+- Base Offset: 0x50
+- Size: 0x4
+
+<p>Value of the F1 PI Controller Accumulator</p>
+
+|Bits| Identifier|Access|Reset|              Name             |
+|----|-----------|------|-----|-------------------------------|
+|31:0|status_data|   r  |  —  |PI Controller Accumulator Value|
+
+#### status_data field
+
+<p>PI Controller Accumulator Value</p>
+
+### LPF_Accum_F2 register
+
+- Absolute Address: 0x43C00054
+- Base Offset: 0x54
+- Size: 0x4
+
+<p>Value of the F2 PI Controller Accumulator</p>
+
+|Bits| Identifier|Access|Reset|              Name             |
+|----|-----------|------|-----|-------------------------------|
+|31:0|status_data|   r  |  —  |PI Controller Accumulator Value|
+
+#### status_data field
+
+<p>PI Controller Accumulator Value</p>

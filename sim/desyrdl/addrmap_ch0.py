@@ -62,8 +62,8 @@ class Addrmap:
         self.addrmap['msk_top_regs.MSK_Init'] = AddrmapItem("msk_top_regs.MSK_Init", bus, 8, 4, 1, 0, 0, "RW")
         self.addrmap['msk_top_regs.MSK_Control'] = AddrmapItem("msk_top_regs.MSK_Control", bus, 12, 4, 4, 0, 0, "RW")
         self.addrmap['msk_top_regs.MSK_Status'] = AddrmapItem("msk_top_regs.MSK_Status", bus, 16, 4, 3, 0, 0, "RO")
-        self.addrmap['msk_top_regs.Tx_Bit_Count'] = AddrmapItem("msk_top_regs.Tx_Bit_Count", bus, 20, 4, 16, 0, 0, "RO")
-        self.addrmap['msk_top_regs.Tx_Enable_Count'] = AddrmapItem("msk_top_regs.Tx_Enable_Count", bus, 24, 4, 16, 0, 0, "RO")
+        self.addrmap['msk_top_regs.Tx_Bit_Count'] = AddrmapItem("msk_top_regs.Tx_Bit_Count", bus, 20, 4, 32, 0, 0, "RO")
+        self.addrmap['msk_top_regs.Tx_Enable_Count'] = AddrmapItem("msk_top_regs.Tx_Enable_Count", bus, 24, 4, 32, 0, 0, "RO")
         self.addrmap['msk_top_regs.Fb_FreqWord'] = AddrmapItem("msk_top_regs.Fb_FreqWord", bus, 28, 4, 32, 0, 0, "RW")
         self.addrmap['msk_top_regs.F1_FreqWord'] = AddrmapItem("msk_top_regs.F1_FreqWord", bus, 32, 4, 32, 0, 0, "RW")
         self.addrmap['msk_top_regs.F2_FreqWord'] = AddrmapItem("msk_top_regs.F2_FreqWord", bus, 36, 4, 32, 0, 0, "RW")
@@ -77,6 +77,8 @@ class Addrmap:
         self.addrmap['msk_top_regs.PRBS_Error_Mask'] = AddrmapItem("msk_top_regs.PRBS_Error_Mask", bus, 68, 4, 32, 0, 0, "RW")
         self.addrmap['msk_top_regs.PRBS_Bit_Count'] = AddrmapItem("msk_top_regs.PRBS_Bit_Count", bus, 72, 4, 32, 0, 0, "RO")
         self.addrmap['msk_top_regs.PRBS_Error_Count'] = AddrmapItem("msk_top_regs.PRBS_Error_Count", bus, 76, 4, 32, 0, 0, "RO")
+        self.addrmap['msk_top_regs.LPF_Accum_F1'] = AddrmapItem("msk_top_regs.LPF_Accum_F1", bus, 80, 4, 32, 0, 0, "RO")
+        self.addrmap['msk_top_regs.LPF_Accum_F2'] = AddrmapItem("msk_top_regs.LPF_Accum_F2", bus, 84, 4, 32, 0, 0, "RO")
 
     def get_path(self, module, name):
         path = module + "." + name

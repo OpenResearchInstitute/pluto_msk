@@ -41,7 +41,7 @@ git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 
 - Absolute Address: 0x43C00000
 - Base Offset: 0x43C00000
-- Size: 0x50
+- Size: 0x58
 
 <p>MSK Modem Configuration and Status Registers</p>
 
@@ -67,6 +67,8 @@ git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 | 0x44 |  PRBS_Error_Mask |                        PRBS Control 3                       |
 | 0x48 |  PRBS_Bit_Count  |                        PRBS Status 0                        |
 | 0x4C | PRBS_Error_Count |                        PRBS Status 1                        |
+| 0x50 |   LPF_Accum_F1   |                 F1 PI Controller Accumulator                |
+| 0x54 |   LPF_Accum_F2   |                 F2 PI Controller Accumulator                |
 
 See [MSK Top Regs](rdl/msk_top_regs.pdf) for detailed register definitions.
 

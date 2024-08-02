@@ -77,6 +77,8 @@ class Addrmap:
         self.addrmap['msk_top_regs.PRBS_Error_Mask'] = AddrmapItem("msk_top_regs.PRBS_Error_Mask", bus, 68, 4, 32, 0, 0, "RW")
         self.addrmap['msk_top_regs.PRBS_Bit_Count'] = AddrmapItem("msk_top_regs.PRBS_Bit_Count", bus, 72, 4, 32, 0, 0, "RO")
         self.addrmap['msk_top_regs.PRBS_Error_Count'] = AddrmapItem("msk_top_regs.PRBS_Error_Count", bus, 76, 4, 32, 0, 0, "RO")
+        self.addrmap['msk_top_regs.LPF_Accum_F1'] = AddrmapItem("msk_top_regs.LPF_Accum_F1", bus, 80, 4, 32, 0, 0, "RO")
+        self.addrmap['msk_top_regs.LPF_Accum_F2'] = AddrmapItem("msk_top_regs.LPF_Accum_F2", bus, 84, 4, 32, 0, 0, "RO")
 
     def get_path(self, module, name):
         path = module + "." + name

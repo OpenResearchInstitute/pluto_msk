@@ -102,6 +102,12 @@ reg stat_32_errs {
     field { sw = r; hw = w; } status_data[31:0];
 };
 
+reg stat_32_lpf_acc {
+    regwidth = 32;
+    field { sw = r; hw = w; } status_data[31:0];
+};
+
+
 addrmap msk_top_regs {
     lsb0;
     default accesswidth=32;
@@ -130,5 +136,8 @@ addrmap msk_top_regs {
     config_prbs_errmask PRBS_Error_Mask;
     stat_32_bits PRBS_Bit_Count;
     stat_32_errs PRBS_Error_Count;
+    stat_32_lpf_acc LPF_Accum_F1;
+    stat_32_lpf_acc LPF_Accum_F2;
+
 };
 

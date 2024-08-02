@@ -547,6 +547,29 @@ package pkg_msk_top_regs is
   type t_reg_stat_32_errs_3d_in is array (integer range <>, integer range <>) of t_reg_stat_32_errs_in;
   type t_reg_stat_32_errs_3d_out is array (integer range <>, integer range <>) of t_reg_stat_32_errs_out;
   -----------------------------------------------
+  -- register type: stat_32_lpf_acc
+  -----------------------------------------------
+  type t_field_signals_stat_32_lpf_acc_status_data_in is record
+    data : std_logic_vector(32-1 downto 0); --
+  end record;
+
+  type t_field_signals_stat_32_lpf_acc_status_data_out is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record; --
+
+  -- The actual register types
+  type t_reg_stat_32_lpf_acc_in is record--
+    status_data : t_field_signals_stat_32_lpf_acc_status_data_in; --
+  end record;
+  type t_reg_stat_32_lpf_acc_out is record--
+    status_data : t_field_signals_stat_32_lpf_acc_status_data_out; --
+  end record;
+  type t_reg_stat_32_lpf_acc_2d_in is array (integer range <>) of t_reg_stat_32_lpf_acc_in;
+  type t_reg_stat_32_lpf_acc_2d_out is array (integer range <>) of t_reg_stat_32_lpf_acc_out;
+  type t_reg_stat_32_lpf_acc_3d_in is array (integer range <>, integer range <>) of t_reg_stat_32_lpf_acc_in;
+  type t_reg_stat_32_lpf_acc_3d_out is array (integer range <>, integer range <>) of t_reg_stat_32_lpf_acc_out;
+  -----------------------------------------------
 
   ------------------------------------------------------------------------------
   -- Register types in regfiles --
@@ -584,6 +607,8 @@ package pkg_msk_top_regs is
     PRBS_Error_Mask : t_reg_config_prbs_errmask_in; --
     PRBS_Bit_Count : t_reg_stat_32_bits_in; --
     PRBS_Error_Count : t_reg_stat_32_errs_in; --
+    LPF_Accum_F1 : t_reg_stat_32_lpf_acc_in; --
+    LPF_Accum_F2 : t_reg_stat_32_lpf_acc_in; --
     --
     --
     --
@@ -611,6 +636,8 @@ package pkg_msk_top_regs is
     PRBS_Error_Mask : t_reg_config_prbs_errmask_out; --
     PRBS_Bit_Count : t_reg_stat_32_bits_out; --
     PRBS_Error_Count : t_reg_stat_32_errs_out; --
+    LPF_Accum_F1 : t_reg_stat_32_lpf_acc_out; --
+    LPF_Accum_F2 : t_reg_stat_32_lpf_acc_out; --
     --
     --
     --
@@ -1797,6 +1824,48 @@ entity msk_top_regs_stat_32_errs is
 end entity msk_top_regs_stat_32_errs;
 
 architecture rtl of msk_top_regs_stat_32_errs is
+  signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+begin
+  --
+
+  -- resize field data out to the register bus width
+  -- do only if 1 field and signed--
+  po_decoder_data <= data_out; --
+
+  ------------------------------------------------------------WIRE
+  status_data_wire : block--
+  begin
+    --
+    data_out(31 downto 0) <= pi_reg.status_data.data(32-1 downto 0); --
+    --no signal to read by HW
+    po_reg.status_data.data <= (others => '0'); --
+  end block; --
+end rtl;
+-----------------------------------------------
+-- register type: stat_32_lpf_acc
+-----------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+use work.pkg_msk_top_regs.all;
+
+entity msk_top_regs_stat_32_lpf_acc is
+  port (
+    pi_clock        : in  std_logic;
+    pi_reset        : in  std_logic;
+    -- to/from adapter
+    pi_decoder_rd_stb : in  std_logic;
+    pi_decoder_wr_stb : in  std_logic;
+    pi_decoder_data   : in  std_logic_vector(C_DATA_WIDTH-1 downto 0);
+    po_decoder_data   : out std_logic_vector(C_DATA_WIDTH-1 downto 0);
+
+    pi_reg  : in t_reg_stat_32_lpf_acc_in ;
+    po_reg  : out t_reg_stat_32_lpf_acc_out
+  );
+end entity msk_top_regs_stat_32_lpf_acc;
+
+architecture rtl of msk_top_regs_stat_32_lpf_acc is
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
 begin
   --

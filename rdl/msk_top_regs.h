@@ -173,6 +173,16 @@ extern "C" {
 #define STAT_32_ERRS__STATUS_DATA_bp 0
 #define STAT_32_ERRS__STATUS_DATA_bw 32
 
+// Reg - stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670
+#define STAT_32_LPF_ACC_DESC_8CEBC7DC_NAME_F20C6670__STATUS_DATA_bm 0xffffffff
+#define STAT_32_LPF_ACC_DESC_8CEBC7DC_NAME_F20C6670__STATUS_DATA_bp 0
+#define STAT_32_LPF_ACC_DESC_8CEBC7DC_NAME_F20C6670__STATUS_DATA_bw 32
+
+// Reg - stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce
+#define STAT_32_LPF_ACC_DESC_DEA6BD99_NAME_758FD0CE__STATUS_DATA_bm 0xffffffff
+#define STAT_32_LPF_ACC_DESC_DEA6BD99_NAME_758FD0CE__STATUS_DATA_bp 0
+#define STAT_32_LPF_ACC_DESC_DEA6BD99_NAME_758FD0CE__STATUS_DATA_bw 32
+
 // Addrmap - msk_top_regs
 typedef struct __attribute__ ((__packed__)) {
     uint32_t Hash_ID_Low;
@@ -195,6 +205,8 @@ typedef struct __attribute__ ((__packed__)) {
     uint32_t PRBS_Error_Mask;
     uint32_t PRBS_Bit_Count;
     uint32_t PRBS_Error_Count;
+    uint32_t LPF_Accum_F1;
+    uint32_t LPF_Accum_F2;
 } msk_top_regs_t;
 
 // Addrmap - Pluto_MSK_Modem
@@ -204,7 +216,7 @@ typedef struct __attribute__ ((__packed__)) {
 } Pluto_MSK_Modem_t;
 
 
-static_assert(sizeof(Pluto_MSK_Modem_t) == 0x43c00050, "Packing error");
+static_assert(sizeof(Pluto_MSK_Modem_t) == 0x43c00058, "Packing error");
 
 #ifdef __cplusplus
 }

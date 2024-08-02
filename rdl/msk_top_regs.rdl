@@ -199,6 +199,14 @@ reg stat_32_errs {
                              BER can be calculated as the ratio of received bits to errored-bits";
 };
 
+reg stat_32_lpf_acc {
+    regwidth = 32;
+    field { sw = r; hw = w; } status_data[31:0];
+        status_data->name = "PI Controller Accumulator Value";
+        status_data->desc = "PI Controller Accumulator Value";
+};
+
+
 addrmap msk_top_regs {
     name="Pluto MSK Registers";
     desc="MSK Modem Configuration and Status Registers";
@@ -239,6 +247,13 @@ addrmap msk_top_regs {
     config_prbs_errmask PRBS_Error_Mask;
     stat_32_bits PRBS_Bit_Count;
     stat_32_errs PRBS_Error_Count;
+    stat_32_lpf_acc LPF_Accum_F1;
+        LPF_Accum_F1->name = "F1 PI Controller Accumulator";
+        LPF_Accum_F1->desc = "Value of the F1 PI Controller Accumulator";
+    stat_32_lpf_acc LPF_Accum_F2;
+        LPF_Accum_F2->name = "F2 PI Controller Accumulator";
+        LPF_Accum_F2->desc = "Value of the F2 PI Controller Accumulator";
+
 };
 
 addrmap Pluto_MSK_Modem {

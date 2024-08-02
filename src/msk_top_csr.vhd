@@ -76,6 +76,7 @@ ENTITY msk_top_csr IS
 		HASH_ID_HI 			: std_logic_vector := X"5555AAAA";
 		GAIN_W 				: NATURAL := 16;
 		NCO_W 				: NATURAL := 32;
+		ACC_W 				: NATURAL := 32;
 		GENERATOR_W 		: NATURAL := 32;
 		COUNTER_W 			: NATURAL := 32;
 		C_S_AXI_DATA_WIDTH	: NATURAL := 32;
@@ -112,6 +113,9 @@ ENTITY msk_top_csr IS
 		tx_req 			: IN std_logic;
 		prbs_bits		: IN std_logic_vector(COUNTER_W -1 DOWNTO 0);
 		prbs_errs		: IN std_logic_vector(COUNTER_W -1 DOWNTO 0);
+		lpf_accum_f1 	: IN std_logic_vector(ACC_W -1 DOWNTO 0);
+		lpf_accum_f2 	: IN std_logic_vector(ACC_W -1 DOWNTO 0);
+
 
 		init 			: out std_logic;
 		ptt 			: out std_logic;
@@ -201,6 +205,8 @@ BEGIN
     pi_addrmap.Tx_Enable_Count.tx_ena_cntr.decr <= NOT tx_enable;
     pi_addrmap.PRBS_Bit_Count.status_data.data <= prbs_bits;
     pi_addrmap.PRBS_Error_Count.status_data.data <= prbs_errs;
+    pi_addrmap.LPF_Accum_F1.status_data.data <= lpf_accum_f1;
+    pi_addrmap.LPF_Accum_F2.status_data.data <= lpf_accum_f2;
 
     init 			<= po_addrmap.MSK_Init.init.data(0);
     ptt 			<= po_addrmap.MSK_Control.ptt.data(0);
