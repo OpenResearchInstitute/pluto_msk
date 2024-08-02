@@ -203,10 +203,10 @@ BEGIN
     pi_addrmap.PRBS_Error_Count.status_data.data <= prbs_errs;
 
     init 			<= po_addrmap.MSK_Init.init.data(0);
-    ptt 			<= po_addrmap.MSK_Control.ptt_desc_209a923a.data(0);
-    loopback_ena 	<= po_addrmap.MSK_Control.loopback_ena_desc_6617b8f3.data(0);
-    rx_invert 		<= po_addrmap.MSK_Control.rx_invert_desc_643ee034.data(0);
-    clear_counts 	<= po_addrmap.MSK_Control.clear_counts_desc_52baf732.data(0);
+    ptt 			<= po_addrmap.MSK_Control.ptt.data(0);
+    loopback_ena 	<= po_addrmap.MSK_Control.loopback_ena.data(0);
+    rx_invert 		<= po_addrmap.MSK_Control.rx_invert.data(0);
+    clear_counts 	<= po_addrmap.MSK_Control.clear_counts.data(0);
     freq_word_ft	<= po_addrmap.Fb_FreqWord.config_data.data;
     freq_word_f1	<= po_addrmap.F1_FreqWord.config_data.data;
     freq_word_f2	<= po_addrmap.F2_FreqWord.config_data.data;

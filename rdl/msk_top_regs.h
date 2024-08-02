@@ -11,17 +11,17 @@ extern "C" {
 #include <stdint.h>
 #include <assert.h>
 
-// Reg - msk_hash_lo_desc_3fd0e28e
-#define MSK_HASH_LO_DESC_3FD0E28E__HASH_ID_LO_bm 0xffffffff
-#define MSK_HASH_LO_DESC_3FD0E28E__HASH_ID_LO_bp 0
-#define MSK_HASH_LO_DESC_3FD0E28E__HASH_ID_LO_bw 32
-#define MSK_HASH_LO_DESC_3FD0E28E__HASH_ID_LO_reset 0xaaaa5555
+// Reg - msk_hash_lo
+#define MSK_HASH_LO__HASH_ID_LO_bm 0xffffffff
+#define MSK_HASH_LO__HASH_ID_LO_bp 0
+#define MSK_HASH_LO__HASH_ID_LO_bw 32
+#define MSK_HASH_LO__HASH_ID_LO_reset 0xaaaa5555
 
-// Reg - msk_hash_hi_desc_3fd0e28e
-#define MSK_HASH_HI_DESC_3FD0E28E__HASH_ID_HI_bm 0xffffffff
-#define MSK_HASH_HI_DESC_3FD0E28E__HASH_ID_HI_bp 0
-#define MSK_HASH_HI_DESC_3FD0E28E__HASH_ID_HI_bw 32
-#define MSK_HASH_HI_DESC_3FD0E28E__HASH_ID_HI_reset 0x5555aaaa
+// Reg - msk_hash_hi
+#define MSK_HASH_HI__HASH_ID_HI_bm 0xffffffff
+#define MSK_HASH_HI__HASH_ID_HI_bp 0
+#define MSK_HASH_HI__HASH_ID_HI_bw 32
+#define MSK_HASH_HI__HASH_ID_HI_reset 0x5555aaaa
 
 // Reg - msk_init
 #define MSK_INIT__INIT_bm 0x1
@@ -73,11 +73,23 @@ extern "C" {
 #define MSK_STAT_2__DATA_REQ_COUNT_bw 32
 #define MSK_STAT_2__DATA_REQ_COUNT_reset 0x0
 
-// Reg - config_32
-#define CONFIG_32__CONFIG_DATA_bm 0xffffffff
-#define CONFIG_32__CONFIG_DATA_bp 0
-#define CONFIG_32__CONFIG_DATA_bw 32
-#define CONFIG_32__CONFIG_DATA_reset 0x0
+// Reg - config_nco_fw_desc_c4924cc6_name_0c494469
+#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_0C494469__CONFIG_DATA_bm 0xffffffff
+#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_0C494469__CONFIG_DATA_bp 0
+#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_0C494469__CONFIG_DATA_bw 32
+#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_0C494469__CONFIG_DATA_reset 0x0
+
+// Reg - config_nco_fw_desc_c4924cc6_name_1da0e814
+#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_1DA0E814__CONFIG_DATA_bm 0xffffffff
+#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_1DA0E814__CONFIG_DATA_bp 0
+#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_1DA0E814__CONFIG_DATA_bw 32
+#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_1DA0E814__CONFIG_DATA_reset 0x0
+
+// Reg - config_nco_fw_desc_c4924cc6_name_8061953c
+#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_8061953C__CONFIG_DATA_bm 0xffffffff
+#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_8061953C__CONFIG_DATA_bp 0
+#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_8061953C__CONFIG_DATA_bw 32
+#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_8061953C__CONFIG_DATA_reset 0x0
 
 // Reg - lpf_config_0
 #define LPF_CONFIG_0__LPF_FREEZE_bm 0x1
@@ -103,11 +115,17 @@ extern "C" {
 #define LPF_CONFIG_1__P_GAIN_bw 16
 #define LPF_CONFIG_1__P_GAIN_reset 0x0
 
-// Reg - data_width
-#define DATA_WIDTH__DATA_WIDTH_bm 0xff
-#define DATA_WIDTH__DATA_WIDTH_bp 0
-#define DATA_WIDTH__DATA_WIDTH_bw 8
-#define DATA_WIDTH__DATA_WIDTH_reset 0x8
+// Reg - data_width_desc_58c848dd_name_2fbd8eba
+#define DATA_WIDTH_DESC_58C848DD_NAME_2FBD8EBA__DATA_WIDTH_bm 0xff
+#define DATA_WIDTH_DESC_58C848DD_NAME_2FBD8EBA__DATA_WIDTH_bp 0
+#define DATA_WIDTH_DESC_58C848DD_NAME_2FBD8EBA__DATA_WIDTH_bw 8
+#define DATA_WIDTH_DESC_58C848DD_NAME_2FBD8EBA__DATA_WIDTH_reset 0x8
+
+// Reg - data_width_desc_6097df38_name_4609588b
+#define DATA_WIDTH_DESC_6097DF38_NAME_4609588B__DATA_WIDTH_bm 0xff
+#define DATA_WIDTH_DESC_6097DF38_NAME_4609588B__DATA_WIDTH_bp 0
+#define DATA_WIDTH_DESC_6097DF38_NAME_4609588B__DATA_WIDTH_bw 8
+#define DATA_WIDTH_DESC_6097DF38_NAME_4609588B__DATA_WIDTH_reset 0x8
 
 // Reg - prbs_ctrl
 #define PRBS_CTRL__PRBS_SEL_bm 0x1
@@ -127,10 +145,33 @@ extern "C" {
 #define PRBS_CTRL__PRBS_SYNC_bw 1
 #define PRBS_CTRL__PRBS_SYNC_reset 0x0
 
-// Reg - stat_32
-#define STAT_32__STATUS_DATA_bm 0xffffffff
-#define STAT_32__STATUS_DATA_bp 0
-#define STAT_32__STATUS_DATA_bw 32
+// Reg - config_prbs_seed
+#define CONFIG_PRBS_SEED__CONFIG_DATA_bm 0xffffffff
+#define CONFIG_PRBS_SEED__CONFIG_DATA_bp 0
+#define CONFIG_PRBS_SEED__CONFIG_DATA_bw 32
+#define CONFIG_PRBS_SEED__CONFIG_DATA_reset 0x0
+
+// Reg - config_prbs_poly
+#define CONFIG_PRBS_POLY__CONFIG_DATA_bm 0xffffffff
+#define CONFIG_PRBS_POLY__CONFIG_DATA_bp 0
+#define CONFIG_PRBS_POLY__CONFIG_DATA_bw 32
+#define CONFIG_PRBS_POLY__CONFIG_DATA_reset 0x0
+
+// Reg - config_prbs_errmask
+#define CONFIG_PRBS_ERRMASK__CONFIG_DATA_bm 0xffffffff
+#define CONFIG_PRBS_ERRMASK__CONFIG_DATA_bp 0
+#define CONFIG_PRBS_ERRMASK__CONFIG_DATA_bw 32
+#define CONFIG_PRBS_ERRMASK__CONFIG_DATA_reset 0x0
+
+// Reg - stat_32_bits
+#define STAT_32_BITS__STATUS_DATA_bm 0xffffffff
+#define STAT_32_BITS__STATUS_DATA_bp 0
+#define STAT_32_BITS__STATUS_DATA_bw 32
+
+// Reg - stat_32_errs
+#define STAT_32_ERRS__STATUS_DATA_bm 0xffffffff
+#define STAT_32_ERRS__STATUS_DATA_bp 0
+#define STAT_32_ERRS__STATUS_DATA_bw 32
 
 // Addrmap - msk_top_regs
 typedef struct __attribute__ ((__packed__)) {
@@ -156,8 +197,14 @@ typedef struct __attribute__ ((__packed__)) {
     uint32_t PRBS_Error_Count;
 } msk_top_regs_t;
 
+// Addrmap - Pluto_MSK_Modem
+typedef struct __attribute__ ((__packed__)) {
+    uint8_t RESERVED_0_43bfffff[0x43c00000];
+    msk_top_regs_t pluto_msk_regs;
+} Pluto_MSK_Modem_t;
 
-static_assert(sizeof(msk_top_regs_t) == 0x50, "Packing error");
+
+static_assert(sizeof(Pluto_MSK_Modem_t) == 0x43c00050, "Packing error");
 
 #ifdef __cplusplus
 }

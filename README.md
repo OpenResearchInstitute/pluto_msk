@@ -27,34 +27,48 @@ git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 
 ## MSK Modem Architecture
 
-### Control and Status Registers
+### Pluto_MSK_Modem address map
 
-The control and status registers (CSR) are organized as an array. Base address is currently 0x43c00000.
+- Absolute Address: 0x0
+- Base Offset: 0x0
+- Size: 0x43C00050
 
-| Hex Offset | Bit Position | Directionality | Location Within the VHDL Array  | Name           | Summary |
-| ---------- | ------------ | -------------- | ------------------------------- | -------------- | ------- |
-| 0x0000     | 0:31         | output         |csr_array(0)                     | HASH_ID        | set to 0xaaaa5555 in the hardware |
-| 0x0004     | 0            | input          |csr_array(1)(0)                  | init           | initializes or is part of initialization for many blocks |
-| 0x0008     | 0            | input          |csr_array(2)(0)                  | ptt            | push to talk |
-| 0x000c     | 0            | input          |csr_array(3)(0)                  | loopback_ena   | loopback enable |
-| 0x000c     | 31           | input          |csr_array(3)(31)                 | rx_invert      | rx_bit_corr takes the value of rx_bit when rx_invert is 0 and rx_bit_corr takes the value of NOT rx_bit when rx_invert is 1 |
-| 0x0010     | 0:31         | input          |csr_array(4)                     | freq_word_ft   | value of the frequency for symbol time (0x39d037) (mapped to freq_word_tclk) and generated as hex(int(bitrate/sample_rate *2.0**32)| 
-| 0x0014     | 0:31         | input          |csr_array(5)                     | freq_word_f1   | value of the frequency for the higher MSK tone (0x44a740e) and generated as hex(int((bitrate*20)-bitrate)/sample_rate *2.0**32)|
-| 0x0018     | 0:31         | input          |csr_array(6)                     | freq_word_f2   | value of the frequency for the lower MSK tone (0x4be147b) hex(int((bitrate*20)+bitrate)/sample_rate *2.0**32)|
-| 0x001c     | 0:15         |                |csr_array(7)(15:0)               | lpf_i_gain    | low pass filter gain value |
-| 0x001c     | 16:31        |                |csr_array(7)(31:16)              | lpf_p_gain     | low pass filter gain value |
-| 0x0020     | 0            |                |csr_array(8)(0)                  | lpf_freeze     | low pass filter value |
-| 0x0020     | 1            |                |csr_array(8)(1)                  | lpf_zero       | low pass filter value |
-| 0x0020     | 16:31        |                |csr_array(8)(31:16)              | lpf_alpha      | low pass filter value |
-| 0x0024     | 0:7          | input          |csr_array(9)(7:0)                | tx_data_w      | sets bit width in transmitter parallel to serial circuit |
-| 0x0028     | 0:7          | input          |csr_array(10)(7:0)               | rx_data_w      | sets bit width in receiver serial to parallel circuit |
-| 0x002c     | 0            | input          |csr_array(11)(0)                 | prbs_sel       | pseudo random bit sequence select |
-| 0x002c     | 1            |                |csr_array(11)(1)                 | prbs_err_insert| pseudo random bit sequence error insert (?) |
-| 0x0030     | 0:31         | input          |csr_array(12)                    | prbs_poly      | pseudo random bit sequence polynomial |
-| 0x0034     | 0:31         | input          |csr_array(13)                    | prbs_initial   | pseudo random bit sequence initial value |
-| 0x0038     | 0:31         |                |csr_array(14)                    | prbs_err_mask  | pseudo random bit sequence error mask |
-| 0x003c     | 0            |                |csr_array(15)(0)                 | prbs_clear     | pseudo random bit sequence clear |
-| 0x003c     | 1            |                |csr_array(15)(1)                 | prbs_sync      | pseudo random bit sequence sync |
+|  Offset  |  Identifier  |        Name       |
+|----------|--------------|-------------------|
+|0x43C00000|pluto_msk_regs|Pluto MSK Registers|
+
+### pluto_msk_regs address map
+
+- Absolute Address: 0x43C00000
+- Base Offset: 0x43C00000
+- Size: 0x50
+
+<p>MSK Modem Configuration and Status Registers</p>
+
+|Offset|    Identifier    |                             Name                            |
+|------|------------------|-------------------------------------------------------------|
+| 0x00 |    Hash_ID_Low   |            Pluto MSK FPGA Hash ID - Lower 32-bits           |
+| 0x04 |   Hash_ID_High   |            Pluto MSK FPGA Hash ID - Upper 32-bits           |
+| 0x08 |     MSK_Init     |                     MSK Modem Control 0                     |
+| 0x0C |    MSK_Control   |                     MSK Modem Control 1                     |
+| 0x10 |    MSK_Status    |                      MSK Modem Status 1                     |
+| 0x14 |   Tx_Bit_Count   |                      MSK Modem Status 2                     |
+| 0x18 |  Tx_Enable_Count |                      MSK Modem Status 3                     |
+| 0x1C |    Fb_FreqWord   |              Bitrate NCO Frequency Control Word             |
+| 0x20 |    F1_FreqWord   |              FSK f1 NCO Frequency Control Word              |
+| 0x24 |    F2_FreqWord   |              FSK f2 NCO Frequency Control Word              |
+| 0x28 |   LPF_Config_0   |PI Controller Configuration and Low-pass Filter Configuration|
+| 0x2C |   LPF_Config_1   |PI Controller Configuration and Low-pass Filter Configuration|
+| 0x30 |   Tx_Data_Width  |                  Modem Tx Input Data Width                  |
+| 0x34 |   Rx_Data_Width  |                  Modem Rx Output Data Width                 |
+| 0x38 |   PRBS_Control   |                        PRBS Control 0                       |
+| 0x3C |PRBS_Initial_State|                        PRBS Control 1                       |
+| 0x40 |  PRBS_Polynomial |                        PRBS Control 2                       |
+| 0x44 |  PRBS_Error_Mask |                        PRBS Control 3                       |
+| 0x48 |  PRBS_Bit_Count  |                        PRBS Status 0                        |
+| 0x4C | PRBS_Error_Count |                        PRBS Status 1                        |
+
+See [MSK Top Regs](rdl/msk_top_regs.pdf) for detailed register definitions.
 
 
 ## Development Quickstart

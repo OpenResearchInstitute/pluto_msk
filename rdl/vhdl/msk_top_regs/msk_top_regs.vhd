@@ -94,11 +94,11 @@ begin
   -- ===========================================================================
   -- generated registers instances
   -- ---------------------------------------------------------------------------
-  -- reg name: Hash_ID_Low  reg type: msk_hash_lo_desc_3fd0e28e
+  -- reg name: Hash_ID_Low  reg type: msk_hash_lo
   -- ---------------------------------------------------------------------------
   blk_Hash_ID_Low : block
   begin  --
-    inst_Hash_ID_Low: entity work.msk_top_regs_msk_hash_lo_desc_3fd0e28e
+    inst_Hash_ID_Low: entity work.msk_top_regs_msk_hash_lo
       port map(
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
@@ -113,11 +113,11 @@ begin
       ); --
   end block; --
   -- ---------------------------------------------------------------------------
-  -- reg name: Hash_ID_High  reg type: msk_hash_hi_desc_3fd0e28e
+  -- reg name: Hash_ID_High  reg type: msk_hash_hi
   -- ---------------------------------------------------------------------------
   blk_Hash_ID_High : block
   begin  --
-    inst_Hash_ID_High: entity work.msk_top_regs_msk_hash_hi_desc_3fd0e28e
+    inst_Hash_ID_High: entity work.msk_top_regs_msk_hash_hi
       port map(
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
@@ -227,11 +227,11 @@ begin
       ); --
   end block; --
   -- ---------------------------------------------------------------------------
-  -- reg name: Fb_FreqWord  reg type: config_32
+  -- reg name: Fb_FreqWord  reg type: config_nco_fw
   -- ---------------------------------------------------------------------------
   blk_Fb_FreqWord : block
   begin  --
-    inst_Fb_FreqWord: entity work.msk_top_regs_config_32
+    inst_Fb_FreqWord: entity work.msk_top_regs_config_nco_fw
       port map(
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
@@ -246,11 +246,11 @@ begin
       ); --
   end block; --
   -- ---------------------------------------------------------------------------
-  -- reg name: F1_FreqWord  reg type: config_32
+  -- reg name: F1_FreqWord  reg type: config_nco_fw
   -- ---------------------------------------------------------------------------
   blk_F1_FreqWord : block
   begin  --
-    inst_F1_FreqWord: entity work.msk_top_regs_config_32
+    inst_F1_FreqWord: entity work.msk_top_regs_config_nco_fw
       port map(
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
@@ -265,11 +265,11 @@ begin
       ); --
   end block; --
   -- ---------------------------------------------------------------------------
-  -- reg name: F2_FreqWord  reg type: config_32
+  -- reg name: F2_FreqWord  reg type: config_nco_fw
   -- ---------------------------------------------------------------------------
   blk_F2_FreqWord : block
   begin  --
-    inst_F2_FreqWord: entity work.msk_top_regs_config_32
+    inst_F2_FreqWord: entity work.msk_top_regs_config_nco_fw
       port map(
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
@@ -379,11 +379,11 @@ begin
       ); --
   end block; --
   -- ---------------------------------------------------------------------------
-  -- reg name: PRBS_Initial_State  reg type: config_32
+  -- reg name: PRBS_Initial_State  reg type: config_prbs_seed
   -- ---------------------------------------------------------------------------
   blk_PRBS_Initial_State : block
   begin  --
-    inst_PRBS_Initial_State: entity work.msk_top_regs_config_32
+    inst_PRBS_Initial_State: entity work.msk_top_regs_config_prbs_seed
       port map(
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
@@ -398,11 +398,11 @@ begin
       ); --
   end block; --
   -- ---------------------------------------------------------------------------
-  -- reg name: PRBS_Polynomial  reg type: config_32
+  -- reg name: PRBS_Polynomial  reg type: config_prbs_poly
   -- ---------------------------------------------------------------------------
   blk_PRBS_Polynomial : block
   begin  --
-    inst_PRBS_Polynomial: entity work.msk_top_regs_config_32
+    inst_PRBS_Polynomial: entity work.msk_top_regs_config_prbs_poly
       port map(
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
@@ -417,11 +417,11 @@ begin
       ); --
   end block; --
   -- ---------------------------------------------------------------------------
-  -- reg name: PRBS_Error_Mask  reg type: config_32
+  -- reg name: PRBS_Error_Mask  reg type: config_prbs_errmask
   -- ---------------------------------------------------------------------------
   blk_PRBS_Error_Mask : block
   begin  --
-    inst_PRBS_Error_Mask: entity work.msk_top_regs_config_32
+    inst_PRBS_Error_Mask: entity work.msk_top_regs_config_prbs_errmask
       port map(
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
@@ -436,11 +436,11 @@ begin
       ); --
   end block; --
   -- ---------------------------------------------------------------------------
-  -- reg name: PRBS_Bit_Count  reg type: stat_32
+  -- reg name: PRBS_Bit_Count  reg type: stat_32_bits
   -- ---------------------------------------------------------------------------
   blk_PRBS_Bit_Count : block
   begin  --
-    inst_PRBS_Bit_Count: entity work.msk_top_regs_stat_32
+    inst_PRBS_Bit_Count: entity work.msk_top_regs_stat_32_bits
       port map(
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
@@ -455,11 +455,11 @@ begin
       ); --
   end block; --
   -- ---------------------------------------------------------------------------
-  -- reg name: PRBS_Error_Count  reg type: stat_32
+  -- reg name: PRBS_Error_Count  reg type: stat_32_errs
   -- ---------------------------------------------------------------------------
   blk_PRBS_Error_Count : block
   begin  --
-    inst_PRBS_Error_Count: entity work.msk_top_regs_stat_32
+    inst_PRBS_Error_Count: entity work.msk_top_regs_stat_32_errs
       port map(
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,

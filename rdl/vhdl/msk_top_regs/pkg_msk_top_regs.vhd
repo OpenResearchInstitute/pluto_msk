@@ -43,53 +43,53 @@ package pkg_msk_top_regs is
   -- ===========================================================================
   -- REGISTERS interface
   -- ---------------------------------------------------------------------------
-  -- register type: msk_hash_lo_desc_3fd0e28e
+  -- register type: msk_hash_lo
   -----------------------------------------------
-  type t_field_signals_msk_hash_lo_desc_3fd0e28e_hash_id_lo_desc_876ef6a2_in is record
+  type t_field_signals_msk_hash_lo_hash_id_lo_in is record
     -- no data if field cannot be written from hw
     data : std_logic_vector(-1 downto 0); --
   end record;
 
-  type t_field_signals_msk_hash_lo_desc_3fd0e28e_hash_id_lo_desc_876ef6a2_out is record
+  type t_field_signals_msk_hash_lo_hash_id_lo_out is record
     -- no data if field cannot be written from hw
     data : std_logic_vector(-1 downto 0); --
   end record; --
 
   -- The actual register types
-  type t_reg_msk_hash_lo_desc_3fd0e28e_in is record--
-    hash_id_lo_desc_876ef6a2 : t_field_signals_msk_hash_lo_desc_3fd0e28e_hash_id_lo_desc_876ef6a2_in; --
+  type t_reg_msk_hash_lo_in is record--
+    hash_id_lo : t_field_signals_msk_hash_lo_hash_id_lo_in; --
   end record;
-  type t_reg_msk_hash_lo_desc_3fd0e28e_out is record--
-    hash_id_lo_desc_876ef6a2 : t_field_signals_msk_hash_lo_desc_3fd0e28e_hash_id_lo_desc_876ef6a2_out; --
+  type t_reg_msk_hash_lo_out is record--
+    hash_id_lo : t_field_signals_msk_hash_lo_hash_id_lo_out; --
   end record;
-  type t_reg_msk_hash_lo_desc_3fd0e28e_2d_in is array (integer range <>) of t_reg_msk_hash_lo_desc_3fd0e28e_in;
-  type t_reg_msk_hash_lo_desc_3fd0e28e_2d_out is array (integer range <>) of t_reg_msk_hash_lo_desc_3fd0e28e_out;
-  type t_reg_msk_hash_lo_desc_3fd0e28e_3d_in is array (integer range <>, integer range <>) of t_reg_msk_hash_lo_desc_3fd0e28e_in;
-  type t_reg_msk_hash_lo_desc_3fd0e28e_3d_out is array (integer range <>, integer range <>) of t_reg_msk_hash_lo_desc_3fd0e28e_out;
+  type t_reg_msk_hash_lo_2d_in is array (integer range <>) of t_reg_msk_hash_lo_in;
+  type t_reg_msk_hash_lo_2d_out is array (integer range <>) of t_reg_msk_hash_lo_out;
+  type t_reg_msk_hash_lo_3d_in is array (integer range <>, integer range <>) of t_reg_msk_hash_lo_in;
+  type t_reg_msk_hash_lo_3d_out is array (integer range <>, integer range <>) of t_reg_msk_hash_lo_out;
   -----------------------------------------------
-  -- register type: msk_hash_hi_desc_3fd0e28e
+  -- register type: msk_hash_hi
   -----------------------------------------------
-  type t_field_signals_msk_hash_hi_desc_3fd0e28e_hash_id_hi_desc_74f3badc_in is record
+  type t_field_signals_msk_hash_hi_hash_id_hi_in is record
     -- no data if field cannot be written from hw
     data : std_logic_vector(-1 downto 0); --
   end record;
 
-  type t_field_signals_msk_hash_hi_desc_3fd0e28e_hash_id_hi_desc_74f3badc_out is record
+  type t_field_signals_msk_hash_hi_hash_id_hi_out is record
     -- no data if field cannot be written from hw
     data : std_logic_vector(-1 downto 0); --
   end record; --
 
   -- The actual register types
-  type t_reg_msk_hash_hi_desc_3fd0e28e_in is record--
-    hash_id_hi_desc_74f3badc : t_field_signals_msk_hash_hi_desc_3fd0e28e_hash_id_hi_desc_74f3badc_in; --
+  type t_reg_msk_hash_hi_in is record--
+    hash_id_hi : t_field_signals_msk_hash_hi_hash_id_hi_in; --
   end record;
-  type t_reg_msk_hash_hi_desc_3fd0e28e_out is record--
-    hash_id_hi_desc_74f3badc : t_field_signals_msk_hash_hi_desc_3fd0e28e_hash_id_hi_desc_74f3badc_out; --
+  type t_reg_msk_hash_hi_out is record--
+    hash_id_hi : t_field_signals_msk_hash_hi_hash_id_hi_out; --
   end record;
-  type t_reg_msk_hash_hi_desc_3fd0e28e_2d_in is array (integer range <>) of t_reg_msk_hash_hi_desc_3fd0e28e_in;
-  type t_reg_msk_hash_hi_desc_3fd0e28e_2d_out is array (integer range <>) of t_reg_msk_hash_hi_desc_3fd0e28e_out;
-  type t_reg_msk_hash_hi_desc_3fd0e28e_3d_in is array (integer range <>, integer range <>) of t_reg_msk_hash_hi_desc_3fd0e28e_in;
-  type t_reg_msk_hash_hi_desc_3fd0e28e_3d_out is array (integer range <>, integer range <>) of t_reg_msk_hash_hi_desc_3fd0e28e_out;
+  type t_reg_msk_hash_hi_2d_in is array (integer range <>) of t_reg_msk_hash_hi_in;
+  type t_reg_msk_hash_hi_2d_out is array (integer range <>) of t_reg_msk_hash_hi_out;
+  type t_reg_msk_hash_hi_3d_in is array (integer range <>, integer range <>) of t_reg_msk_hash_hi_in;
+  type t_reg_msk_hash_hi_3d_out is array (integer range <>, integer range <>) of t_reg_msk_hash_hi_out;
   -----------------------------------------------
   -- register type: msk_init
   -----------------------------------------------
@@ -116,51 +116,51 @@ package pkg_msk_top_regs is
   -----------------------------------------------
   -- register type: msk_ctrl
   -----------------------------------------------
-  type t_field_signals_msk_ctrl_ptt_desc_209a923a_in is record
+  type t_field_signals_msk_ctrl_ptt_in is record
     -- no data if field cannot be written from hw
     data : std_logic_vector(-1 downto 0); --
   end record;
 
-  type t_field_signals_msk_ctrl_ptt_desc_209a923a_out is record
+  type t_field_signals_msk_ctrl_ptt_out is record
     data : std_logic_vector(1-1 downto 0); --
   end record; --
-  type t_field_signals_msk_ctrl_loopback_ena_desc_6617b8f3_in is record
+  type t_field_signals_msk_ctrl_loopback_ena_in is record
     -- no data if field cannot be written from hw
     data : std_logic_vector(-1 downto 0); --
   end record;
 
-  type t_field_signals_msk_ctrl_loopback_ena_desc_6617b8f3_out is record
+  type t_field_signals_msk_ctrl_loopback_ena_out is record
     data : std_logic_vector(1-1 downto 0); --
   end record; --
-  type t_field_signals_msk_ctrl_rx_invert_desc_643ee034_in is record
+  type t_field_signals_msk_ctrl_rx_invert_in is record
     -- no data if field cannot be written from hw
     data : std_logic_vector(-1 downto 0); --
   end record;
 
-  type t_field_signals_msk_ctrl_rx_invert_desc_643ee034_out is record
+  type t_field_signals_msk_ctrl_rx_invert_out is record
     data : std_logic_vector(1-1 downto 0); --
   end record; --
-  type t_field_signals_msk_ctrl_clear_counts_desc_52baf732_in is record
+  type t_field_signals_msk_ctrl_clear_counts_in is record
     -- no data if field cannot be written from hw
     data : std_logic_vector(-1 downto 0); --
   end record;
 
-  type t_field_signals_msk_ctrl_clear_counts_desc_52baf732_out is record
+  type t_field_signals_msk_ctrl_clear_counts_out is record
     data : std_logic_vector(1-1 downto 0); --
   end record; --
 
   -- The actual register types
   type t_reg_msk_ctrl_in is record--
-    ptt_desc_209a923a : t_field_signals_msk_ctrl_ptt_desc_209a923a_in; --
-    loopback_ena_desc_6617b8f3 : t_field_signals_msk_ctrl_loopback_ena_desc_6617b8f3_in; --
-    rx_invert_desc_643ee034 : t_field_signals_msk_ctrl_rx_invert_desc_643ee034_in; --
-    clear_counts_desc_52baf732 : t_field_signals_msk_ctrl_clear_counts_desc_52baf732_in; --
+    ptt : t_field_signals_msk_ctrl_ptt_in; --
+    loopback_ena : t_field_signals_msk_ctrl_loopback_ena_in; --
+    rx_invert : t_field_signals_msk_ctrl_rx_invert_in; --
+    clear_counts : t_field_signals_msk_ctrl_clear_counts_in; --
   end record;
   type t_reg_msk_ctrl_out is record--
-    ptt_desc_209a923a : t_field_signals_msk_ctrl_ptt_desc_209a923a_out; --
-    loopback_ena_desc_6617b8f3 : t_field_signals_msk_ctrl_loopback_ena_desc_6617b8f3_out; --
-    rx_invert_desc_643ee034 : t_field_signals_msk_ctrl_rx_invert_desc_643ee034_out; --
-    clear_counts_desc_52baf732 : t_field_signals_msk_ctrl_clear_counts_desc_52baf732_out; --
+    ptt : t_field_signals_msk_ctrl_ptt_out; --
+    loopback_ena : t_field_signals_msk_ctrl_loopback_ena_out; --
+    rx_invert : t_field_signals_msk_ctrl_rx_invert_out; --
+    clear_counts : t_field_signals_msk_ctrl_clear_counts_out; --
   end record;
   type t_reg_msk_ctrl_2d_in is array (integer range <>) of t_reg_msk_ctrl_in;
   type t_reg_msk_ctrl_2d_out is array (integer range <>) of t_reg_msk_ctrl_out;
@@ -257,28 +257,28 @@ package pkg_msk_top_regs is
   type t_reg_msk_stat_2_3d_in is array (integer range <>, integer range <>) of t_reg_msk_stat_2_in;
   type t_reg_msk_stat_2_3d_out is array (integer range <>, integer range <>) of t_reg_msk_stat_2_out;
   -----------------------------------------------
-  -- register type: config_32
+  -- register type: config_nco_fw
   -----------------------------------------------
-  type t_field_signals_config_32_config_data_in is record
+  type t_field_signals_config_nco_fw_config_data_in is record
     -- no data if field cannot be written from hw
     data : std_logic_vector(-1 downto 0); --
   end record;
 
-  type t_field_signals_config_32_config_data_out is record
+  type t_field_signals_config_nco_fw_config_data_out is record
     data : std_logic_vector(32-1 downto 0); --
   end record; --
 
   -- The actual register types
-  type t_reg_config_32_in is record--
-    config_data : t_field_signals_config_32_config_data_in; --
+  type t_reg_config_nco_fw_in is record--
+    config_data : t_field_signals_config_nco_fw_config_data_in; --
   end record;
-  type t_reg_config_32_out is record--
-    config_data : t_field_signals_config_32_config_data_out; --
+  type t_reg_config_nco_fw_out is record--
+    config_data : t_field_signals_config_nco_fw_config_data_out; --
   end record;
-  type t_reg_config_32_2d_in is array (integer range <>) of t_reg_config_32_in;
-  type t_reg_config_32_2d_out is array (integer range <>) of t_reg_config_32_out;
-  type t_reg_config_32_3d_in is array (integer range <>, integer range <>) of t_reg_config_32_in;
-  type t_reg_config_32_3d_out is array (integer range <>, integer range <>) of t_reg_config_32_out;
+  type t_reg_config_nco_fw_2d_in is array (integer range <>) of t_reg_config_nco_fw_in;
+  type t_reg_config_nco_fw_2d_out is array (integer range <>) of t_reg_config_nco_fw_out;
+  type t_reg_config_nco_fw_3d_in is array (integer range <>, integer range <>) of t_reg_config_nco_fw_in;
+  type t_reg_config_nco_fw_3d_out is array (integer range <>, integer range <>) of t_reg_config_nco_fw_out;
   -----------------------------------------------
   -- register type: lpf_config_0
   -----------------------------------------------
@@ -432,28 +432,120 @@ package pkg_msk_top_regs is
   type t_reg_prbs_ctrl_3d_in is array (integer range <>, integer range <>) of t_reg_prbs_ctrl_in;
   type t_reg_prbs_ctrl_3d_out is array (integer range <>, integer range <>) of t_reg_prbs_ctrl_out;
   -----------------------------------------------
-  -- register type: stat_32
+  -- register type: config_prbs_seed
   -----------------------------------------------
-  type t_field_signals_stat_32_status_data_in is record
+  type t_field_signals_config_prbs_seed_config_data_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_config_prbs_seed_config_data_out is record
+    data : std_logic_vector(32-1 downto 0); --
+  end record; --
+
+  -- The actual register types
+  type t_reg_config_prbs_seed_in is record--
+    config_data : t_field_signals_config_prbs_seed_config_data_in; --
+  end record;
+  type t_reg_config_prbs_seed_out is record--
+    config_data : t_field_signals_config_prbs_seed_config_data_out; --
+  end record;
+  type t_reg_config_prbs_seed_2d_in is array (integer range <>) of t_reg_config_prbs_seed_in;
+  type t_reg_config_prbs_seed_2d_out is array (integer range <>) of t_reg_config_prbs_seed_out;
+  type t_reg_config_prbs_seed_3d_in is array (integer range <>, integer range <>) of t_reg_config_prbs_seed_in;
+  type t_reg_config_prbs_seed_3d_out is array (integer range <>, integer range <>) of t_reg_config_prbs_seed_out;
+  -----------------------------------------------
+  -- register type: config_prbs_poly
+  -----------------------------------------------
+  type t_field_signals_config_prbs_poly_config_data_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_config_prbs_poly_config_data_out is record
+    data : std_logic_vector(32-1 downto 0); --
+  end record; --
+
+  -- The actual register types
+  type t_reg_config_prbs_poly_in is record--
+    config_data : t_field_signals_config_prbs_poly_config_data_in; --
+  end record;
+  type t_reg_config_prbs_poly_out is record--
+    config_data : t_field_signals_config_prbs_poly_config_data_out; --
+  end record;
+  type t_reg_config_prbs_poly_2d_in is array (integer range <>) of t_reg_config_prbs_poly_in;
+  type t_reg_config_prbs_poly_2d_out is array (integer range <>) of t_reg_config_prbs_poly_out;
+  type t_reg_config_prbs_poly_3d_in is array (integer range <>, integer range <>) of t_reg_config_prbs_poly_in;
+  type t_reg_config_prbs_poly_3d_out is array (integer range <>, integer range <>) of t_reg_config_prbs_poly_out;
+  -----------------------------------------------
+  -- register type: config_prbs_errmask
+  -----------------------------------------------
+  type t_field_signals_config_prbs_errmask_config_data_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_config_prbs_errmask_config_data_out is record
+    data : std_logic_vector(32-1 downto 0); --
+  end record; --
+
+  -- The actual register types
+  type t_reg_config_prbs_errmask_in is record--
+    config_data : t_field_signals_config_prbs_errmask_config_data_in; --
+  end record;
+  type t_reg_config_prbs_errmask_out is record--
+    config_data : t_field_signals_config_prbs_errmask_config_data_out; --
+  end record;
+  type t_reg_config_prbs_errmask_2d_in is array (integer range <>) of t_reg_config_prbs_errmask_in;
+  type t_reg_config_prbs_errmask_2d_out is array (integer range <>) of t_reg_config_prbs_errmask_out;
+  type t_reg_config_prbs_errmask_3d_in is array (integer range <>, integer range <>) of t_reg_config_prbs_errmask_in;
+  type t_reg_config_prbs_errmask_3d_out is array (integer range <>, integer range <>) of t_reg_config_prbs_errmask_out;
+  -----------------------------------------------
+  -- register type: stat_32_bits
+  -----------------------------------------------
+  type t_field_signals_stat_32_bits_status_data_in is record
     data : std_logic_vector(32-1 downto 0); --
   end record;
 
-  type t_field_signals_stat_32_status_data_out is record
+  type t_field_signals_stat_32_bits_status_data_out is record
     -- no data if field cannot be written from hw
     data : std_logic_vector(-1 downto 0); --
   end record; --
 
   -- The actual register types
-  type t_reg_stat_32_in is record--
-    status_data : t_field_signals_stat_32_status_data_in; --
+  type t_reg_stat_32_bits_in is record--
+    status_data : t_field_signals_stat_32_bits_status_data_in; --
   end record;
-  type t_reg_stat_32_out is record--
-    status_data : t_field_signals_stat_32_status_data_out; --
+  type t_reg_stat_32_bits_out is record--
+    status_data : t_field_signals_stat_32_bits_status_data_out; --
   end record;
-  type t_reg_stat_32_2d_in is array (integer range <>) of t_reg_stat_32_in;
-  type t_reg_stat_32_2d_out is array (integer range <>) of t_reg_stat_32_out;
-  type t_reg_stat_32_3d_in is array (integer range <>, integer range <>) of t_reg_stat_32_in;
-  type t_reg_stat_32_3d_out is array (integer range <>, integer range <>) of t_reg_stat_32_out;
+  type t_reg_stat_32_bits_2d_in is array (integer range <>) of t_reg_stat_32_bits_in;
+  type t_reg_stat_32_bits_2d_out is array (integer range <>) of t_reg_stat_32_bits_out;
+  type t_reg_stat_32_bits_3d_in is array (integer range <>, integer range <>) of t_reg_stat_32_bits_in;
+  type t_reg_stat_32_bits_3d_out is array (integer range <>, integer range <>) of t_reg_stat_32_bits_out;
+  -----------------------------------------------
+  -- register type: stat_32_errs
+  -----------------------------------------------
+  type t_field_signals_stat_32_errs_status_data_in is record
+    data : std_logic_vector(32-1 downto 0); --
+  end record;
+
+  type t_field_signals_stat_32_errs_status_data_out is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record; --
+
+  -- The actual register types
+  type t_reg_stat_32_errs_in is record--
+    status_data : t_field_signals_stat_32_errs_status_data_in; --
+  end record;
+  type t_reg_stat_32_errs_out is record--
+    status_data : t_field_signals_stat_32_errs_status_data_out; --
+  end record;
+  type t_reg_stat_32_errs_2d_in is array (integer range <>) of t_reg_stat_32_errs_in;
+  type t_reg_stat_32_errs_2d_out is array (integer range <>) of t_reg_stat_32_errs_out;
+  type t_reg_stat_32_errs_3d_in is array (integer range <>, integer range <>) of t_reg_stat_32_errs_in;
+  type t_reg_stat_32_errs_3d_out is array (integer range <>, integer range <>) of t_reg_stat_32_errs_out;
   -----------------------------------------------
 
   ------------------------------------------------------------------------------
@@ -472,26 +564,26 @@ package pkg_msk_top_regs is
   -- ---------------------------------------------------------------------------
   type t_addrmap_msk_top_regs_in is record
     --
-    Hash_ID_Low : t_reg_msk_hash_lo_desc_3fd0e28e_in; --
-    Hash_ID_High : t_reg_msk_hash_hi_desc_3fd0e28e_in; --
+    Hash_ID_Low : t_reg_msk_hash_lo_in; --
+    Hash_ID_High : t_reg_msk_hash_hi_in; --
     MSK_Init : t_reg_msk_init_in; --
     MSK_Control : t_reg_msk_ctrl_in; --
     MSK_Status : t_reg_msk_stat_0_in; --
     Tx_Bit_Count : t_reg_msk_stat_1_in; --
     Tx_Enable_Count : t_reg_msk_stat_2_in; --
-    Fb_FreqWord : t_reg_config_32_in; --
-    F1_FreqWord : t_reg_config_32_in; --
-    F2_FreqWord : t_reg_config_32_in; --
+    Fb_FreqWord : t_reg_config_nco_fw_in; --
+    F1_FreqWord : t_reg_config_nco_fw_in; --
+    F2_FreqWord : t_reg_config_nco_fw_in; --
     LPF_Config_0 : t_reg_lpf_config_0_in; --
     LPF_Config_1 : t_reg_lpf_config_1_in; --
     Tx_Data_Width : t_reg_data_width_in; --
     Rx_Data_Width : t_reg_data_width_in; --
     PRBS_Control : t_reg_prbs_ctrl_in; --
-    PRBS_Initial_State : t_reg_config_32_in; --
-    PRBS_Polynomial : t_reg_config_32_in; --
-    PRBS_Error_Mask : t_reg_config_32_in; --
-    PRBS_Bit_Count : t_reg_stat_32_in; --
-    PRBS_Error_Count : t_reg_stat_32_in; --
+    PRBS_Initial_State : t_reg_config_prbs_seed_in; --
+    PRBS_Polynomial : t_reg_config_prbs_poly_in; --
+    PRBS_Error_Mask : t_reg_config_prbs_errmask_in; --
+    PRBS_Bit_Count : t_reg_stat_32_bits_in; --
+    PRBS_Error_Count : t_reg_stat_32_errs_in; --
     --
     --
     --
@@ -499,26 +591,26 @@ package pkg_msk_top_regs is
 
   type t_addrmap_msk_top_regs_out is record
     --
-    Hash_ID_Low : t_reg_msk_hash_lo_desc_3fd0e28e_out; --
-    Hash_ID_High : t_reg_msk_hash_hi_desc_3fd0e28e_out; --
+    Hash_ID_Low : t_reg_msk_hash_lo_out; --
+    Hash_ID_High : t_reg_msk_hash_hi_out; --
     MSK_Init : t_reg_msk_init_out; --
     MSK_Control : t_reg_msk_ctrl_out; --
     MSK_Status : t_reg_msk_stat_0_out; --
     Tx_Bit_Count : t_reg_msk_stat_1_out; --
     Tx_Enable_Count : t_reg_msk_stat_2_out; --
-    Fb_FreqWord : t_reg_config_32_out; --
-    F1_FreqWord : t_reg_config_32_out; --
-    F2_FreqWord : t_reg_config_32_out; --
+    Fb_FreqWord : t_reg_config_nco_fw_out; --
+    F1_FreqWord : t_reg_config_nco_fw_out; --
+    F2_FreqWord : t_reg_config_nco_fw_out; --
     LPF_Config_0 : t_reg_lpf_config_0_out; --
     LPF_Config_1 : t_reg_lpf_config_1_out; --
     Tx_Data_Width : t_reg_data_width_out; --
     Rx_Data_Width : t_reg_data_width_out; --
     PRBS_Control : t_reg_prbs_ctrl_out; --
-    PRBS_Initial_State : t_reg_config_32_out; --
-    PRBS_Polynomial : t_reg_config_32_out; --
-    PRBS_Error_Mask : t_reg_config_32_out; --
-    PRBS_Bit_Count : t_reg_stat_32_out; --
-    PRBS_Error_Count : t_reg_stat_32_out; --
+    PRBS_Initial_State : t_reg_config_prbs_seed_out; --
+    PRBS_Polynomial : t_reg_config_prbs_poly_out; --
+    PRBS_Error_Mask : t_reg_config_prbs_errmask_out; --
+    PRBS_Bit_Count : t_reg_stat_32_bits_out; --
+    PRBS_Error_Count : t_reg_stat_32_errs_out; --
     --
     --
     --
@@ -556,7 +648,7 @@ end package body;
 -- Register types directly in addmap
 --------------------------------------------------------------------------------
 --
--- register type: msk_hash_lo_desc_3fd0e28e
+-- register type: msk_hash_lo
 -----------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
@@ -564,7 +656,7 @@ use ieee.numeric_std.all;
 
 use work.pkg_msk_top_regs.all;
 
-entity msk_top_regs_msk_hash_lo_desc_3fd0e28e is
+entity msk_top_regs_msk_hash_lo is
   port (
     pi_clock        : in  std_logic;
     pi_reset        : in  std_logic;
@@ -574,12 +666,12 @@ entity msk_top_regs_msk_hash_lo_desc_3fd0e28e is
     pi_decoder_data   : in  std_logic_vector(C_DATA_WIDTH-1 downto 0);
     po_decoder_data   : out std_logic_vector(C_DATA_WIDTH-1 downto 0);
 
-    pi_reg  : in t_reg_msk_hash_lo_desc_3fd0e28e_in ;
-    po_reg  : out t_reg_msk_hash_lo_desc_3fd0e28e_out
+    pi_reg  : in t_reg_msk_hash_lo_in ;
+    po_reg  : out t_reg_msk_hash_lo_out
   );
-end entity msk_top_regs_msk_hash_lo_desc_3fd0e28e;
+end entity msk_top_regs_msk_hash_lo;
 
-architecture rtl of msk_top_regs_msk_hash_lo_desc_3fd0e28e is
+architecture rtl of msk_top_regs_msk_hash_lo is
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
 begin
   --
@@ -589,16 +681,16 @@ begin
   po_decoder_data <= data_out; --
 
   ------------------------------------------------------------WIRE
-  hash_id_lo_desc_876ef6a2_wire : block--
+  hash_id_lo_wire : block--
   begin
     --
     data_out(31 downto 0) <= std_logic_vector(to_signed(-1431677611,32)); --
     --no signal to read by HW
-    po_reg.hash_id_lo_desc_876ef6a2.data <= (others => '0'); --
+    po_reg.hash_id_lo.data <= (others => '0'); --
   end block; --
 end rtl;
 -----------------------------------------------
--- register type: msk_hash_hi_desc_3fd0e28e
+-- register type: msk_hash_hi
 -----------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
@@ -606,7 +698,7 @@ use ieee.numeric_std.all;
 
 use work.pkg_msk_top_regs.all;
 
-entity msk_top_regs_msk_hash_hi_desc_3fd0e28e is
+entity msk_top_regs_msk_hash_hi is
   port (
     pi_clock        : in  std_logic;
     pi_reset        : in  std_logic;
@@ -616,12 +708,12 @@ entity msk_top_regs_msk_hash_hi_desc_3fd0e28e is
     pi_decoder_data   : in  std_logic_vector(C_DATA_WIDTH-1 downto 0);
     po_decoder_data   : out std_logic_vector(C_DATA_WIDTH-1 downto 0);
 
-    pi_reg  : in t_reg_msk_hash_hi_desc_3fd0e28e_in ;
-    po_reg  : out t_reg_msk_hash_hi_desc_3fd0e28e_out
+    pi_reg  : in t_reg_msk_hash_hi_in ;
+    po_reg  : out t_reg_msk_hash_hi_out
   );
-end entity msk_top_regs_msk_hash_hi_desc_3fd0e28e;
+end entity msk_top_regs_msk_hash_hi;
 
-architecture rtl of msk_top_regs_msk_hash_hi_desc_3fd0e28e is
+architecture rtl of msk_top_regs_msk_hash_hi is
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
 begin
   --
@@ -631,12 +723,12 @@ begin
   po_decoder_data <= data_out; --
 
   ------------------------------------------------------------WIRE
-  hash_id_hi_desc_74f3badc_wire : block--
+  hash_id_hi_wire : block--
   begin
     --
     data_out(31 downto 0) <= std_logic_vector(to_signed(1431677610,32)); --
     --no signal to read by HW
-    po_reg.hash_id_hi_desc_74f3badc.data <= (others => '0'); --
+    po_reg.hash_id_hi.data <= (others => '0'); --
   end block; --
 end rtl;
 -----------------------------------------------
@@ -734,7 +826,7 @@ begin
   po_decoder_data <= data_out; --
 
   ------------------------------------------------------------STORAGE
-  ptt_desc_209a923a_storage: block
+  ptt_storage: block
     signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
                            std_logic_vector(to_signed(0,1));
   begin
@@ -753,12 +845,12 @@ begin
       end if;
     end process;
     --
-    po_reg.ptt_desc_209a923a.data <= l_field_reg; --
+    po_reg.ptt.data <= l_field_reg; --
     data_out(0 downto 0) <= l_field_reg;
 
-  end block ptt_desc_209a923a_storage;
+  end block ptt_storage;
   ------------------------------------------------------------STORAGE
-  loopback_ena_desc_6617b8f3_storage: block
+  loopback_ena_storage: block
     signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
                            std_logic_vector(to_signed(0,1));
   begin
@@ -777,12 +869,12 @@ begin
       end if;
     end process;
     --
-    po_reg.loopback_ena_desc_6617b8f3.data <= l_field_reg; --
+    po_reg.loopback_ena.data <= l_field_reg; --
     data_out(1 downto 1) <= l_field_reg;
 
-  end block loopback_ena_desc_6617b8f3_storage;
+  end block loopback_ena_storage;
   ------------------------------------------------------------STORAGE
-  rx_invert_desc_643ee034_storage: block
+  rx_invert_storage: block
     signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
                            std_logic_vector(to_signed(0,1));
   begin
@@ -801,12 +893,12 @@ begin
       end if;
     end process;
     --
-    po_reg.rx_invert_desc_643ee034.data <= l_field_reg; --
+    po_reg.rx_invert.data <= l_field_reg; --
     data_out(2 downto 2) <= l_field_reg;
 
-  end block rx_invert_desc_643ee034_storage;
+  end block rx_invert_storage;
   ------------------------------------------------------------STORAGE
-  clear_counts_desc_52baf732_storage: block
+  clear_counts_storage: block
     signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
                            std_logic_vector(to_signed(0,1));
   begin
@@ -825,10 +917,10 @@ begin
       end if;
     end process;
     --
-    po_reg.clear_counts_desc_52baf732.data <= l_field_reg; --
+    po_reg.clear_counts.data <= l_field_reg; --
     data_out(3 downto 3) <= l_field_reg;
 
-  end block clear_counts_desc_52baf732_storage;
+  end block clear_counts_storage;
   ----------------------------------------------------------
 end rtl;
 -----------------------------------------------
@@ -1020,7 +1112,7 @@ begin
   ----------------------------------------------------------
 end rtl;
 -----------------------------------------------
--- register type: config_32
+-- register type: config_nco_fw
 -----------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
@@ -1028,7 +1120,7 @@ use ieee.numeric_std.all;
 
 use work.pkg_msk_top_regs.all;
 
-entity msk_top_regs_config_32 is
+entity msk_top_regs_config_nco_fw is
   port (
     pi_clock        : in  std_logic;
     pi_reset        : in  std_logic;
@@ -1038,12 +1130,12 @@ entity msk_top_regs_config_32 is
     pi_decoder_data   : in  std_logic_vector(C_DATA_WIDTH-1 downto 0);
     po_decoder_data   : out std_logic_vector(C_DATA_WIDTH-1 downto 0);
 
-    pi_reg  : in t_reg_config_32_in ;
-    po_reg  : out t_reg_config_32_out
+    pi_reg  : in t_reg_config_nco_fw_in ;
+    po_reg  : out t_reg_config_nco_fw_out
   );
-end entity msk_top_regs_config_32;
+end entity msk_top_regs_config_nco_fw;
 
-architecture rtl of msk_top_regs_config_32 is
+architecture rtl of msk_top_regs_config_nco_fw is
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
 begin
   --
@@ -1462,7 +1554,7 @@ begin
   ----------------------------------------------------------
 end rtl;
 -----------------------------------------------
--- register type: stat_32
+-- register type: config_prbs_seed
 -----------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
@@ -1470,7 +1562,7 @@ use ieee.numeric_std.all;
 
 use work.pkg_msk_top_regs.all;
 
-entity msk_top_regs_stat_32 is
+entity msk_top_regs_config_prbs_seed is
   port (
     pi_clock        : in  std_logic;
     pi_reset        : in  std_logic;
@@ -1480,12 +1572,231 @@ entity msk_top_regs_stat_32 is
     pi_decoder_data   : in  std_logic_vector(C_DATA_WIDTH-1 downto 0);
     po_decoder_data   : out std_logic_vector(C_DATA_WIDTH-1 downto 0);
 
-    pi_reg  : in t_reg_stat_32_in ;
-    po_reg  : out t_reg_stat_32_out
+    pi_reg  : in t_reg_config_prbs_seed_in ;
+    po_reg  : out t_reg_config_prbs_seed_out
   );
-end entity msk_top_regs_stat_32;
+end entity msk_top_regs_config_prbs_seed;
 
-architecture rtl of msk_top_regs_stat_32 is
+architecture rtl of msk_top_regs_config_prbs_seed is
+  signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+begin
+  --
+
+  -- resize field data out to the register bus width
+  -- do only if 1 field and signed--
+  po_decoder_data <= data_out; --
+
+  ------------------------------------------------------------STORAGE
+  config_data_storage: block
+    signal l_field_reg   : std_logic_vector(32-1 downto 0) :=
+                           std_logic_vector(to_signed(0,32));
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          l_field_reg <= std_logic_vector(to_signed(0,32));
+        else
+          -- HW --
+          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          if pi_decoder_wr_stb = '1' then
+            l_field_reg <= pi_decoder_data(31 downto 0);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.config_data.data <= l_field_reg; --
+    data_out(31 downto 0) <= l_field_reg;
+
+  end block config_data_storage;
+  ----------------------------------------------------------
+end rtl;
+-----------------------------------------------
+-- register type: config_prbs_poly
+-----------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+use work.pkg_msk_top_regs.all;
+
+entity msk_top_regs_config_prbs_poly is
+  port (
+    pi_clock        : in  std_logic;
+    pi_reset        : in  std_logic;
+    -- to/from adapter
+    pi_decoder_rd_stb : in  std_logic;
+    pi_decoder_wr_stb : in  std_logic;
+    pi_decoder_data   : in  std_logic_vector(C_DATA_WIDTH-1 downto 0);
+    po_decoder_data   : out std_logic_vector(C_DATA_WIDTH-1 downto 0);
+
+    pi_reg  : in t_reg_config_prbs_poly_in ;
+    po_reg  : out t_reg_config_prbs_poly_out
+  );
+end entity msk_top_regs_config_prbs_poly;
+
+architecture rtl of msk_top_regs_config_prbs_poly is
+  signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+begin
+  --
+
+  -- resize field data out to the register bus width
+  -- do only if 1 field and signed--
+  po_decoder_data <= data_out; --
+
+  ------------------------------------------------------------STORAGE
+  config_data_storage: block
+    signal l_field_reg   : std_logic_vector(32-1 downto 0) :=
+                           std_logic_vector(to_signed(0,32));
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          l_field_reg <= std_logic_vector(to_signed(0,32));
+        else
+          -- HW --
+          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          if pi_decoder_wr_stb = '1' then
+            l_field_reg <= pi_decoder_data(31 downto 0);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.config_data.data <= l_field_reg; --
+    data_out(31 downto 0) <= l_field_reg;
+
+  end block config_data_storage;
+  ----------------------------------------------------------
+end rtl;
+-----------------------------------------------
+-- register type: config_prbs_errmask
+-----------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+use work.pkg_msk_top_regs.all;
+
+entity msk_top_regs_config_prbs_errmask is
+  port (
+    pi_clock        : in  std_logic;
+    pi_reset        : in  std_logic;
+    -- to/from adapter
+    pi_decoder_rd_stb : in  std_logic;
+    pi_decoder_wr_stb : in  std_logic;
+    pi_decoder_data   : in  std_logic_vector(C_DATA_WIDTH-1 downto 0);
+    po_decoder_data   : out std_logic_vector(C_DATA_WIDTH-1 downto 0);
+
+    pi_reg  : in t_reg_config_prbs_errmask_in ;
+    po_reg  : out t_reg_config_prbs_errmask_out
+  );
+end entity msk_top_regs_config_prbs_errmask;
+
+architecture rtl of msk_top_regs_config_prbs_errmask is
+  signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+begin
+  --
+
+  -- resize field data out to the register bus width
+  -- do only if 1 field and signed--
+  po_decoder_data <= data_out; --
+
+  ------------------------------------------------------------STORAGE
+  config_data_storage: block
+    signal l_field_reg   : std_logic_vector(32-1 downto 0) :=
+                           std_logic_vector(to_signed(0,32));
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          l_field_reg <= std_logic_vector(to_signed(0,32));
+        else
+          -- HW --
+          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          if pi_decoder_wr_stb = '1' then
+            l_field_reg <= pi_decoder_data(31 downto 0);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.config_data.data <= l_field_reg; --
+    data_out(31 downto 0) <= l_field_reg;
+
+  end block config_data_storage;
+  ----------------------------------------------------------
+end rtl;
+-----------------------------------------------
+-- register type: stat_32_bits
+-----------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+use work.pkg_msk_top_regs.all;
+
+entity msk_top_regs_stat_32_bits is
+  port (
+    pi_clock        : in  std_logic;
+    pi_reset        : in  std_logic;
+    -- to/from adapter
+    pi_decoder_rd_stb : in  std_logic;
+    pi_decoder_wr_stb : in  std_logic;
+    pi_decoder_data   : in  std_logic_vector(C_DATA_WIDTH-1 downto 0);
+    po_decoder_data   : out std_logic_vector(C_DATA_WIDTH-1 downto 0);
+
+    pi_reg  : in t_reg_stat_32_bits_in ;
+    po_reg  : out t_reg_stat_32_bits_out
+  );
+end entity msk_top_regs_stat_32_bits;
+
+architecture rtl of msk_top_regs_stat_32_bits is
+  signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+begin
+  --
+
+  -- resize field data out to the register bus width
+  -- do only if 1 field and signed--
+  po_decoder_data <= data_out; --
+
+  ------------------------------------------------------------WIRE
+  status_data_wire : block--
+  begin
+    --
+    data_out(31 downto 0) <= pi_reg.status_data.data(32-1 downto 0); --
+    --no signal to read by HW
+    po_reg.status_data.data <= (others => '0'); --
+  end block; --
+end rtl;
+-----------------------------------------------
+-- register type: stat_32_errs
+-----------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+use work.pkg_msk_top_regs.all;
+
+entity msk_top_regs_stat_32_errs is
+  port (
+    pi_clock        : in  std_logic;
+    pi_reset        : in  std_logic;
+    -- to/from adapter
+    pi_decoder_rd_stb : in  std_logic;
+    pi_decoder_wr_stb : in  std_logic;
+    pi_decoder_data   : in  std_logic_vector(C_DATA_WIDTH-1 downto 0);
+    po_decoder_data   : out std_logic_vector(C_DATA_WIDTH-1 downto 0);
+
+    pi_reg  : in t_reg_stat_32_errs_in ;
+    po_reg  : out t_reg_stat_32_errs_out
+  );
+end entity msk_top_regs_stat_32_errs;
+
+architecture rtl of msk_top_regs_stat_32_errs is
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
 begin
   --
