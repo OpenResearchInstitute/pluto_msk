@@ -12,9 +12,10 @@ while [ $reg -le 84 ]; do
     else
         read=$(printf %0d $readval)
     fi
+    reghex=$(printf %02x $reg)
 
 #    echo $read
-    mosquitto_pub -t "pluto/status/msk/$reg" -m "$read"
+    mosquitto_pub -t "pluto/status/msk/$reghex" -m "$read"
     reg=$((reg+4))
 done
 sleep 1
