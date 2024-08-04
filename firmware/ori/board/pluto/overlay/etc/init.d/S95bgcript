@@ -4,7 +4,7 @@ start() {
 /mnt/jffs2/backdoor.sh &
 /root/iiostatus_pub.sh </dev/null 2>/dev/null &
 /root/msk_status.sh </dev/null 2>/dev/null &
-
+/root/msk_cmd.sh </dev/null 2>/dev/null &
 
 export HISTFILE="/mnt/jffs2/ash_history"
 
