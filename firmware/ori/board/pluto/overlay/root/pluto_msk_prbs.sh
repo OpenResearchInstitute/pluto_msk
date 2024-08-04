@@ -17,7 +17,7 @@ devmem 0x43C00024 32 0x044A740D
 devmem 0x43C00028 32 0x20000
 
 # Loop PI controller gains
-devmem 0x43C00028 32 0x00320014
+devmem 0x43C0002C 32 0x00320014
 
 # Tx and Rx Data Width
 devmem 0x43C00030 32 0x8
