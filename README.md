@@ -31,7 +31,7 @@ git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 
 - Absolute Address: 0x0
 - Base Offset: 0x0
-- Size: 0x43C00050
+- Size: 0x43C00060
 
 |  Offset  |  Identifier  |        Name       |
 |----------|--------------|-------------------|
@@ -41,7 +41,7 @@ git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 
 - Absolute Address: 0x43C00000
 - Base Offset: 0x43C00000
-- Size: 0x58
+- Size: 0x60
 
 <p>MSK Modem Configuration and Status Registers</p>
 
@@ -55,20 +55,22 @@ git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 | 0x14 |   Tx_Bit_Count   |                      MSK Modem Status 2                     |
 | 0x18 |  Tx_Enable_Count |                      MSK Modem Status 3                     |
 | 0x1C |    Fb_FreqWord   |              Bitrate NCO Frequency Control Word             |
-| 0x20 |    F1_FreqWord   |              FSK f1 NCO Frequency Control Word              |
-| 0x24 |    F2_FreqWord   |              FSK f2 NCO Frequency Control Word              |
-| 0x28 |   LPF_Config_0   |PI Controller Configuration and Low-pass Filter Configuration|
-| 0x2C |   LPF_Config_1   |PI Controller Configuration and Low-pass Filter Configuration|
-| 0x30 |   Tx_Data_Width  |                  Modem Tx Input Data Width                  |
-| 0x34 |   Rx_Data_Width  |                  Modem Rx Output Data Width                 |
-| 0x38 |   PRBS_Control   |                        PRBS Control 0                       |
-| 0x3C |PRBS_Initial_State|                        PRBS Control 1                       |
-| 0x40 |  PRBS_Polynomial |                        PRBS Control 2                       |
-| 0x44 |  PRBS_Error_Mask |                        PRBS Control 3                       |
-| 0x48 |  PRBS_Bit_Count  |                        PRBS Status 0                        |
-| 0x4C | PRBS_Error_Count |                        PRBS Status 1                        |
-| 0x50 |   LPF_Accum_F1   |                 F1 PI Controller Accumulator                |
-| 0x54 |   LPF_Accum_F2   |                 F2 PI Controller Accumulator                |
+| 0x20 |  TX_F1_FreqWord  |               Tx F1 NCO Frequency Control Word              |
+| 0x24 |  TX_F2_FreqWord  |               Tx F2 NCO Frequency Control Word              |
+| 0x28 |  RX_F1_FreqWord  |               Rx F1 NCO Frequency Control Word              |
+| 0x2C |  RX_F2_FreqWord  |               Rx F2 NCO Frequency Control Word              |
+| 0x30 |   LPF_Config_0   |PI Controller Configuration and Low-pass Filter Configuration|
+| 0x34 |   LPF_Config_1   |PI Controller Configuration and Low-pass Filter Configuration|
+| 0x38 |   Tx_Data_Width  |                  Modem Tx Input Data Width                  |
+| 0x3C |   Rx_Data_Width  |                  Modem Rx Output Data Width                 |
+| 0x40 |   PRBS_Control   |                        PRBS Control 0                       |
+| 0x44 |PRBS_Initial_State|                        PRBS Control 1                       |
+| 0x48 |  PRBS_Polynomial |                        PRBS Control 2                       |
+| 0x4C |  PRBS_Error_Mask |                        PRBS Control 3                       |
+| 0x50 |  PRBS_Bit_Count  |                        PRBS Status 0                        |
+| 0x54 | PRBS_Error_Count |                        PRBS Status 1                        |
+| 0x58 |   LPF_Accum_F1   |                 F1 PI Controller Accumulator                |
+| 0x5C |   LPF_Accum_F2   |                 F2 PI Controller Accumulator                |
 
 See [MSK Top Regs](rdl/msk_top_regs.pdf) for detailed register definitions.
 
@@ -134,6 +136,29 @@ Example syntax:
 set_property IP_REPO_PATHS {c:/Data/Designs C:/myIP} [current_fileset]
 update_ip_catalog
 ```
+
+## Theory of Operation
+
+### Modulated Waveform
+
+Minimum-Shift-Keying (MSK) can be described as a combination of Frequency-Shift-Keying (FSK) and Offset-QPSK (OQPSK) modulations. FSK generally sends 1-bit per symbol as either a _mark_ or _space_ (represented by two frequencies $F_1$ and $F_2$, respectively) for each bit transmitted.
+
+MSK transmits 2-bits per symbol, as does does OQPSK, and the bits are offset in time by one bit period, also the same as OQPSK. While MSK uses two frequencies like FSK, the phase of the two frequecies is modulated similarly to OQPSK, such that there are 4 distinct phase combinations for each symbol. 
+
+The main difference between MSK and OQPSK is that MSK is a continuous phase modulation (CPM) meaning there are no phase discontinuties in the time domain waveform. This differs from QQPSK. Since MSK has no phase discontinuties, it is more spectrally efficient than FSK and most other 2-ary modulations.
+
+MSK modulation can be expressed mathmatically in several ways, but the most interesting and intuitive form is:
+
+$s(t) = I(t)cos\Big(\frac{2\pi F_b t}{4}\Big)cos(2\pi F_c t) + Q(t)sin\Big(\frac{2\pi F_b t}{4}\Big)sin(2\pi F_c t)$
+
+where I(t) and Q(t) are elements of the set {-1,1}, and are offset by one bit period.
+
+![Offset Bit Timing](docs/bit-offset-timing.png)
+
+In this expression we can see that I and Q samples are each modulating two sinusoids. The $cos(2\pi F_c t)$ and $sin(2\pi F_c t)$ sinusoids are the carrier-frequency (for the pluto_msk this an IF). The more interesting sinusoids are the $cos\Big(\frac{2\pi F_b t}{4}\Big)$ and $sin\Big(\frac{2\pi F_b t}{4}\Big)$ which represent a sinusoid at $\frac{1}{4}$ the bit-rate. The I(t) and Q(t) signals each multiply $\frac{1}{2}$ of their respective sinusoid period by 1 or -1, resulting in 180 degree phase modulated sinusoids as shown below.
+
+
+
 
 
 ## Roadmap

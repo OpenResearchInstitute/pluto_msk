@@ -1,0 +1,6 @@
+{signal: [
+  {name: 'bit clk', wave: 'p.............', period: 1},
+  {name: 'I(t)',	wave: '2.2.2.2.2.2.2.', data: '-1 1 1 -1 -1 -1 1',period: 1},
+  {name: 'Q(t)',	wave: '22.2.2.2.2.2.2', data: '1 -1 -1 1 -1 1 1 1', period: 1},
+  
+]}
