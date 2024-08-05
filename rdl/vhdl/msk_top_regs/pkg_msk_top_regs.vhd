@@ -148,6 +148,14 @@ package pkg_msk_top_regs is
   type t_field_signals_msk_ctrl_clear_counts_out is record
     data : std_logic_vector(1-1 downto 0); --
   end record; --
+  type t_field_signals_msk_ctrl_sample_discard_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_msk_ctrl_sample_discard_out is record
+    data : std_logic_vector(8-1 downto 0); --
+  end record; --
 
   -- The actual register types
   type t_reg_msk_ctrl_in is record--
@@ -155,12 +163,14 @@ package pkg_msk_top_regs is
     loopback_ena : t_field_signals_msk_ctrl_loopback_ena_in; --
     rx_invert : t_field_signals_msk_ctrl_rx_invert_in; --
     clear_counts : t_field_signals_msk_ctrl_clear_counts_in; --
+    sample_discard : t_field_signals_msk_ctrl_sample_discard_in; --
   end record;
   type t_reg_msk_ctrl_out is record--
     ptt : t_field_signals_msk_ctrl_ptt_out; --
     loopback_ena : t_field_signals_msk_ctrl_loopback_ena_out; --
     rx_invert : t_field_signals_msk_ctrl_rx_invert_out; --
     clear_counts : t_field_signals_msk_ctrl_clear_counts_out; --
+    sample_discard : t_field_signals_msk_ctrl_sample_discard_out; --
   end record;
   type t_reg_msk_ctrl_2d_in is array (integer range <>) of t_reg_msk_ctrl_in;
   type t_reg_msk_ctrl_2d_out is array (integer range <>) of t_reg_msk_ctrl_out;
@@ -595,8 +605,10 @@ package pkg_msk_top_regs is
     Tx_Bit_Count : t_reg_msk_stat_1_in; --
     Tx_Enable_Count : t_reg_msk_stat_2_in; --
     Fb_FreqWord : t_reg_config_nco_fw_in; --
-    F1_FreqWord : t_reg_config_nco_fw_in; --
-    F2_FreqWord : t_reg_config_nco_fw_in; --
+    TX_F1_FreqWord : t_reg_config_nco_fw_in; --
+    TX_F2_FreqWord : t_reg_config_nco_fw_in; --
+    RX_F1_FreqWord : t_reg_config_nco_fw_in; --
+    RX_F2_FreqWord : t_reg_config_nco_fw_in; --
     LPF_Config_0 : t_reg_lpf_config_0_in; --
     LPF_Config_1 : t_reg_lpf_config_1_in; --
     Tx_Data_Width : t_reg_data_width_in; --
@@ -624,8 +636,10 @@ package pkg_msk_top_regs is
     Tx_Bit_Count : t_reg_msk_stat_1_out; --
     Tx_Enable_Count : t_reg_msk_stat_2_out; --
     Fb_FreqWord : t_reg_config_nco_fw_out; --
-    F1_FreqWord : t_reg_config_nco_fw_out; --
-    F2_FreqWord : t_reg_config_nco_fw_out; --
+    TX_F1_FreqWord : t_reg_config_nco_fw_out; --
+    TX_F2_FreqWord : t_reg_config_nco_fw_out; --
+    RX_F1_FreqWord : t_reg_config_nco_fw_out; --
+    RX_F2_FreqWord : t_reg_config_nco_fw_out; --
     LPF_Config_0 : t_reg_lpf_config_0_out; --
     LPF_Config_1 : t_reg_lpf_config_1_out; --
     Tx_Data_Width : t_reg_data_width_out; --
@@ -846,7 +860,7 @@ architecture rtl of msk_top_regs_msk_ctrl is
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
 begin
   --
-  data_out(C_DATA_WIDTH-1 downto 4) <= (others => '0'); --
+  data_out(C_DATA_WIDTH-1 downto 12) <= (others => '0'); --
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
@@ -948,6 +962,30 @@ begin
     data_out(3 downto 3) <= l_field_reg;
 
   end block clear_counts_storage;
+  ------------------------------------------------------------STORAGE
+  sample_discard_storage: block
+    signal l_field_reg   : std_logic_vector(8-1 downto 0) :=
+                           std_logic_vector(to_signed(0,8));
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          l_field_reg <= std_logic_vector(to_signed(0,8));
+        else
+          -- HW --
+          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          if pi_decoder_wr_stb = '1' then
+            l_field_reg <= pi_decoder_data(15 downto 8);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.sample_discard.data <= l_field_reg; --
+    data_out(15 downto 8) <= l_field_reg;
+
+  end block sample_discard_storage;
   ----------------------------------------------------------
 end rtl;
 -----------------------------------------------

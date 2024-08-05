@@ -9,7 +9,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 - Absolute Address: 0x0
 - Base Offset: 0x0
-- Size: 0x43C00058
+- Size: 0x43C00060
 
 |  Offset  |  Identifier  |        Name       |
 |----------|--------------|-------------------|
@@ -19,7 +19,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 - Absolute Address: 0x43C00000
 - Base Offset: 0x43C00000
-- Size: 0x58
+- Size: 0x60
 
 <p>MSK Modem Configuration and Status Registers</p>
 
@@ -33,20 +33,22 @@ Don't override. Generated from: Pluto_MSK_Modem
 | 0x14 |   Tx_Bit_Count   |                      MSK Modem Status 2                     |
 | 0x18 |  Tx_Enable_Count |                      MSK Modem Status 3                     |
 | 0x1C |    Fb_FreqWord   |              Bitrate NCO Frequency Control Word             |
-| 0x20 |    F1_FreqWord   |              FSK f1 NCO Frequency Control Word              |
-| 0x24 |    F2_FreqWord   |              FSK f2 NCO Frequency Control Word              |
-| 0x28 |   LPF_Config_0   |PI Controller Configuration and Low-pass Filter Configuration|
-| 0x2C |   LPF_Config_1   |PI Controller Configuration and Low-pass Filter Configuration|
-| 0x30 |   Tx_Data_Width  |                  Modem Tx Input Data Width                  |
-| 0x34 |   Rx_Data_Width  |                  Modem Rx Output Data Width                 |
-| 0x38 |   PRBS_Control   |                        PRBS Control 0                       |
-| 0x3C |PRBS_Initial_State|                        PRBS Control 1                       |
-| 0x40 |  PRBS_Polynomial |                        PRBS Control 2                       |
-| 0x44 |  PRBS_Error_Mask |                        PRBS Control 3                       |
-| 0x48 |  PRBS_Bit_Count  |                        PRBS Status 0                        |
-| 0x4C | PRBS_Error_Count |                        PRBS Status 1                        |
-| 0x50 |   LPF_Accum_F1   |                 F1 PI Controller Accumulator                |
-| 0x54 |   LPF_Accum_F2   |                 F2 PI Controller Accumulator                |
+| 0x20 |  TX_F1_FreqWord  |               Tx F1 NCO Frequency Control Word              |
+| 0x24 |  TX_F2_FreqWord  |               Tx F2 NCO Frequency Control Word              |
+| 0x28 |  RX_F1_FreqWord  |               Rx F1 NCO Frequency Control Word              |
+| 0x2C |  RX_F2_FreqWord  |               Rx F2 NCO Frequency Control Word              |
+| 0x30 |   LPF_Config_0   |PI Controller Configuration and Low-pass Filter Configuration|
+| 0x34 |   LPF_Config_1   |PI Controller Configuration and Low-pass Filter Configuration|
+| 0x38 |   Tx_Data_Width  |                  Modem Tx Input Data Width                  |
+| 0x3C |   Rx_Data_Width  |                  Modem Rx Output Data Width                 |
+| 0x40 |   PRBS_Control   |                        PRBS Control 0                       |
+| 0x44 |PRBS_Initial_State|                        PRBS Control 1                       |
+| 0x48 |  PRBS_Polynomial |                        PRBS Control 2                       |
+| 0x4C |  PRBS_Error_Mask |                        PRBS Control 3                       |
+| 0x50 |  PRBS_Bit_Count  |                        PRBS Status 0                        |
+| 0x54 | PRBS_Error_Count |                        PRBS Status 1                        |
+| 0x58 |   LPF_Accum_F1   |                 F1 PI Controller Accumulator                |
+| 0x5C |   LPF_Accum_F2   |                 F2 PI Controller Accumulator                |
 
 ### Hash_ID_Low register
 
@@ -101,12 +103,13 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 <p>MSK Modem Configuration and Control</p>
 
-|Bits| Identifier |Access|Reset|         Name        |
-|----|------------|------|-----|---------------------|
-|  0 |     ptt    |  rw  | 0x0 | Push-to-Talk Enable |
-|  1 |loopback_ena|  rw  | 0x0 |Modem Loopback Enable|
-|  2 |  rx_invert |  rw  | 0x0 |Rx Data Invert Enable|
-|  3 |clear_counts|  rw  | 0x0 |Clear Status Counters|
+|Bits|  Identifier  |Access|Reset|         Name        |
+|----|--------------|------|-----|---------------------|
+|  0 |      ptt     |  rw  | 0x0 | Push-to-Talk Enable |
+|  1 | loopback_ena |  rw  | 0x0 |Modem Loopback Enable|
+|  2 |   rx_invert  |  rw  | 0x0 |Rx Data Invert Enable|
+|  3 | clear_counts |  rw  | 0x0 |Clear Status Counters|
+|15:8|sample_discard|  rw  | 0x0 |    Sample Discard   |
 
 #### ptt field
 
@@ -126,6 +129,10 @@ Don't override. Generated from: Pluto_MSK_Modem
 #### clear_counts field
 
 <p>Clear Tx Bit Counter and Tx Enable Counter</p>
+
+#### sample_discard field
+
+<p>Number of samples to discard</p>
 
 ### MSK_Status register
 
@@ -203,13 +210,13 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 <p>Sets the center frequency of the NCO as FW = Fn * 2^32/Fs, where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
 
-### F1_FreqWord register
+### TX_F1_FreqWord register
 
 - Absolute Address: 0x43C00020
 - Base Offset: 0x20
 - Size: 0x4
 
-<p>Set Modem Data Rate</p>
+<p>Set Modulator F1 Frequency</p>
 
 |Bits| Identifier|Access|Reset|         Name         |
 |----|-----------|------|-----|----------------------|
@@ -219,13 +226,45 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 <p>Sets the center frequency of the NCO as FW = Fn * 2^32/Fs, where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
 
-### F2_FreqWord register
+### TX_F2_FreqWord register
 
 - Absolute Address: 0x43C00024
 - Base Offset: 0x24
 - Size: 0x4
 
-<p>Set Modem Data Rate</p>
+<p>Set Modulator F2 Frequency</p>
+
+|Bits| Identifier|Access|Reset|         Name         |
+|----|-----------|------|-----|----------------------|
+|31:0|config_data|  rw  | 0x0 |Frequency Control Word|
+
+#### config_data field
+
+<p>Sets the center frequency of the NCO as FW = Fn * 2^32/Fs, where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
+
+### RX_F1_FreqWord register
+
+- Absolute Address: 0x43C00028
+- Base Offset: 0x28
+- Size: 0x4
+
+<p>Set Demodulator F1 Frequency</p>
+
+|Bits| Identifier|Access|Reset|         Name         |
+|----|-----------|------|-----|----------------------|
+|31:0|config_data|  rw  | 0x0 |Frequency Control Word|
+
+#### config_data field
+
+<p>Sets the center frequency of the NCO as FW = Fn * 2^32/Fs, where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
+
+### RX_F2_FreqWord register
+
+- Absolute Address: 0x43C0002C
+- Base Offset: 0x2C
+- Size: 0x4
+
+<p>Set Demodulator F2 Frequency</p>
 
 |Bits| Identifier|Access|Reset|         Name         |
 |----|-----------|------|-----|----------------------|
@@ -237,8 +276,8 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### LPF_Config_0 register
 
-- Absolute Address: 0x43C00028
-- Base Offset: 0x28
+- Absolute Address: 0x43C00030
+- Base Offset: 0x30
 - Size: 0x4
 
 <p>Configure PI controller and low-pass filter</p>
@@ -265,8 +304,8 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### LPF_Config_1 register
 
-- Absolute Address: 0x43C0002C
-- Base Offset: 0x2C
+- Absolute Address: 0x43C00034
+- Base Offset: 0x34
 - Size: 0x4
 
 <p>Configure PI controller and low-pass filter</p>
@@ -286,8 +325,8 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### Tx_Data_Width register
 
-- Absolute Address: 0x43C00030
-- Base Offset: 0x30
+- Absolute Address: 0x43C00038
+- Base Offset: 0x38
 - Size: 0x4
 
 <p>Set the parallel data width of the parallel-to-serial converter</p>
@@ -302,8 +341,8 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### Rx_Data_Width register
 
-- Absolute Address: 0x43C00034
-- Base Offset: 0x34
+- Absolute Address: 0x43C0003C
+- Base Offset: 0x3C
 - Size: 0x4
 
 <p>Set the parallel data width of the serial-to-parallel converter</p>
@@ -318,8 +357,8 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### PRBS_Control register
 
-- Absolute Address: 0x43C00038
-- Base Offset: 0x38
+- Absolute Address: 0x43C00040
+- Base Offset: 0x40
 - Size: 0x4
 
 <p>Configures operation of the PRBS Generator and Monitor</p>
@@ -352,8 +391,8 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### PRBS_Initial_State register
 
-- Absolute Address: 0x43C0003C
-- Base Offset: 0x3C
+- Absolute Address: 0x43C00044
+- Base Offset: 0x44
 - Size: 0x4
 
 <p>PRBS Initial State</p>
@@ -368,8 +407,8 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### PRBS_Polynomial register
 
-- Absolute Address: 0x43C00040
-- Base Offset: 0x40
+- Absolute Address: 0x43C00048
+- Base Offset: 0x48
 - Size: 0x4
 
 <p>PRBS Polynomial</p>
@@ -384,8 +423,8 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### PRBS_Error_Mask register
 
-- Absolute Address: 0x43C00044
-- Base Offset: 0x44
+- Absolute Address: 0x43C0004C
+- Base Offset: 0x4C
 - Size: 0x4
 
 <p>PRBS Error Mask</p>
@@ -400,8 +439,8 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### PRBS_Bit_Count register
 
-- Absolute Address: 0x43C00048
-- Base Offset: 0x48
+- Absolute Address: 0x43C00050
+- Base Offset: 0x50
 - Size: 0x4
 
 <p>PRBS Bits Received</p>
@@ -417,8 +456,8 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 ### PRBS_Error_Count register
 
-- Absolute Address: 0x43C0004C
-- Base Offset: 0x4C
+- Absolute Address: 0x43C00054
+- Base Offset: 0x54
 - Size: 0x4
 
 <p>PRBS Bit Errors</p>
@@ -434,8 +473,8 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 ### LPF_Accum_F1 register
 
-- Absolute Address: 0x43C00050
-- Base Offset: 0x50
+- Absolute Address: 0x43C00058
+- Base Offset: 0x58
 - Size: 0x4
 
 <p>Value of the F1 PI Controller Accumulator</p>
@@ -450,8 +489,8 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 ### LPF_Accum_F2 register
 
-- Absolute Address: 0x43C00054
-- Base Offset: 0x54
+- Absolute Address: 0x43C0005C
+- Base Offset: 0x5C
 - Size: 0x4
 
 <p>Value of the F2 PI Controller Accumulator</p>

@@ -501,17 +501,23 @@ async def msk_test_1(dut):
 
     bitrate = 54200
     freq_if = bitrate * 20
-    sample_rate = 61.44e6
-    sample_per = int(1/sample_rate * 1e9)
+    tx_sample_rate = 61.44e6
+    tx_sample_per = int(1/tx_sample_rate * 1e9)
 
-    await cocotb.start(Clock(dut.clk, sample_per, units="ns").start())
+    tx_rx_sample_ratio = 25
+
+    rx_sample_rate = tx_sample_rate / tx_rx_sample_ratio
+
+    await cocotb.start(Clock(dut.clk, tx_sample_per, units="ns").start())
 
     f1 = freq_if - bitrate
     f2 = freq_if + bitrate
 
-    print("Bit Rate NCO Freq Word: ", hex(int(bitrate / sample_rate * 2.0**32)))
-    print("F1 NCO Freq Word: ", hex(int(f1 / sample_rate * 2.0**32)))
-    print("F2 NCO Freq Word: ", hex(int(f2 / sample_rate * 2.0**32)))
+    print("Bit Rate NCO Freq Word: ", hex(int(bitrate / tx_sample_rate * 2.0**32)))
+    print("TX F1 NCO Freq Word: ", hex(int(f1 / tx_sample_rate * 2.0**32)))
+    print("TX F2 NCO Freq Word: ", hex(int(f2 / tx_sample_rate * 2.0**32)))
+    print("RX F1 NCO Freq Word: ", hex(int(f1 / rx_sample_rate * 2.0**32)))
+    print("RX F2 NCO Freq Word: ", hex(int(f2 / rx_sample_rate * 2.0**32)))
 
     FFT = 8192 * 4
 
@@ -537,18 +543,24 @@ async def msk_test_1(dut):
     # await axi.write(12, 1)                                         # loopback
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "MSK_Control", 3)    
+    await regs.write("msk_top_regs", "MSK_Control", (tx_rx_sample_ratio-1 << 8) + 7)    
     # await axi.write(16, int(bitrate / sample_rate * 2.0**32))      # bit rate frequency word
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "Fb_FreqWord", int(bitrate / sample_rate * 2.0**32))    
+    await regs.write("msk_top_regs", "Fb_FreqWord", int(bitrate / tx_sample_rate * 2.0**32))    
     # await axi.write(20, int(f1 / sample_rate * 2.0**32))           # F1 frequency word
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "F1_FreqWord", int(f1 / sample_rate * 2.0**32))    
+    await regs.write("msk_top_regs", "TX_F1_FreqWord", int(f1 / tx_sample_rate * 2.0**32))    
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "F2_FreqWord", int(f2 / sample_rate * 2.0**32))    
+    await regs.write("msk_top_regs", "TX_F2_FreqWord", int(f2 / tx_sample_rate * 2.0**32))    
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "RX_F1_FreqWord", int(f1 / rx_sample_rate * 2.0**32))    
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "RX_F2_FreqWord", int(f2 / rx_sample_rate * 2.0**32))    
     # await axi.write(28, (50 << 16) + 20)                             # p-gain / i-gain
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -556,7 +568,7 @@ async def msk_test_1(dut):
     # await axi.write(32, (2 << 16))                                   # low-pass filter alpha
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "LPF_Config_1", (50 << 16) + 20)    
+    await regs.write("msk_top_regs", "LPF_Config_1", (500 << 16) + 250)    
     # await axi.write(36, 8)
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -624,7 +636,7 @@ async def msk_test_1(dut):
 #    pn.sim_run = True
 #    pn.sync = 100
 
-    while sim_time < sim_start + 10000:
+    while sim_time < sim_start + 50000:
 
         # if sim_time_d <= sim_start + 1000 and sim_time >= sim_start + 1000:
         #     data = await regs.read("msk_top_regs", "PRBS_Control")
@@ -633,7 +645,7 @@ async def msk_test_1(dut):
         #     dut.s_axi_awvalid.value = 1
         #     await regs.write("msk_top_regs", "PRBS_Control", data)    
 
-        if sim_time_d <= sim_start + 5000 and sim_time >= sim_start + 5000:
+        if sim_time_d <= sim_start + 10000 and sim_time >= sim_start + 10000:
             data = await regs.read("msk_top_regs", "PRBS_Control")
             data = data | 0x8
             dut.s_axi_wvalid.value = 1
@@ -703,13 +715,13 @@ async def msk_test_1(dut):
     
     # plot different spectrum types:
     axs["magnitude"].set_title("Magnitude Spectrum Squared")
-    axs["magnitude"].magnitude_spectrum(tx_samples_2, Fs=sample_rate, window=blackman_window, color='C1')
+    axs["magnitude"].magnitude_spectrum(tx_samples_2, Fs=tx_sample_rate, window=blackman_window, color='C1')
     
     axs["log_magnitude"].set_title("Log. Magnitude Spectrum Squared")
-    axs["log_magnitude"].magnitude_spectrum(tx_samples_2, Fs=sample_rate, scale='dB', window=blackman_window, color='C1')
+    axs["log_magnitude"].magnitude_spectrum(tx_samples_2, Fs=tx_sample_rate, scale='dB', window=blackman_window, color='C1')
     
     axs["psd"].set_title("Power Spectral Density")
-    axs["psd"].psd(tx_samples, Fs=sample_rate, window=np.blackman(FFT), NFFT=FFT, color='C2')
+    axs["psd"].psd(tx_samples, Fs=tx_sample_rate, window=np.blackman(FFT), NFFT=FFT, color='C2')
         
     plt.show()
 

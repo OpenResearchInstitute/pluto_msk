@@ -34,8 +34,8 @@ entity msk_top_regs_decoder_axi4l is
     pi_clock  : in std_logic;
     pi_reset  : in std_logic;
     --
-    po_reg_rd_stb  : out std_logic_vector(22-1 downto 0);
-    po_reg_wr_stb  : out std_logic_vector(22-1 downto 0);
+    po_reg_rd_stb  : out std_logic_vector(24-1 downto 0);
+    po_reg_wr_stb  : out std_logic_vector(24-1 downto 0);
     po_reg_data    : out std_logic_vector(G_DATA_WIDTH-1 downto 0);
     pi_reg_data    : in  std_logic_vector(G_DATA_WIDTH-1 downto 0);
     --
@@ -95,8 +95,8 @@ architecture arch of msk_top_regs_decoder_axi4l is
   signal wvalid    : std_logic;
 
   -----------------------------------------------------------
-  signal reg_rd_stb  : std_logic_vector(22-1 downto 0) := (others => '0');
-  signal reg_wr_stb  : std_logic_vector(22-1 downto 0) := (others => '0');
+  signal reg_rd_stb  : std_logic_vector(24-1 downto 0) := (others => '0');
+  signal reg_wr_stb  : std_logic_vector(24-1 downto 0) := (others => '0');
 
   -- external bus
 
@@ -273,6 +273,12 @@ begin
           when 84 =>
              rtarget  <= REG;
              reg_rd_stb(21) <= '1';
+          when 88 =>
+             rtarget  <= REG;
+             reg_rd_stb(22) <= '1';
+          when 92 =>
+             rtarget  <= REG;
+             reg_rd_stb(23) <= '1';
           when others =>
              rtarget    <= NONE;
         end case;
@@ -423,6 +429,12 @@ begin
           when 68 =>
              wtarget  <= REG;
              reg_wr_stb(17) <= '1';
+          when 72 =>
+             wtarget  <= REG;
+             reg_wr_stb(18) <= '1';
+          when 76 =>
+             wtarget  <= REG;
+             reg_wr_stb(19) <= '1';
           when others =>
              wtarget    <= NONE;
         end case;
@@ -460,7 +472,7 @@ begin
   -- ===========================================================================
   -- registers
   ------------------------------------------------------------------------------
-  gen_reg_wr_str: for ridx in 0 to 22-1 generate
+  gen_reg_wr_str: for ridx in 0 to 24-1 generate
     po_reg_wr_stb(ridx) <= reg_wr_stb(ridx) and wvalid;
   end generate;
   po_reg_data   <= wdata;

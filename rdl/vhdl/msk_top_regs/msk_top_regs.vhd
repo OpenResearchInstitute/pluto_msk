@@ -45,9 +45,9 @@ architecture arch of msk_top_regs is
   type t_data_out is array (natural range<>) of std_logic_vector(C_DATA_WIDTH-1 downto 0) ;
 
   --
-  signal reg_data_out_vect : t_data_out(22-1 downto 0);
-  signal reg_rd_stb   : std_logic_vector(22-1 downto 0);
-  signal reg_wr_stb   : std_logic_vector(22-1 downto 0);
+  signal reg_data_out_vect : t_data_out(24-1 downto 0);
+  signal reg_rd_stb   : std_logic_vector(24-1 downto 0);
+  signal reg_wr_stb   : std_logic_vector(24-1 downto 0);
   signal reg_data_in  : std_logic_vector(C_DATA_WIDTH-1 downto 0);
   signal reg_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
   --
@@ -80,7 +80,7 @@ begin
   prs_reg_rd_mux: process(pi_clock)
   begin
     if rising_edge(pi_clock) then
-      for idx in 0 to 22-1 loop
+      for idx in 0 to 24-1 loop
         if reg_rd_stb(idx) = '1' then
           reg_data_out <= reg_data_out_vect(idx);
         end if;
@@ -246,11 +246,11 @@ begin
       ); --
   end block; --
   -- ---------------------------------------------------------------------------
-  -- reg name: F1_FreqWord  reg type: config_nco_fw
+  -- reg name: TX_F1_FreqWord  reg type: config_nco_fw
   -- ---------------------------------------------------------------------------
-  blk_F1_FreqWord : block
+  blk_TX_F1_FreqWord : block
   begin  --
-    inst_F1_FreqWord: entity work.msk_top_regs_config_nco_fw
+    inst_TX_F1_FreqWord: entity work.msk_top_regs_config_nco_fw
       port map(
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
@@ -260,16 +260,16 @@ begin
         pi_decoder_data   => reg_data_in,
         po_decoder_data   => reg_data_out_vect(8),
 
-        pi_reg  => pi_addrmap.F1_FreqWord,
-        po_reg  => po_addrmap.F1_FreqWord
+        pi_reg  => pi_addrmap.TX_F1_FreqWord,
+        po_reg  => po_addrmap.TX_F1_FreqWord
       ); --
   end block; --
   -- ---------------------------------------------------------------------------
-  -- reg name: F2_FreqWord  reg type: config_nco_fw
+  -- reg name: TX_F2_FreqWord  reg type: config_nco_fw
   -- ---------------------------------------------------------------------------
-  blk_F2_FreqWord : block
+  blk_TX_F2_FreqWord : block
   begin  --
-    inst_F2_FreqWord: entity work.msk_top_regs_config_nco_fw
+    inst_TX_F2_FreqWord: entity work.msk_top_regs_config_nco_fw
       port map(
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
@@ -279,8 +279,46 @@ begin
         pi_decoder_data   => reg_data_in,
         po_decoder_data   => reg_data_out_vect(9),
 
-        pi_reg  => pi_addrmap.F2_FreqWord,
-        po_reg  => po_addrmap.F2_FreqWord
+        pi_reg  => pi_addrmap.TX_F2_FreqWord,
+        po_reg  => po_addrmap.TX_F2_FreqWord
+      ); --
+  end block; --
+  -- ---------------------------------------------------------------------------
+  -- reg name: RX_F1_FreqWord  reg type: config_nco_fw
+  -- ---------------------------------------------------------------------------
+  blk_RX_F1_FreqWord : block
+  begin  --
+    inst_RX_F1_FreqWord: entity work.msk_top_regs_config_nco_fw
+      port map(
+        pi_clock        => pi_clock,
+        pi_reset        => pi_reset,
+        -- to/from adapter
+        pi_decoder_rd_stb => reg_rd_stb(10),
+        pi_decoder_wr_stb => reg_wr_stb(10),
+        pi_decoder_data   => reg_data_in,
+        po_decoder_data   => reg_data_out_vect(10),
+
+        pi_reg  => pi_addrmap.RX_F1_FreqWord,
+        po_reg  => po_addrmap.RX_F1_FreqWord
+      ); --
+  end block; --
+  -- ---------------------------------------------------------------------------
+  -- reg name: RX_F2_FreqWord  reg type: config_nco_fw
+  -- ---------------------------------------------------------------------------
+  blk_RX_F2_FreqWord : block
+  begin  --
+    inst_RX_F2_FreqWord: entity work.msk_top_regs_config_nco_fw
+      port map(
+        pi_clock        => pi_clock,
+        pi_reset        => pi_reset,
+        -- to/from adapter
+        pi_decoder_rd_stb => reg_rd_stb(11),
+        pi_decoder_wr_stb => reg_wr_stb(11),
+        pi_decoder_data   => reg_data_in,
+        po_decoder_data   => reg_data_out_vect(11),
+
+        pi_reg  => pi_addrmap.RX_F2_FreqWord,
+        po_reg  => po_addrmap.RX_F2_FreqWord
       ); --
   end block; --
   -- ---------------------------------------------------------------------------
@@ -293,10 +331,10 @@ begin
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
         -- to/from adapter
-        pi_decoder_rd_stb => reg_rd_stb(10),
-        pi_decoder_wr_stb => reg_wr_stb(10),
+        pi_decoder_rd_stb => reg_rd_stb(12),
+        pi_decoder_wr_stb => reg_wr_stb(12),
         pi_decoder_data   => reg_data_in,
-        po_decoder_data   => reg_data_out_vect(10),
+        po_decoder_data   => reg_data_out_vect(12),
 
         pi_reg  => pi_addrmap.LPF_Config_0,
         po_reg  => po_addrmap.LPF_Config_0
@@ -312,10 +350,10 @@ begin
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
         -- to/from adapter
-        pi_decoder_rd_stb => reg_rd_stb(11),
-        pi_decoder_wr_stb => reg_wr_stb(11),
+        pi_decoder_rd_stb => reg_rd_stb(13),
+        pi_decoder_wr_stb => reg_wr_stb(13),
         pi_decoder_data   => reg_data_in,
-        po_decoder_data   => reg_data_out_vect(11),
+        po_decoder_data   => reg_data_out_vect(13),
 
         pi_reg  => pi_addrmap.LPF_Config_1,
         po_reg  => po_addrmap.LPF_Config_1
@@ -331,10 +369,10 @@ begin
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
         -- to/from adapter
-        pi_decoder_rd_stb => reg_rd_stb(12),
-        pi_decoder_wr_stb => reg_wr_stb(12),
+        pi_decoder_rd_stb => reg_rd_stb(14),
+        pi_decoder_wr_stb => reg_wr_stb(14),
         pi_decoder_data   => reg_data_in,
-        po_decoder_data   => reg_data_out_vect(12),
+        po_decoder_data   => reg_data_out_vect(14),
 
         pi_reg  => pi_addrmap.Tx_Data_Width,
         po_reg  => po_addrmap.Tx_Data_Width
@@ -350,10 +388,10 @@ begin
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
         -- to/from adapter
-        pi_decoder_rd_stb => reg_rd_stb(13),
-        pi_decoder_wr_stb => reg_wr_stb(13),
+        pi_decoder_rd_stb => reg_rd_stb(15),
+        pi_decoder_wr_stb => reg_wr_stb(15),
         pi_decoder_data   => reg_data_in,
-        po_decoder_data   => reg_data_out_vect(13),
+        po_decoder_data   => reg_data_out_vect(15),
 
         pi_reg  => pi_addrmap.Rx_Data_Width,
         po_reg  => po_addrmap.Rx_Data_Width
@@ -369,10 +407,10 @@ begin
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
         -- to/from adapter
-        pi_decoder_rd_stb => reg_rd_stb(14),
-        pi_decoder_wr_stb => reg_wr_stb(14),
+        pi_decoder_rd_stb => reg_rd_stb(16),
+        pi_decoder_wr_stb => reg_wr_stb(16),
         pi_decoder_data   => reg_data_in,
-        po_decoder_data   => reg_data_out_vect(14),
+        po_decoder_data   => reg_data_out_vect(16),
 
         pi_reg  => pi_addrmap.PRBS_Control,
         po_reg  => po_addrmap.PRBS_Control
@@ -388,10 +426,10 @@ begin
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
         -- to/from adapter
-        pi_decoder_rd_stb => reg_rd_stb(15),
-        pi_decoder_wr_stb => reg_wr_stb(15),
+        pi_decoder_rd_stb => reg_rd_stb(17),
+        pi_decoder_wr_stb => reg_wr_stb(17),
         pi_decoder_data   => reg_data_in,
-        po_decoder_data   => reg_data_out_vect(15),
+        po_decoder_data   => reg_data_out_vect(17),
 
         pi_reg  => pi_addrmap.PRBS_Initial_State,
         po_reg  => po_addrmap.PRBS_Initial_State
@@ -407,10 +445,10 @@ begin
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
         -- to/from adapter
-        pi_decoder_rd_stb => reg_rd_stb(16),
-        pi_decoder_wr_stb => reg_wr_stb(16),
+        pi_decoder_rd_stb => reg_rd_stb(18),
+        pi_decoder_wr_stb => reg_wr_stb(18),
         pi_decoder_data   => reg_data_in,
-        po_decoder_data   => reg_data_out_vect(16),
+        po_decoder_data   => reg_data_out_vect(18),
 
         pi_reg  => pi_addrmap.PRBS_Polynomial,
         po_reg  => po_addrmap.PRBS_Polynomial
@@ -426,10 +464,10 @@ begin
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
         -- to/from adapter
-        pi_decoder_rd_stb => reg_rd_stb(17),
-        pi_decoder_wr_stb => reg_wr_stb(17),
+        pi_decoder_rd_stb => reg_rd_stb(19),
+        pi_decoder_wr_stb => reg_wr_stb(19),
         pi_decoder_data   => reg_data_in,
-        po_decoder_data   => reg_data_out_vect(17),
+        po_decoder_data   => reg_data_out_vect(19),
 
         pi_reg  => pi_addrmap.PRBS_Error_Mask,
         po_reg  => po_addrmap.PRBS_Error_Mask
@@ -445,10 +483,10 @@ begin
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
         -- to/from adapter
-        pi_decoder_rd_stb => reg_rd_stb(18),
-        pi_decoder_wr_stb => reg_wr_stb(18),
+        pi_decoder_rd_stb => reg_rd_stb(20),
+        pi_decoder_wr_stb => reg_wr_stb(20),
         pi_decoder_data   => reg_data_in,
-        po_decoder_data   => reg_data_out_vect(18),
+        po_decoder_data   => reg_data_out_vect(20),
 
         pi_reg  => pi_addrmap.PRBS_Bit_Count,
         po_reg  => po_addrmap.PRBS_Bit_Count
@@ -464,10 +502,10 @@ begin
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
         -- to/from adapter
-        pi_decoder_rd_stb => reg_rd_stb(19),
-        pi_decoder_wr_stb => reg_wr_stb(19),
+        pi_decoder_rd_stb => reg_rd_stb(21),
+        pi_decoder_wr_stb => reg_wr_stb(21),
         pi_decoder_data   => reg_data_in,
-        po_decoder_data   => reg_data_out_vect(19),
+        po_decoder_data   => reg_data_out_vect(21),
 
         pi_reg  => pi_addrmap.PRBS_Error_Count,
         po_reg  => po_addrmap.PRBS_Error_Count
@@ -483,10 +521,10 @@ begin
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
         -- to/from adapter
-        pi_decoder_rd_stb => reg_rd_stb(20),
-        pi_decoder_wr_stb => reg_wr_stb(20),
+        pi_decoder_rd_stb => reg_rd_stb(22),
+        pi_decoder_wr_stb => reg_wr_stb(22),
         pi_decoder_data   => reg_data_in,
-        po_decoder_data   => reg_data_out_vect(20),
+        po_decoder_data   => reg_data_out_vect(22),
 
         pi_reg  => pi_addrmap.LPF_Accum_F1,
         po_reg  => po_addrmap.LPF_Accum_F1
@@ -502,10 +540,10 @@ begin
         pi_clock        => pi_clock,
         pi_reset        => pi_reset,
         -- to/from adapter
-        pi_decoder_rd_stb => reg_rd_stb(21),
-        pi_decoder_wr_stb => reg_wr_stb(21),
+        pi_decoder_rd_stb => reg_rd_stb(23),
+        pi_decoder_wr_stb => reg_wr_stb(23),
         pi_decoder_data   => reg_data_in,
-        po_decoder_data   => reg_data_out_vect(21),
+        po_decoder_data   => reg_data_out_vect(23),
 
         pi_reg  => pi_addrmap.LPF_Accum_F2,
         po_reg  => po_addrmap.LPF_Accum_F2

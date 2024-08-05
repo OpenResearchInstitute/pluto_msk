@@ -140,6 +140,7 @@ ARCHITECTURE struct OF msk_top IS
 
 	SIGNAL tx_samples_int	: std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 	SIGNAL rx_samples_mux	: std_logic_vector(SAMPLE_W -1 DOWNTO 0);
+	SIGNAL rx_samples_dec 	: std_logic_vector(11 DOWNTO 0);
 	SIGNAL tx_req 		 	: std_logic;
 	SIGNAL tclk 			: std_logic;
 	SIGNAL tx_data_bit 		: std_logic;
@@ -156,6 +157,8 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL rx_data_valid  	: std_logic;
 	SIGNAL rx_data_int 		: std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
 	SIGNAL rx_invert 		: std_logic;
+
+	SIGNAL discard_samples 	: std_logic_vector(7 DOWNTO 0);
 
 	SIGNAL rx_data_cmp 		: std_logic;
 	SIGNAL data_error 		: std_logic;
@@ -177,8 +180,10 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL loopback_ena 	: std_logic;
 
 	SIGNAL freq_word_ft 	: std_logic_vector(NCO_W -1 DOWNTO 0);
-	SIGNAL freq_word_f1 	: std_logic_vector(NCO_W -1 DOWNTO 0);
-	SIGNAL freq_word_f2 	: std_logic_vector(NCO_W -1 DOWNTO 0);
+	SIGNAL freq_word_tx_f1 	: std_logic_vector(NCO_W -1 DOWNTO 0);
+	SIGNAL freq_word_tx_f2 	: std_logic_vector(NCO_W -1 DOWNTO 0);
+	SIGNAL freq_word_rx_f1 	: std_logic_vector(NCO_W -1 DOWNTO 0);
+	SIGNAL freq_word_rx_f2 	: std_logic_vector(NCO_W -1 DOWNTO 0);
 
 	SIGNAL lpf_p_gain 		: std_logic_vector(GAIN_W -1 DOWNTO 0);
 	SIGNAL lpf_i_gain 		: std_logic_vector(GAIN_W -1 DOWNTO 0);
@@ -197,6 +202,8 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL saxis_req_d 		: std_logic;
 
 	SIGNAL clear_counts 	: std_logic;
+	SIGNAL discard_count	: unsigned(7 DOWNTO 0);
+	SIGNAL rx_sample_valid  : std_logic;
 
 	SIGNAL prbs_data_bit	: std_logic;
 	SIGNAL prbs_sel			: std_logic;
@@ -343,8 +350,8 @@ BEGIN
 			init 			=> init,
 
 			freq_word_tclk 	=> freq_word_ft,
-			freq_word_f1 	=> freq_word_f1,
-			freq_word_f2	=> freq_word_f2,
+			freq_word_f1 	=> freq_word_tx_f1,
+			freq_word_f2	=> freq_word_tx_f2,
 
 			ptt 			=> ptt,
 
@@ -416,6 +423,26 @@ BEGIN
 ------------------------------------------------------------------------------------------------------
 -- MSK Demodulator
 
+	u_discard : PROCESS (clk)
+	BEGIN
+		IF clk'EVENT AND clk = '1' THEN
+			IF init = '1' THEN
+				discard_count <= (OTHERS => '0');
+			ELSE
+				IF rx_svalid = '1' THEN
+					IF to_integer(discard_count) = 0 THEN 
+						discard_count 	<= unsigned(discard_samples);
+						rx_sample_valid	<= '1';
+						rx_samples_dec 	<= rx_samples_mux(11 DOWNTO 0);
+					ELSE
+						discard_count 	<= discard_count -1;
+						rx_sample_valid <= '0';
+					END IF;
+				END IF;
+			END IF;
+		END IF;
+	END PROCESS u_discard;
+
 	u_dem : ENTITY work.msk_demodulator(rtl)
 		GENERIC MAP (
 			NCO_W 			=> NCO_W,
@@ -428,8 +455,8 @@ BEGIN
 			clk 			=> clk,
 			init 			=> init,
 	
-			rx_freq_word_f1 => freq_word_f1,
-			rx_freq_word_f2	=> freq_word_f2,
+			rx_freq_word_f1 => freq_word_rx_f1,
+			rx_freq_word_f2	=> freq_word_rx_f2,
 	
 			lpf_p_gain 		=> lpf_p_gain,
 			lpf_i_gain 		=> lpf_i_gain,
@@ -441,8 +468,8 @@ BEGIN
 			lpf_accum_f2 	=> lpf_accum_f2,
 
 			rx_enable 		=> rx_enable OR loopback_ena,
-			rx_svalid 		=> rx_svalid,
-			rx_samples 		=> rx_samples_mux(11 DOWNTO 0),
+			rx_svalid 		=> rx_sample_valid,
+			rx_samples 		=> rx_samples_dec(11 DOWNTO 0),
 
 			rx_data 		=> rx_bit,
 			rx_dvalid 		=> rx_bit_valid
@@ -472,7 +499,7 @@ BEGIN
 			count_reset 	=> prbs_clear,
 			data_count 		=> prbs_bits,
 			error_count 	=> prbs_errs,
-			data_in(0)		=> rx_bit,
+			data_in(0)		=> rx_bit_corr,
 			data_in_valid	=> rx_bit_valid
 		);
 
@@ -539,9 +566,12 @@ BEGIN
 		loopback_ena 	=> loopback_ena,
 		rx_invert 		=> rx_invert,
 		clear_counts 	=> clear_counts,
+		discard_samples => discard_samples,
 		freq_word_ft	=> freq_word_ft,
-		freq_word_f1	=> freq_word_f1,
-		freq_word_f2	=> freq_word_f2,
+		freq_word_tx_f1	=> freq_word_tx_f1,
+		freq_word_tx_f2	=> freq_word_tx_f2,
+		freq_word_rx_f1	=> freq_word_rx_f1,
+		freq_word_rx_f2	=> freq_word_rx_f2,
 		lpf_freeze 		=> lpf_freeze,
 		lpf_zero 		=> lpf_zero,
 		lpf_alpha 		=> lpf_alpha,

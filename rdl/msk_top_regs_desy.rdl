@@ -21,6 +21,7 @@ reg msk_ctrl {
     field { sw = rw; hw = r; } loopback_ena = 0;
     field { sw = rw; hw = r; } rx_invert = 0;
     field { sw = rw; hw = r; singlepulse = true; } clear_counts = 0;
+    field { sw = rw; hw = r;  } sample_discard[15:8] = 0;
 };
 
 reg msk_stat_0 {
@@ -107,7 +108,6 @@ reg stat_32_lpf_acc {
     field { sw = r; hw = w; } status_data[31:0];
 };
 
-
 addrmap msk_top_regs {
     lsb0;
     default accesswidth=32;
@@ -124,8 +124,10 @@ addrmap msk_top_regs {
     msk_stat_1 Tx_Bit_Count;
     msk_stat_2 Tx_Enable_Count;
     config_nco_fw Fb_FreqWord;
-    config_nco_fw F1_FreqWord;
-    config_nco_fw F2_FreqWord;
+    config_nco_fw TX_F1_FreqWord;
+    config_nco_fw TX_F2_FreqWord;
+    config_nco_fw RX_F1_FreqWord;
+    config_nco_fw RX_F2_FreqWord;
     lpf_config_0 LPF_Config_0;
     lpf_config_1 LPF_Config_1;
     data_width Tx_Data_Width;

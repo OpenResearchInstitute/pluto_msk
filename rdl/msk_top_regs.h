@@ -46,6 +46,10 @@ extern "C" {
 #define MSK_CTRL__CLEAR_COUNTS_bp 3
 #define MSK_CTRL__CLEAR_COUNTS_bw 1
 #define MSK_CTRL__CLEAR_COUNTS_reset 0x0
+#define MSK_CTRL__SAMPLE_DISCARD_bm 0xff00
+#define MSK_CTRL__SAMPLE_DISCARD_bp 8
+#define MSK_CTRL__SAMPLE_DISCARD_bw 8
+#define MSK_CTRL__SAMPLE_DISCARD_reset 0x0
 
 // Reg - msk_stat_0
 #define MSK_STAT_0__DEMOD_SYNC_LOCK_bm 0x1
@@ -79,17 +83,29 @@ extern "C" {
 #define CONFIG_NCO_FW_DESC_C4924CC6_NAME_0C494469__CONFIG_DATA_bw 32
 #define CONFIG_NCO_FW_DESC_C4924CC6_NAME_0C494469__CONFIG_DATA_reset 0x0
 
-// Reg - config_nco_fw_desc_c4924cc6_name_1da0e814
-#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_1DA0E814__CONFIG_DATA_bm 0xffffffff
-#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_1DA0E814__CONFIG_DATA_bp 0
-#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_1DA0E814__CONFIG_DATA_bw 32
-#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_1DA0E814__CONFIG_DATA_reset 0x0
+// Reg - config_nco_fw_desc_94d7aaf5_name_84dd0c1c
+#define CONFIG_NCO_FW_DESC_94D7AAF5_NAME_84DD0C1C__CONFIG_DATA_bm 0xffffffff
+#define CONFIG_NCO_FW_DESC_94D7AAF5_NAME_84DD0C1C__CONFIG_DATA_bp 0
+#define CONFIG_NCO_FW_DESC_94D7AAF5_NAME_84DD0C1C__CONFIG_DATA_bw 32
+#define CONFIG_NCO_FW_DESC_94D7AAF5_NAME_84DD0C1C__CONFIG_DATA_reset 0x0
 
-// Reg - config_nco_fw_desc_c4924cc6_name_8061953c
-#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_8061953C__CONFIG_DATA_bm 0xffffffff
-#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_8061953C__CONFIG_DATA_bp 0
-#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_8061953C__CONFIG_DATA_bw 32
-#define CONFIG_NCO_FW_DESC_C4924CC6_NAME_8061953C__CONFIG_DATA_reset 0x0
+// Reg - config_nco_fw_desc_42134a4f_name_d97dbd51
+#define CONFIG_NCO_FW_DESC_42134A4F_NAME_D97DBD51__CONFIG_DATA_bm 0xffffffff
+#define CONFIG_NCO_FW_DESC_42134A4F_NAME_D97DBD51__CONFIG_DATA_bp 0
+#define CONFIG_NCO_FW_DESC_42134A4F_NAME_D97DBD51__CONFIG_DATA_bw 32
+#define CONFIG_NCO_FW_DESC_42134A4F_NAME_D97DBD51__CONFIG_DATA_reset 0x0
+
+// Reg - config_nco_fw_desc_16fb48c8_name_8d01a20d
+#define CONFIG_NCO_FW_DESC_16FB48C8_NAME_8D01A20D__CONFIG_DATA_bm 0xffffffff
+#define CONFIG_NCO_FW_DESC_16FB48C8_NAME_8D01A20D__CONFIG_DATA_bp 0
+#define CONFIG_NCO_FW_DESC_16FB48C8_NAME_8D01A20D__CONFIG_DATA_bw 32
+#define CONFIG_NCO_FW_DESC_16FB48C8_NAME_8D01A20D__CONFIG_DATA_reset 0x0
+
+// Reg - config_nco_fw_desc_43c0828f_name_bdc60ecf
+#define CONFIG_NCO_FW_DESC_43C0828F_NAME_BDC60ECF__CONFIG_DATA_bm 0xffffffff
+#define CONFIG_NCO_FW_DESC_43C0828F_NAME_BDC60ECF__CONFIG_DATA_bp 0
+#define CONFIG_NCO_FW_DESC_43C0828F_NAME_BDC60ECF__CONFIG_DATA_bw 32
+#define CONFIG_NCO_FW_DESC_43C0828F_NAME_BDC60ECF__CONFIG_DATA_reset 0x0
 
 // Reg - lpf_config_0
 #define LPF_CONFIG_0__LPF_FREEZE_bm 0x1
@@ -193,8 +209,10 @@ typedef struct __attribute__ ((__packed__)) {
     uint32_t Tx_Bit_Count;
     uint32_t Tx_Enable_Count;
     uint32_t Fb_FreqWord;
-    uint32_t F1_FreqWord;
-    uint32_t F2_FreqWord;
+    uint32_t TX_F1_FreqWord;
+    uint32_t TX_F2_FreqWord;
+    uint32_t RX_F1_FreqWord;
+    uint32_t RX_F2_FreqWord;
     uint32_t LPF_Config_0;
     uint32_t LPF_Config_1;
     uint32_t Tx_Data_Width;
@@ -216,7 +234,7 @@ typedef struct __attribute__ ((__packed__)) {
 } Pluto_MSK_Modem_t;
 
 
-static_assert(sizeof(Pluto_MSK_Modem_t) == 0x43c00058, "Packing error");
+static_assert(sizeof(Pluto_MSK_Modem_t) == 0x43c00060, "Packing error");
 
 #ifdef __cplusplus
 }
