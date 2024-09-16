@@ -285,7 +285,7 @@ class axi_bus:
         await RisingEdge(self.aclk)
         await RisingEdge(self.aclk)
 
-        return self.rdata.value.to_unsigned()
+        return self.rdata.value.integer
 
 
     async def write(self, addr, data):
@@ -346,7 +346,7 @@ class msk:
         self.dut._log.info("tx sample capture - starting...")
 
         while self.sim_run:
-            self.tx_samples.append(self.tx_sample_bus.value.to_signed())
+            self.tx_samples.append(int(self.tx_sample_bus.value.signed_integer))
             self.time.append(get_sim_time("us"))
             await RisingEdge(self.clk)
 
@@ -504,7 +504,7 @@ async def msk_test_1(dut):
     tx_sample_rate = 61.44e6
     tx_sample_per = int(1/tx_sample_rate * 1e9)
 
-    tx_rx_sample_ratio = 25
+    tx_rx_sample_ratio = 1
 
     rx_sample_rate = tx_sample_rate / tx_rx_sample_ratio
 
@@ -568,7 +568,7 @@ async def msk_test_1(dut):
     # await axi.write(32, (2 << 16))                                   # low-pass filter alpha
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "LPF_Config_1", (500 << 16) + 250)    
+    await regs.write("msk_top_regs", "LPF_Config_1", (50 << 16) + 20)    
     # await axi.write(36, 8)
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -584,7 +584,7 @@ async def msk_test_1(dut):
     # await axi.write(48, (1 << 31) + (1 << 28))                      # Polynomial 
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "PRBS_Polynomial", (1 << 31) + (1 << 28))    
+    await regs.write("msk_top_regs", "PRBS_Polynomial", (1 << 30) + (1 << 27))    
     # await axi.write(52, 65535)                                      # initial state
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -636,7 +636,7 @@ async def msk_test_1(dut):
 #    pn.sim_run = True
 #    pn.sync = 100
 
-    while sim_time < sim_start + 50000:
+    while sim_time < sim_start + 20000:
 
         # if sim_time_d <= sim_start + 1000 and sim_time >= sim_start + 1000:
         #     data = await regs.read("msk_top_regs", "PRBS_Control")
@@ -651,6 +651,7 @@ async def msk_test_1(dut):
             dut.s_axi_wvalid.value = 1
             dut.s_axi_awvalid.value = 1
             await regs.write("msk_top_regs", "PRBS_Control", data)    
+            await Timer(200, "us")
             data = await regs.read("msk_top_regs", "PRBS_Control")
             data = data & 0xFFFFFFF7
             dut.s_axi_wvalid.value = 1
