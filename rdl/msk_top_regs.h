@@ -156,10 +156,14 @@ extern "C" {
 #define PRBS_CTRL__PRBS_CLEAR_bp 2
 #define PRBS_CTRL__PRBS_CLEAR_bw 1
 #define PRBS_CTRL__PRBS_CLEAR_reset 0x0
-#define PRBS_CTRL__PRBS_SYNC_bm 0x8
-#define PRBS_CTRL__PRBS_SYNC_bp 3
-#define PRBS_CTRL__PRBS_SYNC_bw 1
-#define PRBS_CTRL__PRBS_SYNC_reset 0x0
+#define PRBS_CTRL__PRBS_MANUAL_SYNC_bm 0x8
+#define PRBS_CTRL__PRBS_MANUAL_SYNC_bp 3
+#define PRBS_CTRL__PRBS_MANUAL_SYNC_bw 1
+#define PRBS_CTRL__PRBS_MANUAL_SYNC_reset 0x0
+#define PRBS_CTRL__PRBS_SYNC_THRESHOLD_bm 0xffff0000
+#define PRBS_CTRL__PRBS_SYNC_THRESHOLD_bp 16
+#define PRBS_CTRL__PRBS_SYNC_THRESHOLD_bw 16
+#define PRBS_CTRL__PRBS_SYNC_THRESHOLD_reset 0x0
 
 // Reg - config_prbs_seed
 #define CONFIG_PRBS_SEED__CONFIG_DATA_bm 0xffffffff

@@ -141,18 +141,23 @@ reg prbs_ctrl {
     field { sw = rw; hw = r; } prbs_sel = 0;
         prbs_sel->name = "PRBS Data Select";
         prbs_sel->desc = "0 -> Select Normal Tx Data
-                            1 -> Select PRBS Tx Data";
+                          1 -> Select PRBS Tx Data";
     field { sw = w; hw = r; singlepulse = true; } prbs_error_insert = 0;
         prbs_error_insert->name = "PRBS Error Insert";
-        prbs_error_insert->desc = "0 -> No error insertion
-                            1 -> Insert bit error in Tx data (both Normal and PRBS)";
+        prbs_error_insert->desc = "0 -> 1 :  Insert bit error in Tx data (both Normal and PRBS)
+                                   1 -> 0 : Insert bit error in Tx data (both Normal and PRBS)";
     field { sw = w; hw = r; singlepulse = true; } prbs_clear = 0;
-        prbs_clear->name = "Reserved";
-        prbs_clear->desc = "Reserved";
-    field { sw = w; hw = r; singlepulse = true; } prbs_sync = 0;    
-        prbs_sync->name = "PRBS Sync";
-        prbs_sync->desc = "0 -> Normal Operation
-                           1 -> Synchronize PRBS monitor";
+        prbs_clear->name = "PRBS Clear Counters";
+        prbs_clear->desc = "0 -> 1 : Clear PRBS Counters
+                            1 -> 0 : Clear PRBS Counters";
+    field { sw = w; hw = r; singlepulse = true; } prbs_manual_sync = 0;    
+        prbs_manual_sync->name = "PRBS Manual Sync";
+        prbs_manual_sync->desc = "0 -> 1 : Synchronize PRBS monitor
+                           1 -> 0 : Synchronize PRBS monitor";
+    field { sw = w; hw = r; } prbs_sync_threshold[31:16] = 0;
+        prbs_sync_threshold->name = "PRBS Auto Sync Threshold";
+        prbs_sync_threshold->desc = "0 : Auto Sync Disabled
+                           N > 0 : Auto sync after N errors";
 };
 
 reg config_prbs_seed {

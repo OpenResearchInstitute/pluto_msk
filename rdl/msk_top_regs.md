@@ -363,12 +363,13 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 <p>Configures operation of the PRBS Generator and Monitor</p>
 
-|Bits|    Identifier   |Access|Reset|       Name      |
-|----|-----------------|------|-----|-----------------|
-|  0 |     prbs_sel    |  rw  | 0x0 | PRBS Data Select|
-|  1 |prbs_error_insert|   w  | 0x0 |PRBS Error Insert|
-|  2 |    prbs_clear   |   w  | 0x0 |     Reserved    |
-|  3 |    prbs_sync    |   w  | 0x0 |    PRBS Sync    |
+| Bits|     Identifier    |Access|Reset|          Name          |
+|-----|-------------------|------|-----|------------------------|
+|  0  |      prbs_sel     |  rw  | 0x0 |    PRBS Data Select    |
+|  1  | prbs_error_insert |   w  | 0x0 |    PRBS Error Insert   |
+|  2  |     prbs_clear    |   w  | 0x0 |   PRBS Clear Counters  |
+|  3  |  prbs_manual_sync |   w  | 0x0 |    PRBS Manual Sync    |
+|31:16|prbs_sync_threshold|   w  | 0x0 |PRBS Auto Sync Threshold|
 
 #### prbs_sel field
 
@@ -377,17 +378,23 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 #### prbs_error_insert field
 
-<p>0 -&gt; No error insertion
-1 -&gt; Insert bit error in Tx data (both Normal and PRBS)</p>
+<p>0 -&gt; 1 :  Insert bit error in Tx data (both Normal and PRBS)
+1 -&gt; 0 : Insert bit error in Tx data (both Normal and PRBS)</p>
 
 #### prbs_clear field
 
-<p>Reserved</p>
+<p>0 -&gt; 1 : Clear PRBS Counters
+1 -&gt; 0 : Clear PRBS Counters</p>
 
-#### prbs_sync field
+#### prbs_manual_sync field
 
-<p>0 -&gt; Normal Operation
-1 -&gt; Synchronize PRBS monitor</p>
+<p>0 -&gt; 1 : Synchronize PRBS monitor
+1 -&gt; 0 : Synchronize PRBS monitor</p>
+
+#### prbs_sync_threshold field
+
+<p>0 : Auto Sync Disabled
+N &gt; 0 : Auto sync after N errors</p>
 
 ### PRBS_Initial_State register
 

@@ -73,7 +73,7 @@ class Addrmap:
         self.addrmap['msk_top_regs.LPF_Config_1'] = AddrmapItem("msk_top_regs.LPF_Config_1", bus, 52, 4, 32, 0, 0, "RW")
         self.addrmap['msk_top_regs.Tx_Data_Width'] = AddrmapItem("msk_top_regs.Tx_Data_Width", bus, 56, 4, 8, 0, 0, "RW")
         self.addrmap['msk_top_regs.Rx_Data_Width'] = AddrmapItem("msk_top_regs.Rx_Data_Width", bus, 60, 4, 8, 0, 0, "RW")
-        self.addrmap['msk_top_regs.PRBS_Control'] = AddrmapItem("msk_top_regs.PRBS_Control", bus, 64, 4, 4, 0, 0, "RW")
+        self.addrmap['msk_top_regs.PRBS_Control'] = AddrmapItem("msk_top_regs.PRBS_Control", bus, 64, 4, 20, 0, 0, "RW")
         self.addrmap['msk_top_regs.PRBS_Initial_State'] = AddrmapItem("msk_top_regs.PRBS_Initial_State", bus, 68, 4, 32, 0, 0, "RW")
         self.addrmap['msk_top_regs.PRBS_Polynomial'] = AddrmapItem("msk_top_regs.PRBS_Polynomial", bus, 72, 4, 32, 0, 0, "RW")
         self.addrmap['msk_top_regs.PRBS_Error_Mask'] = AddrmapItem("msk_top_regs.PRBS_Error_Mask", bus, 76, 4, 32, 0, 0, "RW")

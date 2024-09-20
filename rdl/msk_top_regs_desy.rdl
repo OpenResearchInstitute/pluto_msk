@@ -75,7 +75,8 @@ reg prbs_ctrl {
     field { sw = rw; hw = r; } prbs_sel = 0;
     field { sw = w; hw = r; singlepulse = true; } prbs_error_insert = 0;
     field { sw = w; hw = r; singlepulse = true; } prbs_clear = 0;
-    field { sw = w; hw = r; singlepulse = true; } prbs_sync = 0;    
+    field { sw = w; hw = r; singlepulse = true; } prbs_manual_sync = 0;    
+    field { sw = w; hw = r; } prbs_sync_threshold[31:16] = 0;
 };
 
 reg config_prbs_seed {
