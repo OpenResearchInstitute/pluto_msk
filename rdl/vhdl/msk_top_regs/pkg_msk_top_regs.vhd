@@ -308,6 +308,14 @@ package pkg_msk_top_regs is
   type t_field_signals_lpf_config_0_lpf_zero_out is record
     data : std_logic_vector(1-1 downto 0); --
   end record; --
+  type t_field_signals_lpf_config_0_prbs_reserved_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_lpf_config_0_prbs_reserved_out is record
+    data : std_logic_vector(14-1 downto 0); --
+  end record; --
   type t_field_signals_lpf_config_0_lpf_alpha_in is record
     -- no data if field cannot be written from hw
     data : std_logic_vector(-1 downto 0); --
@@ -321,11 +329,13 @@ package pkg_msk_top_regs is
   type t_reg_lpf_config_0_in is record--
     lpf_freeze : t_field_signals_lpf_config_0_lpf_freeze_in; --
     lpf_zero : t_field_signals_lpf_config_0_lpf_zero_in; --
+    prbs_reserved : t_field_signals_lpf_config_0_prbs_reserved_in; --
     lpf_alpha : t_field_signals_lpf_config_0_lpf_alpha_in; --
   end record;
   type t_reg_lpf_config_0_out is record--
     lpf_freeze : t_field_signals_lpf_config_0_lpf_freeze_out; --
     lpf_zero : t_field_signals_lpf_config_0_lpf_zero_out; --
+    prbs_reserved : t_field_signals_lpf_config_0_prbs_reserved_out; --
     lpf_alpha : t_field_signals_lpf_config_0_lpf_alpha_out; --
   end record;
   type t_reg_lpf_config_0_2d_in is array (integer range <>) of t_reg_lpf_config_0_in;
@@ -423,6 +433,14 @@ package pkg_msk_top_regs is
   type t_field_signals_prbs_ctrl_prbs_manual_sync_out is record
     data : std_logic_vector(1-1 downto 0); --
   end record; --
+  type t_field_signals_prbs_ctrl_prbs_reserved_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_prbs_ctrl_prbs_reserved_out is record
+    data : std_logic_vector(12-1 downto 0); --
+  end record; --
   type t_field_signals_prbs_ctrl_prbs_sync_threshold_in is record
     -- no data if field cannot be written from hw
     data : std_logic_vector(-1 downto 0); --
@@ -438,6 +456,7 @@ package pkg_msk_top_regs is
     prbs_error_insert : t_field_signals_prbs_ctrl_prbs_error_insert_in; --
     prbs_clear : t_field_signals_prbs_ctrl_prbs_clear_in; --
     prbs_manual_sync : t_field_signals_prbs_ctrl_prbs_manual_sync_in; --
+    prbs_reserved : t_field_signals_prbs_ctrl_prbs_reserved_in; --
     prbs_sync_threshold : t_field_signals_prbs_ctrl_prbs_sync_threshold_in; --
   end record;
   type t_reg_prbs_ctrl_out is record--
@@ -445,6 +464,7 @@ package pkg_msk_top_regs is
     prbs_error_insert : t_field_signals_prbs_ctrl_prbs_error_insert_out; --
     prbs_clear : t_field_signals_prbs_ctrl_prbs_clear_out; --
     prbs_manual_sync : t_field_signals_prbs_ctrl_prbs_manual_sync_out; --
+    prbs_reserved : t_field_signals_prbs_ctrl_prbs_reserved_out; --
     prbs_sync_threshold : t_field_signals_prbs_ctrl_prbs_sync_threshold_out; --
   end record;
   type t_reg_prbs_ctrl_2d_in is array (integer range <>) of t_reg_prbs_ctrl_in;
@@ -1273,7 +1293,6 @@ architecture rtl of msk_top_regs_lpf_config_0 is
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
 begin
   --
-  data_out(C_DATA_WIDTH-1 downto 18) <= (others => '0'); --
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
@@ -1327,6 +1346,30 @@ begin
     data_out(1 downto 1) <= l_field_reg;
 
   end block lpf_zero_storage;
+  ------------------------------------------------------------STORAGE
+  prbs_reserved_storage: block
+    signal l_field_reg   : std_logic_vector(14-1 downto 0) :=
+                           std_logic_vector(to_signed(0,14));
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          l_field_reg <= std_logic_vector(to_signed(0,14));
+        else
+          -- HW --
+          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          if pi_decoder_wr_stb = '1' then
+            l_field_reg <= pi_decoder_data(15 downto 2);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.prbs_reserved.data <= l_field_reg; --
+    data_out(15 downto 2) <= l_field_reg;
+
+  end block prbs_reserved_storage;
   ------------------------------------------------------------STORAGE
   lpf_alpha_storage: block
     signal l_field_reg   : std_logic_vector(16-1 downto 0) :=
@@ -1524,7 +1567,6 @@ architecture rtl of msk_top_regs_prbs_ctrl is
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
 begin
   --
-  data_out(C_DATA_WIDTH-1 downto 20) <= (others => '0'); --
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
@@ -1626,6 +1668,30 @@ begin
     data_out(3 downto 3) <= l_field_reg;
 
   end block prbs_manual_sync_storage;
+  ------------------------------------------------------------STORAGE
+  prbs_reserved_storage: block
+    signal l_field_reg   : std_logic_vector(12-1 downto 0) :=
+                           std_logic_vector(to_signed(0,12));
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          l_field_reg <= std_logic_vector(to_signed(0,12));
+        else
+          -- HW --
+          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          if pi_decoder_wr_stb = '1' then
+            l_field_reg <= pi_decoder_data(15 downto 4);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.prbs_reserved.data <= l_field_reg; --
+    data_out(15 downto 4) <= l_field_reg;
+
+  end block prbs_reserved_storage;
   ------------------------------------------------------------STORAGE
   prbs_sync_threshold_storage: block
     signal l_field_reg   : std_logic_vector(16-1 downto 0) :=

@@ -110,6 +110,7 @@ reg lpf_config_0 {
         lpf_zero->name = "Hold the PI Accumulator at zero";
         lpf_zero->desc = "0 -> Normal operation
                           1 -> Zero and hold accumulator";
+    field { sw = w; hw = r; } prbs_reserved[15:2] = 0;
     field { sw = rw; hw = r; } lpf_alpha[31:16] = 0;
         lpf_alpha->name = "Lowpass IIR filter alpha";
         lpf_alpha->desc = "Value controls the filter rolloff";
@@ -154,6 +155,7 @@ reg prbs_ctrl {
         prbs_manual_sync->name = "PRBS Manual Sync";
         prbs_manual_sync->desc = "0 -> 1 : Synchronize PRBS monitor
                            1 -> 0 : Synchronize PRBS monitor";
+    field { sw = w; hw = r; } prbs_reserved[15:4] = 0;
     field { sw = w; hw = r; } prbs_sync_threshold[31:16] = 0;
         prbs_sync_threshold->name = "PRBS Auto Sync Threshold";
         prbs_sync_threshold->desc = "0 : Auto Sync Disabled

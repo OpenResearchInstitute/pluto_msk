@@ -282,11 +282,12 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 <p>Configure PI controller and low-pass filter</p>
 
-| Bits|Identifier|Access|Reset|                 Name                 |
-|-----|----------|------|-----|--------------------------------------|
-|  0  |lpf_freeze|  rw  | 0x0 |Freeze the accumulator's current value|
-|  1  | lpf_zero |  rw  | 0x0 |    Hold the PI Accumulator at zero   |
-|31:16| lpf_alpha|  rw  | 0x0 |       Lowpass IIR filter alpha       |
+| Bits|  Identifier |Access|Reset|                 Name                 |
+|-----|-------------|------|-----|--------------------------------------|
+|  0  |  lpf_freeze |  rw  | 0x0 |Freeze the accumulator's current value|
+|  1  |   lpf_zero  |  rw  | 0x0 |    Hold the PI Accumulator at zero   |
+| 15:2|prbs_reserved|   w  | 0x0 |                   —                  |
+|31:16|  lpf_alpha  |  rw  | 0x0 |       Lowpass IIR filter alpha       |
 
 #### lpf_freeze field
 
@@ -369,6 +370,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 |  1  | prbs_error_insert |   w  | 0x0 |    PRBS Error Insert   |
 |  2  |     prbs_clear    |   w  | 0x0 |   PRBS Clear Counters  |
 |  3  |  prbs_manual_sync |   w  | 0x0 |    PRBS Manual Sync    |
+| 15:4|   prbs_reserved   |   w  | 0x0 |            —           |
 |31:16|prbs_sync_threshold|   w  | 0x0 |PRBS Auto Sync Threshold|
 
 #### prbs_sel field
