@@ -580,7 +580,7 @@ async def msk_test_1(dut):
     # await axi.write(44, 1)                                          # Select PRBS data path
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "PRBS_Control", 1)    
+    await regs.write("msk_top_regs", "PRBS_Control", (400 << 16) + 1)    
     # await axi.write(48, (1 << 31) + (1 << 28))                      # Polynomial 
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -647,13 +647,7 @@ async def msk_test_1(dut):
 
         if sim_time_d <= sim_start + 10000 and sim_time >= sim_start + 10000:
             data = await regs.read("msk_top_regs", "PRBS_Control")
-            data = data | 0x8
-            dut.s_axi_wvalid.value = 1
-            dut.s_axi_awvalid.value = 1
-            await regs.write("msk_top_regs", "PRBS_Control", data)    
-            await Timer(200, "us")
-            data = await regs.read("msk_top_regs", "PRBS_Control")
-            data = data & 0xFFFFFFF7
+            data = data ^ 0x8
             dut.s_axi_wvalid.value = 1
             dut.s_axi_awvalid.value = 1
             await regs.write("msk_top_regs", "PRBS_Control", data)    

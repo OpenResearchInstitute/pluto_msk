@@ -79,6 +79,7 @@ ENTITY msk_top_csr IS
 		ACC_W 				: NATURAL := 32;
 		GENERATOR_W 		: NATURAL := 32;
 		COUNTER_W 			: NATURAL := 32;
+		SYNC_W 				: NATURAL := 16;
 		C_S_AXI_DATA_WIDTH	: NATURAL := 32;
 		C_S_AXI_ADDR_WIDTH	: NATURAL := 32
 	);
@@ -141,7 +142,8 @@ ENTITY msk_top_csr IS
 		prbs_err_insert : out std_logic;
 		prbs_sel 		: out std_logic;
 		prbs_clear 		: out std_logic;
-		prbs_sync 		: out std_logic
+		prbs_manual_sync	: out std_logic;
+		prbs_sync_threshold : OUT std_logic_vector(SYNC_W -1 DOWNTO 0)
 
 	);
 END ENTITY msk_top_csr;
@@ -236,6 +238,7 @@ BEGIN
 	prbs_err_insert <= po_addrmap.PRBS_Control.prbs_error_insert.data(0);
 	prbs_sel 		<= po_addrmap.PRBS_Control.prbs_sel.data(0);
 	prbs_clear 		<= po_addrmap.PRBS_Control.prbs_clear.data(0);
-	prbs_sync 		<= po_addrmap.PRBS_Control.prbs_sync.data(0);
+	prbs_manual_sync	<= po_addrmap.PRBS_Control.prbs_manual_sync.data(0);
+	prbs_sync_threshold <= po_addrmap.PRBS_Control.prbs_sync_threshold.data;
 
 END ARCHITECTURE rtl;

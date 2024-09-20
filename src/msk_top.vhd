@@ -80,6 +80,10 @@ ENTITY msk_top IS
 		SINUSOID_W 			: NATURAL := 12;
 		SAMPLE_W 			: NATURAL := 16;
 		GAIN_W 				: NATURAL := 16;
+		SYNC_W 				: NATURAL := 16;
+		GENERATOR_W 		: NATURAL := 31;
+		COUNTER_W 			: NATURAL := 32;
+		DATA_W 				: NATURAL := 1;
 		S_AXIS_DATA_W 		: NATURAL := 64;
 		C_S_AXI_DATA_WIDTH	: NATURAL := 32;
 		C_S_AXI_ADDR_WIDTH	: NATURAL := 32
@@ -212,9 +216,10 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL prbs_initial 	: std_logic_vector(31 DOWNTO 0);
 	SIGNAL prbs_err_mask 	: std_logic_vector(31 DOWNTO 0);
 	SIGNAL prbs_clear		: std_logic;
-	SIGNAL prbs_sync 		: std_logic;
+	SIGNAL prbs_manual_sync	: std_logic;
 	SIGNAL prbs_bits 		: std_logic_vector(31 DOWNTO 0);
 	SIGNAL prbs_errs 		: std_logic_vector(31 DOWNTO 0);
+	SIGNAL prbs_sync_threshold : std_logic_vector(SYNC_W -1 DOWNTO 0);
 
 BEGIN 
 
@@ -313,15 +318,15 @@ BEGIN
 
 	u_prbs_gen : ENTITY work.prbs_gen(rtl)
 		GENERIC MAP (
-			DATA_W 			=>  1,
-			GENERATOR_W		=> 32,
-			GENERATOR_BITS 	=>  5
+			DATA_W 			=> DATA_W,
+			GENERATOR_W		=> GENERATOR_W,
+			TOGGLE_CONTROL  => True
 		)
 		PORT MAP (
 			clk 			=> clk,
 			init 			=> init,
-			initial_state 	=> prbs_initial,
-			polynomial 		=> prbs_poly,
+			initial_state 	=> prbs_initial(GENERATOR_W -1 DOWNTO 0),
+			polynomial 		=> prbs_poly(GENERATOR_W -1 DOWNTO 0),
 			error_insert 	=> prbs_err_insert,
 			error_mask 		=> prbs_err_mask(1 -1 DOWNTO 0),
 			prbs_sel 		=> prbs_sel,
@@ -485,17 +490,18 @@ BEGIN
 
 	u_prbs_mon : ENTITY work.prbs_mon(rtl)
 		GENERIC MAP (
-			DATA_W 			=>  1,
-			GENERATOR_W		=> 32,
-			COUNTER_W 		=> 32,
-			GENERATOR_BITS 	=>  5
+			DATA_W 			=> DATA_W,
+			GENERATOR_W		=> GENERATOR_W,
+			COUNTER_W 		=> COUNTER_W,
+			TOGGLE_CONTROL  => True
 		)
 		PORT MAP (
 			clk 			=> clk,
 			init 			=> init,
-			sync 			=> prbs_sync,
-			initial_state 	=> prbs_initial,
-			polynomial 		=> prbs_poly,
+			sync_manual		=> prbs_manual_sync,
+			sync_threshold  => prbs_sync_threshold,
+			initial_state 	=> prbs_initial(GENERATOR_W -1 DOWNTO 0),
+			polynomial 		=> prbs_poly(GENERATOR_W -1 DOWNTO 0),
 			count_reset 	=> prbs_clear,
 			data_count 		=> prbs_bits,
 			error_count 	=> prbs_errs,
@@ -579,14 +585,14 @@ BEGIN
 		lpf_p_gain 		=> lpf_p_gain,
 		tx_data_w 		=> tx_data_w,
 		rx_data_w 		=> rx_data_w,
-		prbs_sync 		=> prbs_sync,
+		prbs_manual_sync=> prbs_manual_sync,
 		prbs_initial	=> prbs_initial,
 		prbs_poly		=> prbs_poly,
 		prbs_err_insert => prbs_err_insert,
 		prbs_err_mask 	=> prbs_err_mask,
 		prbs_sel 		=> prbs_sel,
-		prbs_clear 		=> prbs_clear
-
+		prbs_clear 		=> prbs_clear,
+		prbs_sync_threshold => prbs_sync_threshold
 
 	);
 
