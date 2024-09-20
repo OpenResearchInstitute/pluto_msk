@@ -588,7 +588,7 @@ async def msk_test_1(dut):
     # await axi.write(52, 65535)                                      # initial state
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "PRBS_Initial_State", 65535)    
+    await regs.write("msk_top_regs", "PRBS_Initial_State", 0x8E7589FD)    
     # await axi.write(56, 1)                                          # Error Mask
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
