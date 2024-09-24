@@ -13,3 +13,5 @@ work/
 *.ghw.hier
 docs/images/
 .asciidoctor/
+gen_files*.txt
+gui/

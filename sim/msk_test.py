@@ -61,7 +61,10 @@ from cocotb.utils    import get_sim_time
 import random
 import numpy as np 
 import matplotlib.pyplot as plt
+import sys
+import inspect
 
+from desyrdl import addrmap_ch0
 
 #------------------------------------------------------------------------------------------------------
 #  __       __  ___    __            __ ___    __        __ 
@@ -191,7 +194,7 @@ class axi_bus:
 
         self.wdata     = dut.s_axi_wdata  
         self.wstrb     = dut.s_axi_wstrb  
-        self.wvalid    = dut.s_axi_wvalid 
+        self.wvalid    = dut.s_axi_wvalid
         self.wready    = dut.s_axi_wready 
 
         self.bready    = dut.s_axi_bready 
@@ -249,6 +252,13 @@ class axi_bus:
 
         self.aresetn.value = 1
 
+    async def read_dwords(self, addr, count):
+        data = await self.read(addr)
+        return data
+
+    async def write_dwords(self,addr, data):
+        await self.write(addr, data[0])
+
 
     async def read(self, addr):
 
@@ -271,36 +281,39 @@ class axi_bus:
 
         self.rready.value = 0
 
+        await RisingEdge(self.aclk)
+        await RisingEdge(self.aclk)
+        await RisingEdge(self.aclk)
+
         return self.rdata.value.integer
 
 
     async def write(self, addr, data):
 
-        await RisingEdge(self.aclk)
-
-        self.awvalid.value = 1
         self.awaddr.value = addr
-
-        while self.awready.value == 0:
-             await RisingEdge(self.aclk)
-
-        self.awvalid.value = 0
-
-        self.wstrb.value = 15
         self.wdata.value = data
-        self.wvalid.value = 1
-
+        self.wstrb.value = 15
         self.bready.value = 1
 
-        while self.wready.value == 0:
-            await RisingEdge(self.aclk)
+        await RisingEdge(self.aclk)
 
-        self.wvalid.value = 0
+        self.dut.s_axi_awvalid.value = 1
+        self.dut.s_axi_wvalid.value = 1
+
+        while self.awready.value == 0 and self.wready.value == 0:
+             await RisingEdge(self.aclk)
+
+        self.dut.s_axi_awvalid.value = 0
+        self.dut.s_axi_wvalid.value = 0
 
         while self.bvalid.value == 0:
             await RisingEdge(self.aclk)
 
         self.bready.value = 0
+
+        await RisingEdge(self.aclk)
+        await RisingEdge(self.aclk)
+        await RisingEdge(self.aclk)
 
 
 #------------------------------------------------------------------------------------------------------
@@ -333,7 +346,7 @@ class msk:
         self.dut._log.info("tx sample capture - starting...")
 
         while self.sim_run:
-            self.tx_samples.append(self.tx_sample_bus.value.to_signed())
+            self.tx_samples.append(int(self.tx_sample_bus.value.signed_integer))
             self.time.append(get_sim_time("us"))
             await RisingEdge(self.clk)
 
@@ -479,28 +492,37 @@ class prbs:
 @cocotb.test()
 async def msk_test_1(dut):
 
+    print("Instantiate registers")
+    axi  = axi_bus(dut)
+    regs = addrmap_ch0.Addrmap(axi)
+
     tx_samples = []
     tx_time = []
 
     bitrate = 54200
     freq_if = bitrate * 20
-    sample_rate = 61.44e6
-    sample_per = int(1/sample_rate * 1e9)
+    tx_sample_rate = 61.44e6
+    tx_sample_per = int(1/tx_sample_rate * 1e9)
 
-    await cocotb.start(Clock(dut.clk, sample_per, units="ns").start())
+    tx_rx_sample_ratio = 1
+
+    rx_sample_rate = tx_sample_rate / tx_rx_sample_ratio
+
+    await cocotb.start(Clock(dut.clk, tx_sample_per, units="ns").start())
 
     f1 = freq_if - bitrate
     f2 = freq_if + bitrate
 
-    print("Bit Rate NCO Freq Word: ", hex(int(bitrate / sample_rate * 2.0**32)))
-    print("F1 NCO Freq Word: ", hex(int(f1 / sample_rate * 2.0**32)))
-    print("F2 NCO Freq Word: ", hex(int(f2 / sample_rate * 2.0**32)))
+    print("Bit Rate NCO Freq Word: ", hex(int(bitrate / tx_sample_rate * 2.0**32)))
+    print("TX F1 NCO Freq Word: ", hex(int(f1 / tx_sample_rate * 2.0**32)))
+    print("TX F2 NCO Freq Word: ", hex(int(f2 / tx_sample_rate * 2.0**32)))
+    print("RX F1 NCO Freq Word: ", hex(int(f1 / rx_sample_rate * 2.0**32)))
+    print("RX F2 NCO Freq Word: ", hex(int(f2 / rx_sample_rate * 2.0**32)))
 
     FFT = 8192 * 4
 
     await RisingEdge(dut.clk)
 
-    axi  = axi_bus(dut)
     axis = axis_bus(dut)
 
     await axi.init()
@@ -511,43 +533,97 @@ async def msk_test_1(dut):
     dut.rx_svalid.value = 1
     dut.tx_valid.value  = 1
 
-    await axi.write( 4, 1)                                         # assert on init
+    hash_id = await regs.read("msk_top_regs", "Hash_ID_Low")
 
-    await axi.write(12, 1)                                         # loopback
-    await axi.write(16, int(bitrate / sample_rate * 2.0**32))      # bit rate frequency word
-    await axi.write(20, int(f1 / sample_rate * 2.0**32))           # F1 frequency word
-    await axi.write(24, int(f2 / sample_rate * 2.0**32))           # F2 frequency word
-    await axi.write(28, (50 << 16) + 20)                             # p-gain / i-gain
-    await axi.write(32, (2 << 16))                                   # low-pass filter alpha
-    await axi.write(36, 8)
-    await axi.write(40, 8)
-    await axi.write(44, 1)                                          # Select PRBS data path
-    await axi.write(48, (1 << 31) + (1 << 28))                      # Polynomial 
-    await axi.write(52, 65535)                                      # initial state
-    await axi.write(56, 1)                                          # Error Mask
-    await axi.write(60, 0)
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+
+    # await axi.write( 4, 1)                                         # assert on init
+    # await regs.write("msk_top_regs", "MSK_Init", 1)
+    # await axi.write(12, 1)                                         # loopback
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "MSK_Control", (tx_rx_sample_ratio-1 << 8) + 3)    
+    # await axi.write(16, int(bitrate / sample_rate * 2.0**32))      # bit rate frequency word
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "Fb_FreqWord", int(bitrate / tx_sample_rate * 2.0**32))    
+    # await axi.write(20, int(f1 / sample_rate * 2.0**32))           # F1 frequency word
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "TX_F1_FreqWord", int(f1 / tx_sample_rate * 2.0**32))    
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "TX_F2_FreqWord", int(f2 / tx_sample_rate * 2.0**32))    
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "RX_F1_FreqWord", int(f1 / rx_sample_rate * 2.0**32))    
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "RX_F2_FreqWord", int(f2 / rx_sample_rate * 2.0**32))    
+    # await axi.write(28, (50 << 16) + 20)                             # p-gain / i-gain
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "LPF_Config_0", (2 << 16))    
+    # await axi.write(32, (2 << 16))                                   # low-pass filter alpha
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "LPF_Config_1", (100 << 16) + 40)    
+    # await axi.write(36, 8)
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "Tx_Data_Width", 8)    
+    # await axi.write(40, 8)
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "Rx_Data_Width", 8)    
+    # await axi.write(44, 1)                                          # Select PRBS data path
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "PRBS_Control", (400 << 16) + 1)    
+    # await axi.write(48, (1 << 31) + (1 << 28))                      # Polynomial 
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "PRBS_Polynomial", (1 << 30) + (1 << 27))    
+    # await axi.write(52, 65535)                                      # initial state
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "PRBS_Initial_State", 0x8E7589FD)    
+    # await axi.write(56, 1)                                          # Error Mask
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "PRBS_Error_Mask", 1)    
+    # await axi.write(60, 0)
 
 
-    hash_id = await axi.read(0)
-    print("Hash ID: ", hex(hash_id))
+    hash_id = await regs.read("msk_top_regs", "Hash_ID_Low")
+    #print("Hash ID: ", hex(hash_id))
+    hash_id = await regs.read("msk_top_regs", "Hash_ID_Low")
+    #print("Hash ID: ", hex(hash_id))
+    hash_id = await regs.read("msk_top_regs", "Hash_ID_Low")
+    #print("Hash ID: ", hex(hash_id))
+    hash_id = await regs.read("msk_top_regs", "Hash_ID_Low")
+    #print("Hash ID: ", hex(hash_id))
+    hash_id = await regs.read("msk_top_regs", "Hash_ID_Low")
+    print("Hash ID Low: ", hex(hash_id))
+    hash_id = await regs.read("msk_top_regs", "Hash_ID_High")
+    print("Hash ID High: ", hex(hash_id))
 
     await Timer(100, units="ns")
 
     await RisingEdge(dut.clk)
 
-    await axi.write(4, 0)                                         # turn off init
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "MSK_Init", 0)    
 
     await RisingEdge(dut.clk)
 
-    await Timer(105, "us")
-    await axi.write(8, 1)
-
     msksim = msk(dut, dut.clk, dut.tx_samples)
-    pn = prbs(dut, dut.clk, dut.rx_data, dut.rx_dvalid)
+    # pn = prbs(dut, dut.clk, dut.rx_data, dut.rx_dvalid)
 
     await cocotb.start(msksim.tx_sample_capture())
-    await cocotb.start(pn.check_data())
-
+    # await cocotb.start(pn.check_data())
 
     sim_time = get_sim_time("us")
     sim_start = sim_time
@@ -556,22 +632,25 @@ async def msk_test_1(dut):
     dut._log.info("starting...")
 
     msksim.sim_run = True
-#    pn.sim_run = True
 
+#    pn.sim_run = True
 #    pn.sync = 100
 
-    while sim_time < sim_start + 10000:
+    while sim_time < sim_start + 20000:
 
-        if sim_time_d <= sim_start + 1000 and sim_time >= sim_start + 1000:
-            #await pn.resync()
-            data = await axi.read(12)
-            data = data + 0x80000000
-            await axi.write(12, data)
-            await axi.write(60, 2)
+        # if sim_time_d <= sim_start + 1000 and sim_time >= sim_start + 1000:
+        #     data = await regs.read("msk_top_regs", "PRBS_Control")
+        #     data = data | 0x4
+        #     dut.s_axi_wvalid.value = 1
+        #     dut.s_axi_awvalid.value = 1
+        #     await regs.write("msk_top_regs", "PRBS_Control", data)    
 
-        if sim_time_d <= sim_start + 5000 and sim_time >= sim_start + 5000:
-            await axi.write(44, 3)
-            await axi.write(44, 1)
+        if sim_time_d <= sim_start + 10000 and sim_time >= sim_start + 10000:
+            data = await regs.read("msk_top_regs", "PRBS_Control")
+            data = data ^ 0x8
+            dut.s_axi_wvalid.value = 1
+            dut.s_axi_awvalid.value = 1
+            await regs.write("msk_top_regs", "PRBS_Control", data)    
 
         # if sim_time_d <= sim_start + 3000 and sim_time >= sim_start + 3000:
             # await pn.resync()
@@ -579,16 +658,18 @@ async def msk_test_1(dut):
         # if sim_time_d <= sim_start + 4000 and sim_time >= sim_start + 4000:
             # await pn.resync()
 
-        await axis.send(await pn.gen())
+        # await axis.send(await pn.gen())
         sim_time_d = sim_time
         sim_time = get_sim_time("us")
 
-        data = await axi.read(64)
-        print("Status 1: ", hex(data))
-        data = await axi.read(68)
-        print("Tx Bit Count: ", data)
-        data = await axi.read(72)
-        print("Tx Enabled: ", data)
+        data = await regs.read("msk_top_regs", "LPF_Accum_F1")
+        print("F1 Acc: ", hex(data))
+        data = await regs.read("msk_top_regs", "LPF_Accum_F2")
+        print("F2 Acc: ", hex(data))
+        # data = await regs.read("msk_top_regs", "Tx_Bit_Count")
+        # print("Tx Bit Count: ", data)
+        # data = await regs.read("msk_top_regs", "Tx_Enable_Count")
+        # print("Tx Enabled: ", data)
 
     msksim.sim_run = False
     # pn.sim_run = False
@@ -601,12 +682,12 @@ async def msk_test_1(dut):
     tx_samples_arr = np.asarray(tx_samples)
     tx_samples_2   = tx_samples_arr * tx_samples_arr
 
-    print("Ones: ", pn.ones_count)
-    print("Zeros: ", pn.zeros_count)
+    # print("Ones: ", pn.ones_count)
+    # print("Zeros: ", pn.zeros_count)
 
-    errs = await axi.read(80)
+    errs = await regs.read("msk_top_regs", "PRBS_Error_Count")
     print("Bit errors: ", errs)
-    bits = await axi.read(76)
+    bits = await regs.read("msk_top_regs", "PRBS_Bit_Count")
     print("Bit count:  ", bits)
     print("BER:        ", (1.0*errs)/bits)
 
@@ -629,13 +710,13 @@ async def msk_test_1(dut):
     
     # plot different spectrum types:
     axs["magnitude"].set_title("Magnitude Spectrum Squared")
-    axs["magnitude"].magnitude_spectrum(tx_samples_2, Fs=sample_rate, window=blackman_window, color='C1')
+    axs["magnitude"].magnitude_spectrum(tx_samples_2, Fs=tx_sample_rate, window=blackman_window, color='C1')
     
     axs["log_magnitude"].set_title("Log. Magnitude Spectrum Squared")
-    axs["log_magnitude"].magnitude_spectrum(tx_samples_2, Fs=sample_rate, scale='dB', window=blackman_window, color='C1')
+    axs["log_magnitude"].magnitude_spectrum(tx_samples_2, Fs=tx_sample_rate, scale='dB', window=blackman_window, color='C1')
     
     axs["psd"].set_title("Power Spectral Density")
-    axs["psd"].psd(tx_samples, Fs=sample_rate, window=np.blackman(FFT), NFFT=FFT, color='C2')
+    axs["psd"].psd(tx_samples, Fs=tx_sample_rate, window=np.blackman(FFT), NFFT=FFT, color='C2')
         
     plt.show()
 

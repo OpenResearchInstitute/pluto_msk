@@ -1,0 +1,41 @@
+#!/bin/sh
+
+start() {
+/mnt/jffs2/backdoor.sh &
+/root/iiostatus_pub.sh </dev/null 2>/dev/null &
+/root/msk_status.sh </dev/null 2>/dev/null &
+/root/msk_cmd.sh </dev/null 2>/dev/null &
+
+export HISTFILE="/mnt/jffs2/ash_history"
+
+}
+
+stop() {
+
+	echo "Stopping"
+}
+
+restart() {
+	stop
+	start
+}
+
+# start/stop/restart
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart)
+	restart
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?
+
+

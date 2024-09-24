@@ -13,8 +13,18 @@ endif
 SIM_ARGS = --wave=msk_top.ghw
 
 SRC = ../src
+RDL = ../rdl/vhdl/msk_top_regs
 
-VHDL_SOURCES += ../nco/src/nco.vhd \
+VHDL_SOURCES_desyrdl = ../rdl/vhdl/desyrdl/pkg_desyrdl_common.vhd
+
+VHDL_LIB_ORDER = desyrdl
+
+# use VHDL_SOURCES for VHDL files
+VHDL_SOURCES += $(RDL)/msk_top_regs_decoder_axi4l.vhd \
+				$(RDL)/pkg_msk_top_regs.vhd \
+				$(RDL)/msk_top_regs.vhd \
+				$(SRC)/msk_top_csr.vhd \
+				../nco/src/nco.vhd \
 				../nco/src/sin_cos_lut.vhd \
 				../msk_modulator/src/msk_modulator.vhd \
 				../pi_controller/src/pi_controller.vhd \
@@ -23,8 +33,6 @@ VHDL_SOURCES += ../nco/src/nco.vhd \
 				../prbs/src/prbs_gen.vhd \
 				../prbs/src/prbs_mon.vhd \
 				$(SRC)/msk_top.vhd
-
-# use VHDL_SOURCES for VHDL files
 
 # TOPLEVEL is the name of the toplevel module in your Verilog or VHDL file
 TOPLEVEL = msk_top
