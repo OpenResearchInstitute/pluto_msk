@@ -157,15 +157,13 @@ class axis_bus:
 
     async def send(self, data):
 
-        await RisingEdge(self.aclk)
-
-        self.dut.s_axis_valid.value = 1
+        self.tvalid.value = 1
         self.tdata.value = data
+
+        await RisingEdge(self.aclk)
 
         while self.tready.value == 0:
             await RisingEdge(self.aclk)
-
-        self.tvalid.value = 0
 
 
 #------------------------------------------------------------------------------------------------------
@@ -362,11 +360,13 @@ class msk:
 
 class prbs:
 
-    def __init__(self, dut, clk, rx_data, rx_dvalid, width=8, seed=255, prbs=31):
+    def __init__(self, dut, clk, saxis, rx_data, rx_dvalid, width=8, seed=255, prbs=31):
 
 
         self.dut = dut 
         self.clk = clk 
+        self.saxis = saxis
+
         self.rx_data = rx_data 
         self.rx_dvalid = rx_dvalid
 
@@ -386,7 +386,7 @@ class prbs:
         self.zeros_count = 0
 
         if prbs == 31:
-            self.taps = [31, 28]
+            self.taps = [30, 27]
 
 
     async def init_gen(self):
@@ -401,14 +401,13 @@ class prbs:
         state = self.state_gen
 
         for i in range(self.width):
-            bit = ((state >> 31) ^ (state >> 28)) & 1
+            bit = ((state >> self.taps[0]) ^ (state >> self.taps[1])) & 1
             state = ((state << 1) | bit) & ((2**32) -1)
 
         self.state_gen = state & ((2**32) -1)
 
-        #print("gen: ", hex(state))
-
-        #print("tx_data: ", hex(self.state_gen & 0xFF))
+        print("gen: ", hex(state))
+        print("tx_data: ", hex(self.state_gen & 0xFF))
 
         data = self.state_gen & 0xFF
 
@@ -462,6 +461,22 @@ class prbs:
 
         #assert errored_bits == 0, "PRBS: Bit-error(s)" 
 
+    async def generate_data(self):
+
+        self.dut._log.info("prbs generator - waiting for start...")
+
+        while self.sim_run == False:
+            await RisingEdge(self.clk)
+
+        self.dut._log.info("prbs generator - starting...")
+
+        while self.sim_run:
+            data = await self.gen()
+            print("Data: ", data)
+            await self.saxis.send(data)
+
+        self.dut._log.info("...prbs generator - done")
+
 
     async def check_data(self):
 
@@ -474,7 +489,7 @@ class prbs:
 
         while self.sim_run:
             if self.rx_dvalid.value == 1:
-                rx_data = self.rx_data.value.to_unsigned()
+                rx_data = self.rx_data.value.integer
                 await self.mon(rx_data)
             await RisingEdge(self.clk)
 
@@ -620,10 +635,11 @@ async def msk_test_1(dut):
     await RisingEdge(dut.clk)
 
     msksim = msk(dut, dut.clk, dut.tx_samples)
-    # pn = prbs(dut, dut.clk, dut.rx_data, dut.rx_dvalid)
+    pn = prbs(dut, dut.clk, axis, dut.rx_data, dut.rx_dvalid)
 
     await cocotb.start(msksim.tx_sample_capture())
-    # await cocotb.start(pn.check_data())
+    await cocotb.start(pn.generate_data())
+    await cocotb.start(pn.check_data())
 
     sim_time = get_sim_time("us")
     sim_start = sim_time
@@ -633,8 +649,8 @@ async def msk_test_1(dut):
 
     msksim.sim_run = True
 
-#    pn.sim_run = True
-#    pn.sync = 100
+    pn.sim_run = True
+    pn.sync = 100
 
     while sim_time < sim_start + 20000:
 
@@ -658,7 +674,6 @@ async def msk_test_1(dut):
         # if sim_time_d <= sim_start + 4000 and sim_time >= sim_start + 4000:
             # await pn.resync()
 
-        # await axis.send(await pn.gen())
         sim_time_d = sim_time
         sim_time = get_sim_time("us")
 
@@ -672,7 +687,7 @@ async def msk_test_1(dut):
         # print("Tx Enabled: ", data)
 
     msksim.sim_run = False
-    # pn.sim_run = False
+    pn.sim_run = False
 
     await RisingEdge(dut.clk)
 
