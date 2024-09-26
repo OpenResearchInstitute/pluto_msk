@@ -360,12 +360,15 @@ class msk:
 
 class prbs:
 
-    def __init__(self, dut, clk, saxis, rx_data, rx_dvalid, width=8, seed=255, prbs=31):
+    def __init__(self, dut, clk, saxis, txw, rxw, rx_data, rx_dvalid, width=8, seed=255, prbs=31):
 
 
         self.dut = dut 
         self.clk = clk 
         self.saxis = saxis
+
+        self.txw = txw 
+        self.rxw = rxw 
 
         self.rx_data = rx_data 
         self.rx_dvalid = rx_dvalid
@@ -407,9 +410,9 @@ class prbs:
         self.state_gen = state & ((2**32) -1)
 
         print("gen: ", hex(state))
-        print("tx_data: ", hex(self.state_gen & 0xFF))
+        print("tx_data: ", hex(self.state_gen & 0xFFFFFFFF))
 
-        data = self.state_gen & 0xFF
+        data = self.state_gen & 0xFFFFFFFF
 
         self.ones_count += data.bit_count()
         self.zeros_count += 8 - data.bit_count()
@@ -523,6 +526,9 @@ async def msk_test_1(dut):
 
     rx_sample_rate = tx_sample_rate / tx_rx_sample_ratio
 
+    tx_data_width = 32
+    rx_data_width = 32
+
     await cocotb.start(Clock(dut.clk, tx_sample_per, units="ns").start())
 
     f1 = freq_if - bitrate
@@ -543,8 +549,8 @@ async def msk_test_1(dut):
     await axi.init()
     await axis.init()
     
-    dut.tx_enable.value = 0
-    dut.rx_enable.value = 0
+    dut.tx_enable.value = 1
+    dut.rx_enable.value = 1
     dut.rx_svalid.value = 1
     dut.tx_valid.value  = 1
 
@@ -587,11 +593,11 @@ async def msk_test_1(dut):
     # await axi.write(36, 8)
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "Tx_Data_Width", 8)    
+    await regs.write("msk_top_regs", "Tx_Data_Width", tx_data_width)    
     # await axi.write(40, 8)
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "Rx_Data_Width", 8)    
+    await regs.write("msk_top_regs", "Rx_Data_Width", rx_data_width)    
     # await axi.write(44, 1)                                          # Select PRBS data path
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -635,7 +641,7 @@ async def msk_test_1(dut):
     await RisingEdge(dut.clk)
 
     msksim = msk(dut, dut.clk, dut.tx_samples)
-    pn = prbs(dut, dut.clk, axis, dut.rx_data, dut.rx_dvalid)
+    pn = prbs(dut, dut.clk, axis, tx_data_width, rx_data_width, dut.rx_data, dut.rx_dvalid)
 
     await cocotb.start(msksim.tx_sample_capture())
     await cocotb.start(pn.generate_data())
@@ -681,6 +687,14 @@ async def msk_test_1(dut):
         print("F1 Acc: ", hex(data))
         data = await regs.read("msk_top_regs", "LPF_Accum_F2")
         print("F2 Acc: ", hex(data))
+        data = await regs.read("msk_top_regs", "Tx_Bit_Count")
+        print("Tx Bit Count: ", hex(data))
+        data = await regs.read("msk_top_regs", "Tx_Enable_Count")
+        print("Tx Enable Count: ", hex(data))
+        data = await regs.read("msk_top_regs", "MSK_Status")
+        print("MSK Status: ", hex(data))
+        data = await regs.read("msk_top_regs", "axis_xfer_count")
+        print("XFER Count: ", hex(data))
         # data = await regs.read("msk_top_regs", "Tx_Bit_Count")
         # print("Tx Bit Count: ", data)
         # data = await regs.read("msk_top_regs", "Tx_Enable_Count")

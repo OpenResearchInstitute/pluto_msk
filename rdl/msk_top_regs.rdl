@@ -65,30 +65,28 @@ reg msk_stat_0 {
         rx_enable->name = "AD9363 ADC Interface Rx Enable Input Active";
         rx_enable->desc = "1 -> Data from ADC Enabled
                            0 -> Data from ADC Disabled";
+    field { sw = r; hw = w; } tx_axis_valid=0;
+        tx_axis_valid->name = "Tx S_AXIS_VALID";
+        tx_axis_valid->desc = "1 -> S_AXIS_VALID Enabled
+                           0 -> S_AXIS_VALID Disabled";
 };
-
-signal { signalwidth = 1; } tx_req;
-signal { signalwidth = 1; } tx_enable;
-signal { signalwidth = 1; } tx_enable_n;
-field tx_bit_cntr { counter; incrvalue=1'b1; }; // incr = tx_req; sw = r; };
-field tx_ena_cntr { counter; incrvalue=1'b1; }; // incr = tx_enable; decrvalue=1'b1; decr = tx_enable_n; sw = r; };
 
 reg msk_stat_1 {
     name = "MSK Modem Status 2";
     desc = "Modem status data";
     regwidth = 32;
-    tx_bit_cntr data_req_count[31:0]=0;
-        data_req_count->desc = "Count of data requests made by modem";
-        data_req_count->name = "Tx Bit Count";
+    field { sw = r; hw = w; } tx_bit_counter[31:0] = 0;
+        tx_bit_counter->desc = "Count of data requests made by modem";
+        tx_bit_counter->name = "Tx Bit Count";
 };
 
 reg msk_stat_2 {
     name = "MSK Modem Status 3";
     desc = "Modem status data";
     regwidth = 32;
-    tx_ena_cntr data_req_count[31:0]=0;
-        data_req_count->desc = "Number of clocks on which Tx Enable is active";
-        data_req_count->name = "Tx Enable Count";
+    field { sw = r; hw = w; } tx_ena_counter[31:0] = 0;
+        tx_ena_counter->desc = "Number of clocks on which Tx Enable is active";
+        tx_ena_counter->name = "Tx Enable Count";
 };
 
 reg config_nco_fw {
@@ -216,6 +214,15 @@ reg stat_32_lpf_acc {
         status_data->desc = "PI Controller Accumulator Value";
 };
 
+reg msk_stat_3 {
+    name = "MSK Modem Status 3";
+    desc = "Modem status data";
+    regwidth = 32;
+    field { sw = r; hw = w; } xfer_count[31:0] = 0;
+        xfer_count->desc = "Number completed S_AXIS transfers";
+        xfer_count->name = "S_AXIS Transfers";
+};
+
 addrmap msk_top_regs {
     name="Pluto MSK Registers";
     desc="MSK Modem Configuration and Status Registers";
@@ -268,6 +275,7 @@ addrmap msk_top_regs {
     stat_32_lpf_acc LPF_Accum_F2;
         LPF_Accum_F2->name = "F2 PI Controller Accumulator";
         LPF_Accum_F2->desc = "Value of the F2 PI Controller Accumulator";
+    msk_stat_3 axis_xfer_count;
 
 };
 

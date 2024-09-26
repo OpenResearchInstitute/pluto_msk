@@ -203,17 +203,27 @@ package pkg_msk_top_regs is
     -- no data if field cannot be written from hw
     data : std_logic_vector(-1 downto 0); --
   end record; --
+  type t_field_signals_msk_stat_0_tx_axis_valid_in is record
+    data : std_logic_vector(1-1 downto 0); --
+  end record;
+
+  type t_field_signals_msk_stat_0_tx_axis_valid_out is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record; --
 
   -- The actual register types
   type t_reg_msk_stat_0_in is record--
     demod_sync_lock : t_field_signals_msk_stat_0_demod_sync_lock_in; --
     tx_enable : t_field_signals_msk_stat_0_tx_enable_in; --
     rx_enable : t_field_signals_msk_stat_0_rx_enable_in; --
+    tx_axis_valid : t_field_signals_msk_stat_0_tx_axis_valid_in; --
   end record;
   type t_reg_msk_stat_0_out is record--
     demod_sync_lock : t_field_signals_msk_stat_0_demod_sync_lock_out; --
     tx_enable : t_field_signals_msk_stat_0_tx_enable_out; --
     rx_enable : t_field_signals_msk_stat_0_rx_enable_out; --
+    tx_axis_valid : t_field_signals_msk_stat_0_tx_axis_valid_out; --
   end record;
   type t_reg_msk_stat_0_2d_in is array (integer range <>) of t_reg_msk_stat_0_in;
   type t_reg_msk_stat_0_2d_out is array (integer range <>) of t_reg_msk_stat_0_out;
@@ -222,21 +232,21 @@ package pkg_msk_top_regs is
   -----------------------------------------------
   -- register type: msk_stat_1
   -----------------------------------------------
-  type t_field_signals_msk_stat_1_tx_bit_cntr_in is record
+  type t_field_signals_msk_stat_1_tx_bit_counter_in is record
     data : std_logic_vector(32-1 downto 0); --
-    incr : std_logic; --
   end record;
 
-  type t_field_signals_msk_stat_1_tx_bit_cntr_out is record
-    data : std_logic_vector(32-1 downto 0); --
+  type t_field_signals_msk_stat_1_tx_bit_counter_out is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
   end record; --
 
   -- The actual register types
   type t_reg_msk_stat_1_in is record--
-    tx_bit_cntr : t_field_signals_msk_stat_1_tx_bit_cntr_in; --
+    tx_bit_counter : t_field_signals_msk_stat_1_tx_bit_counter_in; --
   end record;
   type t_reg_msk_stat_1_out is record--
-    tx_bit_cntr : t_field_signals_msk_stat_1_tx_bit_cntr_out; --
+    tx_bit_counter : t_field_signals_msk_stat_1_tx_bit_counter_out; --
   end record;
   type t_reg_msk_stat_1_2d_in is array (integer range <>) of t_reg_msk_stat_1_in;
   type t_reg_msk_stat_1_2d_out is array (integer range <>) of t_reg_msk_stat_1_out;
@@ -245,22 +255,21 @@ package pkg_msk_top_regs is
   -----------------------------------------------
   -- register type: msk_stat_2
   -----------------------------------------------
-  type t_field_signals_msk_stat_2_tx_ena_cntr_in is record
+  type t_field_signals_msk_stat_2_tx_ena_counter_in is record
     data : std_logic_vector(32-1 downto 0); --
-    incr : std_logic; --
-    decr : std_logic; --
   end record;
 
-  type t_field_signals_msk_stat_2_tx_ena_cntr_out is record
-    data : std_logic_vector(32-1 downto 0); --
+  type t_field_signals_msk_stat_2_tx_ena_counter_out is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
   end record; --
 
   -- The actual register types
   type t_reg_msk_stat_2_in is record--
-    tx_ena_cntr : t_field_signals_msk_stat_2_tx_ena_cntr_in; --
+    tx_ena_counter : t_field_signals_msk_stat_2_tx_ena_counter_in; --
   end record;
   type t_reg_msk_stat_2_out is record--
-    tx_ena_cntr : t_field_signals_msk_stat_2_tx_ena_cntr_out; --
+    tx_ena_counter : t_field_signals_msk_stat_2_tx_ena_counter_out; --
   end record;
   type t_reg_msk_stat_2_2d_in is array (integer range <>) of t_reg_msk_stat_2_in;
   type t_reg_msk_stat_2_2d_out is array (integer range <>) of t_reg_msk_stat_2_out;
@@ -610,6 +619,29 @@ package pkg_msk_top_regs is
   type t_reg_stat_32_lpf_acc_3d_in is array (integer range <>, integer range <>) of t_reg_stat_32_lpf_acc_in;
   type t_reg_stat_32_lpf_acc_3d_out is array (integer range <>, integer range <>) of t_reg_stat_32_lpf_acc_out;
   -----------------------------------------------
+  -- register type: msk_stat_3
+  -----------------------------------------------
+  type t_field_signals_msk_stat_3_xfer_count_in is record
+    data : std_logic_vector(32-1 downto 0); --
+  end record;
+
+  type t_field_signals_msk_stat_3_xfer_count_out is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record; --
+
+  -- The actual register types
+  type t_reg_msk_stat_3_in is record--
+    xfer_count : t_field_signals_msk_stat_3_xfer_count_in; --
+  end record;
+  type t_reg_msk_stat_3_out is record--
+    xfer_count : t_field_signals_msk_stat_3_xfer_count_out; --
+  end record;
+  type t_reg_msk_stat_3_2d_in is array (integer range <>) of t_reg_msk_stat_3_in;
+  type t_reg_msk_stat_3_2d_out is array (integer range <>) of t_reg_msk_stat_3_out;
+  type t_reg_msk_stat_3_3d_in is array (integer range <>, integer range <>) of t_reg_msk_stat_3_in;
+  type t_reg_msk_stat_3_3d_out is array (integer range <>, integer range <>) of t_reg_msk_stat_3_out;
+  -----------------------------------------------
 
   ------------------------------------------------------------------------------
   -- Register types in regfiles --
@@ -651,6 +683,7 @@ package pkg_msk_top_regs is
     PRBS_Error_Count : t_reg_stat_32_errs_in; --
     LPF_Accum_F1 : t_reg_stat_32_lpf_acc_in; --
     LPF_Accum_F2 : t_reg_stat_32_lpf_acc_in; --
+    axis_xfer_count : t_reg_msk_stat_3_in; --
     --
     --
     --
@@ -682,6 +715,7 @@ package pkg_msk_top_regs is
     PRBS_Error_Count : t_reg_stat_32_errs_out; --
     LPF_Accum_F1 : t_reg_stat_32_lpf_acc_out; --
     LPF_Accum_F2 : t_reg_stat_32_lpf_acc_out; --
+    axis_xfer_count : t_reg_msk_stat_3_out; --
     --
     --
     --
@@ -1046,7 +1080,7 @@ architecture rtl of msk_top_regs_msk_stat_0 is
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
 begin
   --
-  data_out(C_DATA_WIDTH-1 downto 3) <= (others => '0'); --
+  data_out(C_DATA_WIDTH-1 downto 4) <= (others => '0'); --
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
@@ -1073,6 +1107,13 @@ begin
     data_out(2 downto 2) <= pi_reg.rx_enable.data(1-1 downto 0); --
     --no signal to read by HW
     po_reg.rx_enable.data <= (others => '0'); --
+  end block; ----WIRE
+  tx_axis_valid_wire : block--
+  begin
+    --
+    data_out(3 downto 3) <= pi_reg.tx_axis_valid.data(1-1 downto 0); --
+    --no signal to read by HW
+    po_reg.tx_axis_valid.data <= (others => '0'); --
   end block; --
 end rtl;
 -----------------------------------------------
@@ -1108,35 +1149,14 @@ begin
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
 
-  ------------------------------------------------------------STORAGE
-  tx_bit_cntr_storage: block
-    signal l_field_reg   : std_logic_vector(32-1 downto 0) :=
-                           std_logic_vector(to_signed(0,32));
-    signal l_incrvalue   : natural;
+  ------------------------------------------------------------WIRE
+  tx_bit_counter_wire : block--
   begin
-    prs_write : process(pi_clock)
-    begin
-      if rising_edge(pi_clock) then
-        if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,32));
-        else
-          -- HW --
-          l_field_reg <= pi_reg.tx_bit_cntr.data;
-          -- counter
-          if  pi_reg.tx_bit_cntr.incr = '1' then
-            l_field_reg <= std_logic_vector(unsigned(l_field_reg) + to_unsigned(l_incrvalue, 32));
-          end if;
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
-        end if;
-      end if;
-    end process;
     --
-    po_reg.tx_bit_cntr.data <= l_field_reg; --
-    data_out(31 downto 0) <= l_field_reg;
-
-    l_incrvalue <= 1;
-  end block tx_bit_cntr_storage;
-  ----------------------------------------------------------
+    data_out(31 downto 0) <= pi_reg.tx_bit_counter.data(32-1 downto 0); --
+    --no signal to read by HW
+    po_reg.tx_bit_counter.data <= (others => '0'); --
+  end block; --
 end rtl;
 -----------------------------------------------
 -- register type: msk_stat_2
@@ -1171,40 +1191,14 @@ begin
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
 
-  ------------------------------------------------------------STORAGE
-  tx_ena_cntr_storage: block
-    signal l_field_reg   : std_logic_vector(32-1 downto 0) :=
-                           std_logic_vector(to_signed(0,32));
-    signal l_incrvalue   : natural;
-    signal l_decrvalue   : natural;
+  ------------------------------------------------------------WIRE
+  tx_ena_counter_wire : block--
   begin
-    prs_write : process(pi_clock)
-    begin
-      if rising_edge(pi_clock) then
-        if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,32));
-        else
-          -- HW --
-          l_field_reg <= pi_reg.tx_ena_cntr.data;
-          -- counter
-          if  pi_reg.tx_ena_cntr.incr = '1' then
-            l_field_reg <= std_logic_vector(unsigned(l_field_reg) + to_unsigned(l_incrvalue, 32));
-          end if;
-          if  pi_reg.tx_ena_cntr.decr = '1' then
-            l_field_reg <= std_logic_vector(unsigned(l_field_reg) - to_unsigned(l_decrvalue, 32));
-          end if;
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
-        end if;
-      end if;
-    end process;
     --
-    po_reg.tx_ena_cntr.data <= l_field_reg; --
-    data_out(31 downto 0) <= l_field_reg;
-
-    l_incrvalue <= 1;
-    l_decrvalue <= 1;
-  end block tx_ena_cntr_storage;
-  ----------------------------------------------------------
+    data_out(31 downto 0) <= pi_reg.tx_ena_counter.data(32-1 downto 0); --
+    --no signal to read by HW
+    po_reg.tx_ena_counter.data <= (others => '0'); --
+  end block; --
 end rtl;
 -----------------------------------------------
 -- register type: config_nco_fw
@@ -2019,6 +2013,48 @@ begin
     data_out(31 downto 0) <= pi_reg.status_data.data(32-1 downto 0); --
     --no signal to read by HW
     po_reg.status_data.data <= (others => '0'); --
+  end block; --
+end rtl;
+-----------------------------------------------
+-- register type: msk_stat_3
+-----------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+use work.pkg_msk_top_regs.all;
+
+entity msk_top_regs_msk_stat_3 is
+  port (
+    pi_clock        : in  std_logic;
+    pi_reset        : in  std_logic;
+    -- to/from adapter
+    pi_decoder_rd_stb : in  std_logic;
+    pi_decoder_wr_stb : in  std_logic;
+    pi_decoder_data   : in  std_logic_vector(C_DATA_WIDTH-1 downto 0);
+    po_decoder_data   : out std_logic_vector(C_DATA_WIDTH-1 downto 0);
+
+    pi_reg  : in t_reg_msk_stat_3_in ;
+    po_reg  : out t_reg_msk_stat_3_out
+  );
+end entity msk_top_regs_msk_stat_3;
+
+architecture rtl of msk_top_regs_msk_stat_3 is
+  signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+begin
+  --
+
+  -- resize field data out to the register bus width
+  -- do only if 1 field and signed--
+  po_decoder_data <= data_out; --
+
+  ------------------------------------------------------------WIRE
+  xfer_count_wire : block--
+  begin
+    --
+    data_out(31 downto 0) <= pi_reg.xfer_count.data(32-1 downto 0); --
+    --no signal to read by HW
+    po_reg.xfer_count.data <= (others => '0'); --
   end block; --
 end rtl;
 -----------------------------------------------

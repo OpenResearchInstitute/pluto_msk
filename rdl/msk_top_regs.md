@@ -9,7 +9,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 - Absolute Address: 0x0
 - Base Offset: 0x0
-- Size: 0x43C00060
+- Size: 0x43C00064
 
 |  Offset  |  Identifier  |        Name       |
 |----------|--------------|-------------------|
@@ -19,7 +19,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 - Absolute Address: 0x43C00000
 - Base Offset: 0x43C00000
-- Size: 0x60
+- Size: 0x64
 
 <p>MSK Modem Configuration and Status Registers</p>
 
@@ -49,6 +49,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 | 0x54 | PRBS_Error_Count |                        PRBS Status 1                        |
 | 0x58 |   LPF_Accum_F1   |                 F1 PI Controller Accumulator                |
 | 0x5C |   LPF_Accum_F2   |                 F2 PI Controller Accumulator                |
+| 0x60 |  axis_xfer_count |                      MSK Modem Status 3                     |
 
 ### Hash_ID_Low register
 
@@ -147,6 +148,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 |  0 |demod_sync_lock|   r  | 0x0 |          Demodulator Sync Status          |
 |  1 |   tx_enable   |   r  | 0x0 |AD9363 DAC Interface Tx Enable Input Active|
 |  2 |   rx_enable   |   r  | 0x0 |AD9363 ADC Interface Rx Enable Input Active|
+|  3 | tx_axis_valid |   r  | 0x0 |              Tx S_AXIS_VALID              |
 
 #### demod_sync_lock field
 
@@ -162,6 +164,11 @@ Don't override. Generated from: Pluto_MSK_Modem
 <p>1 -&gt; Data from ADC Enabled
 0 -&gt; Data from ADC Disabled</p>
 
+#### tx_axis_valid field
+
+<p>1 -&gt; S_AXIS_VALID Enabled
+0 -&gt; S_AXIS_VALID Disabled</p>
+
 ### Tx_Bit_Count register
 
 - Absolute Address: 0x43C00014
@@ -172,9 +179,9 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 |Bits|  Identifier  |Access|Reset|    Name    |
 |----|--------------|------|-----|------------|
-|31:0|data_req_count|  rw  | 0x0 |Tx Bit Count|
+|31:0|tx_bit_counter|   r  | 0x0 |Tx Bit Count|
 
-#### data_req_count field
+#### tx_bit_counter field
 
 <p>Count of data requests made by modem</p>
 
@@ -188,9 +195,9 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 |Bits|  Identifier  |Access|Reset|      Name     |
 |----|--------------|------|-----|---------------|
-|31:0|data_req_count|  rw  | 0x0 |Tx Enable Count|
+|31:0|tx_ena_counter|   r  | 0x0 |Tx Enable Count|
 
-#### data_req_count field
+#### tx_ena_counter field
 
 <p>Number of clocks on which Tx Enable is active</p>
 
@@ -511,3 +518,19 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 #### status_data field
 
 <p>PI Controller Accumulator Value</p>
+
+### axis_xfer_count register
+
+- Absolute Address: 0x43C00060
+- Base Offset: 0x60
+- Size: 0x4
+
+<p>Modem status data</p>
+
+|Bits|Identifier|Access|Reset|      Name      |
+|----|----------|------|-----|----------------|
+|31:0|xfer_count|   r  | 0x0 |S_AXIS Transfers|
+
+#### xfer_count field
+
+<p>Number completed S_AXIS transfers</p>

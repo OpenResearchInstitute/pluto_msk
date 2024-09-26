@@ -1,4 +1,4 @@
-------------------------------------------------------------------------------------------------------
+	------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------
 --  _______                             ________                                            ______
 --  __  __ \________ _____ _______      ___  __ \_____ _____________ ______ ___________________  /_
@@ -204,21 +204,29 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL saxis_req_meta	: std_logic;
 	SIGNAL saxis_req_sync	: std_logic;
 	SIGNAL saxis_req_d 		: std_logic;
+	SIGNAL saxis_xfer_count : unsigned(COUNTER_W -1 DOWNTO 0);
+	SIGNAL xfer_count 		: unsigned(COUNTER_W -1 DOWNTO 0);
 
-	SIGNAL clear_counts 	: std_logic;
-	SIGNAL discard_count	: unsigned(7 DOWNTO 0);
-	SIGNAL rx_sample_valid  : std_logic;
+	SIGNAL clear_counts 		: std_logic;
+	SIGNAL discard_count		: unsigned(7 DOWNTO 0);
+	SIGNAL rx_sample_valid  	: std_logic;
 
-	SIGNAL prbs_data_bit	: std_logic;
-	SIGNAL prbs_sel			: std_logic;
-	SIGNAL prbs_err_insert 	: std_logic;
-	SIGNAL prbs_poly		: std_logic_vector(31 DOWNTO 0);
-	SIGNAL prbs_initial 	: std_logic_vector(31 DOWNTO 0);
-	SIGNAL prbs_err_mask 	: std_logic_vector(31 DOWNTO 0);
-	SIGNAL prbs_clear		: std_logic;
-	SIGNAL prbs_manual_sync	: std_logic;
-	SIGNAL prbs_bits 		: std_logic_vector(31 DOWNTO 0);
-	SIGNAL prbs_errs 		: std_logic_vector(31 DOWNTO 0);
+	SIGNAL tx_bit_counter 		: unsigned(COUNTER_W -1 DOWNTO 0);
+	SIGNAL tx_ena_counter 		: unsigned(COUNTER_W -1 DOWNTO 0);
+
+	SIGNAL tx_axis_valid_meta 	: std_logic;
+	SIGNAL tx_axis_valid_sync 	: std_logic;
+
+	SIGNAL prbs_data_bit		: std_logic;
+	SIGNAL prbs_sel				: std_logic;
+	SIGNAL prbs_err_insert 		: std_logic;
+	SIGNAL prbs_poly			: std_logic_vector(31 DOWNTO 0);
+	SIGNAL prbs_initial 		: std_logic_vector(31 DOWNTO 0);
+	SIGNAL prbs_err_mask 		: std_logic_vector(31 DOWNTO 0);
+	SIGNAL prbs_clear			: std_logic;
+	SIGNAL prbs_manual_sync		: std_logic;
+	SIGNAL prbs_bits 			: std_logic_vector(31 DOWNTO 0);
+	SIGNAL prbs_errs 			: std_logic_vector(31 DOWNTO 0);
 	SIGNAL prbs_sync_threshold : std_logic_vector(SYNC_W -1 DOWNTO 0);
 
 BEGIN 
@@ -255,6 +263,7 @@ BEGIN
 			IF s_axis_tready_int = '1' AND s_axis_valid = '1' THEN
 				s_axis_tready_int 	<= '0';
 				tx_data_axi 		<= s_axis_data;
+				saxis_xfer_count 	<= saxis_xfer_count + 1;
 			END IF;
 
 			IF s_axis_aresetn = '0' THEN
@@ -263,6 +272,7 @@ BEGIN
 				saxis_req_meta		<= '0';
 				saxis_req_sync		<= '0';
 				saxis_req_d 		<= '0';
+				saxis_xfer_count 	<= (OTHERS => '0');
 			END IF;
 
 		END IF;
@@ -286,6 +296,7 @@ BEGIN
 					tx_data 	<= tx_data_axi;
 					bit_index	<= 0;
 					saxis_req 	<= NOT saxis_req;
+					xfer_count 	<= saxis_xfer_count;
 				ELSE
 					bit_index <= bit_index + 1;
 				END IF;
@@ -311,6 +322,7 @@ BEGIN
 				tx_data_bit_d1	<= '0';
 				tx_data_bit_d2	<= '0';
 				tx_data_bit_d3	<= '0';
+				xfer_count 		<= (OTHERS => '0');
 			END IF;
 
 		END IF;
@@ -520,6 +532,30 @@ BEGIN
 
 	demod_sync_lock <= '0';
 
+	stats_proc : PROCESS (clk)
+	BEGIN
+		IF clk'EVENT AND clk = '1' THEN 
+
+			IF tx_enable = '1' THEN
+				tx_bit_counter	<= tx_bit_counter + 1;
+				tx_ena_counter 	<= tx_ena_counter + 1;
+			ELSE
+				tx_ena_counter 	<= tx_ena_counter - 1;
+			END IF; 
+
+			tx_axis_valid_meta <= s_axis_valid;
+			tx_axis_valid_sync <= tx_axis_valid_meta;
+
+			IF init = '1' THEN
+				tx_bit_counter 		<= (OTHERS => '0');
+				tx_ena_counter 		<= (OTHERS => '0');
+				tx_axis_valid_meta 	<= '0';
+				tx_axis_valid_sync 	<= '0';
+			END IF;
+
+		END IF;
+	END PROCESS stats_proc;
+
 	u_msk_top_csr : ENTITY work.msk_top_csr(rtl)
 	GENERIC MAP (
 		HASH_ID_LO 			=> HASH_ID_LO,
@@ -561,11 +597,14 @@ BEGIN
 		rx_enable 		=> rx_enable,
 		demod_sync_lock => demod_sync_lock,
 		tx_req 			=> tx_req,
+		tx_axis_valid 	=> tx_axis_valid_sync,
+		xfer_count 		=> std_logic_vector(xfer_count),
+		tx_bit_counter 	=> std_logic_vector(tx_bit_counter),
+		tx_ena_counter 	=> std_logic_vector(tx_ena_counter),		
 		prbs_bits		=> prbs_bits,
 		prbs_errs		=> prbs_errs,
 		lpf_accum_f1 	=> lpf_accum_f1,
 		lpf_accum_f2 	=> lpf_accum_f2,
-
 
 		init 			=> init,
 		ptt 			=> ptt,

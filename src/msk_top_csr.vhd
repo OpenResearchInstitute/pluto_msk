@@ -112,11 +112,14 @@ ENTITY msk_top_csr IS
 		rx_enable 		: IN std_logic;
 		demod_sync_lock : IN std_logic;
 		tx_req 			: IN std_logic;
+		tx_axis_valid 	: IN std_logic;
+		xfer_count 		: IN std_logic_vector(COUNTER_W -1 DOWNTO 0);
+		tx_bit_counter 	: IN std_logic_vector(COUNTER_W -1 DOWNTO 0);
+		tx_ena_counter 	: IN std_logic_vector(COUNTER_W -1 DOWNTO 0);
 		prbs_bits		: IN std_logic_vector(COUNTER_W -1 DOWNTO 0);
 		prbs_errs		: IN std_logic_vector(COUNTER_W -1 DOWNTO 0);
 		lpf_accum_f1 	: IN std_logic_vector(ACC_W -1 DOWNTO 0);
 		lpf_accum_f2 	: IN std_logic_vector(ACC_W -1 DOWNTO 0);
-
 
 		init 			: out std_logic;
 		ptt 			: out std_logic;
@@ -205,9 +208,10 @@ BEGIN
     pi_addrmap.MSK_Status.demod_sync_lock.data(0) <= '0';
     pi_addrmap.MSK_Status.tx_enable.data(0) <= tx_enable;
     pi_addrmap.MSK_Status.rx_enable.data(0) <= rx_enable;
-    pi_addrmap.Tx_Bit_Count.tx_bit_cntr.incr <= tx_req;
-    pi_addrmap.Tx_Enable_Count.tx_ena_cntr.incr <= tx_enable;
-    pi_addrmap.Tx_Enable_Count.tx_ena_cntr.decr <= NOT tx_enable;
+    pi_addrmap.MSK_Status.tx_axis_valid.data(0) <= tx_axis_valid;
+    pi_addrmap.Tx_Bit_Count.tx_bit_counter.data <= tx_bit_counter;
+    pi_addrmap.Tx_Enable_Count.tx_ena_counter.data <= tx_ena_counter;
+    pi_addrmap.axis_xfer_count.xfer_count.data <= xfer_count;
     pi_addrmap.PRBS_Bit_Count.status_data.data <= prbs_bits;
     pi_addrmap.PRBS_Error_Count.status_data.data <= prbs_errs;
     pi_addrmap.LPF_Accum_F1.status_data.data <= lpf_accum_f1;

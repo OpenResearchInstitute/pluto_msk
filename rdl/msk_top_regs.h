@@ -64,18 +64,22 @@ extern "C" {
 #define MSK_STAT_0__RX_ENABLE_bp 2
 #define MSK_STAT_0__RX_ENABLE_bw 1
 #define MSK_STAT_0__RX_ENABLE_reset 0x0
+#define MSK_STAT_0__TX_AXIS_VALID_bm 0x8
+#define MSK_STAT_0__TX_AXIS_VALID_bp 3
+#define MSK_STAT_0__TX_AXIS_VALID_bw 1
+#define MSK_STAT_0__TX_AXIS_VALID_reset 0x0
 
 // Reg - msk_stat_1
-#define MSK_STAT_1__DATA_REQ_COUNT_bm 0xffffffff
-#define MSK_STAT_1__DATA_REQ_COUNT_bp 0
-#define MSK_STAT_1__DATA_REQ_COUNT_bw 32
-#define MSK_STAT_1__DATA_REQ_COUNT_reset 0x0
+#define MSK_STAT_1__TX_BIT_COUNTER_bm 0xffffffff
+#define MSK_STAT_1__TX_BIT_COUNTER_bp 0
+#define MSK_STAT_1__TX_BIT_COUNTER_bw 32
+#define MSK_STAT_1__TX_BIT_COUNTER_reset 0x0
 
 // Reg - msk_stat_2
-#define MSK_STAT_2__DATA_REQ_COUNT_bm 0xffffffff
-#define MSK_STAT_2__DATA_REQ_COUNT_bp 0
-#define MSK_STAT_2__DATA_REQ_COUNT_bw 32
-#define MSK_STAT_2__DATA_REQ_COUNT_reset 0x0
+#define MSK_STAT_2__TX_ENA_COUNTER_bm 0xffffffff
+#define MSK_STAT_2__TX_ENA_COUNTER_bp 0
+#define MSK_STAT_2__TX_ENA_COUNTER_bw 32
+#define MSK_STAT_2__TX_ENA_COUNTER_reset 0x0
 
 // Reg - config_nco_fw_desc_c4924cc6_name_0c494469
 #define CONFIG_NCO_FW_DESC_C4924CC6_NAME_0C494469__CONFIG_DATA_bm 0xffffffff
@@ -211,6 +215,12 @@ extern "C" {
 #define STAT_32_LPF_ACC_DESC_DEA6BD99_NAME_758FD0CE__STATUS_DATA_bp 0
 #define STAT_32_LPF_ACC_DESC_DEA6BD99_NAME_758FD0CE__STATUS_DATA_bw 32
 
+// Reg - msk_stat_3
+#define MSK_STAT_3__XFER_COUNT_bm 0xffffffff
+#define MSK_STAT_3__XFER_COUNT_bp 0
+#define MSK_STAT_3__XFER_COUNT_bw 32
+#define MSK_STAT_3__XFER_COUNT_reset 0x0
+
 // Addrmap - msk_top_regs
 typedef struct __attribute__ ((__packed__)) {
     uint32_t Hash_ID_Low;
@@ -237,6 +247,7 @@ typedef struct __attribute__ ((__packed__)) {
     uint32_t PRBS_Error_Count;
     uint32_t LPF_Accum_F1;
     uint32_t LPF_Accum_F2;
+    uint32_t axis_xfer_count;
 } msk_top_regs_t;
 
 // Addrmap - Pluto_MSK_Modem
@@ -246,7 +257,7 @@ typedef struct __attribute__ ((__packed__)) {
 } Pluto_MSK_Modem_t;
 
 
-static_assert(sizeof(Pluto_MSK_Modem_t) == 0x43c00060, "Packing error");
+static_assert(sizeof(Pluto_MSK_Modem_t) == 0x43c00064, "Packing error");
 
 #ifdef __cplusplus
 }

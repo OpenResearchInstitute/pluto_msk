@@ -29,22 +29,17 @@ reg msk_stat_0 {
     field { sw = r; hw = w; } demod_sync_lock=0;
     field { sw = r; hw = w; } tx_enable=0;
     field { sw = r; hw = w; } rx_enable=0;
+    field { sw = r; hw = w; } tx_axis_valid=0;
 };
-
-signal { signalwidth = 1; } tx_req;
-signal { signalwidth = 1; } tx_enable;
-signal { signalwidth = 1; } tx_enable_n;
-field tx_bit_cntr { counter; incrvalue=1'b1; incr = tx_req; sw = r; };
-field tx_ena_cntr { counter; incrvalue=1'b1; incr = tx_enable; decrvalue=1'b1; decr = tx_enable_n; sw = r; };
 
 reg msk_stat_1 {
     regwidth = 32;
-    tx_bit_cntr data_req_count[31:0]=0;
+    field { sw = r; hw = w; } tx_bit_counter[31:0] = 0;
 };
 
 reg msk_stat_2 {
     regwidth = 32;
-    tx_ena_cntr data_req_count[31:0]=0;
+    field { sw = r; hw = w; } tx_ena_counter[31:0] = 0;
 };
 
 reg config_nco_fw {
@@ -111,6 +106,11 @@ reg stat_32_lpf_acc {
     field { sw = r; hw = w; } status_data[31:0];
 };
 
+reg msk_stat_3 {
+    regwidth = 32;
+    field { sw = r; hw = w; } xfer_count[31:0] = 0;
+};
+
 addrmap msk_top_regs {
     lsb0;
     default accesswidth=32;
@@ -143,6 +143,7 @@ addrmap msk_top_regs {
     stat_32_errs PRBS_Error_Count;
     stat_32_lpf_acc LPF_Accum_F1;
     stat_32_lpf_acc LPF_Accum_F2;
+    msk_stat_3 axis_xfer_count;
 
 };
 
