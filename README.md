@@ -112,6 +112,7 @@ sys	39m46.236s
 | 0x54 | PRBS_Error_Count |                        PRBS Status 1                        |
 | 0x58 |   LPF_Accum_F1   |                 F1 PI Controller Accumulator                |
 | 0x5C |   LPF_Accum_F2   |                 F2 PI Controller Accumulator                |
+| 0x60 |  axis_xfer_count |                      MSK Modem Status 3                     |
 
 See [MSK Top Regs](rdl/msk_top_regs.pdf) for detailed register definitions.
 
