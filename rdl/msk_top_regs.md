@@ -29,9 +29,9 @@ Don't override. Generated from: Pluto_MSK_Modem
 | 0x04 |   Hash_ID_High   |            Pluto MSK FPGA Hash ID - Upper 32-bits           |
 | 0x08 |     MSK_Init     |                     MSK Modem Control 0                     |
 | 0x0C |    MSK_Control   |                     MSK Modem Control 1                     |
-| 0x10 |    MSK_Status    |                      MSK Modem Status 1                     |
-| 0x14 |   Tx_Bit_Count   |                      MSK Modem Status 2                     |
-| 0x18 |  Tx_Enable_Count |                      MSK Modem Status 3                     |
+| 0x10 |    MSK_Status    |                      MSK Modem Status 0                     |
+| 0x14 |   Tx_Bit_Count   |                      MSK Modem Status 1                     |
+| 0x18 |  Tx_Enable_Count |                      MSK Modem Status 2                     |
 | 0x1C |    Fb_FreqWord   |              Bitrate NCO Frequency Control Word             |
 | 0x20 |  TX_F1_FreqWord  |               Tx F1 NCO Frequency Control Word              |
 | 0x24 |  TX_F2_FreqWord  |               Tx F2 NCO Frequency Control Word              |
