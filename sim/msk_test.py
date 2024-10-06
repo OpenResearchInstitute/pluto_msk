@@ -58,6 +58,7 @@ from cocotb.triggers import Timer, RisingEdge
 from cocotb.clock    import Clock
 from cocotb.utils    import get_sim_time
 
+import math
 import random
 import numpy as np 
 import matplotlib.pyplot as plt
@@ -518,9 +519,10 @@ async def msk_test_1(dut):
     tx_time = []
 
     bitrate = 54200
-    freq_if = bitrate * 20
+    bitperiod = 1/54200
+    freq_if = bitrate/4 * 32
     tx_sample_rate = 61.44e6
-    tx_sample_per = int(1/tx_sample_rate * 1e9)
+    tx_sample_per = int(round(1/tx_sample_rate * 1e14))*10
 
     tx_rx_sample_ratio = 1
 
@@ -529,10 +531,26 @@ async def msk_test_1(dut):
     tx_data_width = 32
     rx_data_width = 32
 
-    await cocotb.start(Clock(dut.clk, tx_sample_per, units="ns").start())
+    await cocotb.start(Clock(dut.clk, tx_sample_per, units="fs").start())
 
-    f1 = freq_if - bitrate
-    f2 = freq_if + bitrate
+    # f1 = freq_if - int(1*bitrate) # Old and busted
+    # f2 = freq_if + int(1*bitrate) # Old and busted
+
+    # dw x T = pi
+    # dw = pi/2T
+    # df = pi/T/2*pi = T/2
+    # df/2 = T/4
+
+    # df*T = pi
+
+    # w = 2pif
+
+    # delta_f = bitrate/2  # dw*T = pi  delta_2pif*T = pi
+
+    delta_f = bitrate/4
+
+    f1 = freq_if - delta_f
+    f2 = freq_if + delta_f
 
     print("Bit Rate NCO Freq Word: ", hex(int(bitrate / tx_sample_rate * 2.0**32)))
     print("TX F1 NCO Freq Word: ", hex(int(f1 / tx_sample_rate * 2.0**32)))
