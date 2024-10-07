@@ -582,7 +582,7 @@ async def msk_test_1(dut):
     # await axi.write(12, 1)                                         # loopback
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "MSK_Control", (tx_rx_sample_ratio-1 << 8) + 3)    
+    await regs.write("msk_top_regs", "MSK_Control", (tx_rx_sample_ratio-1 << 8) + 7)    
     # await axi.write(16, int(bitrate / sample_rate * 2.0**32))      # bit rate frequency word
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -603,11 +603,11 @@ async def msk_test_1(dut):
     # await axi.write(28, (50 << 16) + 20)                             # p-gain / i-gain
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "LPF_Config_0", (2 << 16))    
+    await regs.write("msk_top_regs", "LPF_Config_0", (2 << 4))    
     # await axi.write(32, (2 << 16))                                   # low-pass filter alpha
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "LPF_Config_1", (100 << 16) + 40)    
+    await regs.write("msk_top_regs", "LPF_Config_1", (8 << 16) + 8)    
     # await axi.write(36, 8)
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
