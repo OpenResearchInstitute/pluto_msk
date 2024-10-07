@@ -519,7 +519,6 @@ async def msk_test_1(dut):
     tx_time = []
 
     bitrate = 54200
-    bitperiod = 1/54200
     freq_if = bitrate/4 * 32
     tx_sample_rate = 61.44e6
     tx_sample_per = int(round(1/tx_sample_rate * 1e14))*10
@@ -533,30 +532,23 @@ async def msk_test_1(dut):
 
     await cocotb.start(Clock(dut.clk, tx_sample_per, units="fs").start())
 
-    # f1 = freq_if - int(1*bitrate) # Old and busted
-    # f2 = freq_if + int(1*bitrate) # Old and busted
-
-    # dw x T = pi
-    # dw = pi/2T
-    # df = pi/T/2*pi = T/2
-    # df/2 = T/4
-
-    # df*T = pi
-
-    # w = 2pif
-
-    # delta_f = bitrate/2  # dw*T = pi  delta_2pif*T = pi
-
     delta_f = bitrate/4
 
     f1 = freq_if - delta_f
     f2 = freq_if + delta_f
 
-    print("Bit Rate NCO Freq Word: ", hex(int(bitrate / tx_sample_rate * 2.0**32)))
-    print("TX F1 NCO Freq Word: ", hex(int(f1 / tx_sample_rate * 2.0**32)))
-    print("TX F2 NCO Freq Word: ", hex(int(f2 / tx_sample_rate * 2.0**32)))
-    print("RX F1 NCO Freq Word: ", hex(int(f1 / rx_sample_rate * 2.0**32)))
-    print("RX F2 NCO Freq Word: ", hex(int(f2 / rx_sample_rate * 2.0**32)))
+    br_fcw = int(bitrate / tx_sample_rate * 2.0**32)
+
+    f1_fcw_tx = int(f1 / tx_sample_rate * 2.0**32)
+    f2_fcw_tx = int(f2 / tx_sample_rate * 2.0**32)
+    f1_fcw_rx = int(f1 / rx_sample_rate * 2.0**32)
+    f2_fcw_rx = int(f2 / rx_sample_rate * 2.0**32)
+
+    print("Bit Rate NCO Freq Word: ", hex(br_fcw))
+    print("TX F1 NCO Freq Word: ", hex(f1_fcw_tx))
+    print("TX F2 NCO Freq Word: ", hex(f2_fcw_tx))
+    print("RX F1 NCO Freq Word: ", hex(f1_fcw_rx))
+    print("RX F2 NCO Freq Word: ", hex(f2_fcw_rx))
 
     FFT = 8192 * 4
 
@@ -586,24 +578,24 @@ async def msk_test_1(dut):
     # await axi.write(16, int(bitrate / sample_rate * 2.0**32))      # bit rate frequency word
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "Fb_FreqWord", int(bitrate / tx_sample_rate * 2.0**32))    
+    await regs.write("msk_top_regs", "Fb_FreqWord", br_fcw)    
     # await axi.write(20, int(f1 / sample_rate * 2.0**32))           # F1 frequency word
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "TX_F1_FreqWord", int(f1 / tx_sample_rate * 2.0**32))    
+    await regs.write("msk_top_regs", "TX_F1_FreqWord", f1_fcw_tx)    
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "TX_F2_FreqWord", int(f2 / tx_sample_rate * 2.0**32))    
+    await regs.write("msk_top_regs", "TX_F2_FreqWord", f2_fcw_tx)    
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "RX_F1_FreqWord", int(f1 / rx_sample_rate * 2.0**32))    
+    await regs.write("msk_top_regs", "RX_F1_FreqWord", f1_fcw_rx)    
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "RX_F2_FreqWord", int(f2 / rx_sample_rate * 2.0**32))    
+    await regs.write("msk_top_regs", "RX_F2_FreqWord", f2_fcw_rx)    
     # await axi.write(28, (50 << 16) + 20)                             # p-gain / i-gain
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "LPF_Config_0", (2 << 4))    
+    await regs.write("msk_top_regs", "LPF_Config_0", (0 << 16))    
     # await axi.write(32, (2 << 16))                                   # low-pass filter alpha
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
