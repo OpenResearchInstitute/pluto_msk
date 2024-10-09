@@ -559,10 +559,10 @@ async def msk_test_1(dut):
     await axi.init()
     await axis.init()
     
-    dut.tx_enable.value = 1
-    dut.rx_enable.value = 1
-    dut.rx_svalid.value = 1
-    dut.tx_valid.value  = 1
+    dut.tx_enable.value = 0
+    dut.rx_enable.value = 0
+    dut.rx_svalid.value = 0
+    dut.tx_valid.value  = 0
 
     hash_id = await regs.read("msk_top_regs", "Hash_ID_Low")
 
@@ -611,7 +611,7 @@ async def msk_test_1(dut):
     # await axi.write(44, 1)                                          # Select PRBS data path
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "PRBS_Control", (400 << 16) + 1)    
+    await regs.write("msk_top_regs", "PRBS_Control", (50 << 16) + 1)    
     # await axi.write(48, (1 << 31) + (1 << 28))                      # Polynomial 
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -668,7 +668,7 @@ async def msk_test_1(dut):
     pn.sim_run = True
     pn.sync = 100
 
-    while sim_time < sim_start + 20000:
+    while sim_time < sim_start + 75000:
 
         # if sim_time_d <= sim_start + 1000 and sim_time >= sim_start + 1000:
         #     data = await regs.read("msk_top_regs", "PRBS_Control")
@@ -677,7 +677,7 @@ async def msk_test_1(dut):
         #     dut.s_axi_awvalid.value = 1
         #     await regs.write("msk_top_regs", "PRBS_Control", data)    
 
-        if sim_time_d <= sim_start + 10000 and sim_time >= sim_start + 10000:
+        if sim_time_d <= sim_start + 20000 and sim_time >= sim_start + 20000:
             data = await regs.read("msk_top_regs", "PRBS_Control")
             data = data ^ 0x8
             dut.s_axi_wvalid.value = 1

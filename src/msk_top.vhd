@@ -376,7 +376,7 @@ BEGIN
 			tx_req 			=> tx_req,
 
 			tx_enable 		=> tx_enable OR loopback_ena,
-			tx_valid 		=> tx_valid,
+			tx_valid 		=> tx_valid OR loopback_ena,
 			tx_samples	 	=> tx_samples_int
 		);
 
@@ -444,9 +444,11 @@ BEGIN
 	BEGIN
 		IF clk'EVENT AND clk = '1' THEN
 			IF init = '1' THEN
-				discard_count <= (OTHERS => '0');
+				discard_count 	<= (OTHERS => '0');
+				rx_sample_valid <= '0';
+				rx_samples_dec	<= (OTHERS => '0');
 			ELSE
-				IF rx_svalid = '1' THEN
+				IF rx_svalid = '1' OR loopback_ena = '1' THEN
 					IF to_integer(discard_count) = 0 THEN 
 						discard_count 	<= unsigned(discard_samples);
 						rx_sample_valid	<= '1';
@@ -485,7 +487,7 @@ BEGIN
 			lpf_accum_f2 	=> lpf_accum_f2,
 
 			rx_enable 		=> rx_enable OR loopback_ena,
-			rx_svalid 		=> rx_sample_valid,
+			rx_svalid 		=> rx_sample_valid OR loopback_ena,
 			rx_samples 		=> rx_samples_dec(11 DOWNTO 0),
 
 			rx_data 		=> rx_bit,
