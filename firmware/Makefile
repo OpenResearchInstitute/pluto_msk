@@ -131,7 +131,7 @@ build/%.dtb: linux/arch/arm/boot/dts/%.dtb | build
 ### Buildroot ###
 
 buildroot/output/images/rootfs.cpio.gz: 
-	@echo device-fw $(VERSION)> $(BR2_EXTERNAL)/board/pluto/VERSIONS
+	@echo device-fw $(VERSION) > $(BR2_EXTERNAL)/board/pluto/VERSIONS
 	@$(foreach dir,$(VSUBDIRS),echo $(dir) $(shell cd $(dir) && git describe --abbrev=4 --dirty --always --tags) >> $(BR2_EXTERNAL)/board/pluto/VERSIONS;)
 	make BR2_EXTERNAL=$(ABSOLUTE_PATH)/ori -C buildroot ARCH=arm zynq_pluto_ori_defconfig
 ##	make -C buildroot ARCH=arm zynq_$(TARGET)_defconfig
