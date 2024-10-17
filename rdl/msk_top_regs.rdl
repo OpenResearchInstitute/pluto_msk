@@ -45,6 +45,7 @@ reg msk_ctrl {
     field { sw = rw; hw = r; singlepulse = true; } clear_counts = 0;
         clear_counts->desc = "Clear Tx Bit Counter and Tx Enable Counter";
         clear_counts->name = "Clear Status Counters";
+    field { sw = rw; hw = r; } msk_control_reserved[7:4] = 0;
     field { sw = rw; hw = r;  } sample_discard[15:8] = 0;
         sample_discard->desc = "Number of samples to discard";
         sample_discard->name = "Sample Discard";

@@ -104,13 +104,14 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 <p>MSK Modem Configuration and Control</p>
 
-|Bits|  Identifier  |Access|Reset|         Name        |
-|----|--------------|------|-----|---------------------|
-|  0 |      ptt     |  rw  | 0x0 | Push-to-Talk Enable |
-|  1 | loopback_ena |  rw  | 0x0 |Modem Loopback Enable|
-|  2 |   rx_invert  |  rw  | 0x0 |Rx Data Invert Enable|
-|  3 | clear_counts |  rw  | 0x0 |Clear Status Counters|
-|15:8|sample_discard|  rw  | 0x0 |    Sample Discard   |
+|Bits|     Identifier     |Access|Reset|         Name        |
+|----|--------------------|------|-----|---------------------|
+|  0 |         ptt        |  rw  | 0x0 | Push-to-Talk Enable |
+|  1 |    loopback_ena    |  rw  | 0x0 |Modem Loopback Enable|
+|  2 |      rx_invert     |  rw  | 0x0 |Rx Data Invert Enable|
+|  3 |    clear_counts    |  rw  | 0x0 |Clear Status Counters|
+| 7:4|msk_control_reserved|  rw  | 0x0 |          —          |
+|15:8|   sample_discard   |  rw  | 0x0 |    Sample Discard   |
 
 #### ptt field
 

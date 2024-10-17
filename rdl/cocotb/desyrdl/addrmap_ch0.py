@@ -60,7 +60,7 @@ class Addrmap:
         self.addrmap['msk_top_regs.Hash_ID_Low'] = AddrmapItem("msk_top_regs.Hash_ID_Low", bus, 0, 4, 32, 0, 0, "RO")
         self.addrmap['msk_top_regs.Hash_ID_High'] = AddrmapItem("msk_top_regs.Hash_ID_High", bus, 4, 4, 32, 0, 0, "RO")
         self.addrmap['msk_top_regs.MSK_Init'] = AddrmapItem("msk_top_regs.MSK_Init", bus, 8, 4, 1, 0, 0, "RW")
-        self.addrmap['msk_top_regs.MSK_Control'] = AddrmapItem("msk_top_regs.MSK_Control", bus, 12, 4, 12, 0, 0, "RW")
+        self.addrmap['msk_top_regs.MSK_Control'] = AddrmapItem("msk_top_regs.MSK_Control", bus, 12, 4, 16, 0, 0, "RW")
         self.addrmap['msk_top_regs.MSK_Status'] = AddrmapItem("msk_top_regs.MSK_Status", bus, 16, 4, 4, 0, 0, "RO")
         self.addrmap['msk_top_regs.Tx_Bit_Count'] = AddrmapItem("msk_top_regs.Tx_Bit_Count", bus, 20, 4, 32, 0, 0, "RO")
         self.addrmap['msk_top_regs.Tx_Enable_Count'] = AddrmapItem("msk_top_regs.Tx_Enable_Count", bus, 24, 4, 32, 0, 0, "RO")

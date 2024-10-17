@@ -21,6 +21,7 @@ reg msk_ctrl {
     field { sw = rw; hw = r; } loopback_ena = 0;
     field { sw = rw; hw = r; } rx_invert = 0;
     field { sw = rw; hw = r; singlepulse = true; } clear_counts = 0;
+    field { sw = rw; hw = r; } msk_control_reserved[7:4] = 0;
     field { sw = rw; hw = r;  } sample_discard[15:8] = 0;
 };
 

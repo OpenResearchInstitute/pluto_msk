@@ -148,6 +148,14 @@ package pkg_msk_top_regs is
   type t_field_signals_msk_ctrl_clear_counts_out is record
     data : std_logic_vector(1-1 downto 0); --
   end record; --
+  type t_field_signals_msk_ctrl_msk_control_reserved_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_msk_ctrl_msk_control_reserved_out is record
+    data : std_logic_vector(4-1 downto 0); --
+  end record; --
   type t_field_signals_msk_ctrl_sample_discard_in is record
     -- no data if field cannot be written from hw
     data : std_logic_vector(-1 downto 0); --
@@ -163,6 +171,7 @@ package pkg_msk_top_regs is
     loopback_ena : t_field_signals_msk_ctrl_loopback_ena_in; --
     rx_invert : t_field_signals_msk_ctrl_rx_invert_in; --
     clear_counts : t_field_signals_msk_ctrl_clear_counts_in; --
+    msk_control_reserved : t_field_signals_msk_ctrl_msk_control_reserved_in; --
     sample_discard : t_field_signals_msk_ctrl_sample_discard_in; --
   end record;
   type t_reg_msk_ctrl_out is record--
@@ -170,6 +179,7 @@ package pkg_msk_top_regs is
     loopback_ena : t_field_signals_msk_ctrl_loopback_ena_out; --
     rx_invert : t_field_signals_msk_ctrl_rx_invert_out; --
     clear_counts : t_field_signals_msk_ctrl_clear_counts_out; --
+    msk_control_reserved : t_field_signals_msk_ctrl_msk_control_reserved_out; --
     sample_discard : t_field_signals_msk_ctrl_sample_discard_out; --
   end record;
   type t_reg_msk_ctrl_2d_in is array (integer range <>) of t_reg_msk_ctrl_in;
@@ -924,7 +934,7 @@ architecture rtl of msk_top_regs_msk_ctrl is
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
 begin
   --
-  data_out(C_DATA_WIDTH-1 downto 12) <= (others => '0'); --
+  data_out(C_DATA_WIDTH-1 downto 16) <= (others => '0'); --
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
@@ -1026,6 +1036,30 @@ begin
     data_out(3 downto 3) <= l_field_reg;
 
   end block clear_counts_storage;
+  ------------------------------------------------------------STORAGE
+  msk_control_reserved_storage: block
+    signal l_field_reg   : std_logic_vector(4-1 downto 0) :=
+                           std_logic_vector(to_signed(0,4));
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          l_field_reg <= std_logic_vector(to_signed(0,4));
+        else
+          -- HW --
+          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          if pi_decoder_wr_stb = '1' then
+            l_field_reg <= pi_decoder_data(7 downto 4);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.msk_control_reserved.data <= l_field_reg; --
+    data_out(7 downto 4) <= l_field_reg;
+
+  end block msk_control_reserved_storage;
   ------------------------------------------------------------STORAGE
   sample_discard_storage: block
     signal l_field_reg   : std_logic_vector(8-1 downto 0) :=
