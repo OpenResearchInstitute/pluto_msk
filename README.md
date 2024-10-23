@@ -13,12 +13,17 @@ The following ORI library components are used as submodules to this repository:
 5. [prbs](https://github.com/OpenResearchInstitute/prbs)
 
 ## Building
-In oder to build fpga bitstream, you need to install first Vivado. Recommended version is 2022.2. In this documentation vivado installtion path is assumed to be /opt/Xilinx/Vivado. If it is on an other directory, change the path (for example /tools/Xilinx/Vivado on keroppi) 
+In oder to build the FPGA bitstream, you first need to install Vivado. Recommended version is 2022.2. In this documentation and in the `Makefile`, the Vivado installation path is assumed to be `/opt/Xilinx/Vivado`. If it is in another directory, change the path in the steps below (for example, to `/tools/Xilinx/Vivado`) or create a symbolic link in `/opt` pointing to the actual installation directory. For example,
+```
+sudo ln -s /tools/Xilinx /opt/Xilinx
+```
+Such a symbolic link is already in place on chococat and keroppi.
 ### First, clone this repo with all submodules
 git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 ### building bitstream only
 1. cd pluto_msk/projects/pluto/
 2. source /opt/Xilinx/Vivado/2022.2/settings64.sh
+<br>(See above about the Vivado installation path.)
 3. make
 
 For reference, on the chococat VM, the main branch takes:
@@ -56,7 +61,8 @@ sys	9m16.466s
 ```
 
 ### complete firmware
-1. Check if your vivado path is correct on this line https://github.com/OpenResearchInstitute/pluto_msk/blob/871bd130de0e6d462138bc6d2981b1c65897a0ca/firmware/Makefile#L19 
+1. Check if your Vivado path is correct on this line https://github.com/OpenResearchInstitute/pluto_msk/blob/871bd130de0e6d462138bc6d2981b1c65897a0ca/firmware/Makefile#L19 
+<br>See above about the Vivado installation path. If `/opt/Xilinx` does not contain the Vivado software, create the symbolic link described above. An alternative is to edit this line of `Makefile` every time you clone this repository.
 2. cd pluto_msk/firmware
 3. make
 
