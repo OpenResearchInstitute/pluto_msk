@@ -464,7 +464,7 @@ N &gt; 0 : Auto sync after N errors</p>
 
 |Bits| Identifier|Access|Reset|       Name       |
 |----|-----------|------|-----|------------------|
-|31:0|status_data|   r  |  —  |PRBS Bits Received|
+|31:0|status_data|   r  | 0x0 |PRBS Bits Received|
 
 #### status_data field
 
@@ -481,7 +481,7 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 |Bits| Identifier|Access|Reset|      Name     |
 |----|-----------|------|-----|---------------|
-|31:0|status_data|   r  |  —  |PRBS Bit Errors|
+|31:0|status_data|   r  | 0x0 |PRBS Bit Errors|
 
 #### status_data field
 
@@ -498,7 +498,7 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 |Bits| Identifier|Access|Reset|              Name             |
 |----|-----------|------|-----|-------------------------------|
-|31:0|status_data|   r  |  —  |PI Controller Accumulator Value|
+|31:0|status_data|   r  | 0x0 |PI Controller Accumulator Value|
 
 #### status_data field
 
@@ -514,7 +514,7 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 |Bits| Identifier|Access|Reset|              Name             |
 |----|-----------|------|-----|-------------------------------|
-|31:0|status_data|   r  |  —  |PI Controller Accumulator Value|
+|31:0|status_data|   r  | 0x0 |PI Controller Accumulator Value|
 
 #### status_data field
 

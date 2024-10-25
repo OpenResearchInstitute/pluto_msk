@@ -94,17 +94,17 @@ reg config_prbs_errmask {
 
 reg stat_32_bits {
     regwidth = 32;
-    field { sw = r; hw = w; } status_data[31:0];
+    field { sw = r; hw = w; } status_data[31:0] = 0;
 };
 
 reg stat_32_errs {
     regwidth = 32;
-    field { sw = r; hw = w; } status_data[31:0];
+    field { sw = r; hw = w; } status_data[31:0] = 0;
 };
 
 reg stat_32_lpf_acc {
     regwidth = 32;
-    field { sw = r; hw = w; } status_data[31:0];
+    field { sw = r; hw = w; } status_data[31:0] = 0;
 };
 
 reg msk_stat_3 {
