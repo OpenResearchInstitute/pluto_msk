@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
-[*] Thu May 23 18:03:50 2024
+[*] Tue Oct 29 05:29:37 2024
 [*]
 [dumpfile] "msk_top.ghw"
-[dumpfile_mtime] "Thu May 23 06:35:37 2024"
-[dumpfile_size] 43400273
-[savefile] "/Users/nonlinear/Dev/msk/sim/msk_top_nvc.gtkw"
-[timestart] 735470000000
-[size] 1288 600
-[pos] -1 -1
-*-31.450550 739056000000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[dumpfile_mtime] "Tue Oct 29 05:29:31 2024"
+[dumpfile_size] 292649229
+[savefile] "msk_top_nvc.gtkw"
+[timestart] 0
+[size] 1504 828
+[pos] -214 -1
+*-44.091732 22310000000000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 [markername] AA
 [markername] BB
 [markername] CC
@@ -38,11 +38,12 @@
 [markername] ZZ
 [treeopen] msk_top.
 [treeopen] msk_top.u_dem.
+[treeopen] msk_top.u_dem.u_f1.
 [treeopen] msk_top.u_dem.u_f2.
 [sst_width] 298
 [signals_width] 383
 [sst_expanded] 1
-[sst_vpaned_height] 159
+[sst_vpaned_height] 238
 @28
 msk_top.u_mod.clk
 msk_top.u_mod.init
@@ -61,18 +62,35 @@ msk_top.u_mod.d_n_b[1:0]
 msk_top.u_mod.d_s1[1:0]
 msk_top.u_mod.d_s2[1:0]
 @10420
-msk_top.u_mod.carrier_cos_f1[11:0]
-msk_top.u_mod.carrier_cos_f2[11:0]
 msk_top.u_mod.s1[11:0]
 msk_top.u_mod.s2[11:0]
-msk_top.u_mod.tx_samples[11:0]
 @20000
 -
 -
 @1401200
 -Modulator
-@c00200
+@28
+msk_top.rx_data_valid
+msk_top.rx_dvalid
+msk_top.rx_enable
+msk_top.rx_svalid
+msk_top.rx_sample_valid
+@10420
+msk_top.rx_samples_dec[11:0]
+@22
+msk_top.discard_count[7:0]
+msk_top.discard_samples[7:0]
+@28
+msk_top.u_dem.rx_dvalid
+msk_top.u_dem.rx_enable
+msk_top.u_dem.u_f1.rx_svalid
+msk_top.u_dem.u_f1.u_carrier_nco.clk
+msk_top.u_dem.u_f1.u_carrier_nco.enable
+@10024
+msk_top.u_dem.u_f1.u_carrier_nco.phase_acc[31:0]
+@800200
 -F1 Clock Recovery
+@c00200
 -F1 Costas I-arm (in-phase)
 @10420
 msk_top.u_dem.u_f1.rx_cos[23:0]
@@ -83,7 +101,7 @@ msk_top.u_dem.u_f1.rx_cos_dump[31:0]
 msk_top.u_dem.u_f1.rx_cos_t[31:0]
 @1401200
 -F1 Costas I-arm (in-phase)
-@c00200
+@800200
 -F1 Costas Q-arm (quadrature-phase)
 @10420
 msk_top.u_dem.u_f1.rx_sin[23:0]
@@ -101,7 +119,7 @@ msk_top.u_dem.u_f1.rx_error[31:0]
 msk_top.u_dem.u_f1.error_valid
 @420
 msk_top.u_dem.u_f1.rx_error_w[15:0]
-@1401200
+@1000200
 -F1 Costas Q-arm (quadrature-phase)
 @800200
 -F1 Costas Loop Filter
@@ -113,7 +131,7 @@ msk_top.u_dem.u_f1.u_loopfilter.lpf_err_valid
 @420
 msk_top.u_dem.u_f1.u_loopfilter.lpf_err[15:0]
 @10420
-msk_top.u_dem.u_f1.u_loopfilter.p_val[15:0]
+msk_top.u_dem.u_f1.u_loopfilter.p_val[31:0]
 msk_top.u_dem.u_f1.u_loopfilter.i_val[31:0]
 msk_top.u_dem.u_f1.u_loopfilter.i_acc[31:0]
 @28
@@ -122,7 +140,6 @@ msk_top.u_dem.u_f1.u_loopfilter.lpf_adj_valid
 msk_top.u_dem.u_f1.u_loopfilter.lpf_adjust[31:0]
 @1000200
 -F1 Costas Loop Filter
-@1401200
 -F1 Clock Recovery
 @c00200
 -F2 Clock Recovery
@@ -164,7 +181,6 @@ msk_top.u_dem.u_f2.u_loopfilter.lpf_err_valid
 @420
 msk_top.u_dem.u_f2.u_loopfilter.lpf_err[15:0]
 @10420
-msk_top.u_dem.u_f2.u_loopfilter.p_val[15:0]
 msk_top.u_dem.u_f2.u_loopfilter.i_val[31:0]
 msk_top.u_dem.u_f2.u_loopfilter.i_acc[31:0]
 @28
@@ -198,7 +214,6 @@ msk_top.u_dem.data_f2_sum[15:0]
 msk_top.u_dem.data_sum[15:0]
 @28
 msk_top.u_dem.data_bit
-msk_top.u_dem.rx_valid
 msk_top.u_dem.rx_data
 @1401200
 -Data Decode
@@ -215,7 +230,53 @@ msk_top.u_dem.error_valid_f2
 @1401200
 -Error Valid Decode
 @28
-msk_top.tx_data_bit_d3
-msk_top.rx_bit_n
+msk_top.u_prbs_gen.data_out[0]
+msk_top.tx_data_bit_d2
+msk_top.u_prbs_mon.data_in[0]
+msk_top.u_prbs_gen.clk
+msk_top.u_prbs_gen.data_in[0]
+msk_top.u_prbs_gen.data_out[0]
+msk_top.u_prbs_gen.data_req
+msk_top.u_prbs_gen.error_arm
+msk_top.u_prbs_gen.error_insert
+msk_top.u_prbs_gen.error_insert_d
+@22
+msk_top.u_prbs_gen.error_mask[0:0]
+@28
+msk_top.u_prbs_gen.init
+@22
+msk_top.u_prbs_gen.initial_state[30:0]
+msk_top.u_prbs_gen.lfsr[30:0]
+msk_top.u_prbs_gen.polynomial[30:0]
+@28
+msk_top.u_prbs_gen.prbs_sel
+msk_top.u_prbs_mon.clk
+msk_top.u_prbs_mon.count_reset
+msk_top.u_prbs_mon.count_reset_d
+msk_top.u_prbs_mon.count_reset_now
+msk_top.u_prbs_mon.count_update
+@22
+msk_top.u_prbs_mon.data_count[31:0]
+msk_top.u_prbs_mon.data_counter[31:0]
+@28
+msk_top.u_prbs_mon.data_in[0]
+msk_top.u_prbs_mon.data_in_valid
+@22
+msk_top.u_prbs_mon.error_count[31:0]
+msk_top.u_prbs_mon.error_counter[31:0]
+@28
+msk_top.u_prbs_mon.errors[0]
+msk_top.u_prbs_mon.init
+@22
+msk_top.u_prbs_mon.initial_state[30:0]
+msk_top.u_prbs_mon.lfsr[30:0]
+msk_top.u_prbs_mon.polynomial[30:0]
+msk_top.u_prbs_mon.sync_bits[5:0]
+@28
+msk_top.u_prbs_mon.sync_manual
+msk_top.u_prbs_mon.sync_manual_d
+msk_top.u_prbs_mon.sync_now
+@22
+msk_top.u_prbs_mon.sync_threshold[15:0]
 [pattern_trace] 1
 [pattern_trace] 0

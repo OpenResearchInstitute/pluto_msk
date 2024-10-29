@@ -511,6 +511,8 @@ class prbs:
 @cocotb.test()
 async def msk_test_1(dut):
 
+    plot = False
+
     print("Instantiate registers")
     axi  = axi_bus(dut)
     regs = addrmap_ch0.Addrmap(axi)
@@ -523,7 +525,7 @@ async def msk_test_1(dut):
     tx_sample_rate = 61.44e6
     tx_sample_per = int(round(1/tx_sample_rate * 1e14))*10
 
-    tx_rx_sample_ratio = 1
+    tx_rx_sample_ratio = 25
 
     rx_sample_rate = tx_sample_rate / tx_rx_sample_ratio
 
@@ -574,7 +576,7 @@ async def msk_test_1(dut):
     # await axi.write(12, 1)                                         # loopback
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "MSK_Control", (tx_rx_sample_ratio-1 << 8) + 7)    
+    await regs.write("msk_top_regs", "MSK_Control", (tx_rx_sample_ratio-1 << 8) + 3)    
     # await axi.write(16, int(bitrate / sample_rate * 2.0**32))      # bit rate frequency word
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -599,7 +601,7 @@ async def msk_test_1(dut):
     # await axi.write(32, (2 << 16))                                   # low-pass filter alpha
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "LPF_Config_1", (8 << 16) + 8)    
+    await regs.write("msk_top_regs", "LPF_Config_1", (64 << 16) + 16)    
     # await axi.write(36, 8)
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -668,7 +670,7 @@ async def msk_test_1(dut):
     pn.sim_run = True
     pn.sync = 100
 
-    while sim_time < sim_start + 75000:
+    while sim_time < sim_start + 150000:
 
         # if sim_time_d <= sim_start + 1000 and sim_time >= sim_start + 1000:
         #     data = await regs.read("msk_top_regs", "PRBS_Control")
@@ -677,9 +679,16 @@ async def msk_test_1(dut):
         #     dut.s_axi_awvalid.value = 1
         #     await regs.write("msk_top_regs", "PRBS_Control", data)    
 
+        # if sim_time_d <= sim_start + 20000 and sim_time >= sim_start + 20000:
+        #     data = await regs.read("msk_top_regs", "PRBS_Control")
+        #     data = data ^ 0x8
+        #     dut.s_axi_wvalid.value = 1
+        #     dut.s_axi_awvalid.value = 1
+        #     await regs.write("msk_top_regs", "PRBS_Control", data)    
+
         if sim_time_d <= sim_start + 20000 and sim_time >= sim_start + 20000:
             data = await regs.read("msk_top_regs", "PRBS_Control")
-            data = data ^ 0x8
+            data = data | 0x2
             dut.s_axi_wvalid.value = 1
             dut.s_axi_awvalid.value = 1
             await regs.write("msk_top_regs", "PRBS_Control", data)    
@@ -734,29 +743,30 @@ async def msk_test_1(dut):
     # print("Bit count:  ", pn.data_count)
     # print("BER:        ", pn.err_count/pn.data_count)
 
-    blackman_window = np.blackman(len(tx_samples))
-
-    fig = plt.figure(figsize=(7, 7), layout='constrained')
-    axs = fig.subplot_mosaic([["signal", "signal"],
-                              ["magnitude", "log_magnitude"],
-                              ["psd", "psd"]])
+    if plot:
+        blackman_window = np.blackman(len(tx_samples))
     
-    # plot time signal:
-    axs["signal"].set_title("MSK Tx Samples")
-    axs["signal"].plot(tx_time, tx_samples, color='C0')
-    axs["signal"].set_xlabel("Time (s)")
-    axs["signal"].set_ylabel("Amplitude")
-    
-    # plot different spectrum types:
-    axs["magnitude"].set_title("Magnitude Spectrum Squared")
-    axs["magnitude"].magnitude_spectrum(tx_samples_2, Fs=tx_sample_rate, window=blackman_window, color='C1')
-    
-    axs["log_magnitude"].set_title("Log. Magnitude Spectrum Squared")
-    axs["log_magnitude"].magnitude_spectrum(tx_samples_2, Fs=tx_sample_rate, scale='dB', window=blackman_window, color='C1')
-    
-    axs["psd"].set_title("Power Spectral Density")
-    axs["psd"].psd(tx_samples, Fs=tx_sample_rate, window=np.blackman(FFT), NFFT=FFT, color='C2')
+        fig = plt.figure(figsize=(7, 7), layout='constrained')
+        axs = fig.subplot_mosaic([["signal", "signal"],
+                                  ["magnitude", "log_magnitude"],
+                                  ["psd", "psd"]])
         
-    plt.show()
-
-    #fftPlot(np.asarray(tx_samples), dt=1/sample_rate)
+        # plot time signal:
+        axs["signal"].set_title("MSK Tx Samples")
+        axs["signal"].plot(tx_time, tx_samples, color='C0')
+        axs["signal"].set_xlabel("Time (s)")
+        axs["signal"].set_ylabel("Amplitude")
+        
+        # plot different spectrum types:
+        axs["magnitude"].set_title("Magnitude Spectrum Squared")
+        axs["magnitude"].magnitude_spectrum(tx_samples_2, Fs=tx_sample_rate, window=blackman_window, color='C1')
+        
+        axs["log_magnitude"].set_title("Log. Magnitude Spectrum Squared")
+        axs["log_magnitude"].magnitude_spectrum(tx_samples_2, Fs=tx_sample_rate, scale='dB', window=blackman_window, color='C1')
+        
+        axs["psd"].set_title("Power Spectral Density")
+        axs["psd"].psd(tx_samples, Fs=tx_sample_rate, window=np.blackman(FFT), NFFT=FFT, color='C2')
+            
+        plt.show()
+    
+        #fftPlot(np.asarray(tx_samples), dt=1/sample_rate)
