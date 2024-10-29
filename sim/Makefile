@@ -8,9 +8,13 @@ SCRIPT_FILE =
 
 ifeq ($(SIM),ghdl)
 	COMPILE_ARGS = --std=08
+	EXTRA_ARGS = --std=08
+	SIM_ARGS = --wave=msk_top.ghw
 endif
 
-SIM_ARGS = --wave=msk_top.ghw
+ifeq ($(SIM),nvc)
+	SIM_ARGS = --wave=msk_top.ghw
+endif
 
 SRC = ../src
 RDL = ../rdl/vhdl/msk_top_regs
