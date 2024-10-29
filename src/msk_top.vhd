@@ -300,17 +300,17 @@ BEGIN
 				ELSE
 					bit_index <= bit_index + 1;
 				END IF;
-					
+				
 				tx_data_bit <= tx_data(bit_index);
 
-				tx_data_bit_d1 <= tx_data_bit;
+				tx_data_bit_d1 <= prbs_data_bit;
 				tx_data_bit_d2 <= tx_data_bit_d1;
 				tx_data_bit_d3 <= tx_data_bit_d2;
 				tx_data_bit_d4 <= tx_data_bit_d3;
 
 				rx_data_cmp    <= rx_bit;
 
-				data_error 	   <= rx_data_cmp XOR tx_data_bit_d4;
+				data_error 	   <= rx_data_cmp XOR tx_data_bit_d2;
 
 			END IF;
 
@@ -487,7 +487,7 @@ BEGIN
 			lpf_accum_f2 	=> lpf_accum_f2,
 
 			rx_enable 		=> rx_enable OR loopback_ena,
-			rx_svalid 		=> rx_sample_valid OR loopback_ena,
+			rx_svalid 		=> rx_sample_valid,
 			rx_samples 		=> rx_samples_dec(11 DOWNTO 0),
 
 			rx_data 		=> rx_bit,
