@@ -162,7 +162,8 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL rx_data_int 		: std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
 	SIGNAL rx_invert 		: std_logic;
 
-	SIGNAL discard_samples 	: std_logic_vector(7 DOWNTO 0);
+	SIGNAL discard_rxsamples: std_logic_vector(7 DOWNTO 0);
+	SIGNAL discard_rxnco  	: std_logic_vector(7 DOWNTO 0);
 
 	SIGNAL rx_data_cmp 		: std_logic;
 	SIGNAL data_error 		: std_logic;
@@ -209,7 +210,6 @@ ARCHITECTURE struct OF msk_top IS
 
 	SIGNAL clear_counts 		: std_logic;
 	SIGNAL discard_count		: unsigned(7 DOWNTO 0);
-	SIGNAL rx_sample_valid  	: std_logic;
 
 	SIGNAL tx_bit_counter 		: unsigned(COUNTER_W -1 DOWNTO 0);
 	SIGNAL tx_ena_counter 		: unsigned(COUNTER_W -1 DOWNTO 0);
@@ -426,6 +426,7 @@ BEGIN
 				rx_data_int 	<= (OTHERS => '0');
 				rx_data 		<= (OTHERS => '0');
 				rx_dvalid 		<= '0';
+				rx_data_valid 	<= '0';
 			END IF;
 
 		END IF;
@@ -445,17 +446,14 @@ BEGIN
 		IF clk'EVENT AND clk = '1' THEN
 			IF init = '1' THEN
 				discard_count 	<= (OTHERS => '0');
-				rx_sample_valid <= '0';
 				rx_samples_dec	<= (OTHERS => '0');
 			ELSE
 				IF rx_svalid = '1' OR loopback_ena = '1' THEN
 					IF to_integer(discard_count) = 0 THEN 
-						discard_count 	<= unsigned(discard_samples);
-						rx_sample_valid	<= '1';
+						discard_count 	<= unsigned(discard_rxsamples);
 						rx_samples_dec 	<= rx_samples_mux(11 DOWNTO 0);
 					ELSE
 						discard_count 	<= discard_count -1;
-						rx_sample_valid <= '0';
 					END IF;
 				END IF;
 			END IF;
@@ -476,6 +474,7 @@ BEGIN
 	
 			rx_freq_word_f1 => freq_word_rx_f1,
 			rx_freq_word_f2	=> freq_word_rx_f2,
+			discard_rxnco 	=> discard_rxnco,
 	
 			lpf_p_gain 		=> lpf_p_gain,
 			lpf_i_gain 		=> lpf_i_gain,
@@ -487,7 +486,7 @@ BEGIN
 			lpf_accum_f2 	=> lpf_accum_f2,
 
 			rx_enable 		=> rx_enable OR loopback_ena,
-			rx_svalid 		=> rx_sample_valid,
+			rx_svalid 		=> '1',
 			rx_samples 		=> rx_samples_dec(11 DOWNTO 0),
 
 			rx_data 		=> rx_bit,
@@ -608,31 +607,32 @@ BEGIN
 		lpf_accum_f1 	=> lpf_accum_f1,
 		lpf_accum_f2 	=> lpf_accum_f2,
 
-		init 			=> init,
-		ptt 			=> ptt,
-		loopback_ena 	=> loopback_ena,
-		rx_invert 		=> rx_invert,
-		clear_counts 	=> clear_counts,
-		discard_samples => discard_samples,
-		freq_word_ft	=> freq_word_ft,
-		freq_word_tx_f1	=> freq_word_tx_f1,
-		freq_word_tx_f2	=> freq_word_tx_f2,
-		freq_word_rx_f1	=> freq_word_rx_f1,
-		freq_word_rx_f2	=> freq_word_rx_f2,
-		lpf_freeze 		=> lpf_freeze,
-		lpf_zero 		=> lpf_zero,
-		lpf_alpha 		=> lpf_alpha,
-		lpf_i_gain 		=> lpf_i_gain,
-		lpf_p_gain 		=> lpf_p_gain,
-		tx_data_w 		=> tx_data_w,
-		rx_data_w 		=> rx_data_w,
-		prbs_manual_sync=> prbs_manual_sync,
-		prbs_initial	=> prbs_initial,
-		prbs_poly		=> prbs_poly,
-		prbs_err_insert => prbs_err_insert,
-		prbs_err_mask 	=> prbs_err_mask,
-		prbs_sel 		=> prbs_sel,
-		prbs_clear 		=> prbs_clear,
+		init 				=> init,
+		ptt 				=> ptt,
+		loopback_ena 		=> loopback_ena,
+		rx_invert 			=> rx_invert,
+		clear_counts 		=> clear_counts,
+		discard_rxsamples	=> discard_rxsamples,
+		discard_rxnco 		=> discard_rxnco,
+		freq_word_ft		=> freq_word_ft,
+		freq_word_tx_f1		=> freq_word_tx_f1,
+		freq_word_tx_f2		=> freq_word_tx_f2,
+		freq_word_rx_f1		=> freq_word_rx_f1,
+		freq_word_rx_f2		=> freq_word_rx_f2,
+		lpf_freeze 			=> lpf_freeze,
+		lpf_zero 			=> lpf_zero,
+		lpf_alpha 			=> lpf_alpha,
+		lpf_i_gain 			=> lpf_i_gain,
+		lpf_p_gain 			=> lpf_p_gain,
+		tx_data_w 			=> tx_data_w,
+		rx_data_w 			=> rx_data_w,
+		prbs_manual_sync	=> prbs_manual_sync,
+		prbs_initial		=> prbs_initial,
+		prbs_poly			=> prbs_poly,
+		prbs_err_insert 	=> prbs_err_insert,
+		prbs_err_mask 		=> prbs_err_mask,
+		prbs_sel 			=> prbs_sel,
+		prbs_clear 			=> prbs_clear,
 		prbs_sync_threshold => prbs_sync_threshold
 
 	);
