@@ -543,8 +543,8 @@ async def msk_test_1(dut):
 
     f1_fcw_tx = int(f1 / tx_sample_rate * 2.0**32)
     f2_fcw_tx = int(f2 / tx_sample_rate * 2.0**32)
-    f1_fcw_rx = int(f1 / rx_sample_rate * 2.0**32)
-    f2_fcw_rx = int(f2 / rx_sample_rate * 2.0**32)
+    f1_fcw_rx = int(f1 / tx_sample_rate * 2.0**32)
+    f2_fcw_rx = int(f2 / tx_sample_rate * 2.0**32)
 
     print("Bit Rate NCO Freq Word: ", hex(br_fcw))
     print("TX F1 NCO Freq Word: ", hex(f1_fcw_tx))
@@ -576,7 +576,7 @@ async def msk_test_1(dut):
     # await axi.write(12, 1)                                         # loopback
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "MSK_Control", (tx_rx_sample_ratio-1 << 8) + 3)    
+    await regs.write("msk_top_regs", "MSK_Control", 7)    
     # await axi.write(16, int(bitrate / sample_rate * 2.0**32))      # bit rate frequency word
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -593,7 +593,10 @@ async def msk_test_1(dut):
     await regs.write("msk_top_regs", "RX_F1_FreqWord", f1_fcw_rx)    
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "RX_F2_FreqWord", f2_fcw_rx)    
+    await regs.write("msk_top_regs", "RX_F2_FreqWord", f2_fcw_rx)
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "Rx_Sample_Discard", (tx_rx_sample_ratio << 8) + tx_rx_sample_ratio)
     # await axi.write(28, (50 << 16) + 20)                             # p-gain / i-gain
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -601,7 +604,7 @@ async def msk_test_1(dut):
     # await axi.write(32, (2 << 16))                                   # low-pass filter alpha
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "LPF_Config_1", (64 << 16) + 16)    
+    await regs.write("msk_top_regs", "LPF_Config_1", (256 << 16) + 0)    
     # await axi.write(36, 8)
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -653,11 +656,11 @@ async def msk_test_1(dut):
     await RisingEdge(dut.clk)
 
     msksim = msk(dut, dut.clk, dut.tx_samples)
-    pn = prbs(dut, dut.clk, axis, tx_data_width, rx_data_width, dut.rx_data, dut.rx_dvalid)
+    #pn = prbs(dut, dut.clk, axis, tx_data_width, rx_data_width, dut.rx_data, dut.rx_dvalid)
 
     await cocotb.start(msksim.tx_sample_capture())
-    await cocotb.start(pn.generate_data())
-    await cocotb.start(pn.check_data())
+    #await cocotb.start(pn.generate_data())
+    #await cocotb.start(pn.check_data())
 
     sim_time = get_sim_time("us")
     sim_start = sim_time
@@ -667,10 +670,10 @@ async def msk_test_1(dut):
 
     msksim.sim_run = True
 
-    pn.sim_run = True
-    pn.sync = 100
+    #pn.sim_run = True
+    #pn.sync = 100
 
-    while sim_time < sim_start + 150000:
+    while sim_time < sim_start + 1000000:
 
         # if sim_time_d <= sim_start + 1000 and sim_time >= sim_start + 1000:
         #     data = await regs.read("msk_top_regs", "PRBS_Control")
@@ -699,28 +702,37 @@ async def msk_test_1(dut):
         # if sim_time_d <= sim_start + 4000 and sim_time >= sim_start + 4000:
             # await pn.resync()
 
+        await Timer (10, "ms")
+        print("Sim time: ", sim_time, "us")
+        errs = await regs.read("msk_top_regs", "PRBS_Error_Count")
+        print("Bit errors: ", errs)
+        bits = await regs.read("msk_top_regs", "PRBS_Bit_Count")
+        print("Bit count:  ", bits)
+        print("BER:        ", round((1.0*errs)/bits *100, 3), "%")
+
+
         sim_time_d = sim_time
         sim_time = get_sim_time("us")
 
-        data = await regs.read("msk_top_regs", "LPF_Accum_F1")
-        print("F1 Acc: ", hex(data))
-        data = await regs.read("msk_top_regs", "LPF_Accum_F2")
-        print("F2 Acc: ", hex(data))
-        data = await regs.read("msk_top_regs", "Tx_Bit_Count")
-        print("Tx Bit Count: ", hex(data))
-        data = await regs.read("msk_top_regs", "Tx_Enable_Count")
-        print("Tx Enable Count: ", hex(data))
-        data = await regs.read("msk_top_regs", "MSK_Status")
-        print("MSK Status: ", hex(data))
-        data = await regs.read("msk_top_regs", "axis_xfer_count")
-        print("XFER Count: ", hex(data))
+        # data = await regs.read("msk_top_regs", "LPF_Accum_F1")
+        # print("F1 Acc: ", hex(data))
+        # data = await regs.read("msk_top_regs", "LPF_Accum_F2")
+        # print("F2 Acc: ", hex(data))
+        # data = await regs.read("msk_top_regs", "Tx_Bit_Count")
+        # print("Tx Bit Count: ", hex(data))
+        # data = await regs.read("msk_top_regs", "Tx_Enable_Count")
+        # print("Tx Enable Count: ", hex(data))
+        # data = await regs.read("msk_top_regs", "MSK_Status")
+        # print("MSK Status: ", hex(data))
+        # data = await regs.read("msk_top_regs", "axis_xfer_count")
+        # print("XFER Count: ", hex(data))
         # data = await regs.read("msk_top_regs", "Tx_Bit_Count")
         # print("Tx Bit Count: ", data)
         # data = await regs.read("msk_top_regs", "Tx_Enable_Count")
         # print("Tx Enabled: ", data)
 
     msksim.sim_run = False
-    pn.sim_run = False
+    #pn.sim_run = False
 
     await RisingEdge(dut.clk)
 
