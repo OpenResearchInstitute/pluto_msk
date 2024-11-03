@@ -148,22 +148,6 @@ package pkg_msk_top_regs is
   type t_field_signals_msk_ctrl_clear_counts_out is record
     data : std_logic_vector(1-1 downto 0); --
   end record; --
-  type t_field_signals_msk_ctrl_msk_control_reserved_in is record
-    -- no data if field cannot be written from hw
-    data : std_logic_vector(-1 downto 0); --
-  end record;
-
-  type t_field_signals_msk_ctrl_msk_control_reserved_out is record
-    data : std_logic_vector(4-1 downto 0); --
-  end record; --
-  type t_field_signals_msk_ctrl_sample_discard_in is record
-    -- no data if field cannot be written from hw
-    data : std_logic_vector(-1 downto 0); --
-  end record;
-
-  type t_field_signals_msk_ctrl_sample_discard_out is record
-    data : std_logic_vector(8-1 downto 0); --
-  end record; --
 
   -- The actual register types
   type t_reg_msk_ctrl_in is record--
@@ -171,16 +155,12 @@ package pkg_msk_top_regs is
     loopback_ena : t_field_signals_msk_ctrl_loopback_ena_in; --
     rx_invert : t_field_signals_msk_ctrl_rx_invert_in; --
     clear_counts : t_field_signals_msk_ctrl_clear_counts_in; --
-    msk_control_reserved : t_field_signals_msk_ctrl_msk_control_reserved_in; --
-    sample_discard : t_field_signals_msk_ctrl_sample_discard_in; --
   end record;
   type t_reg_msk_ctrl_out is record--
     ptt : t_field_signals_msk_ctrl_ptt_out; --
     loopback_ena : t_field_signals_msk_ctrl_loopback_ena_out; --
     rx_invert : t_field_signals_msk_ctrl_rx_invert_out; --
     clear_counts : t_field_signals_msk_ctrl_clear_counts_out; --
-    msk_control_reserved : t_field_signals_msk_ctrl_msk_control_reserved_out; --
-    sample_discard : t_field_signals_msk_ctrl_sample_discard_out; --
   end record;
   type t_reg_msk_ctrl_2d_in is array (integer range <>) of t_reg_msk_ctrl_in;
   type t_reg_msk_ctrl_2d_out is array (integer range <>) of t_reg_msk_ctrl_out;
@@ -652,6 +632,39 @@ package pkg_msk_top_regs is
   type t_reg_msk_stat_3_3d_in is array (integer range <>, integer range <>) of t_reg_msk_stat_3_in;
   type t_reg_msk_stat_3_3d_out is array (integer range <>, integer range <>) of t_reg_msk_stat_3_out;
   -----------------------------------------------
+  -- register type: rx_sample_discard
+  -----------------------------------------------
+  type t_field_signals_rx_sample_discard_rx_sample_discard_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_rx_sample_discard_rx_sample_discard_out is record
+    data : std_logic_vector(8-1 downto 0); --
+  end record; --
+  type t_field_signals_rx_sample_discard_rx_nco_discard_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_rx_sample_discard_rx_nco_discard_out is record
+    data : std_logic_vector(8-1 downto 0); --
+  end record; --
+
+  -- The actual register types
+  type t_reg_rx_sample_discard_in is record--
+    rx_sample_discard : t_field_signals_rx_sample_discard_rx_sample_discard_in; --
+    rx_nco_discard : t_field_signals_rx_sample_discard_rx_nco_discard_in; --
+  end record;
+  type t_reg_rx_sample_discard_out is record--
+    rx_sample_discard : t_field_signals_rx_sample_discard_rx_sample_discard_out; --
+    rx_nco_discard : t_field_signals_rx_sample_discard_rx_nco_discard_out; --
+  end record;
+  type t_reg_rx_sample_discard_2d_in is array (integer range <>) of t_reg_rx_sample_discard_in;
+  type t_reg_rx_sample_discard_2d_out is array (integer range <>) of t_reg_rx_sample_discard_out;
+  type t_reg_rx_sample_discard_3d_in is array (integer range <>, integer range <>) of t_reg_rx_sample_discard_in;
+  type t_reg_rx_sample_discard_3d_out is array (integer range <>, integer range <>) of t_reg_rx_sample_discard_out;
+  -----------------------------------------------
 
   ------------------------------------------------------------------------------
   -- Register types in regfiles --
@@ -694,6 +707,7 @@ package pkg_msk_top_regs is
     LPF_Accum_F1 : t_reg_stat_32_lpf_acc_in; --
     LPF_Accum_F2 : t_reg_stat_32_lpf_acc_in; --
     axis_xfer_count : t_reg_msk_stat_3_in; --
+    Rx_Sample_Discard : t_reg_rx_sample_discard_in; --
     --
     --
     --
@@ -726,6 +740,7 @@ package pkg_msk_top_regs is
     LPF_Accum_F1 : t_reg_stat_32_lpf_acc_out; --
     LPF_Accum_F2 : t_reg_stat_32_lpf_acc_out; --
     axis_xfer_count : t_reg_msk_stat_3_out; --
+    Rx_Sample_Discard : t_reg_rx_sample_discard_out; --
     --
     --
     --
@@ -934,7 +949,7 @@ architecture rtl of msk_top_regs_msk_ctrl is
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
 begin
   --
-  data_out(C_DATA_WIDTH-1 downto 16) <= (others => '0'); --
+  data_out(C_DATA_WIDTH-1 downto 4) <= (others => '0'); --
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
@@ -1036,54 +1051,6 @@ begin
     data_out(3 downto 3) <= l_field_reg;
 
   end block clear_counts_storage;
-  ------------------------------------------------------------STORAGE
-  msk_control_reserved_storage: block
-    signal l_field_reg   : std_logic_vector(4-1 downto 0) :=
-                           std_logic_vector(to_signed(0,4));
-  begin
-    prs_write : process(pi_clock)
-    begin
-      if rising_edge(pi_clock) then
-        if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,4));
-        else
-          -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
-          if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(7 downto 4);
-          end if;
-        end if;
-      end if;
-    end process;
-    --
-    po_reg.msk_control_reserved.data <= l_field_reg; --
-    data_out(7 downto 4) <= l_field_reg;
-
-  end block msk_control_reserved_storage;
-  ------------------------------------------------------------STORAGE
-  sample_discard_storage: block
-    signal l_field_reg   : std_logic_vector(8-1 downto 0) :=
-                           std_logic_vector(to_signed(0,8));
-  begin
-    prs_write : process(pi_clock)
-    begin
-      if rising_edge(pi_clock) then
-        if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,8));
-        else
-          -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
-          if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(15 downto 8);
-          end if;
-        end if;
-      end if;
-    end process;
-    --
-    po_reg.sample_discard.data <= l_field_reg; --
-    data_out(15 downto 8) <= l_field_reg;
-
-  end block sample_discard_storage;
   ----------------------------------------------------------
 end rtl;
 -----------------------------------------------
@@ -2090,6 +2057,90 @@ begin
     --no signal to read by HW
     po_reg.xfer_count.data <= (others => '0'); --
   end block; --
+end rtl;
+-----------------------------------------------
+-- register type: rx_sample_discard
+-----------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+use work.pkg_msk_top_regs.all;
+
+entity msk_top_regs_rx_sample_discard is
+  port (
+    pi_clock        : in  std_logic;
+    pi_reset        : in  std_logic;
+    -- to/from adapter
+    pi_decoder_rd_stb : in  std_logic;
+    pi_decoder_wr_stb : in  std_logic;
+    pi_decoder_data   : in  std_logic_vector(C_DATA_WIDTH-1 downto 0);
+    po_decoder_data   : out std_logic_vector(C_DATA_WIDTH-1 downto 0);
+
+    pi_reg  : in t_reg_rx_sample_discard_in ;
+    po_reg  : out t_reg_rx_sample_discard_out
+  );
+end entity msk_top_regs_rx_sample_discard;
+
+architecture rtl of msk_top_regs_rx_sample_discard is
+  signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+begin
+  --
+  data_out(C_DATA_WIDTH-1 downto 16) <= (others => '0'); --
+
+  -- resize field data out to the register bus width
+  -- do only if 1 field and signed--
+  po_decoder_data <= data_out; --
+
+  ------------------------------------------------------------STORAGE
+  rx_sample_discard_storage: block
+    signal l_field_reg   : std_logic_vector(8-1 downto 0) :=
+                           std_logic_vector(to_signed(0,8));
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          l_field_reg <= std_logic_vector(to_signed(0,8));
+        else
+          -- HW --
+          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          if pi_decoder_wr_stb = '1' then
+            l_field_reg <= pi_decoder_data(7 downto 0);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.rx_sample_discard.data <= l_field_reg; --
+    data_out(7 downto 0) <= l_field_reg;
+
+  end block rx_sample_discard_storage;
+  ------------------------------------------------------------STORAGE
+  rx_nco_discard_storage: block
+    signal l_field_reg   : std_logic_vector(8-1 downto 0) :=
+                           std_logic_vector(to_signed(0,8));
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          l_field_reg <= std_logic_vector(to_signed(0,8));
+        else
+          -- HW --
+          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          if pi_decoder_wr_stb = '1' then
+            l_field_reg <= pi_decoder_data(15 downto 8);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.rx_nco_discard.data <= l_field_reg; --
+    data_out(15 downto 8) <= l_field_reg;
+
+  end block rx_nco_discard_storage;
+  ----------------------------------------------------------
 end rtl;
 -----------------------------------------------
 

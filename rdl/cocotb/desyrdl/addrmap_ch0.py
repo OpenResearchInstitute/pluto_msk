@@ -60,7 +60,7 @@ class Addrmap:
         self.addrmap['msk_top_regs.Hash_ID_Low'] = AddrmapItem("msk_top_regs.Hash_ID_Low", bus, 0, 4, 32, 0, 0, "RO")
         self.addrmap['msk_top_regs.Hash_ID_High'] = AddrmapItem("msk_top_regs.Hash_ID_High", bus, 4, 4, 32, 0, 0, "RO")
         self.addrmap['msk_top_regs.MSK_Init'] = AddrmapItem("msk_top_regs.MSK_Init", bus, 8, 4, 1, 0, 0, "RW")
-        self.addrmap['msk_top_regs.MSK_Control'] = AddrmapItem("msk_top_regs.MSK_Control", bus, 12, 4, 16, 0, 0, "RW")
+        self.addrmap['msk_top_regs.MSK_Control'] = AddrmapItem("msk_top_regs.MSK_Control", bus, 12, 4, 4, 0, 0, "RW")
         self.addrmap['msk_top_regs.MSK_Status'] = AddrmapItem("msk_top_regs.MSK_Status", bus, 16, 4, 4, 0, 0, "RO")
         self.addrmap['msk_top_regs.Tx_Bit_Count'] = AddrmapItem("msk_top_regs.Tx_Bit_Count", bus, 20, 4, 32, 0, 0, "RO")
         self.addrmap['msk_top_regs.Tx_Enable_Count'] = AddrmapItem("msk_top_regs.Tx_Enable_Count", bus, 24, 4, 32, 0, 0, "RO")
@@ -82,6 +82,7 @@ class Addrmap:
         self.addrmap['msk_top_regs.LPF_Accum_F1'] = AddrmapItem("msk_top_regs.LPF_Accum_F1", bus, 88, 4, 32, 0, 0, "RO")
         self.addrmap['msk_top_regs.LPF_Accum_F2'] = AddrmapItem("msk_top_regs.LPF_Accum_F2", bus, 92, 4, 32, 0, 0, "RO")
         self.addrmap['msk_top_regs.axis_xfer_count'] = AddrmapItem("msk_top_regs.axis_xfer_count", bus, 96, 4, 32, 0, 0, "RO")
+        self.addrmap['msk_top_regs.Rx_Sample_Discard'] = AddrmapItem("msk_top_regs.Rx_Sample_Discard", bus, 100, 2, 16, 0, 0, "RW")
 
     def get_path(self, module, name):
         path = module + "." + name

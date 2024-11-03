@@ -6,6 +6,7 @@ __pycache__/
 sim_build/
 results.xml
 *.ghw
+*.pak
 msk_top
 *.bkp
 .DS_Store

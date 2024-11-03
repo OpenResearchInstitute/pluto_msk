@@ -46,14 +46,6 @@ extern "C" {
 #define MSK_CTRL__CLEAR_COUNTS_bp 3
 #define MSK_CTRL__CLEAR_COUNTS_bw 1
 #define MSK_CTRL__CLEAR_COUNTS_reset 0x0
-#define MSK_CTRL__MSK_CONTROL_RESERVED_bm 0xf0
-#define MSK_CTRL__MSK_CONTROL_RESERVED_bp 4
-#define MSK_CTRL__MSK_CONTROL_RESERVED_bw 4
-#define MSK_CTRL__MSK_CONTROL_RESERVED_reset 0x0
-#define MSK_CTRL__SAMPLE_DISCARD_bm 0xff00
-#define MSK_CTRL__SAMPLE_DISCARD_bp 8
-#define MSK_CTRL__SAMPLE_DISCARD_bw 8
-#define MSK_CTRL__SAMPLE_DISCARD_reset 0x0
 
 // Reg - msk_stat_0
 #define MSK_STAT_0__DEMOD_SYNC_LOCK_bm 0x1
@@ -229,6 +221,16 @@ extern "C" {
 #define MSK_STAT_3__XFER_COUNT_bw 32
 #define MSK_STAT_3__XFER_COUNT_reset 0x0
 
+// Reg - rx_sample_discard
+#define RX_SAMPLE_DISCARD__RX_SAMPLE_DISCARD_bm 0xff
+#define RX_SAMPLE_DISCARD__RX_SAMPLE_DISCARD_bp 0
+#define RX_SAMPLE_DISCARD__RX_SAMPLE_DISCARD_bw 8
+#define RX_SAMPLE_DISCARD__RX_SAMPLE_DISCARD_reset 0x0
+#define RX_SAMPLE_DISCARD__RX_NCO_DISCARD_bm 0xff00
+#define RX_SAMPLE_DISCARD__RX_NCO_DISCARD_bp 8
+#define RX_SAMPLE_DISCARD__RX_NCO_DISCARD_bw 8
+#define RX_SAMPLE_DISCARD__RX_NCO_DISCARD_reset 0x0
+
 // Addrmap - msk_top_regs
 typedef struct __attribute__ ((__packed__)) {
     uint32_t Hash_ID_Low;
@@ -256,6 +258,7 @@ typedef struct __attribute__ ((__packed__)) {
     uint32_t LPF_Accum_F1;
     uint32_t LPF_Accum_F2;
     uint32_t axis_xfer_count;
+    uint16_t Rx_Sample_Discard;
 } msk_top_regs_t;
 
 // Addrmap - Pluto_MSK_Modem
@@ -265,7 +268,7 @@ typedef struct __attribute__ ((__packed__)) {
 } Pluto_MSK_Modem_t;
 
 
-static_assert(sizeof(Pluto_MSK_Modem_t) == 0x43c00064, "Packing error");
+static_assert(sizeof(Pluto_MSK_Modem_t) == 0x43c00066, "Packing error");
 
 #ifdef __cplusplus
 }

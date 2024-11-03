@@ -9,7 +9,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 - Absolute Address: 0x0
 - Base Offset: 0x0
-- Size: 0x43C00064
+- Size: 0x43C00066
 
 |  Offset  |  Identifier  |        Name       |
 |----------|--------------|-------------------|
@@ -19,7 +19,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 - Absolute Address: 0x43C00000
 - Base Offset: 0x43C00000
-- Size: 0x64
+- Size: 0x66
 
 <p>MSK Modem Configuration and Status Registers</p>
 
@@ -50,6 +50,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 | 0x58 |   LPF_Accum_F1   |                 F1 PI Controller Accumulator                |
 | 0x5C |   LPF_Accum_F2   |                 F2 PI Controller Accumulator                |
 | 0x60 |  axis_xfer_count |                      MSK Modem Status 3                     |
+| 0x64 | Rx_Sample_Discard|                      Rx Sample Discard                      |
 
 ### Hash_ID_Low register
 
@@ -104,14 +105,12 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 <p>MSK Modem Configuration and Control</p>
 
-|Bits|     Identifier     |Access|Reset|         Name        |
-|----|--------------------|------|-----|---------------------|
-|  0 |         ptt        |  rw  | 0x0 | Push-to-Talk Enable |
-|  1 |    loopback_ena    |  rw  | 0x0 |Modem Loopback Enable|
-|  2 |      rx_invert     |  rw  | 0x0 |Rx Data Invert Enable|
-|  3 |    clear_counts    |  rw  | 0x0 |Clear Status Counters|
-| 7:4|msk_control_reserved|  rw  | 0x0 |          —          |
-|15:8|   sample_discard   |  rw  | 0x0 |    Sample Discard   |
+|Bits| Identifier |Access|Reset|         Name        |
+|----|------------|------|-----|---------------------|
+|  0 |     ptt    |  rw  | 0x0 | Push-to-Talk Enable |
+|  1 |loopback_ena|  rw  | 0x0 |Modem Loopback Enable|
+|  2 |  rx_invert |  rw  | 0x0 |Rx Data Invert Enable|
+|  3 |clear_counts|  rw  | 0x0 |Clear Status Counters|
 
 #### ptt field
 
@@ -131,10 +130,6 @@ Don't override. Generated from: Pluto_MSK_Modem
 #### clear_counts field
 
 <p>Clear Tx Bit Counter and Tx Enable Counter</p>
-
-#### sample_discard field
-
-<p>Number of samples to discard</p>
 
 ### MSK_Status register
 
@@ -535,3 +530,24 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 #### xfer_count field
 
 <p>Number completed S_AXIS transfers</p>
+
+### Rx_Sample_Discard register
+
+- Absolute Address: 0x43C00064
+- Base Offset: 0x64
+- Size: 0x2
+
+<p>Configure samples discard operation for demodulator</p>
+
+|Bits|    Identifier   |Access|Reset|            Name           |
+|----|-----------------|------|-----|---------------------------|
+| 7:0|rx_sample_discard|  rw  | 0x0 |  Rx Sample Discard Value  |
+|15:8|  rx_nco_discard |   w  | 0x0 |Rx NCO Sample Discard Value|
+
+#### rx_sample_discard field
+
+<p>Number of Rx samples to discard</p>
+
+#### rx_nco_discard field
+
+<p>Number of NCO samples to discard</p>

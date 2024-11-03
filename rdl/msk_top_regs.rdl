@@ -45,10 +45,6 @@ reg msk_ctrl {
     field { sw = rw; hw = r; singlepulse = true; } clear_counts = 0;
         clear_counts->desc = "Clear Tx Bit Counter and Tx Enable Counter";
         clear_counts->name = "Clear Status Counters";
-    field { sw = rw; hw = r; } msk_control_reserved[7:4] = 0;
-    field { sw = rw; hw = r;  } sample_discard[15:8] = 0;
-        sample_discard->desc = "Number of samples to discard";
-        sample_discard->name = "Sample Discard";
 };
 
 reg msk_stat_0 {
@@ -95,6 +91,18 @@ reg config_nco_fw {
     field { sw = rw; hw = r; } config_data[31:0] = 0;
         config_data->name = "Frequency Control Word";
         config_data->desc = "Sets the center frequency of the NCO as FW = Fn * 2^32/Fs, where Fn is the desired NCO frequency, and Fs is the NCO sample rate";
+};
+
+reg rx_sample_discard {
+    name = "Rx Sample Discard";
+    desc = "Configure samples discard operation for demodulator";
+    regwidth = 16;
+    field { sw = rw; hw = r;  } rx_sample_discard[7:0] = 0;
+        rx_sample_discard->desc = "Number of Rx samples to discard";
+        rx_sample_discard->name = "Rx Sample Discard Value";
+    field { sw = w; hw = r; } rx_nco_discard[15:8] = 0;
+        rx_nco_discard->desc = "Number of NCO samples to discard";
+        rx_nco_discard->name = "Rx NCO Sample Discard Value";
 };
 
 reg lpf_config_0 {
@@ -277,6 +285,7 @@ addrmap msk_top_regs {
         LPF_Accum_F2->name = "F2 PI Controller Accumulator";
         LPF_Accum_F2->desc = "Value of the F2 PI Controller Accumulator";
     msk_stat_3 axis_xfer_count;
+    rx_sample_discard Rx_Sample_Discard;
 
 };
 
