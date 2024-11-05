@@ -258,7 +258,7 @@ typedef struct __attribute__ ((__packed__)) {
     uint32_t LPF_Accum_F1;
     uint32_t LPF_Accum_F2;
     uint32_t axis_xfer_count;
-    uint16_t Rx_Sample_Discard;
+    uint32_t Rx_Sample_Discard;
 } msk_top_regs_t;
 
 // Addrmap - Pluto_MSK_Modem
@@ -268,7 +268,7 @@ typedef struct __attribute__ ((__packed__)) {
 } Pluto_MSK_Modem_t;
 
 
-static_assert(sizeof(Pluto_MSK_Modem_t) == 0x43c00066, "Packing error");
+static_assert(sizeof(Pluto_MSK_Modem_t) == 0x43c00068, "Packing error");
 
 #ifdef __cplusplus
 }

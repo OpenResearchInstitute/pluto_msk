@@ -9,7 +9,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 - Absolute Address: 0x0
 - Base Offset: 0x0
-- Size: 0x43C00066
+- Size: 0x43C00068
 
 |  Offset  |  Identifier  |        Name       |
 |----------|--------------|-------------------|
@@ -19,7 +19,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 - Absolute Address: 0x43C00000
 - Base Offset: 0x43C00000
-- Size: 0x66
+- Size: 0x68
 
 <p>MSK Modem Configuration and Status Registers</p>
 
@@ -535,14 +535,14 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 - Absolute Address: 0x43C00064
 - Base Offset: 0x64
-- Size: 0x2
+- Size: 0x4
 
 <p>Configure samples discard operation for demodulator</p>
 
 |Bits|    Identifier   |Access|Reset|            Name           |
 |----|-----------------|------|-----|---------------------------|
 | 7:0|rx_sample_discard|  rw  | 0x0 |  Rx Sample Discard Value  |
-|15:8|  rx_nco_discard |   w  | 0x0 |Rx NCO Sample Discard Value|
+|15:8|  rx_nco_discard |  rw  | 0x0 |Rx NCO Sample Discard Value|
 
 #### rx_sample_discard field
 

@@ -47,9 +47,9 @@ reg config_nco_fw {
 };
 
 reg rx_sample_discard {
-    regwidth = 16;
+    regwidth = 32;
     field { sw = rw; hw = r;  } rx_sample_discard[7:0] = 0;
-    field { sw = w; hw = r; } rx_nco_discard[15:8] = 0;
+    field { sw = rw; hw = r; } rx_nco_discard[15:8] = 0;
 };
 
 reg lpf_config_0 {

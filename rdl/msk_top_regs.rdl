@@ -96,11 +96,11 @@ reg config_nco_fw {
 reg rx_sample_discard {
     name = "Rx Sample Discard";
     desc = "Configure samples discard operation for demodulator";
-    regwidth = 16;
+    regwidth = 32;
     field { sw = rw; hw = r;  } rx_sample_discard[7:0] = 0;
         rx_sample_discard->desc = "Number of Rx samples to discard";
         rx_sample_discard->name = "Rx Sample Discard Value";
-    field { sw = w; hw = r; } rx_nco_discard[15:8] = 0;
+    field { sw = rw; hw = r; } rx_nco_discard[15:8] = 0;
         rx_nco_discard->desc = "Number of NCO samples to discard";
         rx_nco_discard->name = "Rx NCO Sample Discard Value";
 };
