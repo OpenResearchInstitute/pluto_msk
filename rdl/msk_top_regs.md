@@ -88,14 +88,26 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 <p>Synchronous initialization of MSK Modem functions, does not affect configuration registers.</p>
 
-|Bits|Identifier|Access|Reset|    Name   |
-|----|----------|------|-----|-----------|
-|  0 |   init   |  rw  | 0x1 |Init Enable|
+|Bits|Identifier|Access|Reset|       Name      |
+|----|----------|------|-----|-----------------|
+|  0 | txrxinit |  rw  | 0x1 |Tx/Rx Init Enable|
+|  1 |  txinit  |  rw  | 0x1 |  Tx Init Enable |
+|  2 |  rxinit  |  rw  | 0x1 |  Rx Init Enable |
 
-#### init field
+#### txrxinit field
 
 <p>0 -&gt; Normal modem operation 
-1 -&gt; Initialize modem</p>
+1 -&gt; Initialize Tx and Rx</p>
+
+#### txinit field
+
+<p>0 -&gt; Normal Tx operation 
+1 -&gt; Initialize Tx</p>
+
+#### rxinit field
+
+<p>0 -&gt; Normal Rx operation 
+1 -&gt; Initialize Rx</p>
 
 ### MSK_Control register
 

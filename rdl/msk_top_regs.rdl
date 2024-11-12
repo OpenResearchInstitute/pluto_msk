@@ -20,10 +20,18 @@ reg msk_init {
     name = "MSK Modem Control 0";
     regwidth = 32;
     desc = "Synchronous initialization of MSK Modem functions, does not affect configuration registers.";
-    field { sw = rw; hw=r; } init = 1;
-        init->desc = "0 -> Normal modem operation 
-                      1 -> Initialize modem";
-        init->name = "Init Enable";
+    field { sw = rw; hw=r; } txrxinit = 1;
+        txrxinit->desc = "0 -> Normal modem operation 
+                      1 -> Initialize Tx and Rx";
+        txrxinit->name = "Tx/Rx Init Enable";
+    field { sw = rw; hw=r; } txinit = 1;
+        txinit->desc = "0 -> Normal Tx operation 
+                      1 -> Initialize Tx";
+        txinit->name = "Tx Init Enable";
+    field { sw = rw; hw=r; } rxinit = 1;
+        rxinit->desc = "0 -> Normal Rx operation 
+                      1 -> Initialize Rx";
+        rxinit->name = "Rx Init Enable";
 };
 
 reg msk_ctrl {

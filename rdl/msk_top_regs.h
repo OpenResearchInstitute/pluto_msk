@@ -24,10 +24,18 @@ extern "C" {
 #define MSK_HASH_HI__HASH_ID_HI_reset 0x5555aaaa
 
 // Reg - msk_init
-#define MSK_INIT__INIT_bm 0x1
-#define MSK_INIT__INIT_bp 0
-#define MSK_INIT__INIT_bw 1
-#define MSK_INIT__INIT_reset 0x1
+#define MSK_INIT__TXRXINIT_bm 0x1
+#define MSK_INIT__TXRXINIT_bp 0
+#define MSK_INIT__TXRXINIT_bw 1
+#define MSK_INIT__TXRXINIT_reset 0x1
+#define MSK_INIT__TXINIT_bm 0x2
+#define MSK_INIT__TXINIT_bp 1
+#define MSK_INIT__TXINIT_bw 1
+#define MSK_INIT__TXINIT_reset 0x1
+#define MSK_INIT__RXINIT_bm 0x4
+#define MSK_INIT__RXINIT_bp 2
+#define MSK_INIT__RXINIT_bw 1
+#define MSK_INIT__RXINIT_reset 0x1
 
 // Reg - msk_ctrl
 #define MSK_CTRL__PTT_bm 0x1

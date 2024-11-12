@@ -93,21 +93,41 @@ package pkg_msk_top_regs is
   -----------------------------------------------
   -- register type: msk_init
   -----------------------------------------------
-  type t_field_signals_msk_init_init_in is record
+  type t_field_signals_msk_init_txrxinit_in is record
     -- no data if field cannot be written from hw
     data : std_logic_vector(-1 downto 0); --
   end record;
 
-  type t_field_signals_msk_init_init_out is record
+  type t_field_signals_msk_init_txrxinit_out is record
+    data : std_logic_vector(1-1 downto 0); --
+  end record; --
+  type t_field_signals_msk_init_txinit_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_msk_init_txinit_out is record
+    data : std_logic_vector(1-1 downto 0); --
+  end record; --
+  type t_field_signals_msk_init_rxinit_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_msk_init_rxinit_out is record
     data : std_logic_vector(1-1 downto 0); --
   end record; --
 
   -- The actual register types
   type t_reg_msk_init_in is record--
-    init : t_field_signals_msk_init_init_in; --
+    txrxinit : t_field_signals_msk_init_txrxinit_in; --
+    txinit : t_field_signals_msk_init_txinit_in; --
+    rxinit : t_field_signals_msk_init_rxinit_in; --
   end record;
   type t_reg_msk_init_out is record--
-    init : t_field_signals_msk_init_init_out; --
+    txrxinit : t_field_signals_msk_init_txrxinit_out; --
+    txinit : t_field_signals_msk_init_txinit_out; --
+    rxinit : t_field_signals_msk_init_rxinit_out; --
   end record;
   type t_reg_msk_init_2d_in is array (integer range <>) of t_reg_msk_init_in;
   type t_reg_msk_init_2d_out is array (integer range <>) of t_reg_msk_init_out;
@@ -889,14 +909,14 @@ architecture rtl of msk_top_regs_msk_init is
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
 begin
   --
-  data_out(C_DATA_WIDTH-1 downto 1) <= (others => '0'); --
+  data_out(C_DATA_WIDTH-1 downto 3) <= (others => '0'); --
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
 
   ------------------------------------------------------------STORAGE
-  init_storage: block
+  txrxinit_storage: block
     signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
                            std_logic_vector(to_signed(1,1));
   begin
@@ -915,10 +935,58 @@ begin
       end if;
     end process;
     --
-    po_reg.init.data <= l_field_reg; --
+    po_reg.txrxinit.data <= l_field_reg; --
     data_out(0 downto 0) <= l_field_reg;
 
-  end block init_storage;
+  end block txrxinit_storage;
+  ------------------------------------------------------------STORAGE
+  txinit_storage: block
+    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
+                           std_logic_vector(to_signed(1,1));
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          l_field_reg <= std_logic_vector(to_signed(1,1));
+        else
+          -- HW --
+          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          if pi_decoder_wr_stb = '1' then
+            l_field_reg <= pi_decoder_data(1 downto 1);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.txinit.data <= l_field_reg; --
+    data_out(1 downto 1) <= l_field_reg;
+
+  end block txinit_storage;
+  ------------------------------------------------------------STORAGE
+  rxinit_storage: block
+    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
+                           std_logic_vector(to_signed(1,1));
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          l_field_reg <= std_logic_vector(to_signed(1,1));
+        else
+          -- HW --
+          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          if pi_decoder_wr_stb = '1' then
+            l_field_reg <= pi_decoder_data(2 downto 2);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.rxinit.data <= l_field_reg; --
+    data_out(2 downto 2) <= l_field_reg;
+
+  end block rxinit_storage;
   ----------------------------------------------------------
 end rtl;
 -----------------------------------------------

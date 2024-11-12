@@ -12,7 +12,9 @@ reg msk_hash_hi {
 
 reg msk_init {
     regwidth = 32;
-    field { sw = rw; hw=r; } init = 1;
+    field { sw = rw; hw=r; } txrxinit = 1;
+    field { sw = rw; hw=r; } txinit = 1;
+    field { sw = rw; hw=r; } rxinit = 1;
 };
 
 reg msk_ctrl {
