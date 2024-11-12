@@ -511,7 +511,7 @@ class prbs:
 @cocotb.test()
 async def msk_test_1(dut):
 
-    plot = False
+    plot = True
 
     print("Instantiate registers")
     axi  = axi_bus(dut)
@@ -673,7 +673,7 @@ async def msk_test_1(dut):
     #pn.sim_run = True
     #pn.sync = 100
 
-    while sim_time < sim_start + 10000000:
+    while sim_time < sim_start + 30000:
 
         # if sim_time_d <= sim_start + 1000 and sim_time >= sim_start + 1000:
         #     data = await regs.read("msk_top_regs", "PRBS_Control")
