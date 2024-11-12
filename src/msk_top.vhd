@@ -177,7 +177,8 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL tx_data_axi		: std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
 
 	SIGNAL ptt 				: std_logic;
-	SIGNAL init 			: std_logic;
+	SIGNAL txinit 			: std_logic;
+	SIGNAL rxinit 			: std_logic;
 
 	SIGNAL tx_data_w 		: std_logic_vector(7 DOWNTO 0);
 	SIGNAL rx_data_w 		: std_logic_vector(7 DOWNTO 0);
@@ -314,7 +315,7 @@ BEGIN
 
 			END IF;
 
-			IF init = '1' THEN
+			IF txinit = '1' THEN
 				saxis_req		<= '0';
 				tx_data 		<= (OTHERS => '0');
 				bit_index 		<= 0;
@@ -336,7 +337,7 @@ BEGIN
 		)
 		PORT MAP (
 			clk 			=> clk,
-			init 			=> init,
+			init 			=> txinit,
 			initial_state 	=> prbs_initial(GENERATOR_W -1 DOWNTO 0),
 			polynomial 		=> prbs_poly(GENERATOR_W -1 DOWNTO 0),
 			error_insert 	=> prbs_err_insert,
@@ -364,7 +365,7 @@ BEGIN
 		)
 		PORT MAP (
 			clk 			=> clk,
-			init 			=> init,
+			init 			=> txinit,
 
 			freq_word_tclk 	=> freq_word_ft,
 			freq_word_f1 	=> freq_word_tx_f1,
@@ -421,7 +422,7 @@ BEGIN
 
 			END IF;
 
-			IF init = '1' THEN
+			IF rxinit = '1' THEN
 				rx_bit_index	<= 6;
 				rx_data_int 	<= (OTHERS => '0');
 				rx_data 		<= (OTHERS => '0');
@@ -444,7 +445,7 @@ BEGIN
 	u_discard : PROCESS (clk)
 	BEGIN
 		IF clk'EVENT AND clk = '1' THEN
-			IF init = '1' THEN
+			IF rxinit = '1' THEN
 				discard_count 	<= (OTHERS => '0');
 				rx_samples_dec	<= (OTHERS => '0');
 			ELSE
@@ -470,7 +471,7 @@ BEGIN
 		)
 		PORT MAP (
 			clk 			=> clk,
-			init 			=> init,
+			init 			=> rxinit,
 	
 			rx_freq_word_f1 => freq_word_rx_f1,
 			rx_freq_word_f2	=> freq_word_rx_f2,
@@ -510,7 +511,7 @@ BEGIN
 		)
 		PORT MAP (
 			clk 			=> clk,
-			init 			=> init,
+			init 			=> rxinit,
 			sync_manual		=> prbs_manual_sync,
 			sync_threshold  => prbs_sync_threshold,
 			initial_state 	=> prbs_initial(GENERATOR_W -1 DOWNTO 0),
@@ -547,7 +548,7 @@ BEGIN
 			tx_axis_valid_meta <= s_axis_valid;
 			tx_axis_valid_sync <= tx_axis_valid_meta;
 
-			IF init = '1' THEN
+			IF txinit = '1' THEN
 				tx_bit_counter 		<= (OTHERS => '0');
 				tx_ena_counter 		<= (OTHERS => '0');
 				tx_axis_valid_meta 	<= '0';
@@ -607,7 +608,8 @@ BEGIN
 		lpf_accum_f1 	=> lpf_accum_f1,
 		lpf_accum_f2 	=> lpf_accum_f2,
 
-		init 				=> init,
+		txinit 				=> txinit,
+		rxinit 				=> rxinit,
 		ptt 				=> ptt,
 		loopback_ena 		=> loopback_ena,
 		rx_invert 			=> rx_invert,

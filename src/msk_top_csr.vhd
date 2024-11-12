@@ -121,7 +121,8 @@ ENTITY msk_top_csr IS
 		lpf_accum_f1 		: IN std_logic_vector(ACC_W -1 DOWNTO 0);
 		lpf_accum_f2 		: IN std_logic_vector(ACC_W -1 DOWNTO 0);
 
-		init 				: out std_logic;
+		txinit 				: out std_logic;
+		rxinit 				: out std_logic;
 		ptt 				: out std_logic;
 		loopback_ena 		: out std_logic;
 		rx_invert 			: out std_logic;
@@ -159,6 +160,8 @@ ARCHITECTURE rtl OF msk_top_csr IS
 
 	SIGNAL pi_addrmap 		: t_addrmap_msk_top_regs_in;
 	SIGNAL po_addrmap 		: t_addrmap_msk_top_regs_out;
+
+	SIGNAL txrxinit 		: std_logic;
 
 BEGIN
 
@@ -218,7 +221,11 @@ BEGIN
     pi_addrmap.LPF_Accum_F1.status_data.data <= lpf_accum_f1;
     pi_addrmap.LPF_Accum_F2.status_data.data <= lpf_accum_f2;
 
-    init 				<= po_addrmap.MSK_Init.init.data(0);
+
+
+    txrxinit 			<= po_addrmap.MSK_Init.txrxinit.data(0);
+    txinit 				<= po_addrmap.MSK_Init.txinit.data(0) OR txrxinit;
+    rxinit 				<= po_addrmap.MSK_Init.rxinit.data(0) OR txrxinit;
     ptt 				<= po_addrmap.MSK_Control.ptt.data(0);
     loopback_ena 		<= po_addrmap.MSK_Control.loopback_ena.data(0);
     rx_invert 			<= po_addrmap.MSK_Control.rx_invert.data(0);
