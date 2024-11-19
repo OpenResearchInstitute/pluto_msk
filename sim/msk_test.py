@@ -596,7 +596,7 @@ async def msk_test_1(dut):
     await regs.write("msk_top_regs", "RX_F2_FreqWord", f2_fcw_rx)
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "Rx_Sample_Discard", (tx_rx_sample_ratio << 8) + tx_rx_sample_ratio)
+    await regs.write("msk_top_regs", "Rx_Sample_Discard", (tx_rx_sample_ratio-1 << 8) + tx_rx_sample_ratio-1)
     # await axi.write(28, (50 << 16) + 20)                             # p-gain / i-gain
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -604,7 +604,7 @@ async def msk_test_1(dut):
     # await axi.write(32, (2 << 16))                                   # low-pass filter alpha
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "LPF_Config_1", (256 << 16) + 0)    
+    await regs.write("msk_top_regs", "LPF_Config_1", (4096 << 16) + 0)    
     # await axi.write(36, 8)
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -673,7 +673,7 @@ async def msk_test_1(dut):
     #pn.sim_run = True
     #pn.sync = 100
 
-    while sim_time < sim_start + 30000:
+    while sim_time < sim_start + 75000:
 
         # if sim_time_d <= sim_start + 1000 and sim_time >= sim_start + 1000:
         #     data = await regs.read("msk_top_regs", "PRBS_Control")
