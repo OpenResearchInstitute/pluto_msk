@@ -162,6 +162,7 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL rx_data_int 		: std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
 	SIGNAL rx_invert 		: std_logic;
 
+	SIGNAL rx_sample_clk 	: std_logic;
 	SIGNAL discard_rxsamples: std_logic_vector(7 DOWNTO 0);
 	SIGNAL discard_rxnco  	: std_logic_vector(7 DOWNTO 0);
 
@@ -449,13 +450,13 @@ BEGIN
 				discard_count 	<= (OTHERS => '0');
 				rx_samples_dec	<= (OTHERS => '0');
 			ELSE
-				IF rx_svalid = '1' OR loopback_ena = '1' THEN
-					IF to_integer(discard_count) = 0 THEN 
-						discard_count 	<= unsigned(discard_rxsamples);
-						rx_samples_dec 	<= rx_samples_mux(11 DOWNTO 0);
-					ELSE
-						discard_count 	<= discard_count -1;
-					END IF;
+				IF to_integer(discard_count) = 0 AND (rx_svalid = '1' OR loopback_ena = '1') THEN 
+					discard_count 	<= unsigned(discard_rxsamples);
+					rx_samples_dec 	<= rx_samples_mux(11 DOWNTO 0);
+					rx_sample_clk 	<= '1';
+				ELSE
+					discard_count 	<= discard_count -1;
+					rx_sample_clk 	<= '0';
 				END IF;
 			END IF;
 		END IF;
@@ -487,7 +488,7 @@ BEGIN
 			lpf_accum_f2 	=> lpf_accum_f2,
 
 			rx_enable 		=> rx_enable OR loopback_ena,
-			rx_svalid 		=> '1',
+			rx_svalid 		=> rx_sample_clk,
 			rx_samples 		=> rx_samples_dec(11 DOWNTO 0),
 
 			rx_data 		=> rx_bit,
