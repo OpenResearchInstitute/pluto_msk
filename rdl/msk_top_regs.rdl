@@ -125,22 +125,34 @@ reg lpf_config_0 {
         lpf_zero->name = "Hold the PI Accumulator at zero";
         lpf_zero->desc = "0 -> Normal operation
                           1 -> Zero and hold accumulator";
-    field { sw = w; hw = r; } prbs_reserved[15:2] = 0;
-    field { sw = rw; hw = r; } lpf_alpha[31:16] = 0;
+    field { sw = w; hw = r; } prbs_reserved[7:2] = 0;
+    field { sw = rw; hw = r; } lpf_alpha[31:8] = 0;
         lpf_alpha->name = "Lowpass IIR filter alpha";
         lpf_alpha->desc = "Value controls the filter rolloff";
 };
 
 reg lpf_config_1 {
-    name = "PI Controller Configuration and Low-pass Filter Configuration";
-    desc = "Configure PI controller and low-pass filter";
+    name = "PI Controller Configuration Configuration Register 1";
+    desc = "Configures PI Controller I-gain and divisor";
     regwidth = 32;
-    field { sw = rw; hw = r; } i_gain[15:0] = 0;
-        i_gain->name = "Sets the integral gain of the PI controller integrator";
-        i_gain->desc = "Integral gain value";
-    field { sw = rw; hw = r; } p_gain[31:16] = 0;
-        p_gain->name = "Sets the proportional gain of the PI controller integrator";
-        p_gain->desc = "Proportional gain value";
+    field { sw = rw; hw = r; } i_gain[23:0] = 0;
+        i_gain->name = "Integral Gain Value";
+        i_gain->desc = "Value m of 0-16,777,215 sets the integral multiplier";
+    field { sw = rw; hw = r; } i_shift[31:24] = 0;
+        i_shift->name = "Integral Gain Bit Shift";
+        i_shift->desc = "Value n of 0-32 sets the integral divisor as 2^-n";
+};
+
+reg lpf_config_2 {
+    name = "PI Controller Configuration Configuration Register 2";
+    desc = "Configures PI Controller I-gain and divisor";
+    regwidth = 32;
+    field { sw = rw; hw = r; } p_gain[23:0] = 0;
+        p_gain->name = "Proportional Gain Value";
+        p_gain->desc = "Value m of 0-16,777,215 sets the proportional multiplier";
+    field { sw = rw; hw = r; } p_shift[31:24] = 0;
+        p_shift->name = "Proportional Gain Bit Shift";
+        p_shift->desc = "Value n of 0-32 sets the proportional divisor as 2^-n";
 };
 
 reg data_width {
@@ -294,6 +306,7 @@ addrmap msk_top_regs {
         LPF_Accum_F2->desc = "Value of the F2 PI Controller Accumulator";
     msk_stat_3 axis_xfer_count;
     rx_sample_discard Rx_Sample_Discard;
+    lpf_config_2 LPF_Config_2;
 
 };
 

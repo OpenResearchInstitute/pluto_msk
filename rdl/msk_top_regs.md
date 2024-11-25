@@ -9,7 +9,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 - Absolute Address: 0x0
 - Base Offset: 0x0
-- Size: 0x43C00068
+- Size: 0x43C0006C
 
 |  Offset  |  Identifier  |        Name       |
 |----------|--------------|-------------------|
@@ -19,7 +19,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 - Absolute Address: 0x43C00000
 - Base Offset: 0x43C00000
-- Size: 0x68
+- Size: 0x6C
 
 <p>MSK Modem Configuration and Status Registers</p>
 
@@ -38,7 +38,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 | 0x28 |  RX_F1_FreqWord  |               Rx F1 NCO Frequency Control Word              |
 | 0x2C |  RX_F2_FreqWord  |               Rx F2 NCO Frequency Control Word              |
 | 0x30 |   LPF_Config_0   |PI Controller Configuration and Low-pass Filter Configuration|
-| 0x34 |   LPF_Config_1   |PI Controller Configuration and Low-pass Filter Configuration|
+| 0x34 |   LPF_Config_1   |     PI Controller Configuration Configuration Register 1    |
 | 0x38 |   Tx_Data_Width  |                  Modem Tx Input Data Width                  |
 | 0x3C |   Rx_Data_Width  |                  Modem Rx Output Data Width                 |
 | 0x40 |   PRBS_Control   |                        PRBS Control 0                       |
@@ -51,6 +51,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 | 0x5C |   LPF_Accum_F2   |                 F2 PI Controller Accumulator                |
 | 0x60 |  axis_xfer_count |                      MSK Modem Status 3                     |
 | 0x64 | Rx_Sample_Discard|                      Rx Sample Discard                      |
+| 0x68 |   LPF_Config_2   |     PI Controller Configuration Configuration Register 2    |
 
 ### Hash_ID_Low register
 
@@ -297,12 +298,12 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 <p>Configure PI controller and low-pass filter</p>
 
-| Bits|  Identifier |Access|Reset|                 Name                 |
-|-----|-------------|------|-----|--------------------------------------|
-|  0  |  lpf_freeze |  rw  | 0x0 |Freeze the accumulator's current value|
-|  1  |   lpf_zero  |  rw  | 0x0 |    Hold the PI Accumulator at zero   |
-| 15:2|prbs_reserved|   w  | 0x0 |                   —                  |
-|31:16|  lpf_alpha  |  rw  | 0x0 |       Lowpass IIR filter alpha       |
+|Bits|  Identifier |Access|Reset|                 Name                 |
+|----|-------------|------|-----|--------------------------------------|
+|  0 |  lpf_freeze |  rw  | 0x0 |Freeze the accumulator's current value|
+|  1 |   lpf_zero  |  rw  | 0x0 |    Hold the PI Accumulator at zero   |
+| 7:2|prbs_reserved|   w  | 0x0 |                   —                  |
+|31:8|  lpf_alpha  |  rw  | 0x0 |       Lowpass IIR filter alpha       |
 
 #### lpf_freeze field
 
@@ -324,20 +325,20 @@ Don't override. Generated from: Pluto_MSK_Modem
 - Base Offset: 0x34
 - Size: 0x4
 
-<p>Configure PI controller and low-pass filter</p>
+<p>Configures PI Controller I-gain and divisor</p>
 
-| Bits|Identifier|Access|Reset|                           Name                           |
-|-----|----------|------|-----|----------------------------------------------------------|
-| 15:0|  i_gain  |  rw  | 0x0 |  Sets the integral gain of the PI controller integrator  |
-|31:16|  p_gain  |  rw  | 0x0 |Sets the proportional gain of the PI controller integrator|
+| Bits|Identifier|Access|Reset|          Name         |
+|-----|----------|------|-----|-----------------------|
+| 23:0|  i_gain  |  rw  | 0x0 |  Integral Gain Value  |
+|31:24|  i_shift |  rw  | 0x0 |Integral Gain Bit Shift|
 
 #### i_gain field
 
-<p>Integral gain value</p>
+<p>Value m of 0-16,777,215 sets the integral multiplier</p>
 
-#### p_gain field
+#### i_shift field
 
-<p>Proportional gain value</p>
+<p>Value n of 0-32 sets the integral divisor as 2^-n</p>
 
 ### Tx_Data_Width register
 
@@ -563,3 +564,24 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 #### rx_nco_discard field
 
 <p>Number of NCO samples to discard</p>
+
+### LPF_Config_2 register
+
+- Absolute Address: 0x43C00068
+- Base Offset: 0x68
+- Size: 0x4
+
+<p>Configures PI Controller I-gain and divisor</p>
+
+| Bits|Identifier|Access|Reset|            Name           |
+|-----|----------|------|-----|---------------------------|
+| 23:0|  p_gain  |  rw  | 0x0 |  Proportional Gain Value  |
+|31:24|  p_shift |  rw  | 0x0 |Proportional Gain Bit Shift|
+
+#### p_gain field
+
+<p>Value m of 0-16,777,215 sets the proportional multiplier</p>
+
+#### p_shift field
+
+<p>Value n of 0-32 sets the proportional divisor as 2^-n</p>

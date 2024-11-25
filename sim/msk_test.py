@@ -513,6 +513,23 @@ async def msk_test_1(dut):
 
     plot = True
 
+    run_time = 200000 # microseconds
+
+    p_gain = 579
+    i_gain = 128
+    p_shift = 14
+    i_shift = 14
+    lpf_alpha = 0
+
+    autosync_threshold = 50
+
+    bitrate = 54200
+    freq_if_mult = 32
+
+    tx_sample_rate = 61.44e6
+
+    tx_rx_sample_ratio = 25
+
     print("Instantiate registers")
     axi  = axi_bus(dut)
     regs = addrmap_ch0.Addrmap(axi)
@@ -520,12 +537,9 @@ async def msk_test_1(dut):
     tx_samples = []
     tx_time = []
 
-    bitrate = 54200
-    freq_if = bitrate/4 * 32
-    tx_sample_rate = 61.44e6
-    tx_sample_per = int(round(1/tx_sample_rate * 1e14))*10
+    freq_if = bitrate/4 * freq_if_mult
 
-    tx_rx_sample_ratio = 25
+    tx_sample_per = int(round(1/tx_sample_rate * 1e14))*10
 
     rx_sample_rate = tx_sample_rate / tx_rx_sample_ratio
 
@@ -600,11 +614,19 @@ async def msk_test_1(dut):
     # await axi.write(28, (50 << 16) + 20)                             # p-gain / i-gain
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "LPF_Config_0", (0 << 16))    
+    await regs.write("msk_top_regs", "LPF_Config_0", (lpf_alpha << 8))    
     # await axi.write(32, (2 << 16))                                   # low-pass filter alpha
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
+<<<<<<< HEAD
     await regs.write("msk_top_regs", "LPF_Config_1", (4096 << 16) + 0)    
+=======
+    await regs.write("msk_top_regs", "LPF_Config_1", (i_shift << 24) + i_gain)    
+    # await axi.write(36, 8)
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "LPF_Config_2", (p_shift << 24) + p_gain)    
+>>>>>>> debug
     # await axi.write(36, 8)
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -616,7 +638,7 @@ async def msk_test_1(dut):
     # await axi.write(44, 1)                                          # Select PRBS data path
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "PRBS_Control", (50 << 16) + 1)    
+    await regs.write("msk_top_regs", "PRBS_Control", (autosync_threshold << 16) + 1)    
     # await axi.write(48, (1 << 31) + (1 << 28))                      # Polynomial 
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -673,7 +695,11 @@ async def msk_test_1(dut):
     #pn.sim_run = True
     #pn.sync = 100
 
+<<<<<<< HEAD
     while sim_time < sim_start + 75000:
+=======
+    while sim_time < sim_start + run_time:
+>>>>>>> debug
 
         # if sim_time_d <= sim_start + 1000 and sim_time >= sim_start + 1000:
         #     data = await regs.read("msk_top_regs", "PRBS_Control")

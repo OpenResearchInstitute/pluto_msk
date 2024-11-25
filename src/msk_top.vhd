@@ -79,7 +79,8 @@ ENTITY msk_top IS
 		PHASE_W 			: NATURAL := 10;
 		SINUSOID_W 			: NATURAL := 12;
 		SAMPLE_W 			: NATURAL := 16;
-		GAIN_W 				: NATURAL := 16;
+		GAIN_W 				: NATURAL := 24;
+		SHIFT_W 			: NATURAL := 8;
 		SYNC_W 				: NATURAL := 16;
 		GENERATOR_W 		: NATURAL := 31;
 		COUNTER_W 			: NATURAL := 32;
@@ -194,6 +195,8 @@ ARCHITECTURE struct OF msk_top IS
 
 	SIGNAL lpf_p_gain 		: std_logic_vector(GAIN_W -1 DOWNTO 0);
 	SIGNAL lpf_i_gain 		: std_logic_vector(GAIN_W -1 DOWNTO 0);
+	SIGNAL lpf_p_shift 		: std_logic_vector(SHIFT_W -1 DOWNTO 0);
+	SIGNAL lpf_i_shift 		: std_logic_vector(SHIFT_W -1 DOWNTO 0);
 	SIGNAL lpf_freeze 		: std_logic;
 	SIGNAL lpf_zero   		: std_logic;
 	SIGNAL lpf_alpha  		: std_logic_vector(GAIN_W -1 DOWNTO 0);
@@ -468,6 +471,8 @@ BEGIN
 			ACC_W 			=> ACC_W,
 			PHASE_W 		=> PHASE_W,
 			SINUSOID_W 		=> SINUSOID_W,
+			GAIN_W 			=> GAIN_W,
+			SHIFT_W 		=> SHIFT_W,
 			SAMPLE_W 		=> 12
 		)
 		PORT MAP (
@@ -480,6 +485,8 @@ BEGIN
 	
 			lpf_p_gain 		=> lpf_p_gain,
 			lpf_i_gain 		=> lpf_i_gain,
+			lpf_i_shift		=> lpf_i_shift,
+			lpf_p_shift		=> lpf_p_shift,
 			lpf_freeze 	 	=> lpf_freeze,
 			lpf_zero 		=> lpf_zero,
 			lpf_alpha 		=> lpf_alpha,
@@ -627,6 +634,8 @@ BEGIN
 		lpf_alpha 			=> lpf_alpha,
 		lpf_i_gain 			=> lpf_i_gain,
 		lpf_p_gain 			=> lpf_p_gain,
+		lpf_i_shift			=> lpf_i_shift,
+		lpf_p_shift			=> lpf_p_shift,
 		tx_data_w 			=> tx_data_w,
 		rx_data_w 			=> rx_data_w,
 		prbs_manual_sync	=> prbs_manual_sync,

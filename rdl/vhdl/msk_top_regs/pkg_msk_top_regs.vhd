@@ -333,7 +333,7 @@ package pkg_msk_top_regs is
   end record;
 
   type t_field_signals_lpf_config_0_prbs_reserved_out is record
-    data : std_logic_vector(14-1 downto 0); --
+    data : std_logic_vector(6-1 downto 0); --
   end record; --
   type t_field_signals_lpf_config_0_lpf_alpha_in is record
     -- no data if field cannot be written from hw
@@ -341,7 +341,7 @@ package pkg_msk_top_regs is
   end record;
 
   type t_field_signals_lpf_config_0_lpf_alpha_out is record
-    data : std_logic_vector(16-1 downto 0); --
+    data : std_logic_vector(24-1 downto 0); --
   end record; --
 
   -- The actual register types
@@ -370,25 +370,25 @@ package pkg_msk_top_regs is
   end record;
 
   type t_field_signals_lpf_config_1_i_gain_out is record
-    data : std_logic_vector(16-1 downto 0); --
+    data : std_logic_vector(24-1 downto 0); --
   end record; --
-  type t_field_signals_lpf_config_1_p_gain_in is record
+  type t_field_signals_lpf_config_1_i_shift_in is record
     -- no data if field cannot be written from hw
     data : std_logic_vector(-1 downto 0); --
   end record;
 
-  type t_field_signals_lpf_config_1_p_gain_out is record
-    data : std_logic_vector(16-1 downto 0); --
+  type t_field_signals_lpf_config_1_i_shift_out is record
+    data : std_logic_vector(8-1 downto 0); --
   end record; --
 
   -- The actual register types
   type t_reg_lpf_config_1_in is record--
     i_gain : t_field_signals_lpf_config_1_i_gain_in; --
-    p_gain : t_field_signals_lpf_config_1_p_gain_in; --
+    i_shift : t_field_signals_lpf_config_1_i_shift_in; --
   end record;
   type t_reg_lpf_config_1_out is record--
     i_gain : t_field_signals_lpf_config_1_i_gain_out; --
-    p_gain : t_field_signals_lpf_config_1_p_gain_out; --
+    i_shift : t_field_signals_lpf_config_1_i_shift_out; --
   end record;
   type t_reg_lpf_config_1_2d_in is array (integer range <>) of t_reg_lpf_config_1_in;
   type t_reg_lpf_config_1_2d_out is array (integer range <>) of t_reg_lpf_config_1_out;
@@ -685,6 +685,39 @@ package pkg_msk_top_regs is
   type t_reg_rx_sample_discard_3d_in is array (integer range <>, integer range <>) of t_reg_rx_sample_discard_in;
   type t_reg_rx_sample_discard_3d_out is array (integer range <>, integer range <>) of t_reg_rx_sample_discard_out;
   -----------------------------------------------
+  -- register type: lpf_config_2
+  -----------------------------------------------
+  type t_field_signals_lpf_config_2_p_gain_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_lpf_config_2_p_gain_out is record
+    data : std_logic_vector(24-1 downto 0); --
+  end record; --
+  type t_field_signals_lpf_config_2_p_shift_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_lpf_config_2_p_shift_out is record
+    data : std_logic_vector(8-1 downto 0); --
+  end record; --
+
+  -- The actual register types
+  type t_reg_lpf_config_2_in is record--
+    p_gain : t_field_signals_lpf_config_2_p_gain_in; --
+    p_shift : t_field_signals_lpf_config_2_p_shift_in; --
+  end record;
+  type t_reg_lpf_config_2_out is record--
+    p_gain : t_field_signals_lpf_config_2_p_gain_out; --
+    p_shift : t_field_signals_lpf_config_2_p_shift_out; --
+  end record;
+  type t_reg_lpf_config_2_2d_in is array (integer range <>) of t_reg_lpf_config_2_in;
+  type t_reg_lpf_config_2_2d_out is array (integer range <>) of t_reg_lpf_config_2_out;
+  type t_reg_lpf_config_2_3d_in is array (integer range <>, integer range <>) of t_reg_lpf_config_2_in;
+  type t_reg_lpf_config_2_3d_out is array (integer range <>, integer range <>) of t_reg_lpf_config_2_out;
+  -----------------------------------------------
 
   ------------------------------------------------------------------------------
   -- Register types in regfiles --
@@ -728,6 +761,7 @@ package pkg_msk_top_regs is
     LPF_Accum_F2 : t_reg_stat_32_lpf_acc_in; --
     axis_xfer_count : t_reg_msk_stat_3_in; --
     Rx_Sample_Discard : t_reg_rx_sample_discard_in; --
+    LPF_Config_2 : t_reg_lpf_config_2_in; --
     --
     --
     --
@@ -761,6 +795,7 @@ package pkg_msk_top_regs is
     LPF_Accum_F2 : t_reg_stat_32_lpf_acc_out; --
     axis_xfer_count : t_reg_msk_stat_3_out; --
     Rx_Sample_Discard : t_reg_rx_sample_discard_out; --
+    LPF_Config_2 : t_reg_lpf_config_2_out; --
     --
     --
     --
@@ -1411,50 +1446,50 @@ begin
   end block lpf_zero_storage;
   ------------------------------------------------------------STORAGE
   prbs_reserved_storage: block
-    signal l_field_reg   : std_logic_vector(14-1 downto 0) :=
-                           std_logic_vector(to_signed(0,14));
+    signal l_field_reg   : std_logic_vector(6-1 downto 0) :=
+                           std_logic_vector(to_signed(0,6));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,14));
+          l_field_reg <= std_logic_vector(to_signed(0,6));
         else
           -- HW --
           -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(15 downto 2);
+            l_field_reg <= pi_decoder_data(7 downto 2);
           end if;
         end if;
       end if;
     end process;
     --
     po_reg.prbs_reserved.data <= l_field_reg; --
-    data_out(15 downto 2) <= l_field_reg;
+    data_out(7 downto 2) <= l_field_reg;
 
   end block prbs_reserved_storage;
   ------------------------------------------------------------STORAGE
   lpf_alpha_storage: block
-    signal l_field_reg   : std_logic_vector(16-1 downto 0) :=
-                           std_logic_vector(to_signed(0,16));
+    signal l_field_reg   : std_logic_vector(24-1 downto 0) :=
+                           std_logic_vector(to_signed(0,24));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,16));
+          l_field_reg <= std_logic_vector(to_signed(0,24));
         else
           -- HW --
           -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(31 downto 16);
+            l_field_reg <= pi_decoder_data(31 downto 8);
           end if;
         end if;
       end if;
     end process;
     --
     po_reg.lpf_alpha.data <= l_field_reg; --
-    data_out(31 downto 16) <= l_field_reg;
+    data_out(31 downto 8) <= l_field_reg;
 
   end block lpf_alpha_storage;
   ----------------------------------------------------------
@@ -1494,52 +1529,52 @@ begin
 
   ------------------------------------------------------------STORAGE
   i_gain_storage: block
-    signal l_field_reg   : std_logic_vector(16-1 downto 0) :=
-                           std_logic_vector(to_signed(0,16));
+    signal l_field_reg   : std_logic_vector(24-1 downto 0) :=
+                           std_logic_vector(to_signed(0,24));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,16));
+          l_field_reg <= std_logic_vector(to_signed(0,24));
         else
           -- HW --
           -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(15 downto 0);
+            l_field_reg <= pi_decoder_data(23 downto 0);
           end if;
         end if;
       end if;
     end process;
     --
     po_reg.i_gain.data <= l_field_reg; --
-    data_out(15 downto 0) <= l_field_reg;
+    data_out(23 downto 0) <= l_field_reg;
 
   end block i_gain_storage;
   ------------------------------------------------------------STORAGE
-  p_gain_storage: block
-    signal l_field_reg   : std_logic_vector(16-1 downto 0) :=
-                           std_logic_vector(to_signed(0,16));
+  i_shift_storage: block
+    signal l_field_reg   : std_logic_vector(8-1 downto 0) :=
+                           std_logic_vector(to_signed(0,8));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,16));
+          l_field_reg <= std_logic_vector(to_signed(0,8));
         else
           -- HW --
           -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(31 downto 16);
+            l_field_reg <= pi_decoder_data(31 downto 24);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.p_gain.data <= l_field_reg; --
-    data_out(31 downto 16) <= l_field_reg;
+    po_reg.i_shift.data <= l_field_reg; --
+    data_out(31 downto 24) <= l_field_reg;
 
-  end block p_gain_storage;
+  end block i_shift_storage;
   ----------------------------------------------------------
 end rtl;
 -----------------------------------------------
@@ -2208,6 +2243,89 @@ begin
     data_out(15 downto 8) <= l_field_reg;
 
   end block rx_nco_discard_storage;
+  ----------------------------------------------------------
+end rtl;
+-----------------------------------------------
+-- register type: lpf_config_2
+-----------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+use work.pkg_msk_top_regs.all;
+
+entity msk_top_regs_lpf_config_2 is
+  port (
+    pi_clock        : in  std_logic;
+    pi_reset        : in  std_logic;
+    -- to/from adapter
+    pi_decoder_rd_stb : in  std_logic;
+    pi_decoder_wr_stb : in  std_logic;
+    pi_decoder_data   : in  std_logic_vector(C_DATA_WIDTH-1 downto 0);
+    po_decoder_data   : out std_logic_vector(C_DATA_WIDTH-1 downto 0);
+
+    pi_reg  : in t_reg_lpf_config_2_in ;
+    po_reg  : out t_reg_lpf_config_2_out
+  );
+end entity msk_top_regs_lpf_config_2;
+
+architecture rtl of msk_top_regs_lpf_config_2 is
+  signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+begin
+  --
+
+  -- resize field data out to the register bus width
+  -- do only if 1 field and signed--
+  po_decoder_data <= data_out; --
+
+  ------------------------------------------------------------STORAGE
+  p_gain_storage: block
+    signal l_field_reg   : std_logic_vector(24-1 downto 0) :=
+                           std_logic_vector(to_signed(0,24));
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          l_field_reg <= std_logic_vector(to_signed(0,24));
+        else
+          -- HW --
+          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          if pi_decoder_wr_stb = '1' then
+            l_field_reg <= pi_decoder_data(23 downto 0);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.p_gain.data <= l_field_reg; --
+    data_out(23 downto 0) <= l_field_reg;
+
+  end block p_gain_storage;
+  ------------------------------------------------------------STORAGE
+  p_shift_storage: block
+    signal l_field_reg   : std_logic_vector(8-1 downto 0) :=
+                           std_logic_vector(to_signed(0,8));
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          l_field_reg <= std_logic_vector(to_signed(0,8));
+        else
+          -- HW --
+          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          if pi_decoder_wr_stb = '1' then
+            l_field_reg <= pi_decoder_data(31 downto 24);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.p_shift.data <= l_field_reg; --
+    data_out(31 downto 24) <= l_field_reg;
+
+  end block p_shift_storage;
   ----------------------------------------------------------
 end rtl;
 -----------------------------------------------
