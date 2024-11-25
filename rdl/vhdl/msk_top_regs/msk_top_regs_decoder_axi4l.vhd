@@ -34,8 +34,8 @@ entity msk_top_regs_decoder_axi4l is
     pi_clock  : in std_logic;
     pi_reset  : in std_logic;
     --
-    po_reg_rd_stb  : out std_logic_vector(26-1 downto 0);
-    po_reg_wr_stb  : out std_logic_vector(26-1 downto 0);
+    po_reg_rd_stb  : out std_logic_vector(27-1 downto 0);
+    po_reg_wr_stb  : out std_logic_vector(27-1 downto 0);
     po_reg_data    : out std_logic_vector(G_DATA_WIDTH-1 downto 0);
     pi_reg_data    : in  std_logic_vector(G_DATA_WIDTH-1 downto 0);
     --
@@ -95,8 +95,8 @@ architecture arch of msk_top_regs_decoder_axi4l is
   signal wvalid    : std_logic;
 
   -----------------------------------------------------------
-  signal reg_rd_stb  : std_logic_vector(26-1 downto 0) := (others => '0');
-  signal reg_wr_stb  : std_logic_vector(26-1 downto 0) := (others => '0');
+  signal reg_rd_stb  : std_logic_vector(27-1 downto 0) := (others => '0');
+  signal reg_wr_stb  : std_logic_vector(27-1 downto 0) := (others => '0');
 
   -- external bus
 
@@ -285,6 +285,9 @@ begin
           when 100 =>
              rtarget  <= REG;
              reg_rd_stb(25) <= '1';
+          when 104 =>
+             rtarget  <= REG;
+             reg_rd_stb(26) <= '1';
           when others =>
              rtarget    <= NONE;
         end case;
@@ -444,6 +447,9 @@ begin
           when 100 =>
              wtarget  <= REG;
              reg_wr_stb(25) <= '1';
+          when 104 =>
+             wtarget  <= REG;
+             reg_wr_stb(26) <= '1';
           when others =>
              wtarget    <= NONE;
         end case;
@@ -481,7 +487,7 @@ begin
   -- ===========================================================================
   -- registers
   ------------------------------------------------------------------------------
-  gen_reg_wr_str: for ridx in 0 to 26-1 generate
+  gen_reg_wr_str: for ridx in 0 to 27-1 generate
     po_reg_wr_stb(ridx) <= reg_wr_stb(ridx) and wvalid;
   end generate;
   po_reg_data   <= wdata;

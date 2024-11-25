@@ -124,24 +124,24 @@ extern "C" {
 #define LPF_CONFIG_0__LPF_ZERO_bp 1
 #define LPF_CONFIG_0__LPF_ZERO_bw 1
 #define LPF_CONFIG_0__LPF_ZERO_reset 0x0
-#define LPF_CONFIG_0__PRBS_RESERVED_bm 0xfffc
+#define LPF_CONFIG_0__PRBS_RESERVED_bm 0xfc
 #define LPF_CONFIG_0__PRBS_RESERVED_bp 2
-#define LPF_CONFIG_0__PRBS_RESERVED_bw 14
+#define LPF_CONFIG_0__PRBS_RESERVED_bw 6
 #define LPF_CONFIG_0__PRBS_RESERVED_reset 0x0
-#define LPF_CONFIG_0__LPF_ALPHA_bm 0xffff0000
-#define LPF_CONFIG_0__LPF_ALPHA_bp 16
-#define LPF_CONFIG_0__LPF_ALPHA_bw 16
+#define LPF_CONFIG_0__LPF_ALPHA_bm 0xffffff00
+#define LPF_CONFIG_0__LPF_ALPHA_bp 8
+#define LPF_CONFIG_0__LPF_ALPHA_bw 24
 #define LPF_CONFIG_0__LPF_ALPHA_reset 0x0
 
 // Reg - lpf_config_1
-#define LPF_CONFIG_1__I_GAIN_bm 0xffff
+#define LPF_CONFIG_1__I_GAIN_bm 0xffffff
 #define LPF_CONFIG_1__I_GAIN_bp 0
-#define LPF_CONFIG_1__I_GAIN_bw 16
+#define LPF_CONFIG_1__I_GAIN_bw 24
 #define LPF_CONFIG_1__I_GAIN_reset 0x0
-#define LPF_CONFIG_1__P_GAIN_bm 0xffff0000
-#define LPF_CONFIG_1__P_GAIN_bp 16
-#define LPF_CONFIG_1__P_GAIN_bw 16
-#define LPF_CONFIG_1__P_GAIN_reset 0x0
+#define LPF_CONFIG_1__I_SHIFT_bm 0xff000000
+#define LPF_CONFIG_1__I_SHIFT_bp 24
+#define LPF_CONFIG_1__I_SHIFT_bw 8
+#define LPF_CONFIG_1__I_SHIFT_reset 0x0
 
 // Reg - data_width_desc_58c848dd_name_2fbd8eba
 #define DATA_WIDTH_DESC_58C848DD_NAME_2FBD8EBA__DATA_WIDTH_bm 0xff
@@ -239,6 +239,16 @@ extern "C" {
 #define RX_SAMPLE_DISCARD__RX_NCO_DISCARD_bw 8
 #define RX_SAMPLE_DISCARD__RX_NCO_DISCARD_reset 0x0
 
+// Reg - lpf_config_2
+#define LPF_CONFIG_2__P_GAIN_bm 0xffffff
+#define LPF_CONFIG_2__P_GAIN_bp 0
+#define LPF_CONFIG_2__P_GAIN_bw 24
+#define LPF_CONFIG_2__P_GAIN_reset 0x0
+#define LPF_CONFIG_2__P_SHIFT_bm 0xff000000
+#define LPF_CONFIG_2__P_SHIFT_bp 24
+#define LPF_CONFIG_2__P_SHIFT_bw 8
+#define LPF_CONFIG_2__P_SHIFT_reset 0x0
+
 // Addrmap - msk_top_regs
 typedef struct __attribute__ ((__packed__)) {
     uint32_t Hash_ID_Low;
@@ -267,6 +277,7 @@ typedef struct __attribute__ ((__packed__)) {
     uint32_t LPF_Accum_F2;
     uint32_t axis_xfer_count;
     uint32_t Rx_Sample_Discard;
+    uint32_t LPF_Config_2;
 } msk_top_regs_t;
 
 // Addrmap - Pluto_MSK_Modem
@@ -276,7 +287,7 @@ typedef struct __attribute__ ((__packed__)) {
 } Pluto_MSK_Modem_t;
 
 
-static_assert(sizeof(Pluto_MSK_Modem_t) == 0x43c00068, "Packing error");
+static_assert(sizeof(Pluto_MSK_Modem_t) == 0x43c0006c, "Packing error");
 
 #ifdef __cplusplus
 }

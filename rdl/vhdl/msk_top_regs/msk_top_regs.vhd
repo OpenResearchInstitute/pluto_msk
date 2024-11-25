@@ -45,9 +45,9 @@ architecture arch of msk_top_regs is
   type t_data_out is array (natural range<>) of std_logic_vector(C_DATA_WIDTH-1 downto 0) ;
 
   --
-  signal reg_data_out_vect : t_data_out(26-1 downto 0);
-  signal reg_rd_stb   : std_logic_vector(26-1 downto 0);
-  signal reg_wr_stb   : std_logic_vector(26-1 downto 0);
+  signal reg_data_out_vect : t_data_out(27-1 downto 0);
+  signal reg_rd_stb   : std_logic_vector(27-1 downto 0);
+  signal reg_wr_stb   : std_logic_vector(27-1 downto 0);
   signal reg_data_in  : std_logic_vector(C_DATA_WIDTH-1 downto 0);
   signal reg_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
   --
@@ -80,7 +80,7 @@ begin
   prs_reg_rd_mux: process(pi_clock)
   begin
     if rising_edge(pi_clock) then
-      for idx in 0 to 26-1 loop
+      for idx in 0 to 27-1 loop
         if reg_rd_stb(idx) = '1' then
           reg_data_out <= reg_data_out_vect(idx);
         end if;
@@ -585,6 +585,25 @@ begin
 
         pi_reg  => pi_addrmap.Rx_Sample_Discard,
         po_reg  => po_addrmap.Rx_Sample_Discard
+      ); --
+  end block; --
+  -- ---------------------------------------------------------------------------
+  -- reg name: LPF_Config_2  reg type: lpf_config_2
+  -- ---------------------------------------------------------------------------
+  blk_LPF_Config_2 : block
+  begin  --
+    inst_LPF_Config_2: entity work.msk_top_regs_lpf_config_2
+      port map(
+        pi_clock        => pi_clock,
+        pi_reset        => pi_reset,
+        -- to/from adapter
+        pi_decoder_rd_stb => reg_rd_stb(26),
+        pi_decoder_wr_stb => reg_wr_stb(26),
+        pi_decoder_data   => reg_data_in,
+        po_decoder_data   => reg_data_out_vect(26),
+
+        pi_reg  => pi_addrmap.LPF_Config_2,
+        po_reg  => po_addrmap.LPF_Config_2
       ); --
   end block; --
 

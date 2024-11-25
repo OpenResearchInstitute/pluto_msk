@@ -74,7 +74,8 @@ ENTITY msk_top_csr IS
 	GENERIC (
 		HASH_ID_LO 			: std_logic_vector := X"AAAA5555";
 		HASH_ID_HI 			: std_logic_vector := X"5555AAAA";
-		GAIN_W 				: NATURAL := 16;
+		GAIN_W 				: NATURAL := 24;
+		SHIFT_W 			: NATURAL := 8;
 		NCO_W 				: NATURAL := 32;
 		ACC_W 				: NATURAL := 32;
 		GENERATOR_W 		: NATURAL := 32;
@@ -139,6 +140,8 @@ ENTITY msk_top_csr IS
 		lpf_alpha 			: out std_logic_vector(GAIN_W -1 DOWNTO 0);
 		lpf_i_gain 			: out std_logic_vector(GAIN_W -1 DOWNTO 0);
 		lpf_p_gain 			: out std_logic_vector(GAIN_W -1 DOWNTO 0);
+		lpf_i_shift			: out std_logic_vector(SHIFT_W -1 DOWNTO 0);
+		lpf_p_shift			: out std_logic_vector(SHIFT_W -1 DOWNTO 0);
 		tx_data_w 			: out std_logic_vector(7 DOWNTO 0);
 		rx_data_w 			: out std_logic_vector(7 DOWNTO 0);
 		prbs_initial		: out std_logic_vector(GENERATOR_W -1 DOWNTO 0);
@@ -239,7 +242,9 @@ BEGIN
     lpf_zero 			<= po_addrmap.LPF_Config_0.lpf_zero.data(0);
     lpf_alpha 			<= po_addrmap.LPF_Config_0.lpf_alpha.data;
     lpf_i_gain 			<= po_addrmap.LPF_Config_1.i_gain.data;
-    lpf_p_gain 			<= po_addrmap.LPF_Config_1.p_gain.data;
+    lpf_i_shift 		<= po_addrmap.LPF_Config_1.i_shift.data;
+    lpf_p_gain 			<= po_addrmap.LPF_Config_2.p_gain.data;
+    lpf_p_shift 		<= po_addrmap.LPF_Config_2.p_shift.data;
     tx_data_w 			<= po_addrmap.Tx_Data_Width.data_width.data;
     rx_data_w 			<= po_addrmap.Rx_Data_Width.data_width.data;
     discard_rxsamples 	<= po_addrmap.Rx_Sample_Discard.rx_sample_discard.data;
