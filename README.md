@@ -107,7 +107,7 @@ sys	39m46.236s
 | 0x28 |  RX_F1_FreqWord  |               Rx F1 NCO Frequency Control Word              |
 | 0x2C |  RX_F2_FreqWord  |               Rx F2 NCO Frequency Control Word              |
 | 0x30 |   LPF_Config_0   |PI Controller Configuration and Low-pass Filter Configuration|
-| 0x34 |   LPF_Config_1   |PI Controller Configuration and Low-pass Filter Configuration|
+| 0x34 |   LPF_Config_1   |     PI Controller Configuration Configuration Register 1    |
 | 0x38 |   Tx_Data_Width  |                  Modem Tx Input Data Width                  |
 | 0x3C |   Rx_Data_Width  |                  Modem Rx Output Data Width                 |
 | 0x40 |   PRBS_Control   |                        PRBS Control 0                       |
@@ -120,6 +120,7 @@ sys	39m46.236s
 | 0x5C |   LPF_Accum_F2   |                 F2 PI Controller Accumulator                |
 | 0x60 |  axis_xfer_count |                      MSK Modem Status 3                     |
 | 0x64 | Rx_Sample_Discard|                      Rx Sample Discard                      |
+| 0x68 |   LPF_Config_2   |     PI Controller Configuration Configuration Register 2    |
 
 See [MSK Top Regs](rdl/msk_top_regs.pdf) for detailed register definitions.
 

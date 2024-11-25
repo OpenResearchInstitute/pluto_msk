@@ -513,7 +513,7 @@ async def msk_test_1(dut):
 
     plot = True
 
-    run_time = 100000 # microseconds
+    run_time = 200000 # microseconds
 
     p_gain = 579
     i_gain = 128
