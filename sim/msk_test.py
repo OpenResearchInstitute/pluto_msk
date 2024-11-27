@@ -618,15 +618,11 @@ async def msk_test_1(dut):
     # await axi.write(32, (2 << 16))                                   # low-pass filter alpha
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-<<<<<<< HEAD
-    await regs.write("msk_top_regs", "LPF_Config_1", (4096 << 16) + 0)    
-=======
     await regs.write("msk_top_regs", "LPF_Config_1", (i_shift << 24) + i_gain)    
     # await axi.write(36, 8)
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
     await regs.write("msk_top_regs", "LPF_Config_2", (p_shift << 24) + p_gain)    
->>>>>>> debug
     # await axi.write(36, 8)
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -695,11 +691,7 @@ async def msk_test_1(dut):
     #pn.sim_run = True
     #pn.sync = 100
 
-<<<<<<< HEAD
-    while sim_time < sim_start + 75000:
-=======
     while sim_time < sim_start + run_time:
->>>>>>> debug
 
         # if sim_time_d <= sim_start + 1000 and sim_time >= sim_start + 1000:
         #     data = await regs.read("msk_top_regs", "PRBS_Control")
