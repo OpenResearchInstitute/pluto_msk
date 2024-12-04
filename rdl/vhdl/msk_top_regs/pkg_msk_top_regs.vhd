@@ -718,6 +718,29 @@ package pkg_msk_top_regs is
   type t_reg_lpf_config_2_3d_in is array (integer range <>, integer range <>) of t_reg_lpf_config_2_in;
   type t_reg_lpf_config_2_3d_out is array (integer range <>, integer range <>) of t_reg_lpf_config_2_out;
   -----------------------------------------------
+  -- register type: observation_data
+  -----------------------------------------------
+  type t_field_signals_observation_data_data32_in is record
+    data : std_logic_vector(32-1 downto 0); --
+  end record;
+
+  type t_field_signals_observation_data_data32_out is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record; --
+
+  -- The actual register types
+  type t_reg_observation_data_in is record--
+    data32 : t_field_signals_observation_data_data32_in; --
+  end record;
+  type t_reg_observation_data_out is record--
+    data32 : t_field_signals_observation_data_data32_out; --
+  end record;
+  type t_reg_observation_data_2d_in is array (integer range <>) of t_reg_observation_data_in;
+  type t_reg_observation_data_2d_out is array (integer range <>) of t_reg_observation_data_out;
+  type t_reg_observation_data_3d_in is array (integer range <>, integer range <>) of t_reg_observation_data_in;
+  type t_reg_observation_data_3d_out is array (integer range <>, integer range <>) of t_reg_observation_data_out;
+  -----------------------------------------------
 
   ------------------------------------------------------------------------------
   -- Register types in regfiles --
@@ -762,6 +785,10 @@ package pkg_msk_top_regs is
     axis_xfer_count : t_reg_msk_stat_3_in; --
     Rx_Sample_Discard : t_reg_rx_sample_discard_in; --
     LPF_Config_2 : t_reg_lpf_config_2_in; --
+    f1_nco_adjust : t_reg_observation_data_in; --
+    f2_nco_adjust : t_reg_observation_data_in; --
+    f1_error : t_reg_observation_data_in; --
+    f2_error : t_reg_observation_data_in; --
     --
     --
     --
@@ -796,6 +823,10 @@ package pkg_msk_top_regs is
     axis_xfer_count : t_reg_msk_stat_3_out; --
     Rx_Sample_Discard : t_reg_rx_sample_discard_out; --
     LPF_Config_2 : t_reg_lpf_config_2_out; --
+    f1_nco_adjust : t_reg_observation_data_out; --
+    f2_nco_adjust : t_reg_observation_data_out; --
+    f1_error : t_reg_observation_data_out; --
+    f2_error : t_reg_observation_data_out; --
     --
     --
     --
@@ -2327,6 +2358,48 @@ begin
 
   end block p_shift_storage;
   ----------------------------------------------------------
+end rtl;
+-----------------------------------------------
+-- register type: observation_data
+-----------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+use work.pkg_msk_top_regs.all;
+
+entity msk_top_regs_observation_data is
+  port (
+    pi_clock        : in  std_logic;
+    pi_reset        : in  std_logic;
+    -- to/from adapter
+    pi_decoder_rd_stb : in  std_logic;
+    pi_decoder_wr_stb : in  std_logic;
+    pi_decoder_data   : in  std_logic_vector(C_DATA_WIDTH-1 downto 0);
+    po_decoder_data   : out std_logic_vector(C_DATA_WIDTH-1 downto 0);
+
+    pi_reg  : in t_reg_observation_data_in ;
+    po_reg  : out t_reg_observation_data_out
+  );
+end entity msk_top_regs_observation_data;
+
+architecture rtl of msk_top_regs_observation_data is
+  signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+begin
+  --
+
+  -- resize field data out to the register bus width
+  -- do only if 1 field and signed--
+  po_decoder_data <= data_out; --
+
+  ------------------------------------------------------------WIRE
+  data32_wire : block--
+  begin
+    --
+    data_out(31 downto 0) <= pi_reg.data32.data(32-1 downto 0); --
+    --no signal to read by HW
+    po_reg.data32.data <= (others => '0'); --
+  end block; --
 end rtl;
 -----------------------------------------------
 

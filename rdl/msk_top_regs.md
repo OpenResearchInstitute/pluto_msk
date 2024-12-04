@@ -9,7 +9,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 - Absolute Address: 0x0
 - Base Offset: 0x0
-- Size: 0x43C0006C
+- Size: 0x43C0007C
 
 |  Offset  |  Identifier  |        Name       |
 |----------|--------------|-------------------|
@@ -19,7 +19,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 - Absolute Address: 0x43C00000
 - Base Offset: 0x43C00000
-- Size: 0x6C
+- Size: 0x7C
 
 <p>MSK Modem Configuration and Status Registers</p>
 
@@ -52,6 +52,10 @@ Don't override. Generated from: Pluto_MSK_Modem
 | 0x60 |  axis_xfer_count |                      MSK Modem Status 3                     |
 | 0x64 | Rx_Sample_Discard|                      Rx Sample Discard                      |
 | 0x68 |   LPF_Config_2   |     PI Controller Configuration Configuration Register 2    |
+| 0x6C |   f1_nco_adjust  |                   F1 NCO Frequency Adjust                   |
+| 0x70 |   f2_nco_adjust  |                   F2 NCO Frequency Adjust                   |
+| 0x74 |     f1_error     |                        F1 Error Value                       |
+| 0x78 |     f2_error     |                        F2 Error Value                       |
 
 ### Hash_ID_Low register
 
@@ -585,3 +589,67 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 #### p_shift field
 
 <p>Value n of 0-32 sets the proportional divisor as 2^-n</p>
+
+### f1_nco_adjust register
+
+- Absolute Address: 0x43C0006C
+- Base Offset: 0x6C
+- Size: 0x4
+
+<p>Frequency offet applied to the F1 NCO</p>
+
+|Bits|Identifier|Access|Reset|          Name         |
+|----|----------|------|-----|-----------------------|
+|31:0|   data   |   r  | 0x0 |F1 NCO Frequency Adjust|
+
+#### data field
+
+<p>Frequency offet applied to the F1 NCO</p>
+
+### f2_nco_adjust register
+
+- Absolute Address: 0x43C00070
+- Base Offset: 0x70
+- Size: 0x4
+
+<p>Frequency offet applied to the F2 NCO</p>
+
+|Bits|Identifier|Access|Reset|          Name         |
+|----|----------|------|-----|-----------------------|
+|31:0|   data   |   r  | 0x0 |F2 NCO Frequency Adjust|
+
+#### data field
+
+<p>Frequency offet applied to the F2 NCO</p>
+
+### f1_error register
+
+- Absolute Address: 0x43C00074
+- Base Offset: 0x74
+- Size: 0x4
+
+<p>Error value of the F1 Costas loop after each active bit period</p>
+
+|Bits|Identifier|Access|Reset|     Name     |
+|----|----------|------|-----|--------------|
+|31:0|   data   |   r  | 0x0 |F1 Error Value|
+
+#### data field
+
+<p>Error value of the F1 Costas loop after each active bit period</p>
+
+### f2_error register
+
+- Absolute Address: 0x43C00078
+- Base Offset: 0x78
+- Size: 0x4
+
+<p>Error value of the F2 Costas loop after each active bit period</p>
+
+|Bits|Identifier|Access|Reset|     Name     |
+|----|----------|------|-----|--------------|
+|31:0|   data   |   r  | 0x0 |F2 Error Value|
+
+#### data field
+
+<p>Error value of the F2 Costas loop after each active bit period</p>

@@ -124,6 +124,17 @@ reg msk_stat_3 {
     field { sw = r; hw = w; } xfer_count[31:0] = 0;
 };
 
+field data32 {
+    fieldwidth = 32;
+    sw = r;
+    hw = w;
+};
+
+reg observation_data {
+    regwidth = 32;
+    data32 data[31:0] = 0;
+};
+
 addrmap msk_top_regs {
     lsb0;
     default accesswidth=32;
@@ -159,6 +170,11 @@ addrmap msk_top_regs {
     msk_stat_3 axis_xfer_count;
     rx_sample_discard Rx_Sample_Discard;
     lpf_config_2 LPF_Config_2;
+    observation_data f1_nco_adjust;
+    observation_data f2_nco_adjust;
+    observation_data f1_error;
+    observation_data f2_error;
+
 
 };
 

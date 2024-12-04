@@ -249,6 +249,30 @@ extern "C" {
 #define LPF_CONFIG_2__P_SHIFT_bw 8
 #define LPF_CONFIG_2__P_SHIFT_reset 0x0
 
+// Reg - observation_data_data_0c017ef4_desc_64ff3689_name_d8ad3b25
+#define OBSERVATION_DATA_DATA_0C017EF4_DESC_64FF3689_NAME_D8AD3B25__DATA_bm 0xffffffff
+#define OBSERVATION_DATA_DATA_0C017EF4_DESC_64FF3689_NAME_D8AD3B25__DATA_bp 0
+#define OBSERVATION_DATA_DATA_0C017EF4_DESC_64FF3689_NAME_D8AD3B25__DATA_bw 32
+#define OBSERVATION_DATA_DATA_0C017EF4_DESC_64FF3689_NAME_D8AD3B25__DATA_reset 0x0
+
+// Reg - observation_data_data_0515efaa_desc_ebde6d39_name_2c154788
+#define OBSERVATION_DATA_DATA_0515EFAA_DESC_EBDE6D39_NAME_2C154788__DATA_bm 0xffffffff
+#define OBSERVATION_DATA_DATA_0515EFAA_DESC_EBDE6D39_NAME_2C154788__DATA_bp 0
+#define OBSERVATION_DATA_DATA_0515EFAA_DESC_EBDE6D39_NAME_2C154788__DATA_bw 32
+#define OBSERVATION_DATA_DATA_0515EFAA_DESC_EBDE6D39_NAME_2C154788__DATA_reset 0x0
+
+// Reg - observation_data_data_25a21249_desc_417e1c96_name_3b640507
+#define OBSERVATION_DATA_DATA_25A21249_DESC_417E1C96_NAME_3B640507__DATA_bm 0xffffffff
+#define OBSERVATION_DATA_DATA_25A21249_DESC_417E1C96_NAME_3B640507__DATA_bp 0
+#define OBSERVATION_DATA_DATA_25A21249_DESC_417E1C96_NAME_3B640507__DATA_bw 32
+#define OBSERVATION_DATA_DATA_25A21249_DESC_417E1C96_NAME_3B640507__DATA_reset 0x0
+
+// Reg - observation_data_data_272a00b6_desc_70869502_name_3de9a0d3
+#define OBSERVATION_DATA_DATA_272A00B6_DESC_70869502_NAME_3DE9A0D3__DATA_bm 0xffffffff
+#define OBSERVATION_DATA_DATA_272A00B6_DESC_70869502_NAME_3DE9A0D3__DATA_bp 0
+#define OBSERVATION_DATA_DATA_272A00B6_DESC_70869502_NAME_3DE9A0D3__DATA_bw 32
+#define OBSERVATION_DATA_DATA_272A00B6_DESC_70869502_NAME_3DE9A0D3__DATA_reset 0x0
+
 // Addrmap - msk_top_regs
 typedef struct __attribute__ ((__packed__)) {
     uint32_t Hash_ID_Low;
@@ -278,6 +302,10 @@ typedef struct __attribute__ ((__packed__)) {
     uint32_t axis_xfer_count;
     uint32_t Rx_Sample_Discard;
     uint32_t LPF_Config_2;
+    uint32_t f1_nco_adjust;
+    uint32_t f2_nco_adjust;
+    uint32_t f1_error;
+    uint32_t f2_error;
 } msk_top_regs_t;
 
 // Addrmap - Pluto_MSK_Modem
@@ -287,7 +315,7 @@ typedef struct __attribute__ ((__packed__)) {
 } Pluto_MSK_Modem_t;
 
 
-static_assert(sizeof(Pluto_MSK_Modem_t) == 0x43c0006c, "Packing error");
+static_assert(sizeof(Pluto_MSK_Modem_t) == 0x43c0007c, "Packing error");
 
 #ifdef __cplusplus
 }

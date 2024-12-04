@@ -84,6 +84,10 @@ class Addrmap:
         self.addrmap['msk_top_regs.axis_xfer_count'] = AddrmapItem("msk_top_regs.axis_xfer_count", bus, 96, 4, 32, 0, 0, "RO")
         self.addrmap['msk_top_regs.Rx_Sample_Discard'] = AddrmapItem("msk_top_regs.Rx_Sample_Discard", bus, 100, 4, 16, 0, 0, "RW")
         self.addrmap['msk_top_regs.LPF_Config_2'] = AddrmapItem("msk_top_regs.LPF_Config_2", bus, 104, 4, 32, 0, 0, "RW")
+        self.addrmap['msk_top_regs.f1_nco_adjust'] = AddrmapItem("msk_top_regs.f1_nco_adjust", bus, 108, 4, 32, 0, 0, "RO")
+        self.addrmap['msk_top_regs.f2_nco_adjust'] = AddrmapItem("msk_top_regs.f2_nco_adjust", bus, 112, 4, 32, 0, 0, "RO")
+        self.addrmap['msk_top_regs.f1_error'] = AddrmapItem("msk_top_regs.f1_error", bus, 116, 4, 32, 0, 0, "RO")
+        self.addrmap['msk_top_regs.f2_error'] = AddrmapItem("msk_top_regs.f2_error", bus, 120, 4, 32, 0, 0, "RO")
 
     def get_path(self, module, name):
         path = module + "." + name

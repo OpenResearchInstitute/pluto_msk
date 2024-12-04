@@ -203,6 +203,10 @@ ARCHITECTURE struct OF msk_top IS
 
 	SIGNAL lpf_accum_f1 	: std_logic_vector(ACC_W -1 DOWNTO 0);
 	SIGNAL lpf_accum_f2 	: std_logic_vector(ACC_W -1 DOWNTO 0);
+	SIGNAL f1_nco_adjust	: std_logic_vector(31 DOWNTO 0);
+	SIGNAL f2_nco_adjust	: std_logic_vector(31 DOWNTO 0);
+	SIGNAL f1_error			: std_logic_vector(31 DOWNTO 0);
+	SIGNAL f2_error			: std_logic_vector(31 DOWNTO 0);
 
 	SIGNAL demod_sync_lock  : std_logic;
 
@@ -493,6 +497,10 @@ BEGIN
 
 			lpf_accum_f1 	=> lpf_accum_f1,
 			lpf_accum_f2 	=> lpf_accum_f2,
+			f1_nco_adjust	=> f1_nco_adjust,
+			f2_nco_adjust	=> f2_nco_adjust,
+			f1_error		=> f1_error,
+			f2_error		=> f2_error,
 
 			rx_enable 		=> rx_enable OR loopback_ena,
 			rx_svalid 		=> rx_sample_clk,
@@ -615,6 +623,10 @@ BEGIN
 		prbs_errs		=> prbs_errs,
 		lpf_accum_f1 	=> lpf_accum_f1,
 		lpf_accum_f2 	=> lpf_accum_f2,
+		f1_nco_adjust	=> f1_nco_adjust,
+		f2_nco_adjust	=> f2_nco_adjust,
+		f1_error		=> f1_error,
+		f2_error		=> f2_error,
 
 		txinit 				=> txinit,
 		rxinit 				=> rxinit,

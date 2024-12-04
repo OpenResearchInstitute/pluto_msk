@@ -121,6 +121,10 @@ ENTITY msk_top_csr IS
 		prbs_errs			: IN std_logic_vector(COUNTER_W -1 DOWNTO 0);
 		lpf_accum_f1 		: IN std_logic_vector(ACC_W -1 DOWNTO 0);
 		lpf_accum_f2 		: IN std_logic_vector(ACC_W -1 DOWNTO 0);
+		f1_nco_adjust		: IN std_logic_vector(31 DOWNTO 0);
+		f2_nco_adjust		: IN std_logic_vector(31 DOWNTO 0);
+		f1_error			: IN std_logic_vector(31 DOWNTO 0);
+		f2_error			: IN std_logic_vector(31 DOWNTO 0);
 
 		txinit 				: out std_logic;
 		rxinit 				: out std_logic;
@@ -223,6 +227,10 @@ BEGIN
     pi_addrmap.PRBS_Error_Count.status_data.data <= prbs_errs;
     pi_addrmap.LPF_Accum_F1.status_data.data <= lpf_accum_f1;
     pi_addrmap.LPF_Accum_F2.status_data.data <= lpf_accum_f2;
+    pi_addrmap.f1_nco_adjust.data32.data 	<= f1_nco_adjust;
+    pi_addrmap.f2_nco_adjust.data32.data 	<= f2_nco_adjust;
+    pi_addrmap.f1_error.data32.data 		<= f1_error;
+    pi_addrmap.f2_error.data32.data 		<= f2_error;
 
 
 
