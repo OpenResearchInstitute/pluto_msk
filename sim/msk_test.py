@@ -513,13 +513,12 @@ async def msk_test_1(dut):
 
     plot = True
 
-    run_time = 200000 # microseconds
+    run_time = 20000 # microseconds
 
     p_gain = 579
     i_gain = 128
-    p_shift = 14
-    i_shift = 14
-    lpf_alpha = 0
+    p_shift = 6
+    i_shift = 6
 
     autosync_threshold = 50
 
@@ -529,6 +528,12 @@ async def msk_test_1(dut):
     tx_sample_rate = 61.44e6
 
     tx_rx_sample_ratio = 25
+
+    rx_offset = 100
+
+    lpf_alpha = 0
+
+    rx_invert = 0
 
     print("Instantiate registers")
     axi  = axi_bus(dut)
@@ -557,8 +562,8 @@ async def msk_test_1(dut):
 
     f1_fcw_tx = int(f1 / tx_sample_rate * 2.0**32)
     f2_fcw_tx = int(f2 / tx_sample_rate * 2.0**32)
-    f1_fcw_rx = int(f1 / tx_sample_rate * 2.0**32)
-    f2_fcw_rx = int(f2 / tx_sample_rate * 2.0**32)
+    f1_fcw_rx = int((f1+rx_offset) / tx_sample_rate * 2.0**32)
+    f2_fcw_rx = int((f2+rx_offset) / tx_sample_rate * 2.0**32)
 
     print("Bit Rate NCO Freq Word: ", hex(br_fcw))
     print("TX F1 NCO Freq Word: ", hex(f1_fcw_tx))
@@ -590,7 +595,7 @@ async def msk_test_1(dut):
     # await axi.write(12, 1)                                         # loopback
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "MSK_Control", 7)    
+    await regs.write("msk_top_regs", "MSK_Control", (rx_invert <<2) + 3)    
     # await axi.write(16, int(bitrate / sample_rate * 2.0**32))      # bit rate frequency word
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
