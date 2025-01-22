@@ -324,15 +324,20 @@ class axi_bus:
 
 class msk:
 
-    def __init__(self, dut, clk, tx_sample_bus):
+    def __init__(self, dut, clk, tx_samples_I, tx_samples_Q, rx_sample_clk, rx_samples):
 
         self.dut = dut
         self.sim_run = False
 
-        self.tx_sample_bus = tx_sample_bus 
+        self.tx_samples_I = tx_samples_I 
+        self.tx_samples_Q = tx_samples_Q 
+        self.rx_samples   = rx_samples
+        self.rx_sample_clk = rx_sample_clk
         self.clk = clk
 
-        self.tx_samples = []
+        self.tx_samples_I_arr = []
+        self.tx_samples_Q_arr = []
+        self.rx_samples_arr   = []
         self.time = []
 
     async def tx_sample_capture(self):
@@ -345,12 +350,28 @@ class msk:
         self.dut._log.info("tx sample capture - starting...")
 
         while self.sim_run:
-            self.tx_samples.append(int(self.tx_sample_bus.value.signed_integer))
+            self.tx_samples_I_arr.append(int(self.tx_samples_I.value.signed_integer))
+            self.tx_samples_Q_arr.append(int(self.tx_samples_Q.value.signed_integer))
             self.time.append(get_sim_time("us"))
             await RisingEdge(self.clk)
 
         self.dut._log.info("...tx sample capture - done")
 
+    async def rx_sample_capture(self):
+
+        self.dut._log.info("rx sample capture - waiting for start...")
+
+        while self.sim_run == False:
+            await RisingEdge(self.clk)
+
+        self.dut._log.info("rx sample capture - starting...")
+
+        while self.sim_run:
+            if self.rx_sample_clk.value.integer == 1:
+                self.rx_samples_arr.append(int(self.rx_samples.value.signed_integer))
+            await RisingEdge(self.clk)
+
+        self.dut._log.info("...rx sample capture - done")
 
 #------------------------------------------------------------------------------------------------------
 #  __   __   __   __    __                                              __                    
@@ -499,6 +520,95 @@ class prbs:
 
         self.dut._log.info("...prbs mon - done")
 
+#------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------
+
+class duc:
+
+    def __init__(self, dut, msk, lo, sample_period):
+
+        self.dut = dut 
+        self.msk = msk
+        self.clk = dut.clk
+        self.lo = lo
+        self.sample_period = sample_period
+        self.time = 0
+        self.tx_samples_I_up = []
+        self.tx_samples_Q_up = []
+        self.tx_samples_IQ_mod = []
+
+    async def upconvert(self):
+
+        self.dut._log.info("duc - waiting for start...")
+
+        while self.msk.sim_run == False:
+            await RisingEdge(self.clk)
+
+        self.dut._log.info("duc - starting...")
+
+        while self.msk.sim_run:
+
+            await RisingEdge(self.clk)
+
+            self.time += self.sample_period
+
+            self.sin = math.sin(2*math.pi*self.lo*self.time)
+            self.cos = math.cos(2*math.pi*self.lo*self.time)
+
+            self.tx_samples_I_up.append(self.cos * self.dut.tx_samples_I.value.signed_integer)
+            self.tx_samples_Q_up.append(self.sin * self.dut.tx_samples_Q.value.signed_integer)
+            self.tx_samples_IQ_mod.append(self.tx_samples_I_up[-1] + self.tx_samples_Q_up[-1])
+
+        self.dut._log.info("...duc - done")
+
+
+#------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------
+
+class ddc:
+
+    def __init__(self, dut, msk, duc, lo, sample_period):
+
+        self.dut = dut 
+        self.msk = msk
+        self.clk = dut.clk
+        self.duc = duc
+        self.lo = lo
+        self.sample_period = sample_period
+        self.time = 0
+        self.rx_samples_I_dn = []
+        self.rx_samples_Q_dn = []
+
+    async def downconvert(self):
+
+        self.dut._log.info("ddc - waiting for start...")
+
+        while self.msk.sim_run == False:
+            await RisingEdge(self.clk)
+
+        self.dut._log.info("ddc - starting...")
+
+        while self.msk.sim_run:
+
+            await RisingEdge(self.clk)
+
+            self.time += self.sample_period
+
+            rx_sample = self.duc.tx_samples_IQ_mod[-1]
+
+            self.sin = math.sin(2*math.pi*self.lo*self.time)
+            self.cos = math.cos(2*math.pi*self.lo*self.time)
+
+            rx_sample_I_dn = self.cos * rx_sample
+            rx_sample_Q_dn = self.sin * rx_sample
+
+            self.rx_samples_I_dn.append(rx_sample_I_dn)
+            self.rx_samples_Q_dn.append(rx_sample_Q_dn)
+
+            self.dut.rx_samples.value = int(round(rx_sample_I_dn))
+            #self.dut.rx_sample_Q.value = rx_sample_Q_dn
+
+        self.dut._log.info("...ddc - done")
 
 
 #------------------------------------------------------------------------------------------------------
@@ -513,7 +623,7 @@ async def msk_test_1(dut):
 
     plot = True
 
-    run_time = 20000 # microseconds
+    run_time = 50000 # microseconds
 
     p_gain = 579
     i_gain = 128
@@ -525,7 +635,15 @@ async def msk_test_1(dut):
     bitrate = 54200
     freq_if_mult = 32
 
+    freq_if = bitrate/4 * freq_if_mult
+
+    freq_carrier = 10e6
+    period_carrier = 1/freq_carrier
+
+    local_osc = freq_carrier -  freq_if
+
     tx_sample_rate = 61.44e6
+    tx_sample_period = 1/tx_sample_rate
 
     tx_rx_sample_ratio = 25
 
@@ -541,8 +659,6 @@ async def msk_test_1(dut):
 
     tx_samples = []
     tx_time = []
-
-    freq_if = bitrate/4 * freq_if_mult
 
     tx_sample_per = int(round(1/tx_sample_rate * 1e14))*10
 
@@ -580,22 +696,17 @@ async def msk_test_1(dut):
     await axi.init()
     await axis.init()
     
-    dut.tx_enable.value = 0
-    dut.rx_enable.value = 0
-    dut.rx_svalid.value = 0
-    dut.tx_valid.value  = 0
+    dut.tx_enable.value = 1
+    dut.rx_enable.value = 1
+    dut.rx_svalid.value = 1
+    dut.tx_valid.value  = 1
+    dut.rx_samples.value = 0
 
     hash_id = await regs.read("msk_top_regs", "Hash_ID_Low")
 
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-
-    # await axi.write( 4, 1)                                         # assert on init
-    # await regs.write("msk_top_regs", "MSK_Init", 1)
-    # await axi.write(12, 1)                                         # loopback
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "MSK_Control", (rx_invert <<2) + 3)    
+    await regs.write("msk_top_regs", "MSK_Control", (rx_invert <<2) + 1)    
     # await axi.write(16, int(bitrate / sample_rate * 2.0**32))      # bit rate frequency word
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -678,10 +789,16 @@ async def msk_test_1(dut):
 
     await RisingEdge(dut.clk)
 
-    msksim = msk(dut, dut.clk, dut.tx_samples)
+    msksim = msk(dut, dut.clk, dut.tx_samples_I, dut.tx_samples_Q, dut.rx_sample_clk, dut.rx_samples_dec)
     #pn = prbs(dut, dut.clk, axis, tx_data_width, rx_data_width, dut.rx_data, dut.rx_dvalid)
 
+    ducsim = duc(dut, msksim, local_osc, tx_sample_period)
+    ddcsim = ddc(dut, msksim, ducsim, local_osc, tx_sample_period)
+
     await cocotb.start(msksim.tx_sample_capture())
+    await cocotb.start(msksim.rx_sample_capture())
+    await cocotb.start(ducsim.upconvert())
+    await cocotb.start(ddcsim.downconvert())
     #await cocotb.start(pn.generate_data())
     #await cocotb.start(pn.check_data())
 
@@ -767,11 +884,16 @@ async def msk_test_1(dut):
 
     await RisingEdge(dut.clk)
 
-    tx_time        = msksim.time
-    tx_samples     = msksim.tx_samples
+    tx_time         = msksim.time
 
-    tx_samples_arr = np.asarray(tx_samples)
-    tx_samples_2   = tx_samples_arr * tx_samples_arr
+    tx_samples_if_arr   = np.array(msksim.tx_samples_I_arr,  dtype=complex)
+    tx_samples_if_cmplx = np.array(msksim.tx_samples_I_arr,  dtype=complex) - 1j * np.array(msksim.tx_samples_Q_arr, dtype=complex)
+    tx_samples_fc_cmplx = np.array(ducsim.tx_samples_I_up,   dtype=complex) - 1j * np.array(ducsim.tx_samples_Q_up,  dtype=complex)
+    tx_samples_fc_real  = np.array(ducsim.tx_samples_IQ_mod, dtype=int)
+    rx_samples_rx_real  = np.array(ddcsim.rx_samples_I_dn,   dtype=int)
+    rx_samples_rx_cmplx = np.array(ddcsim.rx_samples_I_dn,   dtype=complex) - 1j * np.array(ddcsim.rx_samples_Q_dn,  dtype=complex)
+    rx_samples_rx_dec   = np.array(msksim.rx_samples_arr,    dtype=int)
+    #tx_samples_2   = tx_samples_arr * tx_samples_arr
 
     # print("Ones: ", pn.ones_count)
     # print("Zeros: ", pn.zeros_count)
@@ -789,27 +911,51 @@ async def msk_test_1(dut):
     if plot:
         blackman_window = np.blackman(len(tx_samples))
     
-        fig = plt.figure(figsize=(7, 7), layout='constrained')
-        axs = fig.subplot_mosaic([["signal", "signal"],
-                                  ["magnitude", "log_magnitude"],
-                                  ["psd", "psd"]])
+        fig = plt.figure(figsize=(10, 7), layout='constrained')
+        axs = fig.subplot_mosaic([ #["signal", "signal"],
+                                   #["magnitude", "log_magnitude"],
+                                   ["psd_if_real", "psd_if_real"], 
+                                   ["psd_if_cmplx", "psd_if_cmplx"],
+                                   ["psd_fc_cmplx", "psd_fc_cmplx"],
+                                   ["psd_fc_real", "psd_fc_real"],
+                                   ["psd_rx_cmplx", "psd_rx_cmplx"],
+                                   ["psd_rx_real", "psd_rx_real"],
+                                   ["psd_rx_dec", "psd_rx_dec"]], sharex=True)
         
         # plot time signal:
-        axs["signal"].set_title("MSK Tx Samples")
-        axs["signal"].plot(tx_time, tx_samples, color='C0')
-        axs["signal"].set_xlabel("Time (s)")
-        axs["signal"].set_ylabel("Amplitude")
+        # axs["signal"].set_title("MSK Tx Samples")
+        # axs["signal"].plot(tx_time, tx_samples_if_arr, color='C0')
+        # axs["signal"].set_xlabel("Time (s)")
+        # axs["signal"].set_ylabel("Amplitude")
         
         # plot different spectrum types:
-        axs["magnitude"].set_title("Magnitude Spectrum Squared")
-        axs["magnitude"].magnitude_spectrum(tx_samples_2, Fs=tx_sample_rate, window=blackman_window, color='C1')
+        # axs["magnitude"].set_title("Magnitude Spectrum Squared")
+        # axs["magnitude"].magnitude_spectrum(tx_samples_2, Fs=tx_sample_rate, window=blackman_window, color='C1')
         
-        axs["log_magnitude"].set_title("Log. Magnitude Spectrum Squared")
-        axs["log_magnitude"].magnitude_spectrum(tx_samples_2, Fs=tx_sample_rate, scale='dB', window=blackman_window, color='C1')
+        # axs["log_magnitude"].set_title("Log. Magnitude Spectrum Squared")
+        # axs["log_magnitude"].magnitude_spectrum(tx_samples_2, Fs=tx_sample_rate, scale='dB', window=blackman_window, color='C1')
         
-        axs["psd"].set_title("Power Spectral Density")
-        axs["psd"].psd(tx_samples, Fs=tx_sample_rate, window=np.blackman(FFT), NFFT=FFT, color='C2')
-            
+        axs["psd_if_real"].set_title("Power Spectral Density - IF - Real - I")
+        axs["psd_if_real"].psd(tx_samples_if_arr, Fs=tx_sample_rate, window=np.blackman(FFT), NFFT=FFT, color='C2', sides='twosided')
+  
+        axs["psd_if_cmplx"].set_title("Power Spectral Density - IF - Complex - I + jQ")
+        axs["psd_if_cmplx"].psd(tx_samples_if_cmplx, Fs=tx_sample_rate, window=np.blackman(FFT), NFFT=FFT, color='C2', sides='twosided')
+          
+        axs["psd_fc_cmplx"].set_title("Power Spectral Density - Fc - Complex - I + jQ")
+        axs["psd_fc_cmplx"].psd(tx_samples_fc_cmplx, Fs=tx_sample_rate, window=np.blackman(FFT), NFFT=FFT, color='C2', sides='twosided')
+
+        axs["psd_fc_real"].set_title("Power Spectral Density - Fc - Real - I + Q")
+        axs["psd_fc_real"].psd(tx_samples_fc_real, Fs=tx_sample_rate, window=np.blackman(FFT), NFFT=FFT, color='C2', sides='twosided')
+
+        axs["psd_rx_cmplx"].set_title("Power Spectral Density - Rx - Complex - I + jQ")
+        axs["psd_rx_cmplx"].psd(rx_samples_rx_cmplx, Fs=tx_sample_rate, window=np.blackman(FFT), NFFT=FFT, color='C2', sides='twosided')
+
+        axs["psd_rx_real"].set_title("Power Spectral Density - Rx - Real - I")
+        axs["psd_rx_real"].psd(rx_samples_rx_real, Fs=tx_sample_rate, window=np.blackman(FFT), NFFT=FFT, color='C2', sides='twosided')
+
+        axs["psd_rx_dec"].set_title("Power Spectral Density - Rx - Real - Sample Discard")
+        axs["psd_rx_dec"].psd(rx_samples_rx_dec, Fs=rx_sample_rate, window=np.blackman(FFT), NFFT=FFT, color='C2', sides='twosided')
+
         plt.show()
     
         #fftPlot(np.asarray(tx_samples), dt=1/sample_rate)

@@ -122,7 +122,8 @@ ENTITY msk_top IS
 
 		tx_enable 		: IN std_logic;
 		tx_valid 		: IN std_logic;
-		tx_samples 		: OUT std_logic_vector(SAMPLE_W -1 DOWNTO 0);
+		tx_samples_I	: OUT std_logic_vector(SAMPLE_W -1 DOWNTO 0);
+		tx_samples_Q	: OUT std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 
 		rx_enable 		: IN std_logic;
 		rx_svalid 		: IN std_logic;
@@ -143,7 +144,8 @@ END ENTITY msk_top;
 
 ARCHITECTURE struct OF msk_top IS 
 
-	SIGNAL tx_samples_int	: std_logic_vector(SAMPLE_W -1 DOWNTO 0);
+	SIGNAL tx_samples_I_int	: std_logic_vector(SAMPLE_W -1 DOWNTO 0);
+	SIGNAL tx_samples_Q_int	: std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 	SIGNAL rx_samples_mux	: std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 	SIGNAL rx_samples_dec 	: std_logic_vector(11 DOWNTO 0);
 	SIGNAL tx_req 		 	: std_logic;
@@ -250,9 +252,10 @@ BEGIN
 
 	s_axis_ready	<= s_axis_tready_int;
 
-	tx_samples 	<= tx_samples_int;
+	tx_samples_I 	<= tx_samples_I_int;
+	tx_samples_Q 	<= tx_samples_Q_int;
 
-	rx_samples_mux <= std_logic_vector(resize(signed(tx_samples_int), 16)) WHEN loopback_ena = '1' ELSE rx_samples;
+	rx_samples_mux <= std_logic_vector(resize(signed(tx_samples_I_int), 16)) WHEN loopback_ena = '1' ELSE rx_samples;
 
 	saxis_cdc : PROCESS (s_axis_aclk)
 		VARIABLE v_axi_req_ena : std_logic;
@@ -386,7 +389,8 @@ BEGIN
 
 			tx_enable 		=> tx_enable OR loopback_ena,
 			tx_valid 		=> tx_valid OR loopback_ena,
-			tx_samples	 	=> tx_samples_int
+			tx_samples_I	=> tx_samples_I_int,
+			tx_samples_Q	=> tx_samples_Q_int
 		);
 
 
