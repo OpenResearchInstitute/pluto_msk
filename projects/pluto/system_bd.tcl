@@ -409,7 +409,8 @@ ad_cpu_interconnect 0x43C00000 msk_top
 
 #MSK Connects TX
 
-ad_connect  msk_top/tx_samples axi_ad9361/dac_data_i0
+ad_connect  msk_top/tx_samples_I axi_ad9361/dac_data_i0
+ad_connect  msk_top/tx_samples_Q axi_ad9361/dac_data_q0
 ad_connect  msk_top/tx_enable axi_ad9361/dac_enable_i0
 ad_connect  msk_top/tx_valid axi_ad9361/dac_valid_i0
 ad_connect axi_ad9361_dac_dma/m_axis msk_top/s_axis
