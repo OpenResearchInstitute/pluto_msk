@@ -1,5 +1,5 @@
 
-all: msk_top_regs.pdf msk_top_regs.h gen_files_cocotb.txt gen_files_vhdl.txt 
+all: msk_top_regs.pdf msk_top_regs.h msk_top_regs_desy.rdl gen_files_cocotb.txt gen_files_vhdl.txt 
 
 gen_files_cocotb.txt : msk_top_regs_desy.rdl
 	desyrdl -i msk_top_regs_desy.rdl -f cocotb

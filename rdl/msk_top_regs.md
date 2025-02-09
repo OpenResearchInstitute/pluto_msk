@@ -9,7 +9,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 - Absolute Address: 0x0
 - Base Offset: 0x0
-- Size: 0x43C0007C
+- Size: 0x43C00090
 
 |  Offset  |  Identifier  |        Name       |
 |----------|--------------|-------------------|
@@ -19,7 +19,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 - Absolute Address: 0x43C00000
 - Base Offset: 0x43C00000
-- Size: 0x7C
+- Size: 0x90
 
 <p>MSK Modem Configuration and Status Registers</p>
 
@@ -56,6 +56,11 @@ Don't override. Generated from: Pluto_MSK_Modem
 | 0x70 |   f2_nco_adjust  |                   F2 NCO Frequency Adjust                   |
 | 0x74 |     f1_error     |                        F1 Error Value                       |
 | 0x78 |     f2_error     |                        F2 Error Value                       |
+| 0x7C |   Tx_Sync_Ctrl   |                   Transmitter Sync Control                  |
+| 0x80 |    Tx_Sync_Cnt   |                  Transmitter Sync Duration                  |
+| 0x84 |lowpass_ema_alpha1|               Exponential Moving Average Alpha              |
+| 0x88 |lowpass_ema_alpha2|               Exponential Moving Average Alpha              |
+| 0x8C |     rx_power     |                        Receive Power                        |
 
 ### Hash_ID_Low register
 
@@ -653,3 +658,106 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 #### data field
 
 <p>Error value of the F2 Costas loop after each active bit period</p>
+
+### Tx_Sync_Ctrl register
+
+- Absolute Address: 0x43C0007C
+- Base Offset: 0x7C
+- Size: 0x4
+
+<p>Provides control bits for generation of transmitter synchronization patterns</p>
+
+|Bits|  Identifier |Access|Reset|       Name      |
+|----|-------------|------|-----|-----------------|
+|  0 | tx_sync_ena |  rw  | 0x0 |  Tx Sync Enable |
+|  1 |tx_sync_force|  rw  | 0x0 |  Tx Sync Force  |
+|  2 |  tx_sync_f1 |  rw  | 0x0 |Tx F1 Sync Enable|
+|  3 |  tx_sync_f2 |  rw  | 0x0 |Tx F2 Sync Enable|
+
+#### tx_sync_ena field
+
+<p>0 -&gt; Disable sync transmission
+1 -&gt; Enable sync transmission when PTT is asserted</p>
+
+#### tx_sync_force field
+
+<p>0 : Normal operation)
+1 : Transmit synchronization pattern)</p>
+
+#### tx_sync_f1 field
+
+<p>Enables/Disables transmission of F1 tone for receiver synchronization
+0 : F1 tone transmission disabled
+1 : F1 tone transmission enabled
+Both F1 and F2 can be enabled at the same time</p>
+
+#### tx_sync_f2 field
+
+<p>Enables/Disables transmission of F2 tone for receiver synchronization
+0 : F2 tone transmission disabled
+1 : F2 tone transmission enabled
+Both F1 and F2 can be enabled at the same time</p>
+
+### Tx_Sync_Cnt register
+
+- Absolute Address: 0x43C00080
+- Base Offset: 0x80
+- Size: 0x4
+
+<p>Sets the duration of the synchronization tones when enabled</p>
+
+|Bits| Identifier|Access|Reset|      Name      |
+|----|-----------|------|-----|----------------|
+|23:0|tx_sync_cnt|  rw  | 0x0 |Tx sync duration|
+
+#### tx_sync_cnt field
+
+<p>Value from 0x00_0000 to 0xFF_FFFF. This value represents the number bit-times the synchronization signal should be sent after PTT is asserted.</p>
+
+### lowpass_ema_alpha1 register
+
+- Absolute Address: 0x43C00084
+- Base Offset: 0x84
+- Size: 0x4
+
+<p>Sets the alpha for the EMA</p>
+
+|Bits|Identifier|Access|Reset|   Name  |
+|----|----------|------|-----|---------|
+|17:0|   alpha  |  rw  | 0x0 |EMA alpha|
+
+#### alpha field
+
+<p>Value from 0x0_0000 to 0x3_FFFF represent the EMA alpha</p>
+
+### lowpass_ema_alpha2 register
+
+- Absolute Address: 0x43C00088
+- Base Offset: 0x88
+- Size: 0x4
+
+<p>Sets the alpha for the EMA</p>
+
+|Bits|Identifier|Access|Reset|   Name  |
+|----|----------|------|-----|---------|
+|17:0|   alpha  |  rw  | 0x0 |EMA alpha|
+
+#### alpha field
+
+<p>Value from 0x0_0000 to 0x3_FFFF represent the EMA alpha</p>
+
+### rx_power register
+
+- Absolute Address: 0x43C0008C
+- Base Offset: 0x8C
+- Size: 0x4
+
+<p>Receive power computed from I/Q ssamples</p>
+
+|Bits|Identifier|Access|Reset|     Name    |
+|----|----------|------|-----|-------------|
+|22:0| rx_power |   r  | 0x0 |Receive Power|
+
+#### rx_power field
+
+<p>Value that represent the RMS power of the incoming I;</p>

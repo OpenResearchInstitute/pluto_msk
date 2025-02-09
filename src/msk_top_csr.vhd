@@ -82,7 +82,8 @@ ENTITY msk_top_csr IS
 		COUNTER_W 			: NATURAL := 32;
 		SYNC_W 				: NATURAL := 16;
 		C_S_AXI_DATA_WIDTH	: NATURAL := 32;
-		C_S_AXI_ADDR_WIDTH	: NATURAL := 32
+		C_S_AXI_ADDR_WIDTH	: NATURAL := 32;
+		SYNC_CNT_W 			: NATURAL := 24
 	);
 	PORT (
 		clk 				: IN  std_logic;
@@ -155,8 +156,15 @@ ENTITY msk_top_csr IS
 		prbs_sel 			: out std_logic;
 		prbs_clear 			: out std_logic;
 		prbs_manual_sync	: out std_logic;
-		prbs_sync_threshold : OUT std_logic_vector(SYNC_W -1 DOWNTO 0)
-
+		prbs_sync_threshold : out std_logic_vector(SYNC_W -1 DOWNTO 0);
+		tx_sync_ena 		: out std_logic;
+		tx_sync_cnt 		: out std_logic_vector(SYNC_CNT_W -1 DOWNTO 0);
+		tx_sync_force		: out std_logic;
+		tx_sync_f1			: out std_logic;
+		tx_sync_f2			: out std_logic;
+		pd_alpha1			: out std_logic_vector(17 DOWNTO 0);
+		pd_alpha2			: out std_logic_vector(17 DOWNTO 0);
+		pd_power			: in  std_logic_vector(22 DOWNTO 0)
 	);
 END ENTITY msk_top_csr;
 
@@ -231,6 +239,7 @@ BEGIN
     pi_addrmap.f2_nco_adjust.data32.data 	<= f2_nco_adjust;
     pi_addrmap.f1_error.data32.data 		<= f1_error;
     pi_addrmap.f2_error.data32.data 		<= f2_error;
+    pi_addrmap.rx_power.rx_power.data 		<= pd_power;
 
 
 
@@ -266,5 +275,14 @@ BEGIN
 	prbs_clear 			<= po_addrmap.PRBS_Control.prbs_clear.data(0);
 	prbs_manual_sync	<= po_addrmap.PRBS_Control.prbs_manual_sync.data(0);
 	prbs_sync_threshold <= po_addrmap.PRBS_Control.prbs_sync_threshold.data;
+
+	tx_sync_ena 		<= po_addrmap.Tx_Sync_Ctrl.tx_sync_ena.data(0);
+	tx_sync_cnt 		<= po_addrmap.Tx_Sync_Cnt.tx_sync_cnt.data;
+	tx_sync_force		<= po_addrmap.Tx_Sync_Ctrl.tx_sync_force.data(0);
+	tx_sync_f1			<= po_addrmap.Tx_Sync_Ctrl.tx_sync_f1.data(0);
+	tx_sync_f2			<= po_addrmap.Tx_Sync_Ctrl.tx_sync_f2.data(0);
+
+	pd_alpha1			<= po_addrmap.lowpass_ema_alpha1.alpha.data;
+	pd_alpha2			<= po_addrmap.lowpass_ema_alpha2.alpha.data;
 
 END ARCHITECTURE rtl;

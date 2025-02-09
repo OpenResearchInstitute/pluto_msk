@@ -34,8 +34,8 @@ entity msk_top_regs_decoder_axi4l is
     pi_clock  : in std_logic;
     pi_reset  : in std_logic;
     --
-    po_reg_rd_stb  : out std_logic_vector(31-1 downto 0);
-    po_reg_wr_stb  : out std_logic_vector(31-1 downto 0);
+    po_reg_rd_stb  : out std_logic_vector(36-1 downto 0);
+    po_reg_wr_stb  : out std_logic_vector(36-1 downto 0);
     po_reg_data    : out std_logic_vector(G_DATA_WIDTH-1 downto 0);
     pi_reg_data    : in  std_logic_vector(G_DATA_WIDTH-1 downto 0);
     --
@@ -95,8 +95,8 @@ architecture arch of msk_top_regs_decoder_axi4l is
   signal wvalid    : std_logic;
 
   -----------------------------------------------------------
-  signal reg_rd_stb  : std_logic_vector(31-1 downto 0) := (others => '0');
-  signal reg_wr_stb  : std_logic_vector(31-1 downto 0) := (others => '0');
+  signal reg_rd_stb  : std_logic_vector(36-1 downto 0) := (others => '0');
+  signal reg_wr_stb  : std_logic_vector(36-1 downto 0) := (others => '0');
 
   -- external bus
 
@@ -300,6 +300,21 @@ begin
           when 120 =>
              rtarget  <= REG;
              reg_rd_stb(30) <= '1';
+          when 124 =>
+             rtarget  <= REG;
+             reg_rd_stb(31) <= '1';
+          when 128 =>
+             rtarget  <= REG;
+             reg_rd_stb(32) <= '1';
+          when 132 =>
+             rtarget  <= REG;
+             reg_rd_stb(33) <= '1';
+          when 136 =>
+             rtarget  <= REG;
+             reg_rd_stb(34) <= '1';
+          when 140 =>
+             rtarget  <= REG;
+             reg_rd_stb(35) <= '1';
           when others =>
              rtarget    <= NONE;
         end case;
@@ -462,6 +477,18 @@ begin
           when 104 =>
              wtarget  <= REG;
              reg_wr_stb(26) <= '1';
+          when 124 =>
+             wtarget  <= REG;
+             reg_wr_stb(31) <= '1';
+          when 128 =>
+             wtarget  <= REG;
+             reg_wr_stb(32) <= '1';
+          when 132 =>
+             wtarget  <= REG;
+             reg_wr_stb(33) <= '1';
+          when 136 =>
+             wtarget  <= REG;
+             reg_wr_stb(34) <= '1';
           when others =>
              wtarget    <= NONE;
         end case;
@@ -499,7 +526,7 @@ begin
   -- ===========================================================================
   -- registers
   ------------------------------------------------------------------------------
-  gen_reg_wr_str: for ridx in 0 to 31-1 generate
+  gen_reg_wr_str: for ridx in 0 to 36-1 generate
     po_reg_wr_stb(ridx) <= reg_wr_stb(ridx) and wvalid;
   end generate;
   po_reg_data   <= wdata;

@@ -28,6 +28,8 @@ VHDL_SOURCES += $(RDL)/msk_top_regs_decoder_axi4l.vhd \
 				$(RDL)/pkg_msk_top_regs.vhd \
 				$(RDL)/msk_top_regs.vhd \
 				$(SRC)/msk_top_csr.vhd \
+				../lowpass_ema/src/lowpass_ema.vhd \
+				../power_detector/src/power_detector.vhd \
 				../nco/src/nco.vhd \
 				../nco/src/sin_cos_lut.vhd \
 				../msk_modulator/src/msk_modulator.vhd \

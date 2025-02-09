@@ -26,6 +26,10 @@ while(<FILE>) {
    			$eoc = 0;
    			$line = "";
    		}
+   	} else {
+   		if ($eoc == 1) {
+   			$line = "";
+   		}
    	}
 
    	if (/Pluto_MSK_Modem/) { last; }

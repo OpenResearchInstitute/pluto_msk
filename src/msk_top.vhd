@@ -87,7 +87,8 @@ ENTITY msk_top IS
 		DATA_W 				: NATURAL := 1;
 		S_AXIS_DATA_W 		: NATURAL := 64;
 		C_S_AXI_DATA_WIDTH	: NATURAL := 32;
-		C_S_AXI_ADDR_WIDTH	: NATURAL := 32
+		C_S_AXI_ADDR_WIDTH	: NATURAL := 32;
+		SYNC_CNT_W 			: NATURAL := 24
 	);
 	PORT (
 		clk 			: IN  std_logic;
@@ -127,7 +128,8 @@ ENTITY msk_top IS
 
 		rx_enable 		: IN std_logic;
 		rx_svalid 		: IN std_logic;
-		rx_samples 		: IN  std_logic_vector(SAMPLE_W -1 DOWNTO 0);
+		rx_samples_I	: IN  std_logic_vector(SAMPLE_W -1 DOWNTO 0);
+		rx_samples_Q	: IN  std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 
 		rx_dvalid 		: OUT std_logic;
 		rx_data 		: OUT std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0)
@@ -238,7 +240,17 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL prbs_manual_sync		: std_logic;
 	SIGNAL prbs_bits 			: std_logic_vector(31 DOWNTO 0);
 	SIGNAL prbs_errs 			: std_logic_vector(31 DOWNTO 0);
-	SIGNAL prbs_sync_threshold : std_logic_vector(SYNC_W -1 DOWNTO 0);
+	SIGNAL prbs_sync_threshold 	: std_logic_vector(SYNC_W -1 DOWNTO 0);
+
+	SIGNAL tx_sync_ena 			: std_logic;
+	SIGNAL tx_sync_cnt 			: std_logic_vector(SYNC_CNT_W -1 DOWNTO 0);
+	SIGNAL tx_sync_force		: std_logic;
+	SIGNAL tx_sync_f1			: std_logic;
+	SIGNAL tx_sync_f2			: std_logic;
+
+	SIGNAL pd_alpha1			: std_logic_vector(17 DOWNTO 0);
+	SIGNAL pd_alpha2			: std_logic_vector(17 DOWNTO 0);
+	SIGNAL pd_power 			: std_logic_vector(22 DOWNTO 0);
 
 BEGIN 
 
@@ -255,7 +267,7 @@ BEGIN
 	tx_samples_I 	<= tx_samples_I_int;
 	tx_samples_Q 	<= tx_samples_Q_int;
 
-	rx_samples_mux <= std_logic_vector(resize(signed(tx_samples_I_int), 16)) WHEN loopback_ena = '1' ELSE rx_samples;
+	rx_samples_mux <= std_logic_vector(resize(signed(tx_samples_I_int), 16)) WHEN loopback_ena = '1' ELSE rx_samples_I;
 
 	saxis_cdc : PROCESS (s_axis_aclk)
 		VARIABLE v_axi_req_ena : std_logic;
@@ -372,7 +384,8 @@ BEGIN
 			NCO_W 			=> NCO_W,
 			PHASE_W 		=> PHASE_W,
 			SINUSOID_W 		=> SINUSOID_W,
-			SAMPLE_W 		=> SAMPLE_W
+			SAMPLE_W 		=> SAMPLE_W,
+			SYNC_CNT_W		=> SYNC_CNT_W
 		)
 		PORT MAP (
 			clk 			=> clk,
@@ -383,6 +396,9 @@ BEGIN
 			freq_word_f2	=> freq_word_tx_f2,
 
 			ptt 			=> ptt,
+			tx_sync_ena 	=> tx_sync_ena,
+			tx_sync_cnt 	=> tx_sync_cnt,
+			tx_sync_force	=> tx_sync_force,
 
 			tx_data 		=> prbs_data_bit,
 			tx_req 			=> tx_req,
@@ -545,6 +561,34 @@ BEGIN
 
 
 ------------------------------------------------------------------------------------------------------
+--  __   __        ___  __      __   ___ ___  ___  __  ___  __   __  
+-- |__) /  \ |  | |__  |__)    |  \ |__   |  |__  /  `  |  /  \ |__) 
+-- |    \__/ |/\| |___ |  \    |__/ |___  |  |___ \__,  |  \__/ |  \ 
+--                                                                  
+------------------------------------------------------------------------------------------------------
+-- PRBS GEN/MON
+
+	u_power_det : ENTITY work.power_detector(rtl)
+		GENERIC MAP (
+			DATA_W 			=> 12,
+			ALPHA_W 		=> 18,
+			IQ_MOD 			=> True,
+			I_USED 			=> False,
+			Q_USED 			=> False
+		)
+		PORT MAP (
+			clk 			=> clk,
+			init 			=> rxinit,
+			alpha1			=> pd_alpha1,
+			alpha2			=> pd_alpha2,
+			data_I 			=> rx_samples_I(15 DOWNTO 4),
+			data_Q 			=> rx_samples_Q(15 DOWNTO 4),
+			data_ena		=> rx_svalid,
+			power_squared 	=> pd_power
+		);
+
+
+------------------------------------------------------------------------------------------------------
 --  __          ___     _  _        _ ___  __     __ ___    ___     __ 
 -- (_ __ /\  \/  |     /  / \ |\ | |_  |  /__  / (_   |  /\  | | | (_  
 -- __)  /--\ /\ _|_    \_ \_/ | \| |  _|_ \_| /  __)  | /--\ | |_| __) 
@@ -588,7 +632,8 @@ BEGIN
 		COUNTER_W 			=> 32,
 		GENERATOR_W 		=> 32,
 		C_S_AXI_DATA_WIDTH	=> C_S_AXI_DATA_WIDTH,
-		C_S_AXI_ADDR_WIDTH	=> C_S_AXI_ADDR_WIDTH
+		C_S_AXI_ADDR_WIDTH	=> C_S_AXI_ADDR_WIDTH,
+		SYNC_CNT_W 			=> SYNC_CNT_W
 	)
 	PORT MAP (
 		clk 			=> clk,
@@ -661,7 +706,15 @@ BEGIN
 		prbs_err_mask 		=> prbs_err_mask,
 		prbs_sel 			=> prbs_sel,
 		prbs_clear 			=> prbs_clear,
-		prbs_sync_threshold => prbs_sync_threshold
+		prbs_sync_threshold => prbs_sync_threshold,
+		tx_sync_ena 		=> tx_sync_ena,
+		tx_sync_cnt 		=> tx_sync_cnt,
+		tx_sync_force		=> tx_sync_force,
+		tx_sync_f1			=> tx_sync_f1,
+		tx_sync_f2			=> tx_sync_f2,
+		pd_alpha1			=> pd_alpha1,
+		pd_alpha2			=> pd_alpha2,
+		pd_power 			=> pd_power
 
 	);
 

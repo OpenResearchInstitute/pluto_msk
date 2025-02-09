@@ -273,6 +273,42 @@ extern "C" {
 #define OBSERVATION_DATA_DATA_272A00B6_DESC_70869502_NAME_3DE9A0D3__DATA_bw 32
 #define OBSERVATION_DATA_DATA_272A00B6_DESC_70869502_NAME_3DE9A0D3__DATA_reset 0x0
 
+// Reg - tx_sync_ctrl
+#define TX_SYNC_CTRL__TX_SYNC_ENA_bm 0x1
+#define TX_SYNC_CTRL__TX_SYNC_ENA_bp 0
+#define TX_SYNC_CTRL__TX_SYNC_ENA_bw 1
+#define TX_SYNC_CTRL__TX_SYNC_ENA_reset 0x0
+#define TX_SYNC_CTRL__TX_SYNC_FORCE_bm 0x2
+#define TX_SYNC_CTRL__TX_SYNC_FORCE_bp 1
+#define TX_SYNC_CTRL__TX_SYNC_FORCE_bw 1
+#define TX_SYNC_CTRL__TX_SYNC_FORCE_reset 0x0
+#define TX_SYNC_CTRL__TX_SYNC_F1_bm 0x4
+#define TX_SYNC_CTRL__TX_SYNC_F1_bp 2
+#define TX_SYNC_CTRL__TX_SYNC_F1_bw 1
+#define TX_SYNC_CTRL__TX_SYNC_F1_reset 0x0
+#define TX_SYNC_CTRL__TX_SYNC_F2_bm 0x8
+#define TX_SYNC_CTRL__TX_SYNC_F2_bp 3
+#define TX_SYNC_CTRL__TX_SYNC_F2_bw 1
+#define TX_SYNC_CTRL__TX_SYNC_F2_reset 0x0
+
+// Reg - tx_sync_cnt
+#define TX_SYNC_CNT__TX_SYNC_CNT_bm 0xffffff
+#define TX_SYNC_CNT__TX_SYNC_CNT_bp 0
+#define TX_SYNC_CNT__TX_SYNC_CNT_bw 24
+#define TX_SYNC_CNT__TX_SYNC_CNT_reset 0x0
+
+// Reg - lowpass_ema_alpha
+#define LOWPASS_EMA_ALPHA__ALPHA_bm 0x3ffff
+#define LOWPASS_EMA_ALPHA__ALPHA_bp 0
+#define LOWPASS_EMA_ALPHA__ALPHA_bw 18
+#define LOWPASS_EMA_ALPHA__ALPHA_reset 0x0
+
+// Reg - rx_power
+#define RX_POWER__RX_POWER_bm 0x7fffff
+#define RX_POWER__RX_POWER_bp 0
+#define RX_POWER__RX_POWER_bw 23
+#define RX_POWER__RX_POWER_reset 0x0
+
 // Addrmap - msk_top_regs
 typedef struct __attribute__ ((__packed__)) {
     uint32_t Hash_ID_Low;
@@ -306,6 +342,11 @@ typedef struct __attribute__ ((__packed__)) {
     uint32_t f2_nco_adjust;
     uint32_t f1_error;
     uint32_t f2_error;
+    uint32_t Tx_Sync_Ctrl;
+    uint32_t Tx_Sync_Cnt;
+    uint32_t lowpass_ema_alpha1;
+    uint32_t lowpass_ema_alpha2;
+    uint32_t rx_power;
 } msk_top_regs_t;
 
 // Addrmap - Pluto_MSK_Modem
@@ -315,7 +356,7 @@ typedef struct __attribute__ ((__packed__)) {
 } Pluto_MSK_Modem_t;
 
 
-static_assert(sizeof(Pluto_MSK_Modem_t) == 0x43c0007c, "Packing error");
+static_assert(sizeof(Pluto_MSK_Modem_t) == 0x43c00090, "Packing error");
 
 #ifdef __cplusplus
 }

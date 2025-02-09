@@ -45,9 +45,9 @@ architecture arch of msk_top_regs is
   type t_data_out is array (natural range<>) of std_logic_vector(C_DATA_WIDTH-1 downto 0) ;
 
   --
-  signal reg_data_out_vect : t_data_out(31-1 downto 0);
-  signal reg_rd_stb   : std_logic_vector(31-1 downto 0);
-  signal reg_wr_stb   : std_logic_vector(31-1 downto 0);
+  signal reg_data_out_vect : t_data_out(36-1 downto 0);
+  signal reg_rd_stb   : std_logic_vector(36-1 downto 0);
+  signal reg_wr_stb   : std_logic_vector(36-1 downto 0);
   signal reg_data_in  : std_logic_vector(C_DATA_WIDTH-1 downto 0);
   signal reg_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
   --
@@ -80,7 +80,7 @@ begin
   prs_reg_rd_mux: process(pi_clock)
   begin
     if rising_edge(pi_clock) then
-      for idx in 0 to 31-1 loop
+      for idx in 0 to 36-1 loop
         if reg_rd_stb(idx) = '1' then
           reg_data_out <= reg_data_out_vect(idx);
         end if;
@@ -680,6 +680,101 @@ begin
 
         pi_reg  => pi_addrmap.f2_error,
         po_reg  => po_addrmap.f2_error
+      ); --
+  end block; --
+  -- ---------------------------------------------------------------------------
+  -- reg name: Tx_Sync_Ctrl  reg type: tx_sync_ctrl
+  -- ---------------------------------------------------------------------------
+  blk_Tx_Sync_Ctrl : block
+  begin  --
+    inst_Tx_Sync_Ctrl: entity work.msk_top_regs_tx_sync_ctrl
+      port map(
+        pi_clock        => pi_clock,
+        pi_reset        => pi_reset,
+        -- to/from adapter
+        pi_decoder_rd_stb => reg_rd_stb(31),
+        pi_decoder_wr_stb => reg_wr_stb(31),
+        pi_decoder_data   => reg_data_in,
+        po_decoder_data   => reg_data_out_vect(31),
+
+        pi_reg  => pi_addrmap.Tx_Sync_Ctrl,
+        po_reg  => po_addrmap.Tx_Sync_Ctrl
+      ); --
+  end block; --
+  -- ---------------------------------------------------------------------------
+  -- reg name: Tx_Sync_Cnt  reg type: tx_sync_cnt
+  -- ---------------------------------------------------------------------------
+  blk_Tx_Sync_Cnt : block
+  begin  --
+    inst_Tx_Sync_Cnt: entity work.msk_top_regs_tx_sync_cnt
+      port map(
+        pi_clock        => pi_clock,
+        pi_reset        => pi_reset,
+        -- to/from adapter
+        pi_decoder_rd_stb => reg_rd_stb(32),
+        pi_decoder_wr_stb => reg_wr_stb(32),
+        pi_decoder_data   => reg_data_in,
+        po_decoder_data   => reg_data_out_vect(32),
+
+        pi_reg  => pi_addrmap.Tx_Sync_Cnt,
+        po_reg  => po_addrmap.Tx_Sync_Cnt
+      ); --
+  end block; --
+  -- ---------------------------------------------------------------------------
+  -- reg name: lowpass_ema_alpha1  reg type: lowpass_ema_alpha
+  -- ---------------------------------------------------------------------------
+  blk_lowpass_ema_alpha1 : block
+  begin  --
+    inst_lowpass_ema_alpha1: entity work.msk_top_regs_lowpass_ema_alpha
+      port map(
+        pi_clock        => pi_clock,
+        pi_reset        => pi_reset,
+        -- to/from adapter
+        pi_decoder_rd_stb => reg_rd_stb(33),
+        pi_decoder_wr_stb => reg_wr_stb(33),
+        pi_decoder_data   => reg_data_in,
+        po_decoder_data   => reg_data_out_vect(33),
+
+        pi_reg  => pi_addrmap.lowpass_ema_alpha1,
+        po_reg  => po_addrmap.lowpass_ema_alpha1
+      ); --
+  end block; --
+  -- ---------------------------------------------------------------------------
+  -- reg name: lowpass_ema_alpha2  reg type: lowpass_ema_alpha
+  -- ---------------------------------------------------------------------------
+  blk_lowpass_ema_alpha2 : block
+  begin  --
+    inst_lowpass_ema_alpha2: entity work.msk_top_regs_lowpass_ema_alpha
+      port map(
+        pi_clock        => pi_clock,
+        pi_reset        => pi_reset,
+        -- to/from adapter
+        pi_decoder_rd_stb => reg_rd_stb(34),
+        pi_decoder_wr_stb => reg_wr_stb(34),
+        pi_decoder_data   => reg_data_in,
+        po_decoder_data   => reg_data_out_vect(34),
+
+        pi_reg  => pi_addrmap.lowpass_ema_alpha2,
+        po_reg  => po_addrmap.lowpass_ema_alpha2
+      ); --
+  end block; --
+  -- ---------------------------------------------------------------------------
+  -- reg name: rx_power  reg type: rx_power
+  -- ---------------------------------------------------------------------------
+  blk_rx_power : block
+  begin  --
+    inst_rx_power: entity work.msk_top_regs_rx_power
+      port map(
+        pi_clock        => pi_clock,
+        pi_reset        => pi_reset,
+        -- to/from adapter
+        pi_decoder_rd_stb => reg_rd_stb(35),
+        pi_decoder_wr_stb => reg_wr_stb(35),
+        pi_decoder_data   => reg_data_in,
+        po_decoder_data   => reg_data_out_vect(35),
+
+        pi_reg  => pi_addrmap.rx_power,
+        po_reg  => po_addrmap.rx_power
       ); --
   end block; --
 

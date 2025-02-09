@@ -605,8 +605,8 @@ class ddc:
             self.rx_samples_I_dn.append(rx_sample_I_dn)
             self.rx_samples_Q_dn.append(rx_sample_Q_dn)
 
-            self.dut.rx_samples.value = int(round(rx_sample_I_dn))
-            #self.dut.rx_sample_Q.value = rx_sample_Q_dn
+            self.dut.rx_samples_I.value = int(round(rx_sample_I_dn))
+            self.dut.rx_samples_Q.value = int(round(rx_sample_Q_dn))
 
         self.dut._log.info("...ddc - done")
 
@@ -700,14 +700,11 @@ async def msk_test_1(dut):
     dut.rx_enable.value = 1
     dut.rx_svalid.value = 1
     dut.tx_valid.value  = 1
-    dut.rx_samples.value = 0
+    dut.rx_samples_I.value = 0
+    dut.rx_samples_Q.value = 0
 
     hash_id = await regs.read("msk_top_regs", "Hash_ID_Low")
 
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "MSK_Control", (rx_invert <<2) + 1)    
-    # await axi.write(16, int(bitrate / sample_rate * 2.0**32))      # bit rate frequency word
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
     await regs.write("msk_top_regs", "Fb_FreqWord", br_fcw)    
@@ -764,6 +761,22 @@ async def msk_test_1(dut):
     dut.s_axi_awvalid.value = 1
     await regs.write("msk_top_regs", "PRBS_Error_Mask", 1)    
     # await axi.write(60, 0)
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "lowpass_ema_alpha1", 64)    
+    # await axi.write(60, 0)
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "lowpass_ema_alpha2", 64)    
+    # await axi.write(60, 0)
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "Tx_Sync_Ctrl", 0b1101)    
+    # await axi.write(60, 0)
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "Tx_Sync_Cnt", 192)    
+    # await axi.write(60, 0)
 
 
     hash_id = await regs.read("msk_top_regs", "Hash_ID_Low")
@@ -786,6 +799,9 @@ async def msk_test_1(dut):
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
     await regs.write("msk_top_regs", "MSK_Init", 0)    
+    dut.s_axi_wvalid.value = 1
+    dut.s_axi_awvalid.value = 1
+    await regs.write("msk_top_regs", "MSK_Control", (rx_invert <<2) + 1)    
 
     await RisingEdge(dut.clk)
 

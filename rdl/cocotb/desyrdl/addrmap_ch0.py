@@ -88,6 +88,11 @@ class Addrmap:
         self.addrmap['msk_top_regs.f2_nco_adjust'] = AddrmapItem("msk_top_regs.f2_nco_adjust", bus, 112, 4, 32, 0, 0, "RO")
         self.addrmap['msk_top_regs.f1_error'] = AddrmapItem("msk_top_regs.f1_error", bus, 116, 4, 32, 0, 0, "RO")
         self.addrmap['msk_top_regs.f2_error'] = AddrmapItem("msk_top_regs.f2_error", bus, 120, 4, 32, 0, 0, "RO")
+        self.addrmap['msk_top_regs.Tx_Sync_Ctrl'] = AddrmapItem("msk_top_regs.Tx_Sync_Ctrl", bus, 124, 4, 4, 0, 0, "RW")
+        self.addrmap['msk_top_regs.Tx_Sync_Cnt'] = AddrmapItem("msk_top_regs.Tx_Sync_Cnt", bus, 128, 4, 24, 0, 0, "RW")
+        self.addrmap['msk_top_regs.lowpass_ema_alpha1'] = AddrmapItem("msk_top_regs.lowpass_ema_alpha1", bus, 132, 4, 18, 0, 0, "RW")
+        self.addrmap['msk_top_regs.lowpass_ema_alpha2'] = AddrmapItem("msk_top_regs.lowpass_ema_alpha2", bus, 136, 4, 18, 0, 0, "RW")
+        self.addrmap['msk_top_regs.rx_power'] = AddrmapItem("msk_top_regs.rx_power", bus, 140, 4, 23, 0, 0, "RO")
 
     def get_path(self, module, name):
         path = module + "." + name

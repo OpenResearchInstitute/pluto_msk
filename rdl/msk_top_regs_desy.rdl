@@ -124,6 +124,29 @@ reg msk_stat_3 {
     field { sw = r; hw = w; } xfer_count[31:0] = 0;
 };
 
+reg tx_sync_ctrl {
+    regwidth = 32;
+    field { sw = rw; hw = r; } tx_sync_ena = 0;
+    field { sw = rw; hw = r; } tx_sync_force = 0;
+    field { sw = rw; hw = r; } tx_sync_f1 = 0;
+    field { sw = rw; hw = r; } tx_sync_f2 = 0;
+};
+
+reg tx_sync_cnt {
+    regwidth = 32;
+    field { sw = rw; hw = r; } tx_sync_cnt[23:0] = 0;
+};
+
+reg lowpass_ema_alpha {
+    regwidth = 32;
+    field { sw = rw; hw = r; } alpha[17:0] = 0;
+};
+
+reg rx_power {
+    regwidth = 32;
+    field { sw = r; hw = w; } rx_power[22:0] = 0;
+};
+
 field data32 {
     fieldwidth = 32;
     sw = r;
@@ -174,7 +197,11 @@ addrmap msk_top_regs {
     observation_data f2_nco_adjust;
     observation_data f1_error;
     observation_data f2_error;
-
+    tx_sync_ctrl Tx_Sync_Ctrl;
+    tx_sync_cnt Tx_Sync_Cnt;
+    lowpass_ema_alpha lowpass_ema_alpha1;
+    lowpass_ema_alpha lowpass_ema_alpha2;
+    rx_power rx_power;
 
 };
 

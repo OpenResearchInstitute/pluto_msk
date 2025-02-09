@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
-[*] Sat Dec 14 06:35:42 2024
+[*] Wed Feb  5 05:36:29 2025
 [*]
 [dumpfile] "msk_top.ghw"
-[dumpfile_mtime] "Sat Dec 14 06:35:42 2024"
-[dumpfile_size] 447225555
+[dumpfile_mtime] "Wed Feb  5 05:36:21 2025"
+[dumpfile_size] 222241877
 [savefile] "msk_top_nvc.gtkw"
-[timestart] 22372600000000
+[timestart] 0
 [size] 1504 828
 [pos] -1 -1
-*-36.355190 22473600000000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+*-42.875351 20057696513800 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 [markername] AA
 [markername] BB
 [markername] CC
@@ -55,25 +55,16 @@ msk_top.tx_req
 @420
 msk_top.u_mod.tx_data
 msk_top.u_mod.d_val[2:0]
-msk_top.u_mod.d_dly[2:0]
 msk_top.u_mod.d_pos[1:0]
 msk_top.u_mod.d_neg[1:0]
 msk_top.u_mod.d_n_b[1:0]
 msk_top.u_mod.d_s1[1:0]
 msk_top.u_mod.d_s2[1:0]
-@10420
-msk_top.u_mod.s1[11:0]
 @20000
 -
 -
-@10420
-msk_top.u_mod.s2[11:0]
-@20000
 -
 -
-@10420
-msk_top.tx_samples[15:0]
-@20000
 -
 -
 @1401200
@@ -93,6 +84,32 @@ msk_top.u_dem.rx_enable
 msk_top.u_dem.u_f1.rx_svalid
 msk_top.u_dem.u_f1.u_carrier_nco.clk
 msk_top.u_dem.u_f1.u_carrier_nco.enable
+@10420
+msk_top.tx_samples_i[15:0]
+@20000
+-
+@10420
+msk_top.tx_samples_q[15:0]
+@20000
+-
+@22
+msk_top.tx_sync_cnt[23:0]
+@28
+msk_top.tx_sync_ena
+msk_top.tx_sync_f1
+msk_top.tx_sync_f2
+msk_top.tx_sync_force
+@22
+msk_top.u_mod.sync_count[23:0]
+@28
+msk_top.u_mod.ptt_pulse
+@22
+msk_top.u_mod.s1c[11:0]
+msk_top.u_mod.s1s[11:0]
+msk_top.u_mod.s2c[11:0]
+msk_top.u_mod.s2s[11:0]
+@20000
+-
 @800200
 -F1 Clock Recovery
 @10024
@@ -182,7 +199,7 @@ msk_top.u_dem.u_f2.rx_cos_slice
 msk_top.u_dem.u_f2.error_valid
 @1401200
 -F2 Costas Q-arm (quadrature-phase)
-@c00200
+@800200
 -F2 Costas Loop Filter
 @420
 msk_top.u_dem.u_f2.u_loopfilter.lpf_err[31:0]
@@ -208,9 +225,8 @@ msk_top.u_dem.u_f2.u_loopfilter.lpf_adjust[31:0]
 msk_top.u_dem.u_f2.u_loopfilter.lpf_adj_valid
 @10420
 msk_top.u_dem.u_f2.nco_adjust[31:0]
-@1401200
--F2 Costas Loop Filter
 @1000200
+-F2 Costas Loop Filter
 -F2 Clock Recovery
 @800200
 -Data Decode
@@ -220,9 +236,7 @@ msk_top.u_dem.tclk
 @420
 msk_top.u_dem.u_f1.loop_error[31:0]
 msk_top.u_dem.u_f1.data_out[15:0]
-@421
 msk_top.u_dem.u_f1.rx_cos_t[31:0]
-@420
 msk_top.u_dem.data_f1_t[15:0]
 msk_top.u_dem.data_f1_sum[15:0]
 msk_top.u_dem.u_f2.loop_error[31:0]
@@ -260,8 +274,6 @@ msk_top.u_dem.rx_data
 -F1 or F2 Enable
 @28
 msk_top.u_dem.data_bit
-msk_top.u_dem.data_bit_dly
-msk_top.u_dem.f1_f2_sel
 msk_top.u_dem.error_valid_f1
 msk_top.u_dem.error_valid_f2
 @1000200
@@ -292,7 +304,7 @@ msk_top.u_prbs_gen.polynomial[30:0]
 msk_top.u_prbs_gen.prbs_sel
 @1401200
 -PRBS Generator
-@c00200
+@800200
 -PRBS Monitor
 @28
 msk_top.u_prbs_mon.clk
@@ -323,7 +335,7 @@ msk_top.u_prbs_mon.sync_manual_d
 msk_top.u_prbs_mon.sync_now
 @22
 msk_top.u_prbs_mon.sync_threshold[15:0]
-@1401200
+@1000200
 -PRBS Monitor
 [pattern_trace] 1
 [pattern_trace] 0

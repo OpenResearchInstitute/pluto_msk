@@ -32,7 +32,7 @@ package pkg_msk_top_regs is
   -----------------------------------------------
   -- per addrmap / module
   -----------------------------------------------
-  constant C_ADDR_WIDTH : integer := 7;
+  constant C_ADDR_WIDTH : integer := 8;
   constant C_DATA_WIDTH : integer := 32;
 
   -- ===========================================================================
@@ -741,6 +741,128 @@ package pkg_msk_top_regs is
   type t_reg_observation_data_3d_in is array (integer range <>, integer range <>) of t_reg_observation_data_in;
   type t_reg_observation_data_3d_out is array (integer range <>, integer range <>) of t_reg_observation_data_out;
   -----------------------------------------------
+  -- register type: tx_sync_ctrl
+  -----------------------------------------------
+  type t_field_signals_tx_sync_ctrl_tx_sync_ena_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_tx_sync_ctrl_tx_sync_ena_out is record
+    data : std_logic_vector(1-1 downto 0); --
+  end record; --
+  type t_field_signals_tx_sync_ctrl_tx_sync_force_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_tx_sync_ctrl_tx_sync_force_out is record
+    data : std_logic_vector(1-1 downto 0); --
+  end record; --
+  type t_field_signals_tx_sync_ctrl_tx_sync_f1_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_tx_sync_ctrl_tx_sync_f1_out is record
+    data : std_logic_vector(1-1 downto 0); --
+  end record; --
+  type t_field_signals_tx_sync_ctrl_tx_sync_f2_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_tx_sync_ctrl_tx_sync_f2_out is record
+    data : std_logic_vector(1-1 downto 0); --
+  end record; --
+
+  -- The actual register types
+  type t_reg_tx_sync_ctrl_in is record--
+    tx_sync_ena : t_field_signals_tx_sync_ctrl_tx_sync_ena_in; --
+    tx_sync_force : t_field_signals_tx_sync_ctrl_tx_sync_force_in; --
+    tx_sync_f1 : t_field_signals_tx_sync_ctrl_tx_sync_f1_in; --
+    tx_sync_f2 : t_field_signals_tx_sync_ctrl_tx_sync_f2_in; --
+  end record;
+  type t_reg_tx_sync_ctrl_out is record--
+    tx_sync_ena : t_field_signals_tx_sync_ctrl_tx_sync_ena_out; --
+    tx_sync_force : t_field_signals_tx_sync_ctrl_tx_sync_force_out; --
+    tx_sync_f1 : t_field_signals_tx_sync_ctrl_tx_sync_f1_out; --
+    tx_sync_f2 : t_field_signals_tx_sync_ctrl_tx_sync_f2_out; --
+  end record;
+  type t_reg_tx_sync_ctrl_2d_in is array (integer range <>) of t_reg_tx_sync_ctrl_in;
+  type t_reg_tx_sync_ctrl_2d_out is array (integer range <>) of t_reg_tx_sync_ctrl_out;
+  type t_reg_tx_sync_ctrl_3d_in is array (integer range <>, integer range <>) of t_reg_tx_sync_ctrl_in;
+  type t_reg_tx_sync_ctrl_3d_out is array (integer range <>, integer range <>) of t_reg_tx_sync_ctrl_out;
+  -----------------------------------------------
+  -- register type: tx_sync_cnt
+  -----------------------------------------------
+  type t_field_signals_tx_sync_cnt_tx_sync_cnt_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_tx_sync_cnt_tx_sync_cnt_out is record
+    data : std_logic_vector(24-1 downto 0); --
+  end record; --
+
+  -- The actual register types
+  type t_reg_tx_sync_cnt_in is record--
+    tx_sync_cnt : t_field_signals_tx_sync_cnt_tx_sync_cnt_in; --
+  end record;
+  type t_reg_tx_sync_cnt_out is record--
+    tx_sync_cnt : t_field_signals_tx_sync_cnt_tx_sync_cnt_out; --
+  end record;
+  type t_reg_tx_sync_cnt_2d_in is array (integer range <>) of t_reg_tx_sync_cnt_in;
+  type t_reg_tx_sync_cnt_2d_out is array (integer range <>) of t_reg_tx_sync_cnt_out;
+  type t_reg_tx_sync_cnt_3d_in is array (integer range <>, integer range <>) of t_reg_tx_sync_cnt_in;
+  type t_reg_tx_sync_cnt_3d_out is array (integer range <>, integer range <>) of t_reg_tx_sync_cnt_out;
+  -----------------------------------------------
+  -- register type: lowpass_ema_alpha
+  -----------------------------------------------
+  type t_field_signals_lowpass_ema_alpha_alpha_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_lowpass_ema_alpha_alpha_out is record
+    data : std_logic_vector(18-1 downto 0); --
+  end record; --
+
+  -- The actual register types
+  type t_reg_lowpass_ema_alpha_in is record--
+    alpha : t_field_signals_lowpass_ema_alpha_alpha_in; --
+  end record;
+  type t_reg_lowpass_ema_alpha_out is record--
+    alpha : t_field_signals_lowpass_ema_alpha_alpha_out; --
+  end record;
+  type t_reg_lowpass_ema_alpha_2d_in is array (integer range <>) of t_reg_lowpass_ema_alpha_in;
+  type t_reg_lowpass_ema_alpha_2d_out is array (integer range <>) of t_reg_lowpass_ema_alpha_out;
+  type t_reg_lowpass_ema_alpha_3d_in is array (integer range <>, integer range <>) of t_reg_lowpass_ema_alpha_in;
+  type t_reg_lowpass_ema_alpha_3d_out is array (integer range <>, integer range <>) of t_reg_lowpass_ema_alpha_out;
+  -----------------------------------------------
+  -- register type: rx_power
+  -----------------------------------------------
+  type t_field_signals_rx_power_rx_power_in is record
+    data : std_logic_vector(23-1 downto 0); --
+  end record;
+
+  type t_field_signals_rx_power_rx_power_out is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record; --
+
+  -- The actual register types
+  type t_reg_rx_power_in is record--
+    rx_power : t_field_signals_rx_power_rx_power_in; --
+  end record;
+  type t_reg_rx_power_out is record--
+    rx_power : t_field_signals_rx_power_rx_power_out; --
+  end record;
+  type t_reg_rx_power_2d_in is array (integer range <>) of t_reg_rx_power_in;
+  type t_reg_rx_power_2d_out is array (integer range <>) of t_reg_rx_power_out;
+  type t_reg_rx_power_3d_in is array (integer range <>, integer range <>) of t_reg_rx_power_in;
+  type t_reg_rx_power_3d_out is array (integer range <>, integer range <>) of t_reg_rx_power_out;
+  -----------------------------------------------
 
   ------------------------------------------------------------------------------
   -- Register types in regfiles --
@@ -789,6 +911,11 @@ package pkg_msk_top_regs is
     f2_nco_adjust : t_reg_observation_data_in; --
     f1_error : t_reg_observation_data_in; --
     f2_error : t_reg_observation_data_in; --
+    Tx_Sync_Ctrl : t_reg_tx_sync_ctrl_in; --
+    Tx_Sync_Cnt : t_reg_tx_sync_cnt_in; --
+    lowpass_ema_alpha1 : t_reg_lowpass_ema_alpha_in; --
+    lowpass_ema_alpha2 : t_reg_lowpass_ema_alpha_in; --
+    rx_power : t_reg_rx_power_in; --
     --
     --
     --
@@ -827,6 +954,11 @@ package pkg_msk_top_regs is
     f2_nco_adjust : t_reg_observation_data_out; --
     f1_error : t_reg_observation_data_out; --
     f2_error : t_reg_observation_data_out; --
+    Tx_Sync_Ctrl : t_reg_tx_sync_ctrl_out; --
+    Tx_Sync_Cnt : t_reg_tx_sync_cnt_out; --
+    lowpass_ema_alpha1 : t_reg_lowpass_ema_alpha_out; --
+    lowpass_ema_alpha2 : t_reg_lowpass_ema_alpha_out; --
+    rx_power : t_reg_rx_power_out; --
     --
     --
     --
@@ -2399,6 +2531,301 @@ begin
     data_out(31 downto 0) <= pi_reg.data32.data(32-1 downto 0); --
     --no signal to read by HW
     po_reg.data32.data <= (others => '0'); --
+  end block; --
+end rtl;
+-----------------------------------------------
+-- register type: tx_sync_ctrl
+-----------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+use work.pkg_msk_top_regs.all;
+
+entity msk_top_regs_tx_sync_ctrl is
+  port (
+    pi_clock        : in  std_logic;
+    pi_reset        : in  std_logic;
+    -- to/from adapter
+    pi_decoder_rd_stb : in  std_logic;
+    pi_decoder_wr_stb : in  std_logic;
+    pi_decoder_data   : in  std_logic_vector(C_DATA_WIDTH-1 downto 0);
+    po_decoder_data   : out std_logic_vector(C_DATA_WIDTH-1 downto 0);
+
+    pi_reg  : in t_reg_tx_sync_ctrl_in ;
+    po_reg  : out t_reg_tx_sync_ctrl_out
+  );
+end entity msk_top_regs_tx_sync_ctrl;
+
+architecture rtl of msk_top_regs_tx_sync_ctrl is
+  signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+begin
+  --
+  data_out(C_DATA_WIDTH-1 downto 4) <= (others => '0'); --
+
+  -- resize field data out to the register bus width
+  -- do only if 1 field and signed--
+  po_decoder_data <= data_out; --
+
+  ------------------------------------------------------------STORAGE
+  tx_sync_ena_storage: block
+    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
+                           std_logic_vector(to_signed(0,1));
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          l_field_reg <= std_logic_vector(to_signed(0,1));
+        else
+          -- HW --
+          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          if pi_decoder_wr_stb = '1' then
+            l_field_reg <= pi_decoder_data(0 downto 0);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.tx_sync_ena.data <= l_field_reg; --
+    data_out(0 downto 0) <= l_field_reg;
+
+  end block tx_sync_ena_storage;
+  ------------------------------------------------------------STORAGE
+  tx_sync_force_storage: block
+    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
+                           std_logic_vector(to_signed(0,1));
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          l_field_reg <= std_logic_vector(to_signed(0,1));
+        else
+          -- HW --
+          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          if pi_decoder_wr_stb = '1' then
+            l_field_reg <= pi_decoder_data(1 downto 1);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.tx_sync_force.data <= l_field_reg; --
+    data_out(1 downto 1) <= l_field_reg;
+
+  end block tx_sync_force_storage;
+  ------------------------------------------------------------STORAGE
+  tx_sync_f1_storage: block
+    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
+                           std_logic_vector(to_signed(0,1));
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          l_field_reg <= std_logic_vector(to_signed(0,1));
+        else
+          -- HW --
+          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          if pi_decoder_wr_stb = '1' then
+            l_field_reg <= pi_decoder_data(2 downto 2);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.tx_sync_f1.data <= l_field_reg; --
+    data_out(2 downto 2) <= l_field_reg;
+
+  end block tx_sync_f1_storage;
+  ------------------------------------------------------------STORAGE
+  tx_sync_f2_storage: block
+    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
+                           std_logic_vector(to_signed(0,1));
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          l_field_reg <= std_logic_vector(to_signed(0,1));
+        else
+          -- HW --
+          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          if pi_decoder_wr_stb = '1' then
+            l_field_reg <= pi_decoder_data(3 downto 3);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.tx_sync_f2.data <= l_field_reg; --
+    data_out(3 downto 3) <= l_field_reg;
+
+  end block tx_sync_f2_storage;
+  ----------------------------------------------------------
+end rtl;
+-----------------------------------------------
+-- register type: tx_sync_cnt
+-----------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+use work.pkg_msk_top_regs.all;
+
+entity msk_top_regs_tx_sync_cnt is
+  port (
+    pi_clock        : in  std_logic;
+    pi_reset        : in  std_logic;
+    -- to/from adapter
+    pi_decoder_rd_stb : in  std_logic;
+    pi_decoder_wr_stb : in  std_logic;
+    pi_decoder_data   : in  std_logic_vector(C_DATA_WIDTH-1 downto 0);
+    po_decoder_data   : out std_logic_vector(C_DATA_WIDTH-1 downto 0);
+
+    pi_reg  : in t_reg_tx_sync_cnt_in ;
+    po_reg  : out t_reg_tx_sync_cnt_out
+  );
+end entity msk_top_regs_tx_sync_cnt;
+
+architecture rtl of msk_top_regs_tx_sync_cnt is
+  signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+begin
+  --
+  data_out(C_DATA_WIDTH-1 downto 24) <= (others => '0'); --
+
+  -- resize field data out to the register bus width
+  -- do only if 1 field and signed--
+  po_decoder_data <= data_out; --
+
+  ------------------------------------------------------------STORAGE
+  tx_sync_cnt_storage: block
+    signal l_field_reg   : std_logic_vector(24-1 downto 0) :=
+                           std_logic_vector(to_signed(0,24));
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          l_field_reg <= std_logic_vector(to_signed(0,24));
+        else
+          -- HW --
+          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          if pi_decoder_wr_stb = '1' then
+            l_field_reg <= pi_decoder_data(23 downto 0);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.tx_sync_cnt.data <= l_field_reg; --
+    data_out(23 downto 0) <= l_field_reg;
+
+  end block tx_sync_cnt_storage;
+  ----------------------------------------------------------
+end rtl;
+-----------------------------------------------
+-- register type: lowpass_ema_alpha
+-----------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+use work.pkg_msk_top_regs.all;
+
+entity msk_top_regs_lowpass_ema_alpha is
+  port (
+    pi_clock        : in  std_logic;
+    pi_reset        : in  std_logic;
+    -- to/from adapter
+    pi_decoder_rd_stb : in  std_logic;
+    pi_decoder_wr_stb : in  std_logic;
+    pi_decoder_data   : in  std_logic_vector(C_DATA_WIDTH-1 downto 0);
+    po_decoder_data   : out std_logic_vector(C_DATA_WIDTH-1 downto 0);
+
+    pi_reg  : in t_reg_lowpass_ema_alpha_in ;
+    po_reg  : out t_reg_lowpass_ema_alpha_out
+  );
+end entity msk_top_regs_lowpass_ema_alpha;
+
+architecture rtl of msk_top_regs_lowpass_ema_alpha is
+  signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+begin
+  --
+  data_out(C_DATA_WIDTH-1 downto 18) <= (others => '0'); --
+
+  -- resize field data out to the register bus width
+  -- do only if 1 field and signed--
+  po_decoder_data <= data_out; --
+
+  ------------------------------------------------------------STORAGE
+  alpha_storage: block
+    signal l_field_reg   : std_logic_vector(18-1 downto 0) :=
+                           std_logic_vector(to_signed(0,18));
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          l_field_reg <= std_logic_vector(to_signed(0,18));
+        else
+          -- HW --
+          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          if pi_decoder_wr_stb = '1' then
+            l_field_reg <= pi_decoder_data(17 downto 0);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.alpha.data <= l_field_reg; --
+    data_out(17 downto 0) <= l_field_reg;
+
+  end block alpha_storage;
+  ----------------------------------------------------------
+end rtl;
+-----------------------------------------------
+-- register type: rx_power
+-----------------------------------------------
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+use work.pkg_msk_top_regs.all;
+
+entity msk_top_regs_rx_power is
+  port (
+    pi_clock        : in  std_logic;
+    pi_reset        : in  std_logic;
+    -- to/from adapter
+    pi_decoder_rd_stb : in  std_logic;
+    pi_decoder_wr_stb : in  std_logic;
+    pi_decoder_data   : in  std_logic_vector(C_DATA_WIDTH-1 downto 0);
+    po_decoder_data   : out std_logic_vector(C_DATA_WIDTH-1 downto 0);
+
+    pi_reg  : in t_reg_rx_power_in ;
+    po_reg  : out t_reg_rx_power_out
+  );
+end entity msk_top_regs_rx_power;
+
+architecture rtl of msk_top_regs_rx_power is
+  signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+begin
+  --
+  data_out(C_DATA_WIDTH-1 downto 23) <= (others => '0'); --
+
+  -- resize field data out to the register bus width
+  -- do only if 1 field and signed--
+  po_decoder_data <= data_out; --
+
+  ------------------------------------------------------------WIRE
+  rx_power_wire : block--
+  begin
+    --
+    data_out(22 downto 0) <= pi_reg.rx_power.data(23-1 downto 0); --
+    --no signal to read by HW
+    po_reg.rx_power.data <= (others => '0'); --
   end block; --
 end rtl;
 -----------------------------------------------

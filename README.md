@@ -11,6 +11,8 @@ The following ORI library components are used as submodules to this repository:
 3. [nco](https://github.com/OpenResearchInstitute/nco)
 4. [pi_controller](https://github.com/OpenResearchInstitute/pi_controller)
 5. [prbs](https://github.com/OpenResearchInstitute/prbs)
+6. [power_detector](https://github.com/OpenResearchInstitute/power_detector)
+7. [Exponential Moving Average Filter](https://github.com/OpenResearchInstitute/lowpass_ema)
 
 ## Building
 In oder to build the FPGA bitstream, you first need to install Vivado. Recommended version is 2022.2. In this documentation and in the `Makefile`, the Vivado installation path is assumed to be `/opt/Xilinx/Vivado`. If it is in another directory, change the path in the steps below (for example, to `/tools/Xilinx/Vivado`) or create a symbolic link in `/opt` pointing to the actual installation directory. For example,
@@ -72,23 +74,21 @@ real	370m53.093s
 user	77m38.923s
 sys	39m46.236s
 ```
-## MSK Modem Architecture
-
-### Pluto_MSK_Modem address map
+## Pluto_MSK_Modem address map
 
 - Absolute Address: 0x0
 - Base Offset: 0x0
-- Size: 0x43C00060
+- Size: 0x43C00090
 
 |  Offset  |  Identifier  |        Name       |
 |----------|--------------|-------------------|
 |0x43C00000|pluto_msk_regs|Pluto MSK Registers|
 
-### pluto_msk_regs address map
+## pluto_msk_regs address map
 
 - Absolute Address: 0x43C00000
 - Base Offset: 0x43C00000
-- Size: 0x60
+- Size: 0x90
 
 <p>MSK Modem Configuration and Status Registers</p>
 
@@ -121,6 +121,16 @@ sys	39m46.236s
 | 0x60 |  axis_xfer_count |                      MSK Modem Status 3                     |
 | 0x64 | Rx_Sample_Discard|                      Rx Sample Discard                      |
 | 0x68 |   LPF_Config_2   |     PI Controller Configuration Configuration Register 2    |
+| 0x6C |   f1_nco_adjust  |                   F1 NCO Frequency Adjust                   |
+| 0x70 |   f2_nco_adjust  |                   F2 NCO Frequency Adjust                   |
+| 0x74 |     f1_error     |                        F1 Error Value                       |
+| 0x78 |     f2_error     |                        F2 Error Value                       |
+| 0x7C |   Tx_Sync_Ctrl   |                   Transmitter Sync Control                  |
+| 0x80 |    Tx_Sync_Cnt   |                  Transmitter Sync Duration                  |
+| 0x84 |lowpass_ema_alpha1|               Exponential Moving Average Alpha              |
+| 0x88 |lowpass_ema_alpha2|               Exponential Moving Average Alpha              |
+| 0x8C |     rx_power     |                        Receive Power                        |
+
 
 See [MSK Top Regs](rdl/msk_top_regs.pdf) for detailed register definitions.
 
@@ -219,3 +229,11 @@ In this expression we can see that I and Q samples are each modulating two sinus
 ## ADI add custom IP
 
 https://wiki.analog.com/resources/fpga/docs/hdl/creating_new_ip_guide
+
+
+## ASCII Text
+
+Generated using Figlet - online version [ASCIIArt text generator](https://budavariam.github.io/asciiart-text/multi)
+Font: JS Stick Letters
+Font: TBD
+

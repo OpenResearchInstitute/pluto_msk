@@ -27,8 +27,7 @@ LIB_DEPS += util_pack/util_upack2
 
 include ../../hdl/projects/scripts/project-xilinx.mk
 
-
 msk_top: 
-	make -C ../../library clean
+	#make -C ../../library clean
 	make -C ../../library 
 
