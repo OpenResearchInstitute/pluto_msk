@@ -10,6 +10,12 @@
 [submodule "pi_controller"]
 	path = pi_controller
 	url = https://github.com/OpenResearchInstitute/pi_controller.git
+[submodule "lowpass_ema"]
+	path = lowpass_ema
+	url = https://ithub.com:OpenResearchInstitute/lowpass_ema.git
+[submodule "power_detector"]
+	path = power_detector
+	url = https://ithub.com:OpenResearchInstitute/power_detector.git
 [submodule "prbs"]
 	path = prbs
 	url = https://github.com/OpenResearchInstitute/prbs.git
