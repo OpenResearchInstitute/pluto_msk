@@ -417,7 +417,8 @@ ad_connect axi_ad9361_dac_dma/m_axis msk_top/s_axis
 
 #MSK Connects RX
 
-ad_connect  msk_top/rx_samples axi_ad9361/adc_data_i0
+ad_connect  msk_top/rx_samples_I axi_ad9361/adc_data_i0
+ad_connect  msk_top/rx_samples_Q axi_ad9361/adc_data_q0
 ad_connect  msk_top/rx_enable axi_ad9361/adc_enable_i0
 ad_connect  msk_top/rx_svalid axi_ad9361/adc_valid_i0
 
