@@ -15,6 +15,8 @@ adi_ip_files msk_top [list \
   "../rdl/vhdl/msk_top_regs/msk_top_regs.vhd" \
   "../msk_demodulator/src/costas_loop.vhd" \
   "../pi_controller/src/pi_controller.vhd" \
+  "../lowpass_ema/src/lowpass_ema.vhd" \
+  "../power_detector/src/power_detector.vhd" \
   "../msk_demodulator/src/msk_demodulator.vhd" \
   "../msk_modulator/src/msk_modulator.vhd" \
   "../src/msk_top.vhd" \
