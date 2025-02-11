@@ -574,7 +574,8 @@ BEGIN
 			ALPHA_W 		=> 18,
 			IQ_MOD 			=> True,
 			I_USED 			=> False,
-			Q_USED 			=> False
+			Q_USED 			=> False,
+			EMA_CASCADE 	=> False
 		)
 		PORT MAP (
 			clk 			=> clk,
