@@ -4,6 +4,7 @@
 ## Auto-generated, do not modify!
 ####################################################################################
 export ADI_IGNORE_VERSION_CHECK = 1
+export ADI_GENERATE_UTILIZATION = 1
 PROJECT_NAME := pluto
 
 M_DEPS += ../../hdl/projects/common/xilinx/adi_fir_filter_constr.xdc

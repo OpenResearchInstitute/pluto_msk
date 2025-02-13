@@ -202,6 +202,14 @@ ad_ip_parameter axi_ad9361 CONFIG.CMOS_OR_LVDS_N 1
 ad_ip_parameter axi_ad9361 CONFIG.MODE_1R1T 0
 ad_ip_parameter axi_ad9361 CONFIG.ADC_INIT_DELAY 21
 
+ad_ip_parameter axi_ad9361 CONFIG.TDD_DISABLE 1
+ad_ip_parameter axi_ad9361 CONFIG.DAC_DDS_DISABLE 1
+ad_ip_parameter axi_ad9361 CONFIG.ADC_USERPORTS_DISABLE 1
+ad_ip_parameter axi_ad9361 CONFIG.ADC_DCFILTER_DISABLE 1
+ad_ip_parameter axi_ad9361 CONFIG.ADC_IQCORRECTION_DISABLE 1
+ad_ip_parameter axi_ad9361 CONFIG.DAC_USERPORTS_DISABLE 1
+ad_ip_parameter axi_ad9361 CONFIG.DAC_IQCORRECTION_DISABLE 1
+
 ad_ip_instance axi_dmac axi_ad9361_dac_dma
 ad_ip_parameter axi_ad9361_dac_dma CONFIG.DMA_TYPE_SRC 0
 ad_ip_parameter axi_ad9361_dac_dma CONFIG.DMA_TYPE_DEST 1

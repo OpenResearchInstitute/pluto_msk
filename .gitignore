@@ -16,3 +16,16 @@ docs/images/
 .asciidoctor/
 gen_files*.txt
 gui/
+*log
+vivado*jou
+vivado*log
+.Xil/
+Release/
+msk_top.cache/
+msk_top.hw/
+msk_top.xpr
+xgui/
+pluto.*/
+pluto.xpr
+component.xml
+
