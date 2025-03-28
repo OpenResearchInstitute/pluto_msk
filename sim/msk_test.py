@@ -623,12 +623,24 @@ async def msk_test_1(dut):
 
     plot = True
 
-    run_time = 50000 # microseconds
+    run_time = 3500 # microseconds
 
-    p_gain = 579
-    i_gain = 128
-    p_shift = 6
-    i_shift = 6
+    # p_gain = 579
+    # i_gain = 128
+    # p_shift = 6
+    # i_shift = 6
+
+    # p_gain  = 40
+    # i_gain  = 9
+    # p_shift = 0
+    # i_shift = 0
+
+    p_gain  = 80
+    p_shift = 5
+
+    i_gain  = 9
+    i_shift = 9
+
 
     autosync_threshold = 50
 
@@ -771,7 +783,7 @@ async def msk_test_1(dut):
     # await axi.write(60, 0)
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "Tx_Sync_Ctrl", 0b1101)    
+    await regs.write("msk_top_regs", "Tx_Sync_Ctrl", 0b1111)    
     # await axi.write(60, 0)
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -829,7 +841,7 @@ async def msk_test_1(dut):
     #pn.sim_run = True
     #pn.sync = 100
 
-    while sim_time < sim_start + run_time:
+    while sim_time < run_time: #sim_start + run_time:
 
         # if sim_time_d <= sim_start + 1000 and sim_time >= sim_start + 1000:
         #     data = await regs.read("msk_top_regs", "PRBS_Control")
@@ -858,13 +870,13 @@ async def msk_test_1(dut):
         # if sim_time_d <= sim_start + 4000 and sim_time >= sim_start + 4000:
             # await pn.resync()
 
-        await Timer (10, "ms")
-        print("Sim time: ", sim_time, "us")
-        errs = await regs.read("msk_top_regs", "PRBS_Error_Count")
-        print("Bit errors: ", errs)
-        bits = await regs.read("msk_top_regs", "PRBS_Bit_Count")
-        print("Bit count:  ", bits)
-        print("BER:        ", round((1.0*errs)/bits *100, 3), "%")
+        #await Timer (10, "ms")
+        #print("Sim time: ", sim_time, "us")
+        #errs = await regs.read("msk_top_regs", "PRBS_Error_Count")
+        #print("Bit errors: ", errs)
+        #bits = await regs.read("msk_top_regs", "PRBS_Bit_Count")
+        #print("Bit count:  ", bits)
+        #print("BER:        ", round((1.0*errs)/bits *100, 3), "%")
 
 
         sim_time_d = sim_time
