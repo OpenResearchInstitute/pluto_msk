@@ -84,7 +84,7 @@ ENTITY msk_top IS
 		S_AXIS_DATA_W 			: NATURAL := 32;	-- AXI stream width changed from 64 Abraxas3d(!!!)
 		C_S_AXI_DATA_WIDTH		: NATURAL := 32;
 		C_S_AXI_ADDR_WIDTH		: NATURAL := 32;
-		SYNC_CNT_W 			: NATURAL := 24
+		SYNC_CNT_W 			: NATURAL := 24;
 		OV_FRAME_BYTES 			: NATURAL := 134;	-- Opulent Voice frame size in bytes
 		SYNC_BITS 			: NATURAL := 24;	-- Barker code sync length in bits
 		ENCODED_BITS 			: NATURAL := 2144;	-- Number of encoded bits after rate 1/2 FEC encoding
@@ -136,7 +136,11 @@ ENTITY msk_top IS
 		rx_samples_Q		: IN  std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 
 		rx_dvalid 		: OUT std_logic;
-		rx_data 		: OUT std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0)
+		rx_data 		: OUT std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
+
+		frame_start		: OUT std_logic;
+		frame_active		: OUT std_logic; 
+		frames_processed	: OUT std_logic_vector(31 DOWNTO 0)
 
 		
 	);
@@ -258,9 +262,108 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL pd_alpha2		: std_logic_vector(17 DOWNTO 0);
 	SIGNAL pd_power			: std_logic_vector(22 DOWNTO 0);
 
-	SIGNAL frame_start		: OUT std_logic; -- Pulse at start of frame transmission
-	SIGNAL frame_active		: OUT std_logic; -- High during frame transmission
-	SIGNAL frames_processed		: OUT std_logic_vector(31 DOWNTO 0)
+
+        -- State machine for frame processing
+        TYPE tx_state_t IS (IDLE, RECEIVING, FEC_ENCODE, INTERLEAVE, RANDOMIZE, SYNC_TX, DATA_TX);
+        SIGNAL tx_state : tx_state_t := IDLE;
+
+        -- Frame buffers
+        TYPE frame_buffer_t IS ARRAY(0 TO OV_FRAME_BYTES-1) OF std_logic_vector(7 DOWNTO 0);
+        SIGNAL ov_frame_buffer : frame_buffer_t;
+
+        -- Processing buffers - each sized for its stage
+        TYPE byte_buffer_t IS ARRAY(0 TO OV_FRAME_BYTES-1) OF std_logic_vector(7 DOWNTO 0);
+        TYPE bit_buffer_t IS ARRAY(0 TO ENCODED_BITS-1) OF std_logic;
+        SIGNAL input_buffer : byte_buffer_t; -- 134 bytes frame input buffer
+        SIGNAL randomized_buffer : byte_buffer_t; -- 134 bytes (after randomization)
+        SIGNAL fec_buffer : bit_buffer_t; -- 2144 bits (after 1/2 rate forward error correction)
+        SIGNAL interleaved_buffer : bit_buffer_t; -- 2144 bits (ready for TX)
+
+        -- Sync pattern (E2 5F 35 hex = 11101001011111100110101 binary)
+        CONSTANT SYNC_PATTERN : std_logic_vector(SYNC_BITS-1 DOWNTO 0) := "111010010111111001101101";
+
+        -- Randomization sequence (134 bytes)
+        TYPE randomizer_t IS ARRAY(0 TO 133) OF std_logic_vector(7 DOWNTO 0);
+        CONSTANT RANDOMIZER_SEQUENCE : randomizer_t := (
+                x"A3", x"81", x"5C", x"C4", x"C9", x"08", x"0E", x"53",
+                x"CC", x"A1", x"FB", x"29", x"9E", x"4F", x"16", x"E0",
+                x"97", x"4E", x"2B", x"57", x"12", x"A7", x"3F", x"C2",
+                x"4D", x"6B", x"0F", x"08", x"30", x"46", x"11", x"56",
+                x"0D", x"1A", x"13", x"E7", x"50", x"97", x"61", x"F3",
+                x"BE", x"E3", x"99", x"B0", x"64", x"39", x"22", x"2C",
+                x"F0", x"09", x"E1", x"86", x"CF", x"73", x"59", x"C2",
+                x"5C", x"8E", x"E3", x"D7", x"3F", x"70", x"D4", x"27",
+                x"C2", x"E0", x"81", x"92", x"DA", x"FC", x"CA", x"5A",
+                x"80", x"42", x"83", x"15", x"0F", x"A2", x"9E", x"15",
+                x"9C", x"8B", x"DB", x"A4", x"46", x"1C", x"10", x"9F",
+                x"B3", x"47", x"6C", x"5E", x"15", x"12", x"1F", x"AD",
+                x"38", x"3D", x"03", x"BA", x"90", x"8D", x"BE", x"D3",
+                x"65", x"23", x"32", x"B8", x"AB", x"10", x"62", x"7E",
+                x"C6", x"26", x"7C", x"13", x"C9", x"65", x"3D", x"15",
+                x"15", x"ED", x"35", x"F4", x"57", x"F5", x"58", x"11",
+                x"9D", x"8E", x"E8", x"34", x"C9", x"59"
+        );
+
+
+        -- Counters and indices
+        SIGNAL byte_index : NATURAL RANGE 0 TO OV_FRAME_BYTES;
+        SIGNAL framer_bit_index : NATURAL RANGE 0 TO ENCODED_BITS;
+        SIGNAL sync_index : NATURAL RANGE 0 TO SYNC_BITS;
+        SIGNAL frames_count : UNSIGNED(31 DOWNTO 0) := (OTHERS => '0');
+
+        -- Control signals
+        SIGNAL frame_ready : std_logic := '0';
+        SIGNAL processing_done : std_logic := '0';
+
+        -- FEC encoder signals (simplified - actual implementation will be more complex)
+        SIGNAL fec_encode_active : std_logic := '0';
+        SIGNAL fec_encode_done : std_logic := '0';
+
+        -- Block interleaver: 67 rows × 32 cols = 2144 bits
+        FUNCTION interleave_address(addr : NATURAL) RETURN NATURAL IS
+                CONSTANT ROWS : NATURAL := 67;
+                CONSTANT COLS : NATURAL := 32;
+                VARIABLE row : NATURAL;
+                VARIABLE col : NATURAL;
+        BEGIN
+                -- Write row-wise (normal order)
+                row := addr / COLS;
+                col := addr MOD COLS;
+                -- Read column-wise (interleaved order)
+                RETURN col * ROWS + row;
+        END FUNCTION;
+
+       -- Deinterleaver (for RX side)
+        FUNCTION deinterleave_address(addr : NATURAL) RETURN NATURAL IS
+                CONSTANT ROWS : NATURAL := 67;
+                CONSTANT COLS : NATURAL := 32;
+                VARIABLE row : NATURAL;
+                VARIABLE col : NATURAL;
+        BEGIN
+                -- Reverse: what was read column-wise, write row-wise
+                row := addr MOD ROWS;
+                col := addr / ROWS;
+                RETURN row * COLS + col;
+        END FUNCTION;
+
+
+        -- Data flow:
+        --      [IDLE]
+        -- ov_frame_buffer (134 bytes)
+        --      [RANDOMIZE]
+        -- randomized_buffer (134 bytes)
+        --      [FEC_ENCODE]
+        -- fec_buffer (2144 bits)
+        --      [INTERLEAVE]
+        -- interleaved_buffer (2144 bits)
+        --      [SYNC_TX + DATA_TX]
+        -- tx_data (1 bit at a time)
+        --      [TX]
+
+
+
+
+
 
 BEGIN 
 
@@ -321,153 +424,47 @@ BEGIN
 -- Tx Parallel to Serial
 
 
-	-- State machine for frame processing
-	TYPE tx_state_t IS (IDLE, RECEIVING, FEC_ENCODE, INTERLEAVE, RANDOMIZE, SYNC_TX, DATA_TX);
-	SIGNAL tx_state : tx_state_t := IDLE;
-
-	-- Frame buffers
-	TYPE frame_buffer_t IS ARRAY(0 TO OV_FRAME_BYTES-1) OF std_logic_vector(7 DOWNTO 0);
-	SIGNAL ov_frame_buffer : frame_buffer_t;
-
-	-- Processing buffers - each sized for its stage
-	TYPE byte_buffer_t IS ARRAY(0 TO OV_FRAME_BYTES-1) OF std_logic_vector(7 DOWNTO 0);
-	TYPE bit_buffer_t IS ARRAY(0 TO ENCODED_BITS-1) OF std_logic;
-	SIGNAL input_buffer : byte_buffer_t; -- 134 bytes frame input buffer
-	SIGNAL randomized_buffer : byte_buffer_t; -- 134 bytes (after randomization)
-	SIGNAL fec_buffer : bit_buffer_t; -- 2144 bits (after 1/2 rate forward error correction)
-	SIGNAL interleaved_buffer : bit_buffer_t; -- 2144 bits (ready for TX)
-
-	-- Sync pattern (E2 5F 35 hex = 11101001011111100110101 binary)
-	CONSTANT SYNC_PATTERN : std_logic_vector(SYNC_BITS-1 DOWNTO 0) := "111010010111111001101101";
-
-	-- Randomization sequence (134 bytes)
-	TYPE randomizer_t IS ARRAY(0 TO 133) OF std_logic_vector(7 DOWNTO 0);
-	CONSTANT RANDOMIZER_SEQUENCE : randomizer_t := (
-		x"A3", x"81", x"5C", x"C4", x"C9", x"08", x"0E", x"53",
-		x"CC", x"A1", x"FB", x"29", x"9E", x"4F", x"16", x"E0",
-		x"97", x"4E", x"2B", x"57", x"12", x"A7", x"3F", x"C2",
-		x"4D", x"6B", x"0F", x"08", x"30", x"46", x"11", x"56",
-		x"0D", x"1A", x"13", x"E7", x"50", x"97", x"61", x"F3",
-		x"BE", x"E3", x"99", x"B0", x"64", x"39", x"22", x"2C",
-		x"F0", x"09", x"E1", x"86", x"CF", x"73", x"59", x"C2",
-		x"5C", x"8E", x"E3", x"D7", x"3F", x"70", x"D4", x"27",
-		x"C2", x"E0", x"81", x"92", x"DA", x"FC", x"CA", x"5A",
-		x"80", x"42", x"83", x"15", x"0F", x"A2", x"9E", x"15",
-		x"9C", x"8B", x"DB", x"A4", x"46", x"1C", x"10", x"9F",
-		x"B3", x"47", x"6C", x"5E", x"15", x"12", x"1F", x"AD",
-		x"38", x"3D", x"03", x"BA", x"90", x"8D", x"BE", x"D3",
-		x"65", x"23", x"32", x"B8", x"AB", x"10", x"62", x"7E",
-		x"C6", x"26", x"7C", x"13", x"C9", x"65", x"3D", x"15",
-		x"15", x"ED", x"35", x"F4", x"57", x"F5", x"58", x"11",
-		x"9D", x"8E", x"E8", x"34", x"C9", x"59" 
-	);
-
-
-	-- Counters and indices
-	SIGNAL byte_index : NATURAL RANGE 0 TO OV_FRAME_BYTES;
-	SIGNAL bit_index : NATURAL RANGE 0 TO ENCODED_BITS;
-	SIGNAL sync_index : NATURAL RANGE 0 TO SYNC_BITS;
-	SIGNAL frames_count : UNSIGNED(31 DOWNTO 0) := (OTHERS => '0');
-	
-	-- Control signals
-	SIGNAL frame_ready : std_logic := '0';
-	SIGNAL processing_done : std_logic := '0';
-
-	-- FEC encoder signals (simplified - actual implementation will be more complex)
-	SIGNAL fec_encode_active : std_logic := '0';
-	SIGNAL fec_encode_done : std_logic := '0';
-
-
-
-
-
-	-- Block interleaver: 67 rows × 32 cols = 2144 bits
-	FUNCTION interleave_address(addr : NATURAL) RETURN NATURAL IS
-		CONSTANT ROWS : NATURAL := 67;
-		CONSTANT COLS : NATURAL := 32;
-		VARIABLE row : NATURAL;
-		VARIABLE col : NATURAL;
-	BEGIN
-		-- Write row-wise (normal order)
-		row := addr / COLS;
-		col := addr MOD COLS;
-		-- Read column-wise (interleaved order)
-		RETURN col * ROWS + row;
-	END FUNCTION;
-
-
-
-	-- Deinterleaver (for RX side, putting it here for now)
-	FUNCTION deinterleave_address(addr : NATURAL) RETURN NATURAL IS
-		CONSTANT ROWS : NATURAL := 67;
-		CONSTANT COLS : NATURAL := 32;
-		VARIABLE row : NATURAL;
-		VARIABLE col : NATURAL;
-	BEGIN
-		-- Reverse: what was read column-wise, write row-wise
-		row := addr MOD ROWS;
-		col := addr / ROWS;
-		RETURN row * COLS + col;
-	END FUNCTION;
-
-
-	-- Data flow:
-	--	[IDLE]
-	-- ov_frame_buffer (134 bytes)
-	--	[RANDOMIZE]
-	-- randomized_buffer (134 bytes)
-	--	[FEC_ENCODE]
-	-- fec_buffer (2144 bits)
-	--	[INTERLEAVE]
-	-- interleaved_buffer (2144 bits)
-	--	[SYNC_TX + DATA_TX]
-	-- tx_data (1 bit at a time)
-	--	[TX]
-
-
-
-
 
 
 	-- Main state machine
 	tx_process : PROCESS(clk)
 	BEGIN
 		IF RISING_EDGE(clk) THEN
-			IF reset = '1' THEN
+			IF s_axis_aresetn = '0' THEN
 				tx_state <= IDLE;
-				s_axis_tready <= '0';
+				s_axis_ready <= '0';
 				frame_start <= '0';
 				frame_active <= '0';
 				byte_index <= 0;
-				bit_index <= 0;
+				framer_bit_index <= 0;
 				sync_index <= 0;
 				frame_ready <= '0';
 				processing_done <= '0';
-				tx_data <= '0';
+				tx_data <= (OTHERS => '0');
 			ELSE
 				-- Default signal values
 				frame_start <= '0';
-				s_axis_tready <= '0';
+				s_axis_ready <= '0';
 
 
 				-- switch case structure implements state machine
 				CASE tx_state IS
 					WHEN IDLE =>
 						frame_active <= '0';
-						s_axis_tready <= '1';
+						s_axis_ready <= '1';
 						byte_index <= 0;
 
-						IF s_axis_tvalid = '1' THEN
-							ov_frame_buffer(byte_index) <= s_axis_tdata(7 DOWNTO 0);
+						IF s_axis_valid = '1' THEN
+							ov_frame_buffer(byte_index) <= s_axis_data(7 DOWNTO 0);
 							byte_index <= 1; -- Now ready for second byte
 							tx_state <= RECEIVING; -- go to RECEIVING
 						END IF;
 
 					WHEN RECEIVING =>
-						s_axis_tready <= '1';
+						s_axis_ready <= '1';
 
-						IF s_axis_tvalid = '1' THEN
-							ov_frame_buffer(byte_index) <= s_axis_tdata(7 DOWNTO 0);
+						IF s_axis_valid = '1' THEN
+							ov_frame_buffer(byte_index) <= s_axis_data(7 DOWNTO 0);
 
 
 							IF byte_index < OV_FRAME_BYTES-1 THEN
@@ -477,7 +474,7 @@ BEGIN
 							IF s_axis_tlast = '1' THEN
 								tx_state <= RANDOMIZE;
 								frame_ready <= '1';
-								s_axis_tready <= '0';
+								s_axis_ready <= '0';
 							END IF;
 						END IF;
 
@@ -503,23 +500,23 @@ BEGIN
 						-- In our implementation, this will be a separate module
 						-- For now, just copy and duplicate bits (placeholder)
 						
-						IF bit_index < OV_FRAME_BYTES * 8 THEN
-							fec_buffer(bit_index * 2) <= randomized_buffer(bit_index / 8)(bit_index MOD 8);
-							fec_buffer(bit_index * 2 + 1) <= randomized_buffer(bit_index / 8)(bit_index MOD 8);
-							bit_index <= bit_index + 1;
+						IF framer_bit_index < OV_FRAME_BYTES * 8 THEN
+							fec_buffer(framer_bit_index * 2) <= randomized_buffer(framer_bit_index / 8)(framer_bit_index MOD 8);
+							fec_buffer(framer_bit_index * 2 + 1) <= randomized_buffer(framer_bit_index / 8)(framer_bit_index MOD 8);
+							framer_bit_index <= framer_bit_index + 1;
 						ELSE
-							bit_index <= 0;
+							framer_bit_index <= 0;
 							tx_state <= INTERLEAVE; -- Next: burst defense
 						END IF;
 
 
 					WHEN INTERLEAVE =>
 						-- Apply block interleaver
-						IF bit_index < ENCODED_BITS THEN
-							interleaved_buffer(interleave_address(bit_index)) <= fec_buffer(bit_index);
-							bit_index <= bit_index + 1;
+						IF framer_bit_index < ENCODED_BITS THEN
+							interleaved_buffer(interleave_address(framer_bit_index)) <= fec_buffer(framer_bit_index);
+							framer_bit_index <= framer_bit_index + 1;
 						ELSE
-							bit_index <= 0;
+							framer_bit_index <= 0;
 							tx_state <= SYNC_TX; -- Next: install lighthouse
 						END IF;
 
@@ -528,13 +525,13 @@ BEGIN
 					WHEN SYNC_TX =>
 						-- Transmit sync pattern
 						IF tx_req = '1' THEN
-							tx_data <= SYNC_PATTERN(SYNC_BITS - 1 - sync_index);
+							tx_data_bit <= SYNC_PATTERN(SYNC_BITS - 1 - sync_index);
 
 							IF sync_index < SYNC_BITS - 1 THEN
 								sync_index <= sync_index + 1;
 							ELSE
 								sync_index <= 0;
-								bit_index <= 0;
+								framer_bit_index <= 0;
 								tx_state <= DATA_TX; -- Next: out the door
 							END IF;
 						END IF;
@@ -545,10 +542,10 @@ BEGIN
 					WHEN DATA_TX =>
 						-- Transmit processed data
 						IF tx_req = '1' THEN
-							tx_data <= interleaved_buffer(bit_index);
+							tx_data_bit <= interleaved_buffer(framer_bit_index);
 
-							IF bit_index < ENCODED_BITS - 1 THEN
-								bit_index <= bit_index + 1;
+							IF framer_bit_index < ENCODED_BITS - 1 THEN
+								framer_bit_index <= framer_bit_index + 1;
 							ELSE
 								-- Frame transmission complete
 								frames_count <= frames_count + 1;
@@ -557,7 +554,7 @@ BEGIN
 							END IF;
 						END IF;
 				END CASE; -- tx_state
-			END IF; -- reset
+			END IF; -- s_axis_aresetn
 		END IF; -- rising edge of clock
 	END PROCESS tx_process;
 	
