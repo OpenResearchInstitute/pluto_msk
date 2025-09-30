@@ -32,8 +32,6 @@
 -- OF MERCHANTABILITY, SATISFACTORY QUALITY AND FITNESS FOR A PARTICULAR PURPOSE.
 -- Please see the CERN-OHL-W v2 for applicable conditions.
 --
--- Source location: TBD
---
 -- As per CERN-OHL-W v2 section 4.1, should You produce hardware based on this
 -- source, You must maintain the Source Location visible on the external case of
 -- the products you make using this source.
@@ -43,8 +41,6 @@
 ------------------------------------------------------------------------------------------------------
 --
 -- This block provides a complete MSK Modulator, Demodulator, Data Interfaces, and Configuration/Status.
---
--- Documentation location: TBD
 --
 ------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------
