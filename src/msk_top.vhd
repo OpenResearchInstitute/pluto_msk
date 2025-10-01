@@ -265,7 +265,7 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL s_axis_tlast_axi		: std_logic;
 	SIGNAL s_axis_tlast_meta	: std_logic;
 	SIGNAL s_axis_tlast_sync	: std_logic;
-
+	SIGNAL tlast_detected		: std_logic;
 
         -- State machine for frame processing
         TYPE tx_state_t IS (IDLE, RECEIVING, FEC_ENCODE, INTERLEAVE, RANDOMIZE, SYNC_TX, DATA_TX);
@@ -454,6 +454,7 @@ BEGIN
 				--processing_done <= '0';
 				s_axis_tlast_meta <= '0';
 				s_axis_tlast_sync <= '0';
+				tlast_detected <= '0';
 
 			-- check for transmitter reset
 			ELSIF txinit = '1' THEN
@@ -473,6 +474,8 @@ BEGIN
                                 xfer_count <= (OTHERS => '0');
 				s_axis_tlast_meta <= '0';
 				s_axis_tlast_sync <= '0';
+				tlast_detected <= '0';
+
 			-- default signal values
 			ELSE
 				frame_start <= '0';
@@ -488,12 +491,31 @@ BEGIN
 						tx_state <= RECEIVING;
 
 					WHEN RECEIVING =>
-						-- Wait for synchronized data to arrive
-						-- Only the lowest byte (7:0) contains valid data per transfer
-    
-						IF saxis_xfer_count /= xfer_count THEN
+						-- Check for tlast edge (rising edge detection)
+						IF s_axis_tlast_sync = '1' AND tlast_detected = '0' THEN
+							tlast_detected <= '1';
+        
+							-- Validate we got expected frame size
+							-- byte_index will be 134 after storing the 134th byte (index 133)
+							IF byte_index = OV_FRAME_BYTES THEN
+								-- Good frame! proceed to processing
+								byte_index <= 0;
+								tx_state <= RANDOMIZE;
+								frame_ready <= '1';
+								frame_start <= '1';
+							ELSE
+								-- Frame size mismatch
+								byte_index <= 0;
+								tx_state <= IDLE;
+							END IF;
+        
+						-- Normal byte reception
+						ELSIF saxis_xfer_count /= xfer_count THEN
 							-- New data has arrived in tx_data_axi
 							xfer_count <= saxis_xfer_count;
+        
+							-- Clear tlast flag when receiving new data
+							tlast_detected <= '0';
         
 							-- Extract only the lowest byte
 							IF byte_index < OV_FRAME_BYTES THEN
@@ -501,25 +523,8 @@ BEGIN
 								byte_index <= byte_index + 1;
 							END IF;
         
-							-- Check for frame completion via tlast
-							IF s_axis_tlast_sync = '1' THEN
-								-- Validate we got expected frame size
-								IF byte_index = OV_FRAME_BYTES THEN
-									-- Good frame! proceed to processing
-									byte_index <= 0;
-									tx_state <= RANDOMIZE;
-									frame_ready <= '1';
-									frame_start <= '1';
-								ELSE
-									-- Frame size mismatch - could add error handling here
-									-- For now, just reset and try again
-									byte_index <= 0;
-									tx_state <= IDLE;
-								END IF;
-							ELSE
-								-- Not done yet, request next byte
-								saxis_req <= NOT saxis_req;
-							END IF;
+							-- Request next byte
+							saxis_req <= NOT saxis_req;
 						END IF;
 
 					WHEN RANDOMIZE =>
@@ -599,10 +604,7 @@ BEGIN
 								-- Frame transmission complete
 								frames_count <= frames_count + 1;
 								frame_active <= '0';
-								tx_data <= tx_data_axi;
 								framer_bit_index <= 0;
-								saxis_req <= NOT saxis_req;
-								xfer_count <= saxis_xfer_count;
 								tx_state <= IDLE;
 							END IF;
 						END IF;
