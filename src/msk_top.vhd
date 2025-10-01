@@ -262,6 +262,10 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL pd_alpha2		: std_logic_vector(17 DOWNTO 0);
 	SIGNAL pd_power			: std_logic_vector(22 DOWNTO 0);
 
+	SIGNAL s_axis_tlast_axi		: std_logic;
+	SIGNAL s_axis_tlast_meta	: std_logic;
+	SIGNAL s_axis_tlast_sync	: std_logic;
+
 
         -- State machine for frame processing
         TYPE tx_state_t IS (IDLE, RECEIVING, FEC_ENCODE, INTERLEAVE, RANDOMIZE, SYNC_TX, DATA_TX);
@@ -400,12 +404,14 @@ BEGIN
 			IF s_axis_tready_int = '1' AND s_axis_valid = '1' THEN
 				s_axis_tready_int 	<= '0';
 				tx_data_axi 		<= s_axis_data;
+				s_axis_tlast_axi	<= s_axis_tlast;  -- Capture tlast
 				saxis_xfer_count 	<= saxis_xfer_count + 1;
 			END IF;
 
 			IF s_axis_aresetn = '0' THEN
 				s_axis_tready_int	<= '0';
 				tx_data_axi 		<= (OTHERS => '0');
+				s_axis_tlast_axi	<= '0';
 				saxis_req_meta		<= '0';
 				saxis_req_sync		<= '0';
 				saxis_req_d 		<= '0';
@@ -430,55 +436,91 @@ BEGIN
 	tx_process : PROCESS(clk)
 	BEGIN
 		IF RISING_EDGE(clk) THEN
+			-- two-stage synchonizer for tlast
+			s_axis_tlast_meta <= s_axis_tlast_axi;
+			s_axis_tlast_sync <= s_axis_tlast_meta;
+
+			-- check for system reset
 			IF s_axis_aresetn = '0' THEN
 				tx_state <= IDLE;
-				s_axis_ready <= '0';
 				frame_start <= '0';
 				frame_active <= '0';
+				frames_count <= (OTHERS => '0');
 				byte_index <= 0;
 				framer_bit_index <= 0;
 				sync_index <= 0;
 				frame_ready <= '0';
-				processing_done <= '0';
-				tx_data <= (OTHERS => '0');
-			ELSE
-				-- Default signal values
-				frame_start <= '0';
-				s_axis_ready <= '0';
+				saxis_req <= '0';
+				--processing_done <= '0';
+				s_axis_tlast_meta <= '0';
+				s_axis_tlast_sync <= '0';
 
+			-- check for transmitter reset
+			ELSIF txinit = '1' THEN
+                                tx_state <= IDLE;
+                                saxis_req <= '0';
+                                frame_start <= '0';
+                                frame_active <= '0';
+                                frames_count <= (OTHERS => '0');
+                                byte_index <= 0;
+                                framer_bit_index <= 0;
+				sync_index <= 0;
+                                tx_data_bit <= '0';
+                                tx_data_bit_d1 <= '0';
+                                tx_data_bit_d2 <= '0';
+                                tx_data_bit_d3 <= '0';
+				tx_data_bit_d4 <= '0';
+                                xfer_count <= (OTHERS => '0');
+				s_axis_tlast_meta <= '0';
+				s_axis_tlast_sync <= '0';
+			-- default signal values
+			ELSE
+				frame_start <= '0';
 
 				-- switch case structure implements state machine
 				CASE tx_state IS
 					WHEN IDLE =>
 						frame_active <= '0';
-						s_axis_ready <= '1';
 						byte_index <= 0;
 
-						IF s_axis_valid = '1' THEN
-							ov_frame_buffer(byte_index) <= s_axis_data(7 DOWNTO 0);
-							byte_index <= 1; -- Now ready for second byte
-							tx_state <= RECEIVING; -- go to RECEIVING
-						END IF;
+						-- request first word from AXI stream via CDC
+						saxis_req <= NOT saxis_req;
+						tx_state <= RECEIVING;
 
 					WHEN RECEIVING =>
-						s_axis_ready <= '1';
-
-						IF s_axis_valid = '1' THEN
-							ov_frame_buffer(byte_index) <= s_axis_data(7 DOWNTO 0);
-
-
-							IF byte_index < OV_FRAME_BYTES-1 THEN
+						-- Wait for synchronized data to arrive
+						-- Only the lowest byte (7:0) contains valid data per transfer
+    
+						IF saxis_xfer_count /= xfer_count THEN
+							-- New data has arrived in tx_data_axi
+							xfer_count <= saxis_xfer_count;
+        
+							-- Extract only the lowest byte
+							IF byte_index < OV_FRAME_BYTES THEN
+								ov_frame_buffer(byte_index) <= tx_data_axi(7 DOWNTO 0);
 								byte_index <= byte_index + 1;
 							END IF;
-							
-							IF s_axis_tlast = '1' THEN
-								tx_state <= RANDOMIZE;
-								frame_ready <= '1';
-								s_axis_ready <= '0';
+        
+							-- Check for frame completion via tlast
+							IF s_axis_tlast_sync = '1' THEN
+								-- Validate we got expected frame size
+								IF byte_index = OV_FRAME_BYTES THEN
+									-- Good frame! proceed to processing
+									byte_index <= 0;
+									tx_state <= RANDOMIZE;
+									frame_ready <= '1';
+									frame_start <= '1';
+								ELSE
+									-- Frame size mismatch - could add error handling here
+									-- For now, just reset and try again
+									byte_index <= 0;
+									tx_state <= IDLE;
+								END IF;
+							ELSE
+								-- Not done yet, request next byte
+								saxis_req <= NOT saxis_req;
 							END IF;
 						END IF;
-
-
 
 					WHEN RANDOMIZE =>
 						-- XOR by predefined pseudorandom sequence
@@ -491,9 +533,6 @@ BEGIN
 							byte_index <= 0;
 							tx_state <= FEC_ENCODE; -- Next: add redundancy
 						END IF;
-
-
-
 
 					WHEN FEC_ENCODE =>
 						-- Simplified FEC encoding (1/2 rate convolutional)
@@ -509,7 +548,6 @@ BEGIN
 							tx_state <= INTERLEAVE; -- Next: burst defense
 						END IF;
 
-
 					WHEN INTERLEAVE =>
 						-- Apply block interleaver
 						IF framer_bit_index < ENCODED_BITS THEN
@@ -520,12 +558,18 @@ BEGIN
 							tx_state <= SYNC_TX; -- Next: install lighthouse
 						END IF;
 
-
-
 					WHEN SYNC_TX =>
 						-- Transmit sync pattern
 						IF tx_req = '1' THEN
 							tx_data_bit <= SYNC_PATTERN(SYNC_BITS - 1 - sync_index);
+
+							tx_data_bit_d1 <= prbs_data_bit;
+							tx_data_bit_d2 <= tx_data_bit_d1;
+							tx_data_bit_d3 <= tx_data_bit_d2;
+							tx_data_bit_d4 <= tx_data_bit_d3;
+        
+							rx_data_cmp <= rx_bit;
+							data_error <= rx_data_cmp XOR tx_data_bit_d2;
 
 							IF sync_index < SYNC_BITS - 1 THEN
 								sync_index <= sync_index + 1;
@@ -536,13 +580,18 @@ BEGIN
 							END IF;
 						END IF;
 
-
-
-
 					WHEN DATA_TX =>
 						-- Transmit processed data
 						IF tx_req = '1' THEN
 							tx_data_bit <= interleaved_buffer(framer_bit_index);
+
+							tx_data_bit_d1 <= prbs_data_bit;
+							tx_data_bit_d2 <= tx_data_bit_d1;
+							tx_data_bit_d3 <= tx_data_bit_d2;
+							tx_data_bit_d4 <= tx_data_bit_d3;
+
+							rx_data_cmp    <= rx_bit;
+							data_error         <= rx_data_cmp XOR tx_data_bit_d2;
 
 							IF framer_bit_index < ENCODED_BITS - 1 THEN
 								framer_bit_index <= framer_bit_index + 1;
@@ -550,6 +599,10 @@ BEGIN
 								-- Frame transmission complete
 								frames_count <= frames_count + 1;
 								frame_active <= '0';
+								tx_data <= tx_data_axi;
+								framer_bit_index <= 0;
+								saxis_req <= NOT saxis_req;
+								xfer_count <= saxis_xfer_count;
 								tx_state <= IDLE;
 							END IF;
 						END IF;
@@ -565,50 +618,8 @@ BEGIN
 
 
 
---(!!!) functionality of par2ser_proc must be integrated into framer faithfully. 
 
 
-	par2ser_proc : PROCESS (clk)
-	BEGIN
-		IF clk'EVENT AND clk = '1' THEN
-
-			IF tx_req = '1' THEN
-
-				IF bit_index = to_integer(unsigned(tx_data_w)) -1 THEN
-					tx_data 	<= tx_data_axi;
-					bit_index	<= 0;
-					saxis_req 	<= NOT saxis_req;
-					xfer_count 	<= saxis_xfer_count;
-				ELSE
-					bit_index <= bit_index + 1;
-				END IF;
-				
-				tx_data_bit <= tx_data(bit_index);
-
-				tx_data_bit_d1 <= prbs_data_bit;
-				tx_data_bit_d2 <= tx_data_bit_d1;
-				tx_data_bit_d3 <= tx_data_bit_d2;
-				tx_data_bit_d4 <= tx_data_bit_d3;
-
-				rx_data_cmp    <= rx_bit;
-
-				data_error 	   <= rx_data_cmp XOR tx_data_bit_d2;
-
-			END IF;
-
-			IF txinit = '1' THEN
-				saxis_req		<= '0';
-				tx_data 		<= (OTHERS => '0');
-				bit_index 		<= 0;
-				tx_data_bit 	<= '0';
-				tx_data_bit_d1	<= '0';
-				tx_data_bit_d2	<= '0';
-				tx_data_bit_d3	<= '0';
-				xfer_count 		<= (OTHERS => '0');
-			END IF;
-
-		END IF;
-	END PROCESS par2ser_proc;
 
 	u_prbs_gen : ENTITY work.prbs_gen(rtl)
 		GENERIC MAP (
