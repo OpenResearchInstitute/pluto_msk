@@ -479,6 +479,7 @@ BEGIN
 			-- default signal values
 			ELSE
 				frame_start <= '0';
+				frame_active <= '0';
 
 				-- switch case structure implements state machine
 				CASE tx_state IS
@@ -503,6 +504,7 @@ BEGIN
 								tx_state <= RANDOMIZE;
 								frame_ready <= '1';
 								frame_start <= '1';
+								frame_active <= '1';
 							ELSE
 								-- Frame size mismatch
 								byte_index <= 0;
