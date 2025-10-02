@@ -479,7 +479,6 @@ BEGIN
 			-- default signal values
 			ELSE
 				frame_start <= '0';
-				frame_active <= '0';
 
 				-- switch case structure implements state machine
 				CASE tx_state IS
@@ -487,8 +486,8 @@ BEGIN
 						frame_active <= '0';
 						byte_index <= 0;
 
-						-- request first word from AXI stream via CDC
-						saxis_req <= NOT saxis_req;
+						-- toggle request for first byte and immediately transition
+						saxis_req <= NOT saxis_req;  -- Request first byte
 						tx_state <= RECEIVING;
 
 					WHEN RECEIVING =>
@@ -589,6 +588,7 @@ BEGIN
 
 					WHEN DATA_TX =>
 						-- Transmit processed data
+						frame_active <= '0'; -- processing done, now transmit
 						IF tx_req = '1' THEN
 							tx_data_bit <= interleaved_buffer(framer_bit_index);
 
@@ -605,7 +605,6 @@ BEGIN
 							ELSE
 								-- Frame transmission complete
 								frames_count <= frames_count + 1;
-								frame_active <= '0';
 								framer_bit_index <= 0;
 								tx_state <= IDLE;
 							END IF;
