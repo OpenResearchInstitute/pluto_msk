@@ -85,11 +85,23 @@ ENTITY msk_top IS
 		C_S_AXI_DATA_WIDTH		: NATURAL := 32;
 		C_S_AXI_ADDR_WIDTH		: NATURAL := 32;
 		SYNC_CNT_W 			: NATURAL := 24;
+		------------
+		-- framer --
+		------------
 		OV_FRAME_BYTES 			: NATURAL := 134;	-- Opulent Voice frame size in bytes
 		SYNC_BITS 			: NATURAL := 24;	-- Barker code sync length in bits
 		ENCODED_BITS 			: NATURAL := 2144;	-- Number of encoded bits after rate 1/2 FEC encoding
-		INTERLEAVER_DEPTH 		: NATURAL := 2144	-- Interleaver depth in bits
-
+		INTERLEAVER_DEPTH 		: NATURAL := 2144;	-- Interleaver depth in bits
+		--------------
+		-- deframer --
+		--------------
+		M_AXIS_DATA_W			: NATURAL := 32;	-- AXI stream width (must match TX side)
+		--OV_FRAME_BYTES			: NATURAL := 134;	-- Opulent Voice frame size in bytes
+		--SYNC_BITS			: NATURAL := 24;	-- Barker code sync length in bits
+		--ENCODED_BITS			: NATURAL := 2144;	-- Number of encoded bits (after FEC)
+		--INTERLEAVER_DEPTH		: NATURAL := 2144;	-- Interleaver depth in bits
+		SYNC_THRESHOLD			: NATURAL := 3;		-- Max bit errors allowed in sync detection
+		FRAME_TIMEOUT			: NATURAL := 4000	-- Bit periods before declaring sync loss
 
 	);
 	PORT (
@@ -135,13 +147,26 @@ ENTITY msk_top IS
 		rx_samples_I		: IN  std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 		rx_samples_Q		: IN  std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 
-		rx_dvalid 		: OUT std_logic;
-		rx_data 		: OUT std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
+		-- legacy connections removed - we need tlast so we go to standard AXIS
+		--rx_dvalid 		: OUT std_logic;
+		--rx_data 		: OUT std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
 
+
+		-- framer ports added
 		frame_start		: OUT std_logic;
 		frame_active		: OUT std_logic; 
-		frames_processed	: OUT std_logic_vector(31 DOWNTO 0)
+		frames_processed	: OUT std_logic_vector(31 DOWNTO 0);
 
+		-- deframer ports added
+		-- AXI-Stream Master output (thought this already existed here, check !!!)
+		m_axis_tdata		: OUT std_logic_vector(M_AXIS_DATA_W-1 DOWNTO 0);
+		m_axis_tvalid		: OUT std_logic;
+		m_axis_tready		: IN  std_logic;
+		m_axis_tlast		: OUT std_logic;
+
+		sync_locked		: OUT std_logic;
+		frames_received		: OUT std_logic_vector(31 DOWNTO 0);
+		sync_errors		: OUT std_logic_vector(31 DOWNTO 0)
 		
 	);
 END ENTITY msk_top;
@@ -172,9 +197,11 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL rx_bit		: std_logic;
 	SIGNAL rx_bit_corr	: std_logic;
 	SIGNAL rx_bit_valid	: std_logic;
-	SIGNAL rx_bit_index	: NATURAL RANGE 0 TO S_AXIS_DATA_W -1;
-	SIGNAL rx_data_valid	: std_logic;
-	SIGNAL rx_data_int	: std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
+
+	-- legacy connections removed to move to AXIS
+	--SIGNAL rx_bit_index	: NATURAL RANGE 0 TO S_AXIS_DATA_W -1;
+	--SIGNAL rx_data_valid	: std_logic;
+	--SIGNAL rx_data_int	: std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
 	SIGNAL rx_invert	: std_logic;
 
 	SIGNAL rx_sample_clk	: std_logic;
@@ -188,7 +215,8 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL received_data	: std_logic;
 	SIGNAL sent_data_pipe	: std_logic_vector(0 TO 3);
 
-	SIGNAL bit_index	: NATURAL RANGE 0 TO S_AXIS_DATA_W -1;
+	-- legacy connections removed to move to AXIS
+	--SIGNAL bit_index	: NATURAL RANGE 0 TO S_AXIS_DATA_W -1;
 	SIGNAL tx_data		: std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
 	SIGNAL tx_data_axi	: std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
 
@@ -197,6 +225,8 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL rxinit		: std_logic;
 
 	SIGNAL tx_data_w	: std_logic_vector(7 DOWNTO 0);
+
+	-- (!!!) rx_data_w can be removed
 	SIGNAL rx_data_w	: std_logic_vector(7 DOWNTO 0);
 
 	SIGNAL loopback_ena	: std_logic;
@@ -262,6 +292,9 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL pd_alpha2		: std_logic_vector(17 DOWNTO 0);
 	SIGNAL pd_power			: std_logic_vector(22 DOWNTO 0);
 
+	------------
+	-- framer --
+	------------
 	SIGNAL s_axis_tlast_axi		: std_logic;
 	SIGNAL s_axis_tlast_meta	: std_logic;
 	SIGNAL s_axis_tlast_sync	: std_logic;
@@ -310,10 +343,10 @@ ARCHITECTURE struct OF msk_top IS
 
 
         -- Counters and indices
-        SIGNAL byte_index : NATURAL RANGE 0 TO OV_FRAME_BYTES;
+        SIGNAL framer_byte_index : NATURAL RANGE 0 TO OV_FRAME_BYTES;
         SIGNAL framer_bit_index : NATURAL RANGE 0 TO ENCODED_BITS;
         SIGNAL sync_index : NATURAL RANGE 0 TO SYNC_BITS;
-        SIGNAL frames_count : UNSIGNED(31 DOWNTO 0) := (OTHERS => '0');
+        SIGNAL framer_frames_count : UNSIGNED(31 DOWNTO 0) := (OTHERS => '0');
 
         -- Control signals
         SIGNAL frame_ready : std_logic := '0';
@@ -337,21 +370,8 @@ ARCHITECTURE struct OF msk_top IS
                 RETURN col * ROWS + row;
         END FUNCTION;
 
-       -- Deinterleaver (for RX side)
-        FUNCTION deinterleave_address(addr : NATURAL) RETURN NATURAL IS
-                CONSTANT ROWS : NATURAL := 67;
-                CONSTANT COLS : NATURAL := 32;
-                VARIABLE row : NATURAL;
-                VARIABLE col : NATURAL;
-        BEGIN
-                -- Reverse: what was read column-wise, write row-wise
-                row := addr MOD ROWS;
-                col := addr / ROWS;
-                RETURN row * COLS + col;
-        END FUNCTION;
 
-
-        -- Data flow:
+        -- Data flow for framer:
         --      [IDLE]
         -- ov_frame_buffer (134 bytes)
         --      [RANDOMIZE]
@@ -365,7 +385,84 @@ ARCHITECTURE struct OF msk_top IS
         --      [TX]
 
 
+	--------------	
+	-- deframer --
+	--------------
+	SIGNAL rx_deframer_data		: std_logic_vector(31 DOWNTO 0);
+	SIGNAL rx_deframer_valid	: std_logic;
+	SIGNAL rx_deframer_ready	: std_logic;
+	SIGNAL rx_deframer_tlast	: std_logic;
+	SIGNAL deframer_sync_lock	: std_logic;
+	SIGNAL frames_rx_count		: std_logic_vector(31 DOWNTO 0);
+	SIGNAL deframer_sync_errs	: std_logic_vector(31 DOWNTO 0);
 
+
+	-- deframer state machine
+	TYPE deframer_state_t IS (
+		HUNT,           -- Searching for sync pattern
+		COLLECT,        -- Collecting encoded bits
+		DEINTERLEAVE,   -- Reversing block interleaver
+		FEC_DECODE,     -- Viterbi decoding (placeholder)
+		DERANDOMIZE,    -- XOR with randomizer
+		OUTPUT          -- AXI-Stream output
+	);
+	SIGNAL rx_state : deframer_state_t := HUNT; -- !!! come up with a better name than "state"
+
+
+	-- Sync detection
+	SIGNAL sync_shift_reg	: std_logic_vector(SYNC_BITS-1 DOWNTO 0) := (OTHERS => '0');
+	SIGNAL hamming_distance	: NATURAL RANGE 0 TO SYNC_BITS;
+	SIGNAL sync_detected	: std_logic;
+
+	-- Bit collection
+	--TYPE bit_buffer_t IS ARRAY(0 TO ENCODED_BITS-1) OF std_logic; -- repeated from above
+	SIGNAL encoded_buffer		: bit_buffer_t;
+	SIGNAL deinterleaved_buffer	: bit_buffer_t;
+	SIGNAL deframer_bit_index	: NATURAL RANGE 0 TO ENCODED_BITS;
+
+	-- Frame processing
+	--TYPE byte_buffer_t IS ARRAY(0 TO OV_FRAME_BYTES-1) OF std_logic_vector(7 DOWNTO 0); -- repeated from above
+	SIGNAL fec_decoded_buffer	: byte_buffer_t;
+	SIGNAL output_buffer		: byte_buffer_t;
+	SIGNAL deframer_byte_index	: NATURAL RANGE 0 TO OV_FRAME_BYTES;
+
+	-- Timeout watchdog
+	SIGNAL timeout_counter		: NATURAL RANGE 0 TO FRAME_TIMEOUT;
+
+	-- Statistics
+	SIGNAL deframer_frames_count	: UNSIGNED(31 DOWNTO 0) := (OTHERS => '0');
+	SIGNAL sync_err_count		: UNSIGNED(31 DOWNTO 0) := (OTHERS => '0');
+    
+	-- AXI output control
+	SIGNAL axi_tlast_pending	: std_logic := '0';
+
+       -- Deinterleaver
+        FUNCTION deinterleave_address(addr : NATURAL) RETURN NATURAL IS
+                CONSTANT ROWS : NATURAL := 67;
+                CONSTANT COLS : NATURAL := 32;
+                VARIABLE row : NATURAL;
+                VARIABLE col : NATURAL;
+        BEGIN
+                -- Reverse: what was read column-wise, write row-wise
+                row := addr MOD ROWS;
+                col := addr / ROWS;
+                RETURN row * COLS + col;
+        END FUNCTION;
+
+	-- Hamming distance calculator
+	FUNCTION calc_hamming_distance(
+		pattern1 : std_logic_vector;
+		pattern2 : std_logic_vector
+	) RETURN NATURAL IS
+		VARIABLE distance : NATURAL := 0;
+	BEGIN
+		FOR i IN pattern1'RANGE LOOP
+			IF pattern1(i) /= pattern2(i) THEN
+				distance := distance + 1;
+			END IF;
+		END LOOP;
+		RETURN distance;
+	END FUNCTION;
 
 
 
@@ -432,7 +529,7 @@ BEGIN
 
 
 
-	-- Main state machine
+	-- State machine for framer
 	tx_process : PROCESS(clk)
 	BEGIN
 		IF RISING_EDGE(clk) THEN
@@ -445,8 +542,8 @@ BEGIN
 				tx_state <= IDLE;
 				frame_start <= '0';
 				frame_active <= '0';
-				frames_count <= (OTHERS => '0');
-				byte_index <= 0;
+				framer_frames_count <= (OTHERS => '0');
+				framer_byte_index <= 0;
 				framer_bit_index <= 0;
 				sync_index <= 0;
 				frame_ready <= '0';
@@ -462,8 +559,8 @@ BEGIN
                                 saxis_req <= '0';
                                 frame_start <= '0';
                                 frame_active <= '0';
-                                frames_count <= (OTHERS => '0');
-                                byte_index <= 0;
+                                framer_frames_count <= (OTHERS => '0');
+                                framer_byte_index <= 0;
                                 framer_bit_index <= 0;
 				sync_index <= 0;
                                 tx_data_bit <= '0';
@@ -484,7 +581,7 @@ BEGIN
 				CASE tx_state IS
 					WHEN IDLE =>
 						frame_active <= '0';
-						byte_index <= 0;
+						framer_byte_index <= 0;
 
 						-- toggle request for first byte and immediately transition
 						saxis_req <= NOT saxis_req;  -- Request first byte
@@ -497,16 +594,16 @@ BEGIN
         
 							-- Validate we got expected frame size
 							-- byte_index will be 134 after storing the 134th byte (index 133)
-							IF byte_index = OV_FRAME_BYTES THEN
+							IF framer_byte_index = OV_FRAME_BYTES THEN
 								-- Good frame! proceed to processing
-								byte_index <= 0;
+								framer_byte_index <= 0;
 								tx_state <= RANDOMIZE;
 								frame_ready <= '1';
 								frame_start <= '1';
 								frame_active <= '1';
 							ELSE
 								-- Frame size mismatch
-								byte_index <= 0;
+								framer_byte_index <= 0;
 								tx_state <= IDLE;
 							END IF;
         
@@ -519,9 +616,9 @@ BEGIN
 							tlast_detected <= '0';
         
 							-- Extract only the lowest byte
-							IF byte_index < OV_FRAME_BYTES THEN
-								ov_frame_buffer(byte_index) <= tx_data_axi(7 DOWNTO 0);
-								byte_index <= byte_index + 1;
+							IF framer_byte_index < OV_FRAME_BYTES THEN
+								ov_frame_buffer(framer_byte_index) <= tx_data_axi(7 DOWNTO 0);
+								framer_byte_index <= framer_byte_index + 1;
 							END IF;
         
 							-- Request next byte
@@ -532,11 +629,11 @@ BEGIN
 						-- XOR by predefined pseudorandom sequence
 						-- This breaks up long strings of zeros or ones
 						
-						IF byte_index < OV_FRAME_BYTES THEN
-							randomized_buffer(byte_index) <= ov_frame_buffer(byte_index) XOR RANDOMIZER_SEQUENCE(byte_index);
-							byte_index <= byte_index + 1;
+						IF framer_byte_index < OV_FRAME_BYTES THEN
+							randomized_buffer(framer_byte_index) <= ov_frame_buffer(framer_byte_index) XOR RANDOMIZER_SEQUENCE(framer_byte_index);
+							framer_byte_index <= framer_byte_index + 1;
 						ELSE
-							byte_index <= 0;
+							framer_byte_index <= 0;
 							tx_state <= FEC_ENCODE; -- Next: add redundancy
 						END IF;
 
@@ -604,7 +701,7 @@ BEGIN
 								framer_bit_index <= framer_bit_index + 1;
 							ELSE
 								-- Frame transmission complete
-								frames_count <= frames_count + 1;
+								framer_frames_count <= framer_frames_count + 1;
 								framer_bit_index <= 0;
 								tx_state <= IDLE;
 							END IF;
@@ -614,8 +711,164 @@ BEGIN
 		END IF; -- rising edge of clock
 	END PROCESS tx_process;
 	
-	-- Output assignments
-	frames_processed <= std_logic_vector(frames_count);
+	-- Output assignments for framer
+	frames_processed <= std_logic_vector(framer_frames_count);
+
+---=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--
+
+	-- State machine for deframer
+
+	-- Output assignments for deframer
+	frames_received <= std_logic_vector(deframer_frames_count);
+	sync_errors <= std_logic_vector(sync_err_count);
+	sync_locked <= '1' WHEN (rx_state /= HUNT) ELSE '0';
+
+	-- Main deframer process
+	deframer_proc : PROCESS(clk)
+	BEGIN
+		IF RISING_EDGE(clk) THEN
+            
+			-- Default signal values
+			sync_detected <= '0';
+            
+			IF s_axis_aresetn = '0' THEN
+				-- Reset all your base belong to us
+				rx_state <= HUNT;
+				sync_shift_reg <= (OTHERS => '0');
+				deframer_bit_index <= 0;
+				deframer_byte_index <= 0;
+				timeout_counter <= 0;
+				deframer_frames_count <= (OTHERS => '0');
+				sync_err_count <= (OTHERS => '0');
+				m_axis_tvalid <= '0';
+				m_axis_tlast <= '0';
+				axi_tlast_pending <= '0';
+			ELSIF rxinit = '1' THEN
+				-- reset RX-specific state
+				rx_state <= HUNT;
+				sync_shift_reg <= (OTHERS => '0');
+				deframer_bit_index <= 0;
+				deframer_byte_index <= 0;
+				timeout_counter <= 0;
+				m_axis_tvalid <= '0';
+				m_axis_tlast <= '0';
+				-- Note: don't reset frame counters on rxinit, only on system reset
+			ELSE
+                
+				-- State machine
+				CASE rx_state IS
+	
+					WHEN HUNT =>
+						-- Search for sync pattern in bit stream
+						IF rx_bit_valid = '1' THEN
+							-- Shift in new bit
+							sync_shift_reg <= sync_shift_reg(SYNC_BITS-2 DOWNTO 0) & rx_bit;
+	                            
+							-- Calculate Hamming distance
+							hamming_distance <= calc_hamming_distance(sync_shift_reg, SYNC_PATTERN);
+	                            
+							-- Check if sync pattern found (with error tolerance)
+							IF hamming_distance <= SYNC_THRESHOLD THEN
+								sync_detected <= '1';
+								deframer_bit_index <= 0;
+								timeout_counter <= 0;
+								rx_state <= COLLECT;
+							END IF;
+						END IF;
+	                    
+					WHEN COLLECT =>
+						-- Collect ENCODED_BITS bits into buffer
+						IF rx_bit_valid = '1' THEN
+							IF deframer_bit_index < ENCODED_BITS THEN
+								encoded_buffer(deframer_bit_index) <= rx_bit;
+								deframer_bit_index <= deframer_bit_index + 1;
+								timeout_counter <= 0;
+							ELSE
+								-- Frame complete!
+								deframer_bit_index <= 0;
+								rx_state <= DEINTERLEAVE;
+							END IF;
+						ELSE
+							-- Watchdog timer
+							IF timeout_counter >= FRAME_TIMEOUT THEN
+								rx_state <= HUNT;
+								sync_err_count <= sync_err_count + 1;
+							ELSE
+								timeout_counter <= timeout_counter + 1;
+							END IF;
+						END IF;
+		                    
+					WHEN DEINTERLEAVE =>
+						-- Reverse block interleaver: 67 rows × 32 cols
+						IF deframer_bit_index < ENCODED_BITS THEN
+							deinterleaved_buffer(deinterleave_address(deframer_bit_index)) <= encoded_buffer(deframer_bit_index);
+							deframer_bit_index <= deframer_bit_index + 1;
+						ELSE
+							deframer_bit_index <= 0;
+							deframer_byte_index <= 0;
+							rx_state <= FEC_DECODE;
+						END IF;
+		                    
+					WHEN FEC_DECODE =>
+						-- FEC decoding: rate 1/2 Viterbi (placeholder)
+						-- For now, simple bit selection (matching TX placeholder)
+						-- Real implementation needs proper Viterbi decoder
+						IF deframer_bit_index < OV_FRAME_BYTES * 8 THEN
+							-- Take every other bit (reverse of TX duplication)
+							fec_decoded_buffer(deframer_bit_index / 8)(deframer_bit_index MOD 8) <= deinterleaved_buffer(deframer_bit_index * 2);
+							deframer_bit_index <= deframer_bit_index + 1;
+						ELSE
+							deframer_byte_index <= 0;
+							rx_state <= DERANDOMIZE;
+						END IF;
+		                    
+					WHEN DERANDOMIZE =>
+						-- XOR with randomizer sequence
+						IF deframer_byte_index < OV_FRAME_BYTES THEN
+							output_buffer(deframer_byte_index) <= fec_decoded_buffer(deframer_byte_index) XOR RANDOMIZER_SEQUENCE(deframer_byte_index);
+							deframer_byte_index <= deframer_byte_index + 1;
+						ELSE
+							deframer_byte_index <= 0;
+							rx_state <= OUTPUT;
+						END IF;
+		                    
+
+					WHEN OUTPUT =>
+						-- Stream frame via AXI-Stream, one byte per word (matching TX side)
+						IF m_axis_tready = '1' OR m_axis_tvalid = '0' THEN
+							IF deframer_byte_index < OV_FRAME_BYTES THEN
+								-- Output one byte at a time in lowest byte position
+								m_axis_tdata <= (OTHERS => '0');
+								m_axis_tdata(7 DOWNTO 0) <= output_buffer(deframer_byte_index);
+								m_axis_tvalid <= '1';
+            
+								-- Assert tlast on final byte
+								IF deframer_byte_index = OV_FRAME_BYTES - 1 THEN
+									m_axis_tlast <= '1';
+								ELSE
+									m_axis_tlast <= '0';
+								END IF;
+            
+								deframer_byte_index <= deframer_byte_index + 1;
+            
+							ELSE
+								-- Frame output complete
+								m_axis_tvalid <= '0';
+								m_axis_tlast <= '0';
+								deframer_frames_count <= deframer_frames_count + 1;
+								deframer_byte_index <= 0;
+								rx_state <= HUNT;  -- Look for next frame
+							END IF;
+						END IF;
+
+	               
+				END CASE;
+		         
+			END IF;  -- aresetn
+		END IF;  -- rising_edge(clk)
+	END PROCESS deframer_proc;
+
+
 
 
 
@@ -689,49 +942,9 @@ BEGIN
 --                                                                                     
 ------------------------------------------------------------------------------------------------------
 -- Rx Serial To Parallel
-
+-- moved to deframer
 	rx_bit_corr <= rx_bit WHEN rx_invert = '0' ELSE NOT rx_bit;
 
-	ser2par_proc : PROCESS (clk)
-		VARIABLE bit_width : INTEGER;
-	BEGIN
-		IF clk'EVENT AND clk = '1' THEN
-
-			bit_width := to_integer(unsigned(rx_data_w));
-
-			rx_dvalid <= '0';
-
-			IF rx_bit_valid = '1' THEN
-
-				rx_data_int(rx_bit_index) 	<= rx_bit_corr;
-				rx_bit_index 				<= rx_bit_index + 1;
-
-				IF rx_bit_index = bit_width -1 THEN
-					rx_bit_index	<= 0;
-					rx_data_valid	<= '1';
-				END IF;
-
-			END IF;
-
-			IF rx_data_valid = '1' THEN
-
-				rx_dvalid 		<= '1';
-				rx_data 		<= rx_data_int;
-				rx_data_int(bit_width -1 DOWNTO 1) <= (OTHERS => '0');
-				rx_data_valid 	<= '0';
-
-			END IF;
-
-			IF rxinit = '1' THEN
-				rx_bit_index	<= 6;
-				rx_data_int 	<= (OTHERS => '0');
-				rx_data 		<= (OTHERS => '0');
-				rx_dvalid 		<= '0';
-				rx_data_valid 	<= '0';
-			END IF;
-
-		END IF;
-	END PROCESS ser2par_proc;
 
 
 ------------------------------------------------------------------------------------------------------
