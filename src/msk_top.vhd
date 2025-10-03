@@ -100,8 +100,8 @@ ENTITY msk_top IS
 		--SYNC_BITS			: NATURAL := 24;	-- Barker code sync length in bits
 		--ENCODED_BITS			: NATURAL := 2144;	-- Number of encoded bits (after FEC)
 		--INTERLEAVER_DEPTH		: NATURAL := 2144;	-- Interleaver depth in bits
-		SYNC_THRESHOLD			: NATURAL := 3;		-- Max bit errors allowed in sync detection
-		FRAME_TIMEOUT			: NATURAL := 4000	-- Bit periods before declaring sync loss
+		SYNC_THRESHOLD			: NATURAL := 3;	-- 3 default Max bit errors allowed in sync detection
+		FIFO_DEPTH			: NATURAL := 4		-- Hold up to 4 frames
 
 	);
 	PORT (
@@ -166,7 +166,8 @@ ENTITY msk_top IS
 
 		sync_locked		: OUT std_logic;
 		frames_received		: OUT std_logic_vector(31 DOWNTO 0);
-		sync_errors		: OUT std_logic_vector(31 DOWNTO 0)
+		sync_errors		: OUT std_logic_vector(31 DOWNTO 0);
+		fifo_overflow		: OUT std_logic
 		
 	);
 END ENTITY msk_top;
@@ -316,8 +317,13 @@ ARCHITECTURE struct OF msk_top IS
         SIGNAL fec_buffer : bit_buffer_t; -- 2144 bits (after 1/2 rate forward error correction)
         SIGNAL interleaved_buffer : bit_buffer_t; -- 2144 bits (ready for TX)
 
-        -- Sync pattern (E2 5F 35 hex = 11101001011111100110101 binary)
-        CONSTANT SYNC_PATTERN : std_logic_vector(SYNC_BITS-1 DOWNTO 0) := "111010010111111001101101";
+        -- Sync pattern (E2 5F 35 hex = 111000100101111100110101 binary)
+	--CONSTANT SYNC_PATTERN : std_logic_vector(SYNC_BITS-1 DOWNTO 0) := "111000100101111100110101";
+	-- New (inverted pattern that the RX actually sees):
+	CONSTANT SYNC_PATTERN : std_logic_vector(SYNC_BITS-1 DOWNTO 0) := "000111011010000011001010";
+
+        --CONSTANT SYNC_PATTERN : std_logic_vector(SYNC_BITS-1 DOWNTO 0) := "000000000000000000000000";
+
 
         -- Randomization sequence (134 bytes)
         TYPE randomizer_t IS ARRAY(0 TO 133) OF std_logic_vector(7 DOWNTO 0);
@@ -339,7 +345,98 @@ ARCHITECTURE struct OF msk_top IS
                 x"C6", x"26", x"7C", x"13", x"C9", x"65", x"3D", x"15",
                 x"15", x"ED", x"35", x"F4", x"57", x"F5", x"58", x"11",
                 x"9D", x"8E", x"E8", x"34", x"C9", x"59"
-        );
+	);
+
+
+
+
+
+
+
+
+
+    -- =========================================================================
+    -- PROCESS 1: CONTINUOUS SYNC DETECTOR + BIT COLLECTION
+    -- =========================================================================
+    
+    type sync_state_t is (HUNTING, LOCKED);
+    signal sync_state           : sync_state_t := HUNTING;
+    signal sync_shift_reg       : std_logic_vector(SYNC_BITS-1 downto 0);
+    signal bit_counter          : natural range 0 to ENCODED_BITS;
+    
+    -- Circular bit buffer (double-buffered frame storage)
+    --type bit_buffer_t is array(0 to ENCODED_BITS-1) of std_logic; -- check if repeated above
+    signal bit_buffer           : bit_buffer_t;
+    signal buffer_write_idx     : natural range 0 to ENCODED_BITS-1;
+    
+    -- Frame FIFO signals
+    signal fifo_wr_en           : std_logic;
+    signal fifo_full            : std_logic;
+    signal frames_collected     : unsigned(31 downto 0) := (others => '0');
+    
+    -- =========================================================================
+    -- PROCESS 2: FRAME PROCESSOR
+    -- =========================================================================
+    
+    type proc_state_t is (IDLE, DEINTERLEAVE, FEC_DECODE, DERANDOMIZE, OUTPUT);
+    signal proc_state           : proc_state_t := IDLE;
+    
+    -- Processing buffers
+    signal encoded_buffer       : bit_buffer_t;
+    signal deinterleaved_buffer : bit_buffer_t;
+    --type byte_buffer_t is array(0 to OV_FRAME_BYTES-1) of std_logic_vector(7 downto 0); -- check if repeated above
+    signal fec_decoded_buffer   : byte_buffer_t;
+    signal output_buffer        : byte_buffer_t;
+    
+    signal proc_bit_idx         : natural range 0 to ENCODED_BITS;
+    signal proc_byte_idx        : natural range 0 to OV_FRAME_BYTES;
+    
+    -- FIFO control
+    signal fifo_rd_en           : std_logic;
+    signal fifo_empty           : std_logic;
+    signal fifo_dout            : bit_buffer_t;
+    signal fifo_valid           : std_logic;
+    
+    -- Frame counters
+    signal frames_rx_count      : unsigned(31 downto 0) := (others => '0');
+    signal sync_err_count       : unsigned(31 downto 0) := (others => '0');
+    
+    -- AXI output control
+    signal axi_valid_int        : std_logic := '0';
+    signal axi_tlast_int        : std_logic := '0';
+    
+    -- Functions
+    function calc_hamming_distance(
+        pattern1 : std_logic_vector;
+        pattern2 : std_logic_vector
+    ) return natural is
+        variable distance : natural := 0;
+    begin
+        for i in pattern1'range loop
+            if pattern1(i) /= pattern2(i) then
+                distance := distance + 1;
+            end if;
+        end loop;
+        return distance;
+    end function;
+    
+    function deinterleave_address(addr : natural) return natural is
+        constant ROWS : natural := 67;
+        constant COLS : natural := 32;
+        variable row : natural;
+        variable col : natural;
+    begin
+        row := addr mod ROWS;
+        col := addr / ROWS;
+        return row * COLS + col;
+    end function;
+
+
+
+
+
+
+
 
 
         -- Counters and indices
@@ -388,81 +485,81 @@ ARCHITECTURE struct OF msk_top IS
 	--------------	
 	-- deframer --
 	--------------
-	SIGNAL rx_deframer_data		: std_logic_vector(31 DOWNTO 0);
-	SIGNAL rx_deframer_valid	: std_logic;
-	SIGNAL rx_deframer_ready	: std_logic;
-	SIGNAL rx_deframer_tlast	: std_logic;
-	SIGNAL deframer_sync_lock	: std_logic;
-	SIGNAL frames_rx_count		: std_logic_vector(31 DOWNTO 0);
-	SIGNAL deframer_sync_errs	: std_logic_vector(31 DOWNTO 0);
+	--SIGNAL rx_deframer_data		: std_logic_vector(31 DOWNTO 0);
+	--SIGNAL rx_deframer_valid	: std_logic;
+	--SIGNAL rx_deframer_ready	: std_logic;
+	--SIGNAL rx_deframer_tlast	: std_logic;
+	--SIGNAL deframer_sync_lock	: std_logic;
+	--SIGNAL frames_rx_count		: std_logic_vector(31 DOWNTO 0);
+	--SIGNAL deframer_sync_errs	: std_logic_vector(31 DOWNTO 0);
 
 
 	-- deframer state machine
-	TYPE deframer_state_t IS (
-		HUNT,           -- Searching for sync pattern
-		COLLECT,        -- Collecting encoded bits
-		DEINTERLEAVE,   -- Reversing block interleaver
-		FEC_DECODE,     -- Viterbi decoding (placeholder)
-		DERANDOMIZE,    -- XOR with randomizer
-		OUTPUT          -- AXI-Stream output
-	);
-	SIGNAL rx_state : deframer_state_t := HUNT; -- !!! come up with a better name than "state"
+	--TYPE deframer_state_t IS (
+	--	HUNT,           -- Searching for sync pattern
+	--	COLLECT,        -- Collecting encoded bits
+	--	DEINTERLEAVE,   -- Reversing block interleaver
+	--	FEC_DECODE,     -- Viterbi decoding (placeholder)
+	--	DERANDOMIZE,    -- XOR with randomizer
+	--	OUTPUT          -- AXI-Stream output
+	--);
+	--SIGNAL rx_state : deframer_state_t := HUNT; -- !!! come up with a better name than "state"
 
 
 	-- Sync detection
-	SIGNAL sync_shift_reg	: std_logic_vector(SYNC_BITS-1 DOWNTO 0) := (OTHERS => '0');
-	SIGNAL hamming_distance	: NATURAL RANGE 0 TO SYNC_BITS;
-	SIGNAL sync_detected	: std_logic;
+	--SIGNAL sync_shift_reg	: std_logic_vector(SYNC_BITS-1 DOWNTO 0) := (OTHERS => '0');
+	--SIGNAL hamming_distance	: NATURAL RANGE 0 TO SYNC_BITS;
+	--SIGNAL sync_detected	: std_logic;
 
 	-- Bit collection
 	--TYPE bit_buffer_t IS ARRAY(0 TO ENCODED_BITS-1) OF std_logic; -- repeated from above
-	SIGNAL encoded_buffer		: bit_buffer_t;
-	SIGNAL deinterleaved_buffer	: bit_buffer_t;
-	SIGNAL deframer_bit_index	: NATURAL RANGE 0 TO ENCODED_BITS;
+	--SIGNAL encoded_buffer		: bit_buffer_t;
+	--SIGNAL deinterleaved_buffer	: bit_buffer_t;
+	--SIGNAL deframer_bit_index	: NATURAL RANGE 0 TO ENCODED_BITS;
 
 	-- Frame processing
 	--TYPE byte_buffer_t IS ARRAY(0 TO OV_FRAME_BYTES-1) OF std_logic_vector(7 DOWNTO 0); -- repeated from above
-	SIGNAL fec_decoded_buffer	: byte_buffer_t;
-	SIGNAL output_buffer		: byte_buffer_t;
-	SIGNAL deframer_byte_index	: NATURAL RANGE 0 TO OV_FRAME_BYTES;
+	--SIGNAL fec_decoded_buffer	: byte_buffer_t;
+	--SIGNAL output_buffer		: byte_buffer_t;
+	--SIGNAL deframer_byte_index	: NATURAL RANGE 0 TO OV_FRAME_BYTES;
 
 	-- Timeout watchdog
-	SIGNAL timeout_counter		: NATURAL RANGE 0 TO FRAME_TIMEOUT;
+	--SIGNAL timeout_counter		: NATURAL RANGE 0 TO FRAME_TIMEOUT;
 
 	-- Statistics
-	SIGNAL deframer_frames_count	: UNSIGNED(31 DOWNTO 0) := (OTHERS => '0');
-	SIGNAL sync_err_count		: UNSIGNED(31 DOWNTO 0) := (OTHERS => '0');
+	--SIGNAL deframer_frames_count	: UNSIGNED(31 DOWNTO 0) := (OTHERS => '0');
+	--SIGNAL sync_err_count		: UNSIGNED(31 DOWNTO 0) := (OTHERS => '0');
     
 	-- AXI output control
-	SIGNAL axi_tlast_pending	: std_logic := '0';
+	--SIGNAL axi_tlast_pending	: std_logic := '0';
 
        -- Deinterleaver
-        FUNCTION deinterleave_address(addr : NATURAL) RETURN NATURAL IS
-                CONSTANT ROWS : NATURAL := 67;
-                CONSTANT COLS : NATURAL := 32;
-                VARIABLE row : NATURAL;
-                VARIABLE col : NATURAL;
-        BEGIN
+        --FUNCTION deinterleave_address(addr : NATURAL) RETURN NATURAL IS
+        --        CONSTANT ROWS : NATURAL := 67;
+        --        CONSTANT COLS : NATURAL := 32;
+        --        VARIABLE row : NATURAL;
+        --        VARIABLE col : NATURAL;
+        --BEGIN
                 -- Reverse: what was read column-wise, write row-wise
-                row := addr MOD ROWS;
-                col := addr / ROWS;
-                RETURN row * COLS + col;
-        END FUNCTION;
+        --        row := addr MOD ROWS;
+        --        col := addr / ROWS;
+        --        RETURN row * COLS + col;
+        --END FUNCTION;
 
 	-- Hamming distance calculator
-	FUNCTION calc_hamming_distance(
-		pattern1 : std_logic_vector;
-		pattern2 : std_logic_vector
-	) RETURN NATURAL IS
-		VARIABLE distance : NATURAL := 0;
-	BEGIN
-		FOR i IN pattern1'RANGE LOOP
-			IF pattern1(i) /= pattern2(i) THEN
-				distance := distance + 1;
-			END IF;
-		END LOOP;
-		RETURN distance;
-	END FUNCTION;
+	--FUNCTION calc_hamming_distance(
+	--	pattern1 : std_logic_vector;
+	--	pattern2 : std_logic_vector
+	--) RETURN NATURAL IS
+	--	VARIABLE distance : NATURAL := 0;
+	--BEGIN
+	--	FOR i IN pattern1'RANGE LOOP
+	--		IF pattern1(i) /= pattern2(i) THEN
+	--			distance := distance + 1;
+	--		END IF;
+	--	END LOOP;
+	--	RETURN distance;
+	--END FUNCTION;
 
 
 
@@ -582,12 +679,15 @@ BEGIN
 					WHEN IDLE =>
 						frame_active <= '0';
 						framer_byte_index <= 0;
+						tx_data_bit <= '0'; -- !!!
 
 						-- toggle request for first byte and immediately transition
 						saxis_req <= NOT saxis_req;  -- Request first byte
 						tx_state <= RECEIVING;
 
 					WHEN RECEIVING =>
+                                                tx_data_bit <= '0'; -- !!!
+
 						-- Check for tlast edge (rising edge detection)
 						IF s_axis_tlast_sync = '1' AND tlast_detected = '0' THEN
 							tlast_detected <= '1';
@@ -628,7 +728,9 @@ BEGIN
 					WHEN RANDOMIZE =>
 						-- XOR by predefined pseudorandom sequence
 						-- This breaks up long strings of zeros or ones
+                                                tx_data_bit <= '0'; -- !!!
 						
+
 						IF framer_byte_index < OV_FRAME_BYTES THEN
 							randomized_buffer(framer_byte_index) <= ov_frame_buffer(framer_byte_index) XOR RANDOMIZER_SEQUENCE(framer_byte_index);
 							framer_byte_index <= framer_byte_index + 1;
@@ -641,7 +743,10 @@ BEGIN
 						-- Simplified FEC encoding (1/2 rate convolutional)
 						-- In our implementation, this will be a separate module
 						-- For now, just copy and duplicate bits (placeholder)
+
+                                                tx_data_bit <= '0'; -- !!!
 						
+
 						IF framer_bit_index < OV_FRAME_BYTES * 8 THEN
 							fec_buffer(framer_bit_index * 2) <= randomized_buffer(framer_bit_index / 8)(framer_bit_index MOD 8);
 							fec_buffer(framer_bit_index * 2 + 1) <= randomized_buffer(framer_bit_index / 8)(framer_bit_index MOD 8);
@@ -653,6 +758,9 @@ BEGIN
 
 					WHEN INTERLEAVE =>
 						-- Apply block interleaver
+
+                                                tx_data_bit <= '0'; -- !!!
+
 						IF framer_bit_index < ENCODED_BITS THEN
 							interleaved_buffer(interleave_address(framer_bit_index)) <= fec_buffer(framer_bit_index);
 							framer_bit_index <= framer_bit_index + 1;
@@ -718,155 +826,241 @@ BEGIN
 
 	-- State machine for deframer
 
-	-- Output assignments for deframer
-	frames_received <= std_logic_vector(deframer_frames_count);
-	sync_errors <= std_logic_vector(sync_err_count);
-	sync_locked <= '1' WHEN (rx_state /= HUNT) ELSE '0';
 
-	-- Main deframer process
-	deframer_proc : PROCESS(clk)
-	BEGIN
-		IF RISING_EDGE(clk) THEN
-            
-			-- Default signal values
-			sync_detected <= '0';
-            
-			IF s_axis_aresetn = '0' THEN
-				-- Reset all your base belong to us
-				rx_state <= HUNT;
-				sync_shift_reg <= (OTHERS => '0');
-				deframer_bit_index <= 0;
-				deframer_byte_index <= 0;
-				timeout_counter <= 0;
-				deframer_frames_count <= (OTHERS => '0');
-				sync_err_count <= (OTHERS => '0');
-				m_axis_tvalid <= '0';
-				m_axis_tlast <= '0';
-				axi_tlast_pending <= '0';
-			ELSIF rxinit = '1' THEN
-				-- reset RX-specific state
-				rx_state <= HUNT;
-				sync_shift_reg <= (OTHERS => '0');
-				deframer_bit_index <= 0;
-				deframer_byte_index <= 0;
-				timeout_counter <= 0;
-				m_axis_tvalid <= '0';
-				m_axis_tlast <= '0';
-				-- Note: don't reset frame counters on rxinit, only on system reset
-			ELSE
+
+
+    -- =========================================================================
+    -- SYNC DETECTOR PROCESS (Runs continuously)
+    -- =========================================================================
+    
+    sync_detector_proc: process(clk)
+        variable hamming_dist : natural range 0 to SYNC_BITS;
+    begin
+        if rising_edge(clk) then
+            if s_axis_aresetn = '0' then
+                sync_state <= HUNTING;
+                sync_shift_reg <= (others => '0');
+                bit_counter <= 0;
+                buffer_write_idx <= 0;
+                fifo_wr_en <= '0';
+                frames_collected <= (others => '0');
+                sync_locked <= '0';
                 
-				-- State machine
-				CASE rx_state IS
-	
-					WHEN HUNT =>
-						-- Search for sync pattern in bit stream
-						IF rx_bit_valid = '1' THEN
-							-- Shift in new bit
-							sync_shift_reg <= sync_shift_reg(SYNC_BITS-2 DOWNTO 0) & rx_bit;
-	                            
-							-- Calculate Hamming distance
-							hamming_distance <= calc_hamming_distance(sync_shift_reg, SYNC_PATTERN);
-	                            
-							-- Check if sync pattern found (with error tolerance)
-							IF hamming_distance <= SYNC_THRESHOLD THEN
-								sync_detected <= '1';
-								deframer_bit_index <= 0;
-								timeout_counter <= 0;
-								rx_state <= COLLECT;
-							END IF;
-						END IF;
-	                    
-					WHEN COLLECT =>
-						-- Collect ENCODED_BITS bits into buffer
-						IF rx_bit_valid = '1' THEN
-							IF deframer_bit_index < ENCODED_BITS THEN
-								encoded_buffer(deframer_bit_index) <= rx_bit;
-								deframer_bit_index <= deframer_bit_index + 1;
-								timeout_counter <= 0;
-							ELSE
-								-- Frame complete!
-								deframer_bit_index <= 0;
-								rx_state <= DEINTERLEAVE;
-							END IF;
-						ELSE
-							-- Watchdog timer
-							IF timeout_counter >= FRAME_TIMEOUT THEN
-								rx_state <= HUNT;
-								sync_err_count <= sync_err_count + 1;
-							ELSE
-								timeout_counter <= timeout_counter + 1;
-							END IF;
-						END IF;
-		                    
-					WHEN DEINTERLEAVE =>
-						-- Reverse block interleaver: 67 rows × 32 cols
-						IF deframer_bit_index < ENCODED_BITS THEN
-							deinterleaved_buffer(deinterleave_address(deframer_bit_index)) <= encoded_buffer(deframer_bit_index);
-							deframer_bit_index <= deframer_bit_index + 1;
-						ELSE
-							deframer_bit_index <= 0;
-							deframer_byte_index <= 0;
-							rx_state <= FEC_DECODE;
-						END IF;
-		                    
-					WHEN FEC_DECODE =>
-						-- FEC decoding: rate 1/2 Viterbi (placeholder)
-						-- For now, simple bit selection (matching TX placeholder)
-						-- Real implementation needs proper Viterbi decoder
-						IF deframer_bit_index < OV_FRAME_BYTES * 8 THEN
-							-- Take every other bit (reverse of TX duplication)
-							fec_decoded_buffer(deframer_bit_index / 8)(deframer_bit_index MOD 8) <= deinterleaved_buffer(deframer_bit_index * 2);
-							deframer_bit_index <= deframer_bit_index + 1;
-						ELSE
-							deframer_byte_index <= 0;
-							rx_state <= DERANDOMIZE;
-						END IF;
-		                    
-					WHEN DERANDOMIZE =>
-						-- XOR with randomizer sequence
-						IF deframer_byte_index < OV_FRAME_BYTES THEN
-							output_buffer(deframer_byte_index) <= fec_decoded_buffer(deframer_byte_index) XOR RANDOMIZER_SEQUENCE(deframer_byte_index);
-							deframer_byte_index <= deframer_byte_index + 1;
-						ELSE
-							deframer_byte_index <= 0;
-							rx_state <= OUTPUT;
-						END IF;
-		                    
+            else
+                fifo_wr_en <= '0';  -- Default
+                
+                if rx_bit_valid = '1' then
+                    -- Always shift in new bits
+                    --sync_shift_reg <= sync_shift_reg(SYNC_BITS-2 downto 0) & rx_bit;
+                    sync_shift_reg <= sync_shift_reg(SYNC_BITS-2 downto 0) & rx_bit_corr;
+                    
+                    case sync_state is
+                        when HUNTING =>
+                            -- Check for sync pattern match
+                            hamming_dist := calc_hamming_distance(sync_shift_reg, SYNC_PATTERN);
+                            
+                            if hamming_dist <= SYNC_THRESHOLD then
+                                -- Sync acquired!
+                                sync_state <= LOCKED;
+                                sync_locked <= '1';
+                                bit_counter <= 0;
+                                buffer_write_idx <= 0;
+                            end if;
+                            
+                        when LOCKED =>
+                            -- Collect frame bits
+                            bit_buffer(buffer_write_idx) <= rx_bit_corr;
+                            
+                            if buffer_write_idx < ENCODED_BITS - 1 then
+                                buffer_write_idx <= buffer_write_idx + 1;
+                            else
+                                -- Frame complete - push to FIFO
+                                if fifo_full = '0' then
+                                    fifo_wr_en <= '1';
+                                    frames_collected <= frames_collected + 1;
+                                else
+                                    -- FIFO overflow - log error but keep trying
+                                    sync_err_count <= sync_err_count + 1;
+                                    fifo_overflow <= '1';
+                                end if;
+                                
+                                -- Immediately return to hunting for next frame's sync
+                                sync_state <= HUNTING;
+                                sync_locked <= '0';
+                                buffer_write_idx <= 0;
+                            end if;
+                    end case;
+                end if;
+            end if;
+        end if;
+    end process;
 
-					WHEN OUTPUT =>
-						-- Stream frame via AXI-Stream, one byte per word (matching TX side)
-						IF m_axis_tready = '1' OR m_axis_tvalid = '0' THEN
-							IF deframer_byte_index < OV_FRAME_BYTES THEN
-								-- Output one byte at a time in lowest byte position
-								m_axis_tdata <= (OTHERS => '0');
-								m_axis_tdata(7 DOWNTO 0) <= output_buffer(deframer_byte_index);
-								m_axis_tvalid <= '1';
-            
-								-- Assert tlast on final byte
-								IF deframer_byte_index = OV_FRAME_BYTES - 1 THEN
-									m_axis_tlast <= '1';
-								ELSE
-									m_axis_tlast <= '0';
-								END IF;
-            
-								deframer_byte_index <= deframer_byte_index + 1;
-            
-							ELSE
-								-- Frame output complete
-								m_axis_tvalid <= '0';
-								m_axis_tlast <= '0';
-								deframer_frames_count <= deframer_frames_count + 1;
-								deframer_byte_index <= 0;
-								rx_state <= HUNT;  -- Look for next frame
-							END IF;
-						END IF;
+    -- =========================================================================
+    -- SIMPLE FRAME FIFO (Stores complete encoded frames)
+    -- =========================================================================
+    
+    frame_fifo_proc: process(clk)
+        type fifo_array_t is array(0 to FIFO_DEPTH-1) of bit_buffer_t;
+        variable fifo_mem : fifo_array_t;
+        variable wr_ptr : natural range 0 to FIFO_DEPTH-1 := 0;
+        variable rd_ptr : natural range 0 to FIFO_DEPTH-1 := 0;
+        variable count : natural range 0 to FIFO_DEPTH := 0;
+    begin
+        if rising_edge(clk) then
+            if s_axis_aresetn = '0' then
+                wr_ptr := 0;
+                rd_ptr := 0;
+                count := 0;
+                fifo_empty <= '1';
+                fifo_full <= '0';
+                fifo_valid <= '0';
+                
+            else
+                fifo_valid <= '0';
+                
+                -- Write operation
+                if fifo_wr_en = '1' and count < FIFO_DEPTH then
+                    fifo_mem(wr_ptr) := bit_buffer;
+                    if wr_ptr < FIFO_DEPTH-1 then
+                        wr_ptr := wr_ptr + 1;
+                    else
+                        wr_ptr := 0;
+                    end if;
+                    count := count + 1;
+                end if;
+                
+                -- Read operation
+                if fifo_rd_en = '1' and count > 0 then
+                    fifo_dout <= fifo_mem(rd_ptr);
+                    fifo_valid <= '1';
+                    if rd_ptr < FIFO_DEPTH-1 then
+                        rd_ptr := rd_ptr + 1;
+                    else
+                        rd_ptr := 0;
+                    end if;
+                    count := count - 1;
+                end if;
+                
+                -- Update flags
+                if count = 0 then
+                    fifo_empty <= '1';
+                else
+                    fifo_empty <= '0';
+                end if;
+                
+                if count = FIFO_DEPTH then
+                    fifo_full <= '1';
+                else
+                    fifo_full <= '0';
+                end if;
+            end if;
+        end if;
+    end process;
 
-	               
-				END CASE;
-		         
-			END IF;  -- aresetn
-		END IF;  -- rising_edge(clk)
-	END PROCESS deframer_proc;
+    -- =========================================================================
+    -- FRAME PROCESSOR (Processes complete frames from FIFO)
+    -- =========================================================================
+    
+    frame_processor_proc: process(clk)
+    begin
+        if rising_edge(clk) then
+            if s_axis_aresetn = '0' then
+                proc_state <= IDLE;
+                fifo_rd_en <= '0';
+                proc_bit_idx <= 0;
+                proc_byte_idx <= 0;
+                frames_rx_count <= (others => '0');
+                axi_valid_int <= '0';
+                axi_tlast_int <= '0';
+                
+            else
+                case proc_state is
+                    when IDLE =>
+                        fifo_rd_en <= '0';
+                        
+                        -- Check if frame available in FIFO
+                        if fifo_empty = '0' then
+                            fifo_rd_en <= '1';
+                            proc_state <= DEINTERLEAVE;
+                            proc_bit_idx <= 0;
+                        end if;
+                        
+                    when DEINTERLEAVE =>
+                        -- Wait one cycle for FIFO output to be valid
+                        if fifo_valid = '1' then
+                            encoded_buffer <= fifo_dout;
+                            proc_bit_idx <= 0;
+                        end if;
+                        
+                        -- Perform deinterleaving
+                        if proc_bit_idx < ENCODED_BITS then
+                            deinterleaved_buffer(deinterleave_address(proc_bit_idx)) <= 
+                                encoded_buffer(proc_bit_idx);
+                            proc_bit_idx <= proc_bit_idx + 1;
+                        else
+                            proc_bit_idx <= 0;
+                            proc_state <= FEC_DECODE;
+                        end if;
+                        
+                    when FEC_DECODE =>
+                        -- Simplified FEC: take every other bit
+                        if proc_bit_idx < OV_FRAME_BYTES * 8 then
+                            fec_decoded_buffer(proc_bit_idx / 8)(proc_bit_idx mod 8) <= 
+                                deinterleaved_buffer(proc_bit_idx * 2);
+                            proc_bit_idx <= proc_bit_idx + 1;
+                        else
+                            proc_byte_idx <= 0;
+                            proc_state <= DERANDOMIZE;
+                        end if;
+                        
+                    when DERANDOMIZE =>
+                        -- XOR with randomizer
+                        if proc_byte_idx < OV_FRAME_BYTES then
+                            output_buffer(proc_byte_idx) <= 
+                                fec_decoded_buffer(proc_byte_idx) xor 
+                                RANDOMIZER_SEQUENCE(proc_byte_idx);
+                            proc_byte_idx <= proc_byte_idx + 1;
+                        else
+                            proc_byte_idx <= 0;
+                            proc_state <= OUTPUT;
+                        end if;
+                        
+                    when OUTPUT =>
+                        -- Stream frame via AXI
+                        if m_axis_tready = '1' or axi_valid_int = '0' then
+                            if proc_byte_idx < OV_FRAME_BYTES then
+                                m_axis_tdata <= (others => '0');
+                                m_axis_tdata(7 downto 0) <= output_buffer(proc_byte_idx);
+                                axi_valid_int <= '1';
+                                
+                                if proc_byte_idx = OV_FRAME_BYTES - 1 then
+                                    axi_tlast_int <= '1';
+                                else
+                                    axi_tlast_int <= '0';
+                                end if;
+                                
+                                proc_byte_idx <= proc_byte_idx + 1;
+                            else
+                                axi_valid_int <= '0';
+                                axi_tlast_int <= '0';
+                                frames_rx_count <= frames_rx_count + 1;
+                                proc_state <= IDLE;
+                            end if;
+                        end if;
+                end case;
+            end if;
+        end if;
+    end process;
+
+    -- Output assignments
+    m_axis_tvalid <= axi_valid_int;
+    m_axis_tlast <= axi_tlast_int;
+    frames_received <= std_logic_vector(frames_rx_count);
+    sync_errors <= std_logic_vector(sync_err_count);
+
+
+
+
 
 
 
