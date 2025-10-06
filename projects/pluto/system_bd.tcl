@@ -217,7 +217,7 @@ ad_ip_parameter axi_ad9361_dac_dma CONFIG.CYCLIC 1
 ad_ip_parameter axi_ad9361_dac_dma CONFIG.AXI_SLICE_SRC 0
 ad_ip_parameter axi_ad9361_dac_dma CONFIG.AXI_SLICE_DEST 0
 ad_ip_parameter axi_ad9361_dac_dma CONFIG.DMA_2D_TRANSFER 0
-ad_ip_parameter axi_ad9361_dac_dma CONFIG.DMA_DATA_WIDTH_DEST 64
+ad_ip_parameter axi_ad9361_dac_dma CONFIG.DMA_DATA_WIDTH_DEST 32
 
 #ad_add_interpolation_filter "tx_fir_interpolator" 8 2 1 {61.44} {7.68} \
 #                             "$ad_hdl_dir/library/util_fir_int/coefile_int.coe"
@@ -232,7 +232,7 @@ ad_ip_parameter axi_ad9361_adc_dma CONFIG.SYNC_TRANSFER_START 0
 ad_ip_parameter axi_ad9361_adc_dma CONFIG.AXI_SLICE_SRC 0
 ad_ip_parameter axi_ad9361_adc_dma CONFIG.AXI_SLICE_DEST 0
 ad_ip_parameter axi_ad9361_adc_dma CONFIG.DMA_2D_TRANSFER 0
-ad_ip_parameter axi_ad9361_adc_dma CONFIG.DMA_DATA_WIDTH_SRC 64
+ad_ip_parameter axi_ad9361_adc_dma CONFIG.DMA_DATA_WIDTH_SRC 32
 ad_ip_parameter axi_ad9361_adc_dma CONFIG.SYNC_TRANSFER_START {true}
 
 #ad_add_decimation_filter "rx_fir_decimator" 8 2 1 {61.44} {61.44} \
@@ -430,8 +430,13 @@ ad_connect  msk_top/rx_samples_Q axi_ad9361/adc_data_q0
 ad_connect  msk_top/rx_enable axi_ad9361/adc_enable_i0
 ad_connect  msk_top/rx_svalid axi_ad9361/adc_valid_i0
 
-ad_connect msk_top/rx_data axi_ad9361_adc_dma/fifo_wr_din
-ad_connect msk_top/rx_dvalid axi_ad9361_adc_dma/fifo_wr_en
+#ad_connect msk_top/rx_data axi_ad9361_adc_dma/fifo_wr_din
+#ad_connect msk_top/rx_dvalid axi_ad9361_adc_dma/fifo_wr_en
 
+# Connect MSK deframer output to ADC DMA
+ad_connect msk_top/m_axis_tdata axi_ad9361_adc_dma/fifo_wr_din
+ad_connect msk_top/m_axis_tvalid axi_ad9361_adc_dma/fifo_wr_en
+# this one might need to be readjusted
+ad_connect axi_ad9361_adc_dma/fifo_wr_overflow msk_top/m_axis_tready
 
 
