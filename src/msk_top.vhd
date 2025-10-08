@@ -85,7 +85,8 @@ ENTITY msk_top IS
 		GENERATOR_W 		: NATURAL := 31;
 		COUNTER_W 			: NATURAL := 32;
 		DATA_W 				: NATURAL := 1;
-		S_AXIS_DATA_W 		: NATURAL := 64;
+		-- Abraxas3d changed below parameter from 64 to 32
+		S_AXIS_DATA_W 		: NATURAL := 32;
 		C_S_AXI_DATA_WIDTH	: NATURAL := 32;
 		C_S_AXI_ADDR_WIDTH	: NATURAL := 32;
 		SYNC_CNT_W 			: NATURAL := 24
