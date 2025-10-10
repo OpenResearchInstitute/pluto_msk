@@ -53,6 +53,10 @@ reg msk_ctrl {
     field { sw = rw; hw = r; singlepulse = true; } clear_counts = 0;
         clear_counts->desc = "Clear Tx Bit Counter and Tx Enable Counter";
         clear_counts->name = "Clear Status Counters";
+    field { sw = rw; hw = r; } diff_encoder_loopback = 0;
+        diff_encoder_loopback->desc = "0 -> Differential Encoder -> Decoder loopback disabled
+                                       1 -> Differential Encoder -> Decoder loopback enabled";
+        diff_encoder_loopback->name = "Differential Encoder -> Decoder Loopback Enable";
 };
 
 reg msk_stat_0 {

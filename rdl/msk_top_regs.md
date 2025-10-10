@@ -127,12 +127,13 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 <p>MSK Modem Configuration and Control</p>
 
-|Bits| Identifier |Access|Reset|         Name        |
-|----|------------|------|-----|---------------------|
-|  0 |     ptt    |  rw  | 0x0 | Push-to-Talk Enable |
-|  1 |loopback_ena|  rw  | 0x0 |Modem Loopback Enable|
-|  2 |  rx_invert |  rw  | 0x0 |Rx Data Invert Enable|
-|  3 |clear_counts|  rw  | 0x0 |Clear Status Counters|
+|Bits|      Identifier     |Access|Reset|                      Name                     |
+|----|---------------------|------|-----|-----------------------------------------------|
+|  0 |         ptt         |  rw  | 0x0 |              Push-to-Talk Enable              |
+|  1 |     loopback_ena    |  rw  | 0x0 |             Modem Loopback Enable             |
+|  2 |      rx_invert      |  rw  | 0x0 |             Rx Data Invert Enable             |
+|  3 |     clear_counts    |  rw  | 0x0 |             Clear Status Counters             |
+|  4 |diff_encoder_loopback|  rw  | 0x0 |Differential Encoder -> Decoder Loopback Enable|
 
 #### ptt field
 
@@ -152,6 +153,11 @@ Don't override. Generated from: Pluto_MSK_Modem
 #### clear_counts field
 
 <p>Clear Tx Bit Counter and Tx Enable Counter</p>
+
+#### diff_encoder_loopback field
+
+<p>0 -&gt; Differential Encoder -&gt; Decoder loopback disabled
+1 -&gt; Differential Encoder -&gt; Decoder loopback enabled</p>
 
 ### MSK_Status register
 

@@ -14,7 +14,7 @@
 --! @author Lukasz Butkowski <lukasz.butkowski@desy.de>
 ------------------------------------------------------------------------------
 --! @brief
---! Top component of DesyRDL address space decoder for {node.type_name}
+--! Top component of DesyRDL address space decoder for msk_top_regs
 ------------------------------------------------------------------------------
 
 library ieee;
@@ -782,7 +782,7 @@ begin
   -- generated registers instances in regfiles 
 
   -- ===========================================================================
-  -- Generated Meme Instances
+  -- Generated Mem Instances
   --
   -- ---------------------------------------------------------------------------
 

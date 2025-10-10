@@ -246,8 +246,21 @@ package common is
       pi_m_ext     : in  t_axi4l_s2m);
   end component ibus_to_axi4l;
 
+  --common functions
+  -- intr_or_reduce - or recuce for interrupt register
+  function intr_or_reduce (arg: std_logic_vector) return std_logic;
+
 end package common;
 
 --==============================================================================
 package body common is
+  function intr_or_reduce (arg : std_logic_vector) return std_logic is
+    constant C_ZEROES : std_logic_vector(arg'length - 1 downto 0) := (others => '0');
+  begin  -- function intr_or_reduce
+    if (arg = C_ZEROES) then
+      return '0';
+    else
+      return '1';
+    end if;
+  end function intr_or_reduce;
 end package body;

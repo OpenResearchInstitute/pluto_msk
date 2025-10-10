@@ -23,6 +23,7 @@ reg msk_ctrl {
     field { sw = rw; hw = r; } loopback_ena = 0;
     field { sw = rw; hw = r; } rx_invert = 0;
     field { sw = rw; hw = r; singlepulse = true; } clear_counts = 0;
+    field { sw = rw; hw = r; } diff_encoder_loopback = 0;
 };
 
 reg msk_stat_0 {

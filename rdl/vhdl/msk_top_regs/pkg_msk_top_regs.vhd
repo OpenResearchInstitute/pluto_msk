@@ -14,7 +14,7 @@
 --! @author Lukasz Butkowski <lukasz.butkowski@desy.de>
 ------------------------------------------------------------------------------
 --! @brief
---! VHDL package of DesyRDL for address space decoder for {node.orig_type_name}
+--! VHDL package of DesyRDL for address space decoder for msk_top_regs
 ------------------------------------------------------------------------------
 
 library ieee;
@@ -52,7 +52,7 @@ package pkg_msk_top_regs is
 
   type t_field_signals_msk_hash_lo_hash_id_lo_out is record
     -- no data if field cannot be written from hw
-    data : std_logic_vector(-1 downto 0); --
+    dummy : std_logic; --
   end record; --
 
   -- The actual register types
@@ -76,7 +76,7 @@ package pkg_msk_top_regs is
 
   type t_field_signals_msk_hash_hi_hash_id_hi_out is record
     -- no data if field cannot be written from hw
-    data : std_logic_vector(-1 downto 0); --
+    dummy : std_logic; --
   end record; --
 
   -- The actual register types
@@ -168,6 +168,14 @@ package pkg_msk_top_regs is
   type t_field_signals_msk_ctrl_clear_counts_out is record
     data : std_logic_vector(1-1 downto 0); --
   end record; --
+  type t_field_signals_msk_ctrl_diff_encoder_loopback_in is record
+    -- no data if field cannot be written from hw
+    data : std_logic_vector(-1 downto 0); --
+  end record;
+
+  type t_field_signals_msk_ctrl_diff_encoder_loopback_out is record
+    data : std_logic_vector(1-1 downto 0); --
+  end record; --
 
   -- The actual register types
   type t_reg_msk_ctrl_in is record--
@@ -175,12 +183,14 @@ package pkg_msk_top_regs is
     loopback_ena : t_field_signals_msk_ctrl_loopback_ena_in; --
     rx_invert : t_field_signals_msk_ctrl_rx_invert_in; --
     clear_counts : t_field_signals_msk_ctrl_clear_counts_in; --
+    diff_encoder_loopback : t_field_signals_msk_ctrl_diff_encoder_loopback_in; --
   end record;
   type t_reg_msk_ctrl_out is record--
     ptt : t_field_signals_msk_ctrl_ptt_out; --
     loopback_ena : t_field_signals_msk_ctrl_loopback_ena_out; --
     rx_invert : t_field_signals_msk_ctrl_rx_invert_out; --
     clear_counts : t_field_signals_msk_ctrl_clear_counts_out; --
+    diff_encoder_loopback : t_field_signals_msk_ctrl_diff_encoder_loopback_out; --
   end record;
   type t_reg_msk_ctrl_2d_in is array (integer range <>) of t_reg_msk_ctrl_in;
   type t_reg_msk_ctrl_2d_out is array (integer range <>) of t_reg_msk_ctrl_out;
@@ -195,7 +205,7 @@ package pkg_msk_top_regs is
 
   type t_field_signals_msk_stat_0_demod_sync_lock_out is record
     -- no data if field cannot be written from hw
-    data : std_logic_vector(-1 downto 0); --
+    dummy : std_logic; --
   end record; --
   type t_field_signals_msk_stat_0_tx_enable_in is record
     data : std_logic_vector(1-1 downto 0); --
@@ -203,7 +213,7 @@ package pkg_msk_top_regs is
 
   type t_field_signals_msk_stat_0_tx_enable_out is record
     -- no data if field cannot be written from hw
-    data : std_logic_vector(-1 downto 0); --
+    dummy : std_logic; --
   end record; --
   type t_field_signals_msk_stat_0_rx_enable_in is record
     data : std_logic_vector(1-1 downto 0); --
@@ -211,7 +221,7 @@ package pkg_msk_top_regs is
 
   type t_field_signals_msk_stat_0_rx_enable_out is record
     -- no data if field cannot be written from hw
-    data : std_logic_vector(-1 downto 0); --
+    dummy : std_logic; --
   end record; --
   type t_field_signals_msk_stat_0_tx_axis_valid_in is record
     data : std_logic_vector(1-1 downto 0); --
@@ -219,7 +229,7 @@ package pkg_msk_top_regs is
 
   type t_field_signals_msk_stat_0_tx_axis_valid_out is record
     -- no data if field cannot be written from hw
-    data : std_logic_vector(-1 downto 0); --
+    dummy : std_logic; --
   end record; --
 
   -- The actual register types
@@ -248,7 +258,7 @@ package pkg_msk_top_regs is
 
   type t_field_signals_msk_stat_1_tx_bit_counter_out is record
     -- no data if field cannot be written from hw
-    data : std_logic_vector(-1 downto 0); --
+    dummy : std_logic; --
   end record; --
 
   -- The actual register types
@@ -271,7 +281,7 @@ package pkg_msk_top_regs is
 
   type t_field_signals_msk_stat_2_tx_ena_counter_out is record
     -- no data if field cannot be written from hw
-    data : std_logic_vector(-1 downto 0); --
+    dummy : std_logic; --
   end record; --
 
   -- The actual register types
@@ -568,7 +578,7 @@ package pkg_msk_top_regs is
 
   type t_field_signals_stat_32_bits_status_data_out is record
     -- no data if field cannot be written from hw
-    data : std_logic_vector(-1 downto 0); --
+    dummy : std_logic; --
   end record; --
 
   -- The actual register types
@@ -591,7 +601,7 @@ package pkg_msk_top_regs is
 
   type t_field_signals_stat_32_errs_status_data_out is record
     -- no data if field cannot be written from hw
-    data : std_logic_vector(-1 downto 0); --
+    dummy : std_logic; --
   end record; --
 
   -- The actual register types
@@ -614,7 +624,7 @@ package pkg_msk_top_regs is
 
   type t_field_signals_stat_32_lpf_acc_status_data_out is record
     -- no data if field cannot be written from hw
-    data : std_logic_vector(-1 downto 0); --
+    dummy : std_logic; --
   end record; --
 
   -- The actual register types
@@ -637,7 +647,7 @@ package pkg_msk_top_regs is
 
   type t_field_signals_msk_stat_3_xfer_count_out is record
     -- no data if field cannot be written from hw
-    data : std_logic_vector(-1 downto 0); --
+    dummy : std_logic; --
   end record; --
 
   -- The actual register types
@@ -726,15 +736,15 @@ package pkg_msk_top_regs is
 
   type t_field_signals_observation_data_data32_out is record
     -- no data if field cannot be written from hw
-    data : std_logic_vector(-1 downto 0); --
+    dummy : std_logic; --
   end record; --
 
   -- The actual register types
   type t_reg_observation_data_in is record--
-    data32 : t_field_signals_observation_data_data32_in; --
+    data : t_field_signals_observation_data_data32_in; --
   end record;
   type t_reg_observation_data_out is record--
-    data32 : t_field_signals_observation_data_data32_out; --
+    data : t_field_signals_observation_data_data32_out; --
   end record;
   type t_reg_observation_data_2d_in is array (integer range <>) of t_reg_observation_data_in;
   type t_reg_observation_data_2d_out is array (integer range <>) of t_reg_observation_data_out;
@@ -848,7 +858,7 @@ package pkg_msk_top_regs is
 
   type t_field_signals_rx_power_rx_power_out is record
     -- no data if field cannot be written from hw
-    data : std_logic_vector(-1 downto 0); --
+    dummy : std_logic; --
   end record; --
 
   -- The actual register types
@@ -1002,6 +1012,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
+library desyrdl;
+use desyrdl.common.all;
+
 use work.pkg_msk_top_regs.all;
 
 entity msk_top_regs_msk_hash_lo is
@@ -1020,21 +1033,39 @@ entity msk_top_regs_msk_hash_lo is
 end entity msk_top_regs_msk_hash_lo;
 
 architecture rtl of msk_top_regs_msk_hash_lo is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_hash_id_lo : std_logic_vector(32-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(31 downto 0) := field_reg_hash_id_lo; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_hash_id_lo : std_logic_vector(32-1 downto 0)
+    := std_logic_vector(to_signed(-1431677611,32)); --
 begin
-  --
+
+  data_out <= fun_set_data_out( --
+    field_reg_hash_id_lo --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------WIRE
-  hash_id_lo_wire : block--
+  hash_id_lo_wire : block --
   begin
     --
-    data_out(31 downto 0) <= std_logic_vector(to_signed(-1431677611,32)); --
+    field_reg_hash_id_lo <= std_logic_vector(to_signed(-1431677611,32)); --
     --no signal to read by HW
-    po_reg.hash_id_lo.data <= (others => '0'); --
+    po_reg.hash_id_lo.dummy <= '0'; --
   end block; --
 end rtl;
 -----------------------------------------------
@@ -1043,6 +1074,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -1062,21 +1096,39 @@ entity msk_top_regs_msk_hash_hi is
 end entity msk_top_regs_msk_hash_hi;
 
 architecture rtl of msk_top_regs_msk_hash_hi is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_hash_id_hi : std_logic_vector(32-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(31 downto 0) := field_reg_hash_id_hi; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_hash_id_hi : std_logic_vector(32-1 downto 0)
+    := std_logic_vector(to_signed(1431677610,32)); --
 begin
-  --
+
+  data_out <= fun_set_data_out( --
+    field_reg_hash_id_hi --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------WIRE
-  hash_id_hi_wire : block--
+  hash_id_hi_wire : block --
   begin
     --
-    data_out(31 downto 0) <= std_logic_vector(to_signed(1431677610,32)); --
+    field_reg_hash_id_hi <= std_logic_vector(to_signed(1431677610,32)); --
     --no signal to read by HW
-    po_reg.hash_id_hi.data <= (others => '0'); --
+    po_reg.hash_id_hi.dummy <= '0'; --
   end block; --
 end rtl;
 -----------------------------------------------
@@ -1085,6 +1137,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -1104,86 +1159,101 @@ entity msk_top_regs_msk_init is
 end entity msk_top_regs_msk_init;
 
 architecture rtl of msk_top_regs_msk_init is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_txrxinit : std_logic_vector(1-1 downto 0); --
+    field_reg_txinit : std_logic_vector(1-1 downto 0); --
+    field_reg_rxinit : std_logic_vector(1-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(0 downto 0) := field_reg_txrxinit; --
+    v_data_out(1 downto 1) := field_reg_txinit; --
+    v_data_out(2 downto 2) := field_reg_rxinit; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_txrxinit : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(1,1)); --
+  signal field_reg_txinit : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(1,1)); --
+  signal field_reg_rxinit : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(1,1)); --
 begin
-  --
-  data_out(C_DATA_WIDTH-1 downto 3) <= (others => '0'); --
+
+  data_out <= fun_set_data_out( --
+    field_reg_txrxinit, --
+    field_reg_txinit, --
+    field_reg_rxinit --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------STORAGE
   txrxinit_storage: block
-    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
-                           std_logic_vector(to_signed(1,1));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(1,1));
+          field_reg_txrxinit <= std_logic_vector(to_signed(1,1));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(0 downto 0);
+            field_reg_txrxinit <= pi_decoder_data(0 downto 0);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.txrxinit.data <= l_field_reg; --
-    data_out(0 downto 0) <= l_field_reg;
-
+    po_reg.txrxinit.data <= field_reg_txrxinit; --
   end block txrxinit_storage;
   ------------------------------------------------------------STORAGE
   txinit_storage: block
-    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
-                           std_logic_vector(to_signed(1,1));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(1,1));
+          field_reg_txinit <= std_logic_vector(to_signed(1,1));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(1 downto 1);
+            field_reg_txinit <= pi_decoder_data(1 downto 1);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.txinit.data <= l_field_reg; --
-    data_out(1 downto 1) <= l_field_reg;
-
+    po_reg.txinit.data <= field_reg_txinit; --
   end block txinit_storage;
   ------------------------------------------------------------STORAGE
   rxinit_storage: block
-    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
-                           std_logic_vector(to_signed(1,1));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(1,1));
+          field_reg_rxinit <= std_logic_vector(to_signed(1,1));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(2 downto 2);
+            field_reg_rxinit <= pi_decoder_data(2 downto 2);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.rxinit.data <= l_field_reg; --
-    data_out(2 downto 2) <= l_field_reg;
-
+    po_reg.rxinit.data <= field_reg_rxinit; --
   end block rxinit_storage;
   ----------------------------------------------------------
 end rtl;
@@ -1193,6 +1263,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -1212,111 +1285,155 @@ entity msk_top_regs_msk_ctrl is
 end entity msk_top_regs_msk_ctrl;
 
 architecture rtl of msk_top_regs_msk_ctrl is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_ptt : std_logic_vector(1-1 downto 0); --
+    field_reg_loopback_ena : std_logic_vector(1-1 downto 0); --
+    field_reg_rx_invert : std_logic_vector(1-1 downto 0); --
+    field_reg_clear_counts : std_logic_vector(1-1 downto 0); --
+    field_reg_diff_encoder_loopback : std_logic_vector(1-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(0 downto 0) := field_reg_ptt; --
+    v_data_out(1 downto 1) := field_reg_loopback_ena; --
+    v_data_out(2 downto 2) := field_reg_rx_invert; --
+    v_data_out(3 downto 3) := field_reg_clear_counts; --
+    v_data_out(4 downto 4) := field_reg_diff_encoder_loopback; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_ptt : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(0,1)); --
+  signal field_reg_loopback_ena : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(0,1)); --
+  signal field_reg_rx_invert : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(0,1)); --
+  signal field_reg_clear_counts : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(0,1)); --
+  signal field_reg_diff_encoder_loopback : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(0,1)); --
 begin
-  --
-  data_out(C_DATA_WIDTH-1 downto 4) <= (others => '0'); --
+
+  data_out <= fun_set_data_out( --
+    field_reg_ptt, --
+    field_reg_loopback_ena, --
+    field_reg_rx_invert, --
+    field_reg_clear_counts, --
+    field_reg_diff_encoder_loopback --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------STORAGE
   ptt_storage: block
-    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
-                           std_logic_vector(to_signed(0,1));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,1));
+          field_reg_ptt <= std_logic_vector(to_signed(0,1));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(0 downto 0);
+            field_reg_ptt <= pi_decoder_data(0 downto 0);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.ptt.data <= l_field_reg; --
-    data_out(0 downto 0) <= l_field_reg;
-
+    po_reg.ptt.data <= field_reg_ptt; --
   end block ptt_storage;
   ------------------------------------------------------------STORAGE
   loopback_ena_storage: block
-    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
-                           std_logic_vector(to_signed(0,1));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,1));
+          field_reg_loopback_ena <= std_logic_vector(to_signed(0,1));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(1 downto 1);
+            field_reg_loopback_ena <= pi_decoder_data(1 downto 1);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.loopback_ena.data <= l_field_reg; --
-    data_out(1 downto 1) <= l_field_reg;
-
+    po_reg.loopback_ena.data <= field_reg_loopback_ena; --
   end block loopback_ena_storage;
   ------------------------------------------------------------STORAGE
   rx_invert_storage: block
-    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
-                           std_logic_vector(to_signed(0,1));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,1));
+          field_reg_rx_invert <= std_logic_vector(to_signed(0,1));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(2 downto 2);
+            field_reg_rx_invert <= pi_decoder_data(2 downto 2);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.rx_invert.data <= l_field_reg; --
-    data_out(2 downto 2) <= l_field_reg;
-
+    po_reg.rx_invert.data <= field_reg_rx_invert; --
   end block rx_invert_storage;
   ------------------------------------------------------------STORAGE
   clear_counts_storage: block
-    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
-                           std_logic_vector(to_signed(0,1));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,1));
+          field_reg_clear_counts <= std_logic_vector(to_signed(0,1));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- This is a "singlepulse" register - clear on each clock,
+          -- unless it is written to with a 1 (see below)
+          field_reg_clear_counts <= (others => '0');
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(3 downto 3);
+            field_reg_clear_counts <= pi_decoder_data(3 downto 3);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.clear_counts.data <= l_field_reg; --
-    data_out(3 downto 3) <= l_field_reg;
-
+    po_reg.clear_counts.data <= field_reg_clear_counts; --
   end block clear_counts_storage;
+  ------------------------------------------------------------STORAGE
+  diff_encoder_loopback_storage: block
+  begin
+    prs_write : process(pi_clock)
+    begin
+      if rising_edge(pi_clock) then
+        if pi_reset = '1' then
+          field_reg_diff_encoder_loopback <= std_logic_vector(to_signed(0,1));
+        else
+          -- HW --
+          -- SW --
+          if pi_decoder_wr_stb = '1' then
+            field_reg_diff_encoder_loopback <= pi_decoder_data(4 downto 4);
+          end if;
+        end if;
+      end if;
+    end process;
+    --
+    po_reg.diff_encoder_loopback.data <= field_reg_diff_encoder_loopback; --
+  end block diff_encoder_loopback_storage;
   ----------------------------------------------------------
 end rtl;
 -----------------------------------------------
@@ -1325,6 +1442,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -1344,43 +1464,75 @@ entity msk_top_regs_msk_stat_0 is
 end entity msk_top_regs_msk_stat_0;
 
 architecture rtl of msk_top_regs_msk_stat_0 is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_demod_sync_lock : std_logic_vector(1-1 downto 0); --
+    field_reg_tx_enable : std_logic_vector(1-1 downto 0); --
+    field_reg_rx_enable : std_logic_vector(1-1 downto 0); --
+    field_reg_tx_axis_valid : std_logic_vector(1-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(0 downto 0) := field_reg_demod_sync_lock; --
+    v_data_out(1 downto 1) := field_reg_tx_enable; --
+    v_data_out(2 downto 2) := field_reg_rx_enable; --
+    v_data_out(3 downto 3) := field_reg_tx_axis_valid; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_demod_sync_lock : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(0,1)); --
+  signal field_reg_tx_enable : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(0,1)); --
+  signal field_reg_rx_enable : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(0,1)); --
+  signal field_reg_tx_axis_valid : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(0,1)); --
 begin
-  --
-  data_out(C_DATA_WIDTH-1 downto 4) <= (others => '0'); --
+
+  data_out <= fun_set_data_out( --
+    field_reg_demod_sync_lock, --
+    field_reg_tx_enable, --
+    field_reg_rx_enable, --
+    field_reg_tx_axis_valid --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------WIRE
-  demod_sync_lock_wire : block--
+  demod_sync_lock_wire : block --
   begin
     --
-    data_out(0 downto 0) <= pi_reg.demod_sync_lock.data(1-1 downto 0); --
+    field_reg_demod_sync_lock <= pi_reg.demod_sync_lock.data(1-1 downto 0); --
     --no signal to read by HW
-    po_reg.demod_sync_lock.data <= (others => '0'); --
+    po_reg.demod_sync_lock.dummy <= '0'; --
   end block; ----WIRE
-  tx_enable_wire : block--
+  tx_enable_wire : block --
   begin
     --
-    data_out(1 downto 1) <= pi_reg.tx_enable.data(1-1 downto 0); --
+    field_reg_tx_enable <= pi_reg.tx_enable.data(1-1 downto 0); --
     --no signal to read by HW
-    po_reg.tx_enable.data <= (others => '0'); --
+    po_reg.tx_enable.dummy <= '0'; --
   end block; ----WIRE
-  rx_enable_wire : block--
+  rx_enable_wire : block --
   begin
     --
-    data_out(2 downto 2) <= pi_reg.rx_enable.data(1-1 downto 0); --
+    field_reg_rx_enable <= pi_reg.rx_enable.data(1-1 downto 0); --
     --no signal to read by HW
-    po_reg.rx_enable.data <= (others => '0'); --
+    po_reg.rx_enable.dummy <= '0'; --
   end block; ----WIRE
-  tx_axis_valid_wire : block--
+  tx_axis_valid_wire : block --
   begin
     --
-    data_out(3 downto 3) <= pi_reg.tx_axis_valid.data(1-1 downto 0); --
+    field_reg_tx_axis_valid <= pi_reg.tx_axis_valid.data(1-1 downto 0); --
     --no signal to read by HW
-    po_reg.tx_axis_valid.data <= (others => '0'); --
+    po_reg.tx_axis_valid.dummy <= '0'; --
   end block; --
 end rtl;
 -----------------------------------------------
@@ -1389,6 +1541,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -1408,21 +1563,39 @@ entity msk_top_regs_msk_stat_1 is
 end entity msk_top_regs_msk_stat_1;
 
 architecture rtl of msk_top_regs_msk_stat_1 is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_tx_bit_counter : std_logic_vector(32-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(31 downto 0) := field_reg_tx_bit_counter; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_tx_bit_counter : std_logic_vector(32-1 downto 0)
+    := std_logic_vector(to_signed(0,32)); --
 begin
-  --
+
+  data_out <= fun_set_data_out( --
+    field_reg_tx_bit_counter --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------WIRE
-  tx_bit_counter_wire : block--
+  tx_bit_counter_wire : block --
   begin
     --
-    data_out(31 downto 0) <= pi_reg.tx_bit_counter.data(32-1 downto 0); --
+    field_reg_tx_bit_counter <= pi_reg.tx_bit_counter.data(32-1 downto 0); --
     --no signal to read by HW
-    po_reg.tx_bit_counter.data <= (others => '0'); --
+    po_reg.tx_bit_counter.dummy <= '0'; --
   end block; --
 end rtl;
 -----------------------------------------------
@@ -1431,6 +1604,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -1450,21 +1626,39 @@ entity msk_top_regs_msk_stat_2 is
 end entity msk_top_regs_msk_stat_2;
 
 architecture rtl of msk_top_regs_msk_stat_2 is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_tx_ena_counter : std_logic_vector(32-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(31 downto 0) := field_reg_tx_ena_counter; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_tx_ena_counter : std_logic_vector(32-1 downto 0)
+    := std_logic_vector(to_signed(0,32)); --
 begin
-  --
+
+  data_out <= fun_set_data_out( --
+    field_reg_tx_ena_counter --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------WIRE
-  tx_ena_counter_wire : block--
+  tx_ena_counter_wire : block --
   begin
     --
-    data_out(31 downto 0) <= pi_reg.tx_ena_counter.data(32-1 downto 0); --
+    field_reg_tx_ena_counter <= pi_reg.tx_ena_counter.data(32-1 downto 0); --
     --no signal to read by HW
-    po_reg.tx_ena_counter.data <= (others => '0'); --
+    po_reg.tx_ena_counter.dummy <= '0'; --
   end block; --
 end rtl;
 -----------------------------------------------
@@ -1473,6 +1667,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -1492,37 +1689,51 @@ entity msk_top_regs_config_nco_fw is
 end entity msk_top_regs_config_nco_fw;
 
 architecture rtl of msk_top_regs_config_nco_fw is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_config_data : std_logic_vector(32-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(31 downto 0) := field_reg_config_data; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_config_data : std_logic_vector(32-1 downto 0)
+    := std_logic_vector(to_signed(0,32)); --
 begin
-  --
+
+  data_out <= fun_set_data_out( --
+    field_reg_config_data --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------STORAGE
   config_data_storage: block
-    signal l_field_reg   : std_logic_vector(32-1 downto 0) :=
-                           std_logic_vector(to_signed(0,32));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,32));
+          field_reg_config_data <= std_logic_vector(to_signed(0,32));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(31 downto 0);
+            field_reg_config_data <= pi_decoder_data(31 downto 0);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.config_data.data <= l_field_reg; --
-    data_out(31 downto 0) <= l_field_reg;
-
+    po_reg.config_data.data <= field_reg_config_data; --
   end block config_data_storage;
   ----------------------------------------------------------
 end rtl;
@@ -1532,6 +1743,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -1551,109 +1765,126 @@ entity msk_top_regs_lpf_config_0 is
 end entity msk_top_regs_lpf_config_0;
 
 architecture rtl of msk_top_regs_lpf_config_0 is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_lpf_freeze : std_logic_vector(1-1 downto 0); --
+    field_reg_lpf_zero : std_logic_vector(1-1 downto 0); --
+    field_reg_prbs_reserved : std_logic_vector(6-1 downto 0); --
+    field_reg_lpf_alpha : std_logic_vector(24-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(0 downto 0) := field_reg_lpf_freeze; --
+    v_data_out(1 downto 1) := field_reg_lpf_zero; --
+    v_data_out(7 downto 2) := field_reg_prbs_reserved; --
+    v_data_out(31 downto 8) := field_reg_lpf_alpha; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_lpf_freeze : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(0,1)); --
+  signal field_reg_lpf_zero : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(0,1)); --
+  signal field_reg_prbs_reserved : std_logic_vector(6-1 downto 0)
+    := std_logic_vector(to_signed(0,6)); --
+  signal field_reg_lpf_alpha : std_logic_vector(24-1 downto 0)
+    := std_logic_vector(to_signed(0,24)); --
 begin
-  --
+
+  data_out <= fun_set_data_out( --
+    field_reg_lpf_freeze, --
+    field_reg_lpf_zero, --
+    field_reg_prbs_reserved, --
+    field_reg_lpf_alpha --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------STORAGE
   lpf_freeze_storage: block
-    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
-                           std_logic_vector(to_signed(0,1));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,1));
+          field_reg_lpf_freeze <= std_logic_vector(to_signed(0,1));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(0 downto 0);
+            field_reg_lpf_freeze <= pi_decoder_data(0 downto 0);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.lpf_freeze.data <= l_field_reg; --
-    data_out(0 downto 0) <= l_field_reg;
-
+    po_reg.lpf_freeze.data <= field_reg_lpf_freeze; --
   end block lpf_freeze_storage;
   ------------------------------------------------------------STORAGE
   lpf_zero_storage: block
-    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
-                           std_logic_vector(to_signed(0,1));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,1));
+          field_reg_lpf_zero <= std_logic_vector(to_signed(0,1));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(1 downto 1);
+            field_reg_lpf_zero <= pi_decoder_data(1 downto 1);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.lpf_zero.data <= l_field_reg; --
-    data_out(1 downto 1) <= l_field_reg;
-
+    po_reg.lpf_zero.data <= field_reg_lpf_zero; --
   end block lpf_zero_storage;
   ------------------------------------------------------------STORAGE
   prbs_reserved_storage: block
-    signal l_field_reg   : std_logic_vector(6-1 downto 0) :=
-                           std_logic_vector(to_signed(0,6));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,6));
+          field_reg_prbs_reserved <= std_logic_vector(to_signed(0,6));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(7 downto 2);
+            field_reg_prbs_reserved <= pi_decoder_data(7 downto 2);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.prbs_reserved.data <= l_field_reg; --
-    data_out(7 downto 2) <= l_field_reg;
-
+    po_reg.prbs_reserved.data <= field_reg_prbs_reserved; --
   end block prbs_reserved_storage;
   ------------------------------------------------------------STORAGE
   lpf_alpha_storage: block
-    signal l_field_reg   : std_logic_vector(24-1 downto 0) :=
-                           std_logic_vector(to_signed(0,24));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,24));
+          field_reg_lpf_alpha <= std_logic_vector(to_signed(0,24));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(31 downto 8);
+            field_reg_lpf_alpha <= pi_decoder_data(31 downto 8);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.lpf_alpha.data <= l_field_reg; --
-    data_out(31 downto 8) <= l_field_reg;
-
+    po_reg.lpf_alpha.data <= field_reg_lpf_alpha; --
   end block lpf_alpha_storage;
   ----------------------------------------------------------
 end rtl;
@@ -1663,6 +1894,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -1682,61 +1916,76 @@ entity msk_top_regs_lpf_config_1 is
 end entity msk_top_regs_lpf_config_1;
 
 architecture rtl of msk_top_regs_lpf_config_1 is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_i_gain : std_logic_vector(24-1 downto 0); --
+    field_reg_i_shift : std_logic_vector(8-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(23 downto 0) := field_reg_i_gain; --
+    v_data_out(31 downto 24) := field_reg_i_shift; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_i_gain : std_logic_vector(24-1 downto 0)
+    := std_logic_vector(to_signed(0,24)); --
+  signal field_reg_i_shift : std_logic_vector(8-1 downto 0)
+    := std_logic_vector(to_signed(0,8)); --
 begin
-  --
+
+  data_out <= fun_set_data_out( --
+    field_reg_i_gain, --
+    field_reg_i_shift --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------STORAGE
   i_gain_storage: block
-    signal l_field_reg   : std_logic_vector(24-1 downto 0) :=
-                           std_logic_vector(to_signed(0,24));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,24));
+          field_reg_i_gain <= std_logic_vector(to_signed(0,24));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(23 downto 0);
+            field_reg_i_gain <= pi_decoder_data(23 downto 0);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.i_gain.data <= l_field_reg; --
-    data_out(23 downto 0) <= l_field_reg;
-
+    po_reg.i_gain.data <= field_reg_i_gain; --
   end block i_gain_storage;
   ------------------------------------------------------------STORAGE
   i_shift_storage: block
-    signal l_field_reg   : std_logic_vector(8-1 downto 0) :=
-                           std_logic_vector(to_signed(0,8));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,8));
+          field_reg_i_shift <= std_logic_vector(to_signed(0,8));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(31 downto 24);
+            field_reg_i_shift <= pi_decoder_data(31 downto 24);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.i_shift.data <= l_field_reg; --
-    data_out(31 downto 24) <= l_field_reg;
-
+    po_reg.i_shift.data <= field_reg_i_shift; --
   end block i_shift_storage;
   ----------------------------------------------------------
 end rtl;
@@ -1746,6 +1995,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -1765,38 +2017,51 @@ entity msk_top_regs_data_width is
 end entity msk_top_regs_data_width;
 
 architecture rtl of msk_top_regs_data_width is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_data_width : std_logic_vector(8-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(7 downto 0) := field_reg_data_width; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_data_width : std_logic_vector(8-1 downto 0)
+    := std_logic_vector(to_signed(8,8)); --
 begin
-  --
-  data_out(C_DATA_WIDTH-1 downto 8) <= (others => '0'); --
+
+  data_out <= fun_set_data_out( --
+    field_reg_data_width --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------STORAGE
   data_width_storage: block
-    signal l_field_reg   : std_logic_vector(8-1 downto 0) :=
-                           std_logic_vector(to_signed(8,8));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(8,8));
+          field_reg_data_width <= std_logic_vector(to_signed(8,8));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(7 downto 0);
+            field_reg_data_width <= pi_decoder_data(7 downto 0);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.data_width.data <= l_field_reg; --
-    data_out(7 downto 0) <= l_field_reg;
-
+    po_reg.data_width.data <= field_reg_data_width; --
   end block data_width_storage;
   ----------------------------------------------------------
 end rtl;
@@ -1806,6 +2071,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -1825,157 +2093,185 @@ entity msk_top_regs_prbs_ctrl is
 end entity msk_top_regs_prbs_ctrl;
 
 architecture rtl of msk_top_regs_prbs_ctrl is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_prbs_sel : std_logic_vector(1-1 downto 0); --
+    field_reg_prbs_error_insert : std_logic_vector(1-1 downto 0); --
+    field_reg_prbs_clear : std_logic_vector(1-1 downto 0); --
+    field_reg_prbs_manual_sync : std_logic_vector(1-1 downto 0); --
+    field_reg_prbs_reserved : std_logic_vector(12-1 downto 0); --
+    field_reg_prbs_sync_threshold : std_logic_vector(16-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(0 downto 0) := field_reg_prbs_sel; --
+    v_data_out(1 downto 1) := field_reg_prbs_error_insert; --
+    v_data_out(2 downto 2) := field_reg_prbs_clear; --
+    v_data_out(3 downto 3) := field_reg_prbs_manual_sync; --
+    v_data_out(15 downto 4) := field_reg_prbs_reserved; --
+    v_data_out(31 downto 16) := field_reg_prbs_sync_threshold; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_prbs_sel : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(0,1)); --
+  signal field_reg_prbs_error_insert : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(0,1)); --
+  signal field_reg_prbs_clear : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(0,1)); --
+  signal field_reg_prbs_manual_sync : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(0,1)); --
+  signal field_reg_prbs_reserved : std_logic_vector(12-1 downto 0)
+    := std_logic_vector(to_signed(0,12)); --
+  signal field_reg_prbs_sync_threshold : std_logic_vector(16-1 downto 0)
+    := std_logic_vector(to_signed(0,16)); --
 begin
-  --
+
+  data_out <= fun_set_data_out( --
+    field_reg_prbs_sel, --
+    field_reg_prbs_error_insert, --
+    field_reg_prbs_clear, --
+    field_reg_prbs_manual_sync, --
+    field_reg_prbs_reserved, --
+    field_reg_prbs_sync_threshold --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------STORAGE
   prbs_sel_storage: block
-    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
-                           std_logic_vector(to_signed(0,1));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,1));
+          field_reg_prbs_sel <= std_logic_vector(to_signed(0,1));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(0 downto 0);
+            field_reg_prbs_sel <= pi_decoder_data(0 downto 0);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.prbs_sel.data <= l_field_reg; --
-    data_out(0 downto 0) <= l_field_reg;
-
+    po_reg.prbs_sel.data <= field_reg_prbs_sel; --
   end block prbs_sel_storage;
   ------------------------------------------------------------STORAGE
   prbs_error_insert_storage: block
-    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
-                           std_logic_vector(to_signed(0,1));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,1));
+          field_reg_prbs_error_insert <= std_logic_vector(to_signed(0,1));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- This is a "singlepulse" register - clear on each clock,
+          -- unless it is written to with a 1 (see below)
+          field_reg_prbs_error_insert <= (others => '0');
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(1 downto 1);
+            field_reg_prbs_error_insert <= pi_decoder_data(1 downto 1);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.prbs_error_insert.data <= l_field_reg; --
-    data_out(1 downto 1) <= l_field_reg;
-
+    po_reg.prbs_error_insert.data <= field_reg_prbs_error_insert; --
   end block prbs_error_insert_storage;
   ------------------------------------------------------------STORAGE
   prbs_clear_storage: block
-    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
-                           std_logic_vector(to_signed(0,1));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,1));
+          field_reg_prbs_clear <= std_logic_vector(to_signed(0,1));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- This is a "singlepulse" register - clear on each clock,
+          -- unless it is written to with a 1 (see below)
+          field_reg_prbs_clear <= (others => '0');
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(2 downto 2);
+            field_reg_prbs_clear <= pi_decoder_data(2 downto 2);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.prbs_clear.data <= l_field_reg; --
-    data_out(2 downto 2) <= l_field_reg;
-
+    po_reg.prbs_clear.data <= field_reg_prbs_clear; --
   end block prbs_clear_storage;
   ------------------------------------------------------------STORAGE
   prbs_manual_sync_storage: block
-    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
-                           std_logic_vector(to_signed(0,1));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,1));
+          field_reg_prbs_manual_sync <= std_logic_vector(to_signed(0,1));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- This is a "singlepulse" register - clear on each clock,
+          -- unless it is written to with a 1 (see below)
+          field_reg_prbs_manual_sync <= (others => '0');
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(3 downto 3);
+            field_reg_prbs_manual_sync <= pi_decoder_data(3 downto 3);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.prbs_manual_sync.data <= l_field_reg; --
-    data_out(3 downto 3) <= l_field_reg;
-
+    po_reg.prbs_manual_sync.data <= field_reg_prbs_manual_sync; --
   end block prbs_manual_sync_storage;
   ------------------------------------------------------------STORAGE
   prbs_reserved_storage: block
-    signal l_field_reg   : std_logic_vector(12-1 downto 0) :=
-                           std_logic_vector(to_signed(0,12));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,12));
+          field_reg_prbs_reserved <= std_logic_vector(to_signed(0,12));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(15 downto 4);
+            field_reg_prbs_reserved <= pi_decoder_data(15 downto 4);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.prbs_reserved.data <= l_field_reg; --
-    data_out(15 downto 4) <= l_field_reg;
-
+    po_reg.prbs_reserved.data <= field_reg_prbs_reserved; --
   end block prbs_reserved_storage;
   ------------------------------------------------------------STORAGE
   prbs_sync_threshold_storage: block
-    signal l_field_reg   : std_logic_vector(16-1 downto 0) :=
-                           std_logic_vector(to_signed(0,16));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,16));
+          field_reg_prbs_sync_threshold <= std_logic_vector(to_signed(0,16));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(31 downto 16);
+            field_reg_prbs_sync_threshold <= pi_decoder_data(31 downto 16);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.prbs_sync_threshold.data <= l_field_reg; --
-    data_out(31 downto 16) <= l_field_reg;
-
+    po_reg.prbs_sync_threshold.data <= field_reg_prbs_sync_threshold; --
   end block prbs_sync_threshold_storage;
   ----------------------------------------------------------
 end rtl;
@@ -1985,6 +2281,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -2004,37 +2303,51 @@ entity msk_top_regs_config_prbs_seed is
 end entity msk_top_regs_config_prbs_seed;
 
 architecture rtl of msk_top_regs_config_prbs_seed is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_config_data : std_logic_vector(32-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(31 downto 0) := field_reg_config_data; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_config_data : std_logic_vector(32-1 downto 0)
+    := std_logic_vector(to_signed(0,32)); --
 begin
-  --
+
+  data_out <= fun_set_data_out( --
+    field_reg_config_data --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------STORAGE
   config_data_storage: block
-    signal l_field_reg   : std_logic_vector(32-1 downto 0) :=
-                           std_logic_vector(to_signed(0,32));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,32));
+          field_reg_config_data <= std_logic_vector(to_signed(0,32));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(31 downto 0);
+            field_reg_config_data <= pi_decoder_data(31 downto 0);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.config_data.data <= l_field_reg; --
-    data_out(31 downto 0) <= l_field_reg;
-
+    po_reg.config_data.data <= field_reg_config_data; --
   end block config_data_storage;
   ----------------------------------------------------------
 end rtl;
@@ -2044,6 +2357,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -2063,37 +2379,51 @@ entity msk_top_regs_config_prbs_poly is
 end entity msk_top_regs_config_prbs_poly;
 
 architecture rtl of msk_top_regs_config_prbs_poly is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_config_data : std_logic_vector(32-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(31 downto 0) := field_reg_config_data; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_config_data : std_logic_vector(32-1 downto 0)
+    := std_logic_vector(to_signed(0,32)); --
 begin
-  --
+
+  data_out <= fun_set_data_out( --
+    field_reg_config_data --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------STORAGE
   config_data_storage: block
-    signal l_field_reg   : std_logic_vector(32-1 downto 0) :=
-                           std_logic_vector(to_signed(0,32));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,32));
+          field_reg_config_data <= std_logic_vector(to_signed(0,32));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(31 downto 0);
+            field_reg_config_data <= pi_decoder_data(31 downto 0);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.config_data.data <= l_field_reg; --
-    data_out(31 downto 0) <= l_field_reg;
-
+    po_reg.config_data.data <= field_reg_config_data; --
   end block config_data_storage;
   ----------------------------------------------------------
 end rtl;
@@ -2103,6 +2433,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -2122,37 +2455,51 @@ entity msk_top_regs_config_prbs_errmask is
 end entity msk_top_regs_config_prbs_errmask;
 
 architecture rtl of msk_top_regs_config_prbs_errmask is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_config_data : std_logic_vector(32-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(31 downto 0) := field_reg_config_data; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_config_data : std_logic_vector(32-1 downto 0)
+    := std_logic_vector(to_signed(0,32)); --
 begin
-  --
+
+  data_out <= fun_set_data_out( --
+    field_reg_config_data --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------STORAGE
   config_data_storage: block
-    signal l_field_reg   : std_logic_vector(32-1 downto 0) :=
-                           std_logic_vector(to_signed(0,32));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,32));
+          field_reg_config_data <= std_logic_vector(to_signed(0,32));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(31 downto 0);
+            field_reg_config_data <= pi_decoder_data(31 downto 0);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.config_data.data <= l_field_reg; --
-    data_out(31 downto 0) <= l_field_reg;
-
+    po_reg.config_data.data <= field_reg_config_data; --
   end block config_data_storage;
   ----------------------------------------------------------
 end rtl;
@@ -2162,6 +2509,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -2181,21 +2531,39 @@ entity msk_top_regs_stat_32_bits is
 end entity msk_top_regs_stat_32_bits;
 
 architecture rtl of msk_top_regs_stat_32_bits is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_status_data : std_logic_vector(32-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(31 downto 0) := field_reg_status_data; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_status_data : std_logic_vector(32-1 downto 0)
+    := std_logic_vector(to_signed(0,32)); --
 begin
-  --
+
+  data_out <= fun_set_data_out( --
+    field_reg_status_data --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------WIRE
-  status_data_wire : block--
+  status_data_wire : block --
   begin
     --
-    data_out(31 downto 0) <= pi_reg.status_data.data(32-1 downto 0); --
+    field_reg_status_data <= pi_reg.status_data.data(32-1 downto 0); --
     --no signal to read by HW
-    po_reg.status_data.data <= (others => '0'); --
+    po_reg.status_data.dummy <= '0'; --
   end block; --
 end rtl;
 -----------------------------------------------
@@ -2204,6 +2572,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -2223,21 +2594,39 @@ entity msk_top_regs_stat_32_errs is
 end entity msk_top_regs_stat_32_errs;
 
 architecture rtl of msk_top_regs_stat_32_errs is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_status_data : std_logic_vector(32-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(31 downto 0) := field_reg_status_data; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_status_data : std_logic_vector(32-1 downto 0)
+    := std_logic_vector(to_signed(0,32)); --
 begin
-  --
+
+  data_out <= fun_set_data_out( --
+    field_reg_status_data --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------WIRE
-  status_data_wire : block--
+  status_data_wire : block --
   begin
     --
-    data_out(31 downto 0) <= pi_reg.status_data.data(32-1 downto 0); --
+    field_reg_status_data <= pi_reg.status_data.data(32-1 downto 0); --
     --no signal to read by HW
-    po_reg.status_data.data <= (others => '0'); --
+    po_reg.status_data.dummy <= '0'; --
   end block; --
 end rtl;
 -----------------------------------------------
@@ -2246,6 +2635,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -2265,21 +2657,39 @@ entity msk_top_regs_stat_32_lpf_acc is
 end entity msk_top_regs_stat_32_lpf_acc;
 
 architecture rtl of msk_top_regs_stat_32_lpf_acc is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_status_data : std_logic_vector(32-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(31 downto 0) := field_reg_status_data; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_status_data : std_logic_vector(32-1 downto 0)
+    := std_logic_vector(to_signed(0,32)); --
 begin
-  --
+
+  data_out <= fun_set_data_out( --
+    field_reg_status_data --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------WIRE
-  status_data_wire : block--
+  status_data_wire : block --
   begin
     --
-    data_out(31 downto 0) <= pi_reg.status_data.data(32-1 downto 0); --
+    field_reg_status_data <= pi_reg.status_data.data(32-1 downto 0); --
     --no signal to read by HW
-    po_reg.status_data.data <= (others => '0'); --
+    po_reg.status_data.dummy <= '0'; --
   end block; --
 end rtl;
 -----------------------------------------------
@@ -2288,6 +2698,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -2307,21 +2720,39 @@ entity msk_top_regs_msk_stat_3 is
 end entity msk_top_regs_msk_stat_3;
 
 architecture rtl of msk_top_regs_msk_stat_3 is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_xfer_count : std_logic_vector(32-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(31 downto 0) := field_reg_xfer_count; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_xfer_count : std_logic_vector(32-1 downto 0)
+    := std_logic_vector(to_signed(0,32)); --
 begin
-  --
+
+  data_out <= fun_set_data_out( --
+    field_reg_xfer_count --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------WIRE
-  xfer_count_wire : block--
+  xfer_count_wire : block --
   begin
     --
-    data_out(31 downto 0) <= pi_reg.xfer_count.data(32-1 downto 0); --
+    field_reg_xfer_count <= pi_reg.xfer_count.data(32-1 downto 0); --
     --no signal to read by HW
-    po_reg.xfer_count.data <= (others => '0'); --
+    po_reg.xfer_count.dummy <= '0'; --
   end block; --
 end rtl;
 -----------------------------------------------
@@ -2330,6 +2761,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -2349,62 +2783,76 @@ entity msk_top_regs_rx_sample_discard is
 end entity msk_top_regs_rx_sample_discard;
 
 architecture rtl of msk_top_regs_rx_sample_discard is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_rx_sample_discard : std_logic_vector(8-1 downto 0); --
+    field_reg_rx_nco_discard : std_logic_vector(8-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(7 downto 0) := field_reg_rx_sample_discard; --
+    v_data_out(15 downto 8) := field_reg_rx_nco_discard; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_rx_sample_discard : std_logic_vector(8-1 downto 0)
+    := std_logic_vector(to_signed(0,8)); --
+  signal field_reg_rx_nco_discard : std_logic_vector(8-1 downto 0)
+    := std_logic_vector(to_signed(0,8)); --
 begin
-  --
-  data_out(C_DATA_WIDTH-1 downto 16) <= (others => '0'); --
+
+  data_out <= fun_set_data_out( --
+    field_reg_rx_sample_discard, --
+    field_reg_rx_nco_discard --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------STORAGE
   rx_sample_discard_storage: block
-    signal l_field_reg   : std_logic_vector(8-1 downto 0) :=
-                           std_logic_vector(to_signed(0,8));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,8));
+          field_reg_rx_sample_discard <= std_logic_vector(to_signed(0,8));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(7 downto 0);
+            field_reg_rx_sample_discard <= pi_decoder_data(7 downto 0);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.rx_sample_discard.data <= l_field_reg; --
-    data_out(7 downto 0) <= l_field_reg;
-
+    po_reg.rx_sample_discard.data <= field_reg_rx_sample_discard; --
   end block rx_sample_discard_storage;
   ------------------------------------------------------------STORAGE
   rx_nco_discard_storage: block
-    signal l_field_reg   : std_logic_vector(8-1 downto 0) :=
-                           std_logic_vector(to_signed(0,8));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,8));
+          field_reg_rx_nco_discard <= std_logic_vector(to_signed(0,8));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(15 downto 8);
+            field_reg_rx_nco_discard <= pi_decoder_data(15 downto 8);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.rx_nco_discard.data <= l_field_reg; --
-    data_out(15 downto 8) <= l_field_reg;
-
+    po_reg.rx_nco_discard.data <= field_reg_rx_nco_discard; --
   end block rx_nco_discard_storage;
   ----------------------------------------------------------
 end rtl;
@@ -2414,6 +2862,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -2433,61 +2884,76 @@ entity msk_top_regs_lpf_config_2 is
 end entity msk_top_regs_lpf_config_2;
 
 architecture rtl of msk_top_regs_lpf_config_2 is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_p_gain : std_logic_vector(24-1 downto 0); --
+    field_reg_p_shift : std_logic_vector(8-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(23 downto 0) := field_reg_p_gain; --
+    v_data_out(31 downto 24) := field_reg_p_shift; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_p_gain : std_logic_vector(24-1 downto 0)
+    := std_logic_vector(to_signed(0,24)); --
+  signal field_reg_p_shift : std_logic_vector(8-1 downto 0)
+    := std_logic_vector(to_signed(0,8)); --
 begin
-  --
+
+  data_out <= fun_set_data_out( --
+    field_reg_p_gain, --
+    field_reg_p_shift --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------STORAGE
   p_gain_storage: block
-    signal l_field_reg   : std_logic_vector(24-1 downto 0) :=
-                           std_logic_vector(to_signed(0,24));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,24));
+          field_reg_p_gain <= std_logic_vector(to_signed(0,24));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(23 downto 0);
+            field_reg_p_gain <= pi_decoder_data(23 downto 0);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.p_gain.data <= l_field_reg; --
-    data_out(23 downto 0) <= l_field_reg;
-
+    po_reg.p_gain.data <= field_reg_p_gain; --
   end block p_gain_storage;
   ------------------------------------------------------------STORAGE
   p_shift_storage: block
-    signal l_field_reg   : std_logic_vector(8-1 downto 0) :=
-                           std_logic_vector(to_signed(0,8));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,8));
+          field_reg_p_shift <= std_logic_vector(to_signed(0,8));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(31 downto 24);
+            field_reg_p_shift <= pi_decoder_data(31 downto 24);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.p_shift.data <= l_field_reg; --
-    data_out(31 downto 24) <= l_field_reg;
-
+    po_reg.p_shift.data <= field_reg_p_shift; --
   end block p_shift_storage;
   ----------------------------------------------------------
 end rtl;
@@ -2497,6 +2963,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -2516,21 +2985,39 @@ entity msk_top_regs_observation_data is
 end entity msk_top_regs_observation_data;
 
 architecture rtl of msk_top_regs_observation_data is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_data32 : std_logic_vector(32-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(31 downto 0) := field_reg_data32; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_data32 : std_logic_vector(32-1 downto 0)
+    := std_logic_vector(to_signed(0,32)); --
 begin
-  --
+
+  data_out <= fun_set_data_out( --
+    field_reg_data32 --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------WIRE
-  data32_wire : block--
+  data32_wire : block --
   begin
     --
-    data_out(31 downto 0) <= pi_reg.data32.data(32-1 downto 0); --
+    field_reg_data32 <= pi_reg.data.data(32-1 downto 0); --
     --no signal to read by HW
-    po_reg.data32.data <= (others => '0'); --
+    po_reg.data.dummy <= '0'; --
   end block; --
 end rtl;
 -----------------------------------------------
@@ -2539,6 +3026,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -2558,110 +3048,126 @@ entity msk_top_regs_tx_sync_ctrl is
 end entity msk_top_regs_tx_sync_ctrl;
 
 architecture rtl of msk_top_regs_tx_sync_ctrl is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_tx_sync_ena : std_logic_vector(1-1 downto 0); --
+    field_reg_tx_sync_force : std_logic_vector(1-1 downto 0); --
+    field_reg_tx_sync_f1 : std_logic_vector(1-1 downto 0); --
+    field_reg_tx_sync_f2 : std_logic_vector(1-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(0 downto 0) := field_reg_tx_sync_ena; --
+    v_data_out(1 downto 1) := field_reg_tx_sync_force; --
+    v_data_out(2 downto 2) := field_reg_tx_sync_f1; --
+    v_data_out(3 downto 3) := field_reg_tx_sync_f2; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_tx_sync_ena : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(0,1)); --
+  signal field_reg_tx_sync_force : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(0,1)); --
+  signal field_reg_tx_sync_f1 : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(0,1)); --
+  signal field_reg_tx_sync_f2 : std_logic_vector(1-1 downto 0)
+    := std_logic_vector(to_signed(0,1)); --
 begin
-  --
-  data_out(C_DATA_WIDTH-1 downto 4) <= (others => '0'); --
+
+  data_out <= fun_set_data_out( --
+    field_reg_tx_sync_ena, --
+    field_reg_tx_sync_force, --
+    field_reg_tx_sync_f1, --
+    field_reg_tx_sync_f2 --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------STORAGE
   tx_sync_ena_storage: block
-    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
-                           std_logic_vector(to_signed(0,1));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,1));
+          field_reg_tx_sync_ena <= std_logic_vector(to_signed(0,1));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(0 downto 0);
+            field_reg_tx_sync_ena <= pi_decoder_data(0 downto 0);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.tx_sync_ena.data <= l_field_reg; --
-    data_out(0 downto 0) <= l_field_reg;
-
+    po_reg.tx_sync_ena.data <= field_reg_tx_sync_ena; --
   end block tx_sync_ena_storage;
   ------------------------------------------------------------STORAGE
   tx_sync_force_storage: block
-    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
-                           std_logic_vector(to_signed(0,1));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,1));
+          field_reg_tx_sync_force <= std_logic_vector(to_signed(0,1));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(1 downto 1);
+            field_reg_tx_sync_force <= pi_decoder_data(1 downto 1);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.tx_sync_force.data <= l_field_reg; --
-    data_out(1 downto 1) <= l_field_reg;
-
+    po_reg.tx_sync_force.data <= field_reg_tx_sync_force; --
   end block tx_sync_force_storage;
   ------------------------------------------------------------STORAGE
   tx_sync_f1_storage: block
-    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
-                           std_logic_vector(to_signed(0,1));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,1));
+          field_reg_tx_sync_f1 <= std_logic_vector(to_signed(0,1));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(2 downto 2);
+            field_reg_tx_sync_f1 <= pi_decoder_data(2 downto 2);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.tx_sync_f1.data <= l_field_reg; --
-    data_out(2 downto 2) <= l_field_reg;
-
+    po_reg.tx_sync_f1.data <= field_reg_tx_sync_f1; --
   end block tx_sync_f1_storage;
   ------------------------------------------------------------STORAGE
   tx_sync_f2_storage: block
-    signal l_field_reg   : std_logic_vector(1-1 downto 0) :=
-                           std_logic_vector(to_signed(0,1));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,1));
+          field_reg_tx_sync_f2 <= std_logic_vector(to_signed(0,1));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(3 downto 3);
+            field_reg_tx_sync_f2 <= pi_decoder_data(3 downto 3);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.tx_sync_f2.data <= l_field_reg; --
-    data_out(3 downto 3) <= l_field_reg;
-
+    po_reg.tx_sync_f2.data <= field_reg_tx_sync_f2; --
   end block tx_sync_f2_storage;
   ----------------------------------------------------------
 end rtl;
@@ -2671,6 +3177,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -2690,38 +3199,51 @@ entity msk_top_regs_tx_sync_cnt is
 end entity msk_top_regs_tx_sync_cnt;
 
 architecture rtl of msk_top_regs_tx_sync_cnt is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_tx_sync_cnt : std_logic_vector(24-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(23 downto 0) := field_reg_tx_sync_cnt; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_tx_sync_cnt : std_logic_vector(24-1 downto 0)
+    := std_logic_vector(to_signed(0,24)); --
 begin
-  --
-  data_out(C_DATA_WIDTH-1 downto 24) <= (others => '0'); --
+
+  data_out <= fun_set_data_out( --
+    field_reg_tx_sync_cnt --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------STORAGE
   tx_sync_cnt_storage: block
-    signal l_field_reg   : std_logic_vector(24-1 downto 0) :=
-                           std_logic_vector(to_signed(0,24));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,24));
+          field_reg_tx_sync_cnt <= std_logic_vector(to_signed(0,24));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(23 downto 0);
+            field_reg_tx_sync_cnt <= pi_decoder_data(23 downto 0);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.tx_sync_cnt.data <= l_field_reg; --
-    data_out(23 downto 0) <= l_field_reg;
-
+    po_reg.tx_sync_cnt.data <= field_reg_tx_sync_cnt; --
   end block tx_sync_cnt_storage;
   ----------------------------------------------------------
 end rtl;
@@ -2731,6 +3253,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -2750,38 +3275,51 @@ entity msk_top_regs_lowpass_ema_alpha is
 end entity msk_top_regs_lowpass_ema_alpha;
 
 architecture rtl of msk_top_regs_lowpass_ema_alpha is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_alpha : std_logic_vector(18-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(17 downto 0) := field_reg_alpha; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_alpha : std_logic_vector(18-1 downto 0)
+    := std_logic_vector(to_signed(0,18)); --
 begin
-  --
-  data_out(C_DATA_WIDTH-1 downto 18) <= (others => '0'); --
+
+  data_out <= fun_set_data_out( --
+    field_reg_alpha --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------STORAGE
   alpha_storage: block
-    signal l_field_reg   : std_logic_vector(18-1 downto 0) :=
-                           std_logic_vector(to_signed(0,18));
   begin
     prs_write : process(pi_clock)
     begin
       if rising_edge(pi_clock) then
         if pi_reset = '1' then
-          l_field_reg <= std_logic_vector(to_signed(0,18));
+          field_reg_alpha <= std_logic_vector(to_signed(0,18));
         else
           -- HW --
-          -- SW -- TODO: handle software access side effects (rcl/rset, woclr/woset, swacc/swmod)
+          -- SW --
           if pi_decoder_wr_stb = '1' then
-            l_field_reg <= pi_decoder_data(17 downto 0);
+            field_reg_alpha <= pi_decoder_data(17 downto 0);
           end if;
         end if;
       end if;
     end process;
     --
-    po_reg.alpha.data <= l_field_reg; --
-    data_out(17 downto 0) <= l_field_reg;
-
+    po_reg.alpha.data <= field_reg_alpha; --
   end block alpha_storage;
   ----------------------------------------------------------
 end rtl;
@@ -2791,6 +3329,9 @@ end rtl;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+
+library desyrdl;
+use desyrdl.common.all;
 
 use work.pkg_msk_top_regs.all;
 
@@ -2810,22 +3351,39 @@ entity msk_top_regs_rx_power is
 end entity msk_top_regs_rx_power;
 
 architecture rtl of msk_top_regs_rx_power is
+
+  -- assign slices of data_out for each field, but force the rest to constant zeros
+  function fun_set_data_out ( --
+    field_reg_rx_power : std_logic_vector(23-1 downto 0)) --
+    return std_logic_vector is
+    variable v_data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0);
+  begin
+    v_data_out := (others => '0');
+    --
+    v_data_out(22 downto 0) := field_reg_rx_power; --
+    return v_data_out;
+  end function fun_set_data_out;
+
   signal data_out : std_logic_vector(C_DATA_WIDTH-1 downto 0) := (others => '0');
+   --
+  signal field_reg_rx_power : std_logic_vector(23-1 downto 0)
+    := std_logic_vector(to_signed(0,23)); --
 begin
-  --
-  data_out(C_DATA_WIDTH-1 downto 23) <= (others => '0'); --
+
+  data_out <= fun_set_data_out( --
+    field_reg_rx_power --
+  );
 
   -- resize field data out to the register bus width
   -- do only if 1 field and signed--
   po_decoder_data <= data_out; --
-
   ------------------------------------------------------------WIRE
-  rx_power_wire : block--
+  rx_power_wire : block --
   begin
     --
-    data_out(22 downto 0) <= pi_reg.rx_power.data(23-1 downto 0); --
+    field_reg_rx_power <= pi_reg.rx_power.data(23-1 downto 0); --
     --no signal to read by HW
-    po_reg.rx_power.data <= (others => '0'); --
+    po_reg.rx_power.dummy <= '0'; --
   end block; --
 end rtl;
 -----------------------------------------------

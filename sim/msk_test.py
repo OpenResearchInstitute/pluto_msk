@@ -623,7 +623,7 @@ async def msk_test_1(dut):
 
     plot = True
 
-    run_time = 3500 # microseconds
+    run_time = 35000 # microseconds
 
     # p_gain = 579
     # i_gain = 128
@@ -640,7 +640,6 @@ async def msk_test_1(dut):
 
     i_gain  = 9
     i_shift = 9
-
 
     autosync_threshold = 50
 
@@ -664,6 +663,10 @@ async def msk_test_1(dut):
     lpf_alpha = 0
 
     rx_invert = 0
+
+    ptt = 1
+    digital_loopback = 1
+    diff_enc_loopback = 0
 
     print("Instantiate registers")
     axi  = axi_bus(dut)
@@ -783,7 +786,7 @@ async def msk_test_1(dut):
     # await axi.write(60, 0)
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "Tx_Sync_Ctrl", 0b1111)    
+    await regs.write("msk_top_regs", "Tx_Sync_Ctrl", 0b0001)    
     # await axi.write(60, 0)
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
@@ -813,7 +816,7 @@ async def msk_test_1(dut):
     await regs.write("msk_top_regs", "MSK_Init", 0)    
     dut.s_axi_wvalid.value = 1
     dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "MSK_Control", (rx_invert <<2) + 1)    
+    await regs.write("msk_top_regs", "MSK_Control", (diff_enc_loopback << 4) + (rx_invert <<2) + ptt)    
 
     await RisingEdge(dut.clk)
 
