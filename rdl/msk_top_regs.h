@@ -54,6 +54,10 @@ extern "C" {
 #define MSK_CTRL__CLEAR_COUNTS_bp 3
 #define MSK_CTRL__CLEAR_COUNTS_bw 1
 #define MSK_CTRL__CLEAR_COUNTS_reset 0x0
+#define MSK_CTRL__DIFF_ENCODER_LOOPBACK_bm 0x10
+#define MSK_CTRL__DIFF_ENCODER_LOOPBACK_bp 4
+#define MSK_CTRL__DIFF_ENCODER_LOOPBACK_bw 1
+#define MSK_CTRL__DIFF_ENCODER_LOOPBACK_reset 0x0
 
 // Reg - msk_stat_0
 #define MSK_STAT_0__DEMOD_SYNC_LOCK_bm 0x1

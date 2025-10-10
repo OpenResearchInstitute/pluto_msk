@@ -191,6 +191,11 @@ ARCHITECTURE struct OF msk_top IS
 
 	SIGNAL loopback_ena 	: std_logic;
 
+	SIGNAL diff_encdec_lbk_ena 	: std_logic;
+	SIGNAL diff_encdec_lbk_tclk : std_logic;
+	SIGNAL diff_encdec_lbk_f1   : std_logic_vector(1 DOWNTO 0);
+	SIGNAL diff_encdec_lbk_f2   : std_logic_vector(1 DOWNTO 0);
+
 	SIGNAL freq_word_ft 	: std_logic_vector(NCO_W -1 DOWNTO 0);
 	SIGNAL freq_word_tx_f1 	: std_logic_vector(NCO_W -1 DOWNTO 0);
 	SIGNAL freq_word_tx_f2 	: std_logic_vector(NCO_W -1 DOWNTO 0);
@@ -310,22 +315,26 @@ BEGIN
 ------------------------------------------------------------------------------------------------------
 -- Tx Parallel to Serial
 
+	--tx_data_w_div2 <= shift_right(tx_data_w, 1);
+
 	par2ser_proc : PROCESS (clk)
 	BEGIN
 		IF clk'EVENT AND clk = '1' THEN
 
 			IF tx_req = '1' THEN
 
-				IF bit_index = to_integer(unsigned(tx_data_w)) -1 THEN
+				IF bit_index = to_integer(unsigned(tx_data_w)) -1 +32 THEN
 					tx_data 	<= tx_data_axi;
 					bit_index	<= 0;
 					saxis_req 	<= NOT saxis_req;
 					xfer_count 	<= saxis_xfer_count;
+				--ELSIF bit_index = to_integer(tx_data_w_div2) -1 THEN
+				--	bit_index <= 32;
 				ELSE
 					bit_index <= bit_index + 1;
 				END IF;
 				
-				tx_data_bit <= tx_data(bit_index);
+				tx_data_bit    <= tx_data(bit_index);
 
 				tx_data_bit_d1 <= prbs_data_bit;
 				tx_data_bit_d2 <= tx_data_bit_d1;
@@ -406,7 +415,12 @@ BEGIN
 			tx_enable 		=> tx_enable OR loopback_ena,
 			tx_valid 		=> tx_valid OR loopback_ena,
 			tx_samples_I	=> tx_samples_I_int,
-			tx_samples_Q	=> tx_samples_Q_int
+			tx_samples_Q	=> tx_samples_Q_int,
+
+			tx_enc_lbk_tclk => diff_encdec_lbk_tclk,
+			tx_enc_lbk_f1 	=> diff_encdec_lbk_f1,
+			tx_enc_lbk_f2 	=> diff_encdec_lbk_f2
+
 		);
 
 
@@ -521,6 +535,11 @@ BEGIN
 			f2_nco_adjust	=> f2_nco_adjust,
 			f1_error		=> f1_error,
 			f2_error		=> f2_error,
+
+			rx_dec_lbk_ena  => diff_encdec_lbk_ena,
+			rx_dec_lbk_tclk => diff_encdec_lbk_tclk,
+			rx_dec_lbk_f1   => diff_encdec_lbk_f1,
+			rx_dec_lbk_f2   => diff_encdec_lbk_f2,
 
 			rx_enable 		=> rx_enable OR loopback_ena,
 			rx_svalid 		=> rx_sample_clk,
@@ -682,6 +701,7 @@ BEGIN
 		rxinit 				=> rxinit,
 		ptt 				=> ptt,
 		loopback_ena 		=> loopback_ena,
+		diff_encdec_lbk_ena => diff_encdec_lbk_ena,
 		rx_invert 			=> rx_invert,
 		clear_counts 		=> clear_counts,
 		discard_rxsamples	=> discard_rxsamples,

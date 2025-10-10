@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
-[*] Wed Feb  5 05:36:29 2025
+[*] Fri Oct 10 05:31:31 2025
 [*]
-[dumpfile] "msk_top.ghw"
-[dumpfile_mtime] "Wed Feb  5 05:36:21 2025"
-[dumpfile_size] 222241877
-[savefile] "msk_top_nvc.gtkw"
+[dumpfile] "/Users/nonlinear/dev/pluto_msk/sim/msk_top.ghw"
+[dumpfile_mtime] "Fri Oct 10 05:30:38 2025"
+[dumpfile_size] 217869621
+[savefile] "/Users/nonlinear/dev/pluto_msk/sim/msk_top_nvc.gtkw"
 [timestart] 0
 [size] 1504 828
 [pos] -1 -1
-*-42.875351 20057696513800 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+*-42.987041 3950520428800 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 [markername] AA
 [markername] BB
 [markername] CC
@@ -41,6 +41,7 @@
 [treeopen] msk_top.u_dem.u_f1.
 [treeopen] msk_top.u_dem.u_f2.
 [treeopen] msk_top.u_mod.
+[treeopen] msk_top.u_msk_top_csr.
 [sst_width] 298
 [signals_width] 383
 [sst_expanded] 1
@@ -50,24 +51,68 @@ msk_top.u_mod.clk
 msk_top.u_mod.init
 msk_top.u_mod.tclk
 msk_top.tx_req
-@c00200
+@800200
 -Modulator
+@28
+msk_top.u_mod.tclk
+msk_top.u_mod.tx_req
 @420
 msk_top.u_mod.tx_data
+@200
+-
+@28
+msk_top.u_mod.ptt
+msk_top.u_mod.ptt_d
+msk_top.u_mod.ptt_pulse
+msk_top.u_mod.tx_sync_ena
+msk_top.u_mod.tx_sync_force
+@22
+msk_top.u_mod.sync_counter[23:0]
+msk_top.u_mod.sync_counter_next[23:0]
+@200
+-
+@22
+msk_top.u_mod.tclk_dly[0:3]
+@200
+-
+@28
+msk_top.u_mod.tx_data_reg
+@420
 msk_top.u_mod.d_val[2:0]
+msk_top.u_mod.d_val_xor_t[2:0]
+msk_top.u_mod.d_val_xor[2:0]
+@200
+-
+@420
 msk_top.u_mod.d_pos[1:0]
-msk_top.u_mod.d_neg[1:0]
-msk_top.u_mod.d_n_b[1:0]
+msk_top.u_mod.d_pos_enc[1:0]
+@c00420
+msk_top.u_mod.d_pos_xor[1:0]
+@28
+(0)msk_top.u_mod.d_pos_xor[1:0]
+(1)msk_top.u_mod.d_pos_xor[1:0]
+@1401200
+-group_end
+@420
 msk_top.u_mod.d_s1[1:0]
+@200
+-
+@420
+msk_top.u_mod.d_neg[1:0]
+@28
+msk_top.u_mod.b_n
+@420
+msk_top.u_mod.d_neg_enc[1:0]
+msk_top.u_mod.d_neg_xor[1:0]
 msk_top.u_mod.d_s2[1:0]
 @20000
 -
--
--
--
--
--
-@1401200
+@28
+msk_top.u_mod.tx_enc_lbk_tclk
+@420
+msk_top.u_mod.tx_enc_lbk_f1[1:0]
+msk_top.u_mod.tx_enc_lbk_f2[1:0]
+@1000200
 -Modulator
 @28
 msk_top.rx_data_valid
@@ -99,9 +144,6 @@ msk_top.tx_sync_ena
 msk_top.tx_sync_f1
 msk_top.tx_sync_f2
 msk_top.tx_sync_force
-@22
-msk_top.u_mod.sync_count[23:0]
-@28
 msk_top.u_mod.ptt_pulse
 @22
 msk_top.u_mod.s1c[11:0]
@@ -233,39 +275,30 @@ msk_top.u_dem.u_f2.nco_adjust[31:0]
 @28
 msk_top.u_dem.dclk
 msk_top.u_dem.tclk
+msk_top.u_dem.cclk
+@200
+-F1 Data Decode
 @420
 msk_top.u_dem.u_f1.loop_error[31:0]
 msk_top.u_dem.u_f1.data_out[15:0]
 msk_top.u_dem.u_f1.rx_cos_t[31:0]
 msk_top.u_dem.data_f1_t[15:0]
 msk_top.u_dem.data_f1_sum[15:0]
+@200
+-F2 Data Decode
+@420
 msk_top.u_dem.u_f2.loop_error[31:0]
 msk_top.u_dem.u_f2.data_out[15:0]
 msk_top.u_dem.data_f2_t[15:0]
 msk_top.u_dem.data_f2_sum[15:0]
-msk_top.u_dem.data_sum[15:0]
-@28
-msk_top.u_dem.data_bit
-@200
--F1 Data Decode
-@420
-msk_top.u_dem.data_f1[15:0]
-msk_top.u_dem.data_f1_signed[15:0]
-msk_top.u_dem.data_f1_t[15:0]
-msk_top.u_dem.data_f1_sum[15:0]
-@200
--F2 Data Decode
-@28
-msk_top.u_dem.cclk
-@420
-msk_top.u_dem.data_f2[15:0]
-msk_top.u_dem.data_f2_signed[15:0]
-msk_top.u_dem.data_f2_t[15:0]
-msk_top.u_dem.data_f2_sum[15:0]
 @200
 -Data Decode
+@420
+msk_top.u_dem.data_sum[15:0]
 @28
-msk_top.u_dem.rx_data
+msk_top.u_dem.data_bit_enc
+msk_top.u_dem.data_bit_enc_t
+msk_top.u_dem.data_bit_dec
 @1000200
 -Data Decode
 @800200
@@ -273,7 +306,6 @@ msk_top.u_dem.rx_data
 @200
 -F1 or F2 Enable
 @28
-msk_top.u_dem.data_bit
 msk_top.u_dem.error_valid_f1
 msk_top.u_dem.error_valid_f2
 @1000200
@@ -283,8 +315,58 @@ msk_top.u_prbs_gen.data_out[0]
 msk_top.tx_data_bit_d2
 msk_top.u_prbs_mon.data_in[0]
 @c00200
--PRBS Generator
+-Differential Coder Loopback
 @28
+msk_top.diff_encdec_lbk_ena
+msk_top.diff_encdec_lbk_tclk
+msk_top.diff_encdec_lbk_f1[1:0]
+msk_top.diff_encdec_lbk_f2[1:0]
+@200
+-
+@28
+msk_top.u_dem.rx_dec_lbk_ena
+msk_top.u_dem.rx_dec_lbk_tclk
+@22
+msk_top.u_dem.lbk_tclk[0:3]
+@200
+-
+@420
+msk_top.u_dem.rx_dec_lbk_f1[1:0]
+msk_top.u_dem.lbk_f1_signed[2:0]
+msk_top.u_dem.lbk_f1_t[2:0]
+msk_top.u_dem.lbk_f1_sum[2:0]
+@200
+-
+@28
+msk_top.u_dem.dclk
+msk_top.u_dem.cclk
+@420
+msk_top.u_dem.rx_dec_lbk_f2[1:0]
+msk_top.u_dem.lbk_f2_signed[2:0]
+msk_top.u_dem.lbk_f2_t[2:0]
+msk_top.u_dem.lbk_f2_sum[2:0]
+@200
+-
+@420
+msk_top.u_dem.lbk_sum[2:0]
+@c00420
+msk_top.u_dem.lbk_bit_enc[1:0]
+@28
+(0)msk_top.u_dem.lbk_bit_enc[1:0]
+(1)msk_top.u_dem.lbk_bit_enc[1:0]
+@1401200
+-group_end
+@420
+msk_top.u_dem.lbk_bit_enc_t[1:0]
+@28
+msk_top.u_dem.data_bit_dec
+msk_top.u_dem.lbk_bit_dec
+msk_top.u_dem.rx_data
+@1401200
+-Differential Coder Loopback
+@c00200
+-PRBS Generator
+@29
 msk_top.u_prbs_gen.clk
 msk_top.u_prbs_gen.data_in[0]
 msk_top.u_prbs_gen.data_out[0]
@@ -292,15 +374,12 @@ msk_top.u_prbs_gen.data_req
 msk_top.u_prbs_gen.error_arm
 msk_top.u_prbs_gen.error_insert
 msk_top.u_prbs_gen.error_insert_d
-@22
-msk_top.u_prbs_gen.error_mask[0:0]
-@28
 msk_top.u_prbs_gen.init
-@22
+@23
 msk_top.u_prbs_gen.initial_state[30:0]
 msk_top.u_prbs_gen.lfsr[30:0]
 msk_top.u_prbs_gen.polynomial[30:0]
-@28
+@29
 msk_top.u_prbs_gen.prbs_sel
 @1401200
 -PRBS Generator

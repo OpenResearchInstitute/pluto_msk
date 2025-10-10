@@ -131,6 +131,7 @@ ENTITY msk_top_csr IS
 		rxinit 				: out std_logic;
 		ptt 				: out std_logic;
 		loopback_ena 		: out std_logic;
+		diff_encdec_lbk_ena : out std_logic;
 		rx_invert 			: out std_logic;
 		clear_counts 		: out std_logic;
 		discard_rxsamples 	: out std_logic_vector(7 DOWNTO 0);
@@ -235,10 +236,10 @@ BEGIN
     pi_addrmap.PRBS_Error_Count.status_data.data <= prbs_errs;
     pi_addrmap.LPF_Accum_F1.status_data.data <= lpf_accum_f1;
     pi_addrmap.LPF_Accum_F2.status_data.data <= lpf_accum_f2;
-    pi_addrmap.f1_nco_adjust.data32.data 	<= f1_nco_adjust;
-    pi_addrmap.f2_nco_adjust.data32.data 	<= f2_nco_adjust;
-    pi_addrmap.f1_error.data32.data 		<= f1_error;
-    pi_addrmap.f2_error.data32.data 		<= f2_error;
+    pi_addrmap.f1_nco_adjust.data.data 	<= f1_nco_adjust;
+    pi_addrmap.f2_nco_adjust.data.data 	<= f2_nco_adjust;
+    pi_addrmap.f1_error.data.data 		<= f1_error;
+    pi_addrmap.f2_error.data.data 		<= f2_error;
     pi_addrmap.rx_power.rx_power.data 		<= pd_power;
 
 
@@ -248,6 +249,7 @@ BEGIN
     rxinit 				<= po_addrmap.MSK_Init.rxinit.data(0) OR txrxinit;
     ptt 				<= po_addrmap.MSK_Control.ptt.data(0);
     loopback_ena 		<= po_addrmap.MSK_Control.loopback_ena.data(0);
+    diff_encdec_lbk_ena	<= po_addrmap.MSK_Control.diff_encoder_loopback.data(0);
     rx_invert 			<= po_addrmap.MSK_Control.rx_invert.data(0);
     clear_counts 		<= po_addrmap.MSK_Control.clear_counts.data(0);
     freq_word_ft		<= po_addrmap.Fb_FreqWord.config_data.data;
