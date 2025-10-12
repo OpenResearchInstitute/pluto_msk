@@ -323,18 +323,16 @@ BEGIN
 
 			IF tx_req = '1' THEN
 
-				IF bit_index = to_integer(unsigned(tx_data_w)) -1 +32 THEN
+				IF bit_index = to_integer(unsigned(tx_data_w)) -1 THEN
 					tx_data 	<= tx_data_axi;
 					bit_index	<= 0;
 					saxis_req 	<= NOT saxis_req;
 					xfer_count 	<= saxis_xfer_count;
-				--ELSIF bit_index = to_integer(tx_data_w_div2) -1 THEN
-				--	bit_index <= 32;
 				ELSE
 					bit_index <= bit_index + 1;
 				END IF;
 				
-				tx_data_bit    <= tx_data(bit_index);
+				tx_data_bit <= tx_data(bit_index);
 
 				tx_data_bit_d1 <= prbs_data_bit;
 				tx_data_bit_d2 <= tx_data_bit_d1;
