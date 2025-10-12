@@ -183,6 +183,8 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL tx_data_axi		: std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
 
 	SIGNAL ptt 				: std_logic;
+	SIGNAL ptt_d 			: std_logic;
+	SIGNAL ptt_start 		: std_logic;
 	SIGNAL txinit 			: std_logic;
 	SIGNAL rxinit 			: std_logic;
 
@@ -616,12 +618,21 @@ BEGIN
 
 	demod_sync_lock <= '0';
 
+	ptt_start <= ptt AND NOT ptt_d;
+
 	stats_proc : PROCESS (clk)
 	BEGIN
 		IF clk'EVENT AND clk = '1' THEN 
 
-			IF tx_enable = '1' THEN
+			ptt_d <= ptt;
+
+			IF ptt_start = '1' THEN
+				tx_bit_counter <= (OTHERS => '0');
+			ELSIF tx_req = '1' THEN
 				tx_bit_counter	<= tx_bit_counter + 1;
+			END IF;
+
+			IF tx_enable = '1' THEN
 				tx_ena_counter 	<= tx_ena_counter + 1;
 			ELSE
 				tx_ena_counter 	<= tx_ena_counter - 1;
