@@ -90,6 +90,7 @@ BEGIN
                         IF s_axis_tvalid = '1' THEN
                             -- New frame starting - insert sync word first
                             shift_reg <= SYNC_BYTE_0;  -- Load first sync byte (0xE2)
+                            bit_counter <= to_unsigned(BYTE_WIDTH-1, bit_counter'LENGTH);  -- CRITICAL: Initialize to 7
                             state <= SENDING_SYNC;
                             ready_int <= '0';  -- Don't accept data yet
                         END IF;
@@ -101,9 +102,11 @@ BEGIN
                             tx_data <= shift_reg(BYTE_WIDTH-1);
                             shift_reg <= shift_reg(BYTE_WIDTH-2 DOWNTO 0) & '0';
                             
-                            IF bit_counter = BYTE_WIDTH-1 THEN
-                                -- Finished shifting current sync byte
-                                bit_counter <= (OTHERS => '0');
+                            -- Decrement bit counter
+                            bit_counter <= bit_counter - 1;
+                            
+                            IF bit_counter = 0 THEN
+                                -- Just sent bit 0 - finished shifting current sync byte
                                 
                                 IF sync_byte_count = 2 THEN
                                     -- All 3 sync bytes sent, now accept data from FIFO
@@ -113,15 +116,13 @@ BEGIN
                                 ELSE
                                     -- Load next sync byte
                                     sync_byte_count <= sync_byte_count + 1;
-                                    
+                                    bit_counter <= to_unsigned(BYTE_WIDTH-1, bit_counter'LENGTH);  -- Reset to 7
                                     CASE sync_byte_count IS
-                                        WHEN "00" => shift_reg <= SYNC_BYTE_1;  -- 0x5F
-                                        WHEN "01" => shift_reg <= SYNC_BYTE_2;  -- 0x35
+                                        WHEN "00" => shift_reg <= SYNC_BYTE_1;  -- 0x5F (after sending 0xE2)
+                                        WHEN "01" => shift_reg <= SYNC_BYTE_2;  -- 0x35 (after sending 0x5F)
                                         WHEN OTHERS => shift_reg <= (OTHERS => '0');
                                     END CASE;
                                 END IF;
-                            ELSE
-                                bit_counter <= bit_counter + 1;
                             END IF;
                         END IF;
                     
@@ -133,6 +134,7 @@ BEGIN
                             shift_reg <= s_axis_tdata;
                             last_byte <= s_axis_tlast;
                             ready_int <= '0';  -- De-assert ready while shifting
+                            bit_counter <= to_unsigned(BYTE_WIDTH-1, bit_counter'LENGTH);  -- Reset to 7
                         END IF;
                         
                         IF tx_req = '1' AND ready_int = '0' THEN
@@ -140,9 +142,11 @@ BEGIN
                             tx_data <= shift_reg(BYTE_WIDTH-1);
                             shift_reg <= shift_reg(BYTE_WIDTH-2 DOWNTO 0) & '0';
                             
-                            IF bit_counter = BYTE_WIDTH-1 THEN
-                                -- Finished shifting all 8 bits
-                                bit_counter <= (OTHERS => '0');
+                            -- Decrement bit counter
+                            bit_counter <= bit_counter - 1;
+                            
+                            IF bit_counter = 0 THEN
+                                -- Just sent bit 0 - finished shifting all 8 bits
                                 
                                 -- Check if this was the last byte of the frame
                                 IF last_byte = '1' THEN
@@ -153,8 +157,6 @@ BEGIN
                                     -- Ready for next byte
                                     ready_int <= '1';
                                 END IF;
-                            ELSE
-                                bit_counter <= bit_counter + 1;
                             END IF;
                         END IF;
                     
