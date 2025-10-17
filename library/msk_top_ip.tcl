@@ -21,6 +21,9 @@ adi_ip_files msk_top [list \
   "../msk_modulator/src/msk_modulator.vhd" \
   "../src/msk_top.vhd" \
   "../src/msk_top_csr.vhd" \
+  "../src/axis_dma_adapter.vhd" \
+  "../src/axis_async_fifo.vhd" \
+  "../src/byte_to_bit_deserializer.vhd" \
   "../nco/src/nco.vhd" \
   "../prbs/src/prbs_gen.vhd" \
   "../prbs/src/prbs_mon.vhd" \
@@ -30,15 +33,26 @@ adi_ip_files msk_top [list \
 adi_ip_properties msk_top
 
 
+# Remove auto-inferred ADI custom bus interfaces before defining proper AXI-Stream
+set core [ipx::current_core]
+foreach intf {rx s_axis tx} {
+    if {[ipx::get_bus_interfaces $intf -of_objects $core] ne ""} {
+        ipx::remove_bus_interface $intf $core
+    }
+}
+
+
 adi_add_bus "s_axis" "slave" \
   "xilinx.com:interface:axis_rtl:1.0" \
   "xilinx.com:interface:axis:1.0" \
-  [list {"s_axis_ready" "TREADY"} \
+  [list \
+    {"s_axis_ready" "TREADY"} \
     {"s_axis_valid" "TVALID"} \
     {"s_axis_data" "TDATA"} \
-  ]
-adi_add_bus_clock "s_axis_aclk" "s_axis" "s_axis_aresetn"
+    {"s_axis_tlast" "TLAST"} \
+    {"s_axis_tkeep" "TKEEP"}]
 
+adi_add_bus_clock "s_axis_aclk" "s_axis" "s_axis_aresetn"
 
 ipx::save_core [ipx::current_core]
 

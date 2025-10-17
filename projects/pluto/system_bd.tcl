@@ -424,6 +424,9 @@ ad_connect  msk_top/tx_samples_Q axi_ad9361/dac_data_q0
 ad_connect  msk_top/tx_enable axi_ad9361/dac_enable_i0
 ad_connect  msk_top/tx_valid axi_ad9361/dac_valid_i0
 ad_connect axi_ad9361_dac_dma/m_axis msk_top/s_axis
+# the below signals should already be in the axis bus
+#ad_connect axi_ad9361_dac_dma/m_axis_tlast msk_top/s_axis_tlast
+#ad_connect axi_ad9361_dac_dma/m_axis_tkeep msk_top/s_axis_tkeep
 
 #MSK Connects RX
 
