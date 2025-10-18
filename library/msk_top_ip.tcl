@@ -24,6 +24,8 @@ adi_ip_files msk_top [list \
   "../src/axis_dma_adapter.vhd" \
   "../src/axis_async_fifo.vhd" \
   "../src/byte_to_bit_deserializer.vhd" \
+  "../src/bit_to_byte_serializer.vhd" \
+  "../src/frame_sync_detector.vhd" \
   "../nco/src/nco.vhd" \
   "../prbs/src/prbs_gen.vhd" \
   "../prbs/src/prbs_mon.vhd" \
@@ -53,6 +55,21 @@ adi_add_bus "s_axis" "slave" \
     {"s_axis_tkeep" "TKEEP"}]
 
 adi_add_bus_clock "s_axis_aclk" "s_axis" "s_axis_aresetn"
+
+# RX AXIS master interface (from MSK to DMA)
+adi_add_bus "m_axis" "master" \
+  "xilinx.com:interface:axis_rtl:1.0" \
+  "xilinx.com:interface:axis:1.0" \
+  [list \
+    {"m_axis_tready" "TREADY"} \
+    {"m_axis_tvalid" "TVALID"} \
+    {"m_axis_tdata" "TDATA"} \
+    {"m_axis_tlast" "TLAST"}]
+
+# m_axis shares the same clock as the demodulator
+adi_add_bus_clock "s_axis_aclk" "m_axis" "s_axis_aresetn"
+
+ipx::save_core [ipx::current_core]
 
 ipx::save_core [ipx::current_core]
 
