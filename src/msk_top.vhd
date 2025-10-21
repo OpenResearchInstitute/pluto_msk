@@ -445,30 +445,13 @@ BEGIN
 
 
 
-    ------------------------------------------------------------------------------
-    -- RX Stage 1: Bit-to-Byte Serializer
-    ------------------------------------------------------------------------------
-    u_rx_bit_to_byte : ENTITY work.bit_to_byte_serializer
-        GENERIC MAP (
-            BYTE_WIDTH => 8
-        )
-        PORT MAP (
-            clk           => clk,
-            reset         => rxinit,
-            
-            rx_bit        => rx_bit_corr,
-            rx_bit_valid  => rx_bit_valid,
-            
-            rx_byte       => rx_byte,
-            rx_byte_valid => rx_byte_valid
-        );
     
     ------------------------------------------------------------------------------
     -- RX Stage 2: Frame Sync Detector
     ------------------------------------------------------------------------------
     u_rx_frame_sync : ENTITY work.frame_sync_detector
         GENERIC MAP (
-            SYNC_WORD      => x"E25F35",  -- May need adjustment based on testing
+            SYNC_WORD      => x"447faa",   --"E25F35",  -- May need adjustment based on testing
             PAYLOAD_BYTES  => 268,
             SYNC_THRESHOLD => 3,
             BUFFER_DEPTH   => 11,         -- 2048 bytes
@@ -478,8 +461,8 @@ BEGIN
             clk             => clk,
             reset           => rxinit,
             
-            rx_byte         => rx_byte,
-            rx_byte_valid   => rx_byte_valid,
+            rx_bit          => rx_bit_corr,
+            rx_bit_valid    => rx_bit_valid,
             
             m_axis_tdata    => sync_det_tdata,
             m_axis_tvalid   => sync_det_tvalid,
