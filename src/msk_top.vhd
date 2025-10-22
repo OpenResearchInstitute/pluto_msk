@@ -111,9 +111,9 @@ ENTITY msk_top IS
 
 		s_axis_aresetn 	: IN  std_logic;
 		s_axis_aclk 	: IN  std_logic;
-		s_axis_valid 	: IN  std_logic;
-		s_axis_ready    : OUT std_logic;
-		s_axis_data		: IN  std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
+		s_axis_tvalid 	: IN  std_logic;
+		s_axis_tready    : OUT std_logic;
+		s_axis_tdata		: IN  std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
 		s_axis_tlast 	: IN  std_logic;  -- NEW: Frame boundary marker
 		s_axis_tkeep    : IN  std_logic_vector((S_AXIS_DATA_W/8) -1 DOWNTO 0);  -- NEW: Byte enables
 
@@ -132,9 +132,9 @@ ENTITY msk_top IS
 		m_axis_tready	: IN std_logic;
 		m_axis_tlast	: OUT std_logic;
 
-		sync_locked	: OUT std_logic;
+		frame_sync_locked	: OUT std_logic;
 		frames_received	: OUT std_logic_vector(31 DOWNTO 0);
-		sync_errors	: OUT std_logic_vector(31 DOWNTO 0);
+		frame_sync_errors	: OUT std_logic_vector(31 DOWNTO 0);
 		fifo_overflow	: OUT std_logic
 
 	);
@@ -180,9 +180,9 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL sync_det_tlast       : std_logic;
     
 	SIGNAL rx_fifo_overflow     : std_logic;
-	SIGNAL rx_sync_locked       : std_logic;
+	SIGNAL rx_frame_sync_locked       : std_logic;
 	SIGNAL rx_frames_count      : std_logic_vector(31 DOWNTO 0);
-	SIGNAL rx_sync_errors       : std_logic_vector(31 DOWNTO 0);
+	SIGNAL rx_frame_sync_errors       : std_logic_vector(31 DOWNTO 0);
 
 	SIGNAL rx_bit   		: std_logic;
 	SIGNAL rx_bit_corr 		: std_logic;
@@ -286,9 +286,9 @@ BEGIN
 			aclk            => s_axis_aclk,
 			aresetn         => s_axis_aresetn,
 			
-			s_axis_tdata    => s_axis_data,
-			s_axis_tvalid   => s_axis_valid,
-			s_axis_tready   => s_axis_ready,
+			s_axis_tdata    => s_axis_tdata,
+			s_axis_tvalid   => s_axis_tvalid,
+			s_axis_tready   => s_axis_tready,
 			s_axis_tlast    => s_axis_tlast,
 			s_axis_tkeep    => s_axis_tkeep,
 			
@@ -451,7 +451,7 @@ BEGIN
     ------------------------------------------------------------------------------
     u_rx_frame_sync : ENTITY work.frame_sync_detector
         GENERIC MAP (
-            SYNC_WORD      => x"447faa",   --"E25F35",  -- May need adjustment based on testing
+            SYNC_WORD      => x"E25F35",
             PAYLOAD_BYTES  => 268,
             SYNC_THRESHOLD => 3,
             BUFFER_DEPTH   => 11,         -- 2048 bytes
@@ -468,10 +468,9 @@ BEGIN
             m_axis_tvalid   => sync_det_tvalid,
             m_axis_tready   => sync_det_tready,
             m_axis_tlast    => sync_det_tlast,
-            
-            sync_locked     => rx_sync_locked,
+	    frame_sync_locked => rx_frame_sync_locked,            
             frames_received => rx_frames_count,
-            sync_errors     => rx_sync_errors,
+            frame_sync_errors     => rx_frame_sync_errors,
             buffer_overflow => rx_fifo_overflow
         );
     
@@ -511,10 +510,10 @@ BEGIN
     m_axis_tdata(S_AXIS_DATA_W-1 DOWNTO 8) <= (OTHERS => '0');
     
     -- Connect status outputs to top-level ports
-    sync_locked     <= rx_sync_locked;
-    frames_received <= rx_frames_count;
-    sync_errors     <= rx_sync_errors;
-    fifo_overflow   <= rx_fifo_overflow;
+    frame_sync_locked     <= rx_frame_sync_locked;
+    frames_received       <= rx_frames_count;
+    frame_sync_errors     <= rx_frame_sync_errors;
+    fifo_overflow         <= rx_fifo_overflow;
 
 
 
@@ -728,7 +727,7 @@ BEGIN
 		rx_enable 		=> rx_enable,
 		demod_sync_lock => demod_sync_lock,
 		tx_req 			=> tx_req,
-		tx_axis_valid 	=> s_axis_valid,
+		tx_axis_valid 	=> s_axis_tvalid,
 		xfer_count 		=> std_logic_vector(tx_bit_counter),
 		tx_bit_counter 	=> std_logic_vector(tx_bit_counter),
 		tx_ena_counter 	=> std_logic_vector(tx_ena_counter),		

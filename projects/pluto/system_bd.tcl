@@ -437,10 +437,18 @@ ad_connect  msk_top/tx_samples_I axi_ad9361/dac_data_i0
 ad_connect  msk_top/tx_samples_Q axi_ad9361/dac_data_q0
 ad_connect  msk_top/tx_enable axi_ad9361/dac_enable_i0
 ad_connect  msk_top/tx_valid axi_ad9361/dac_valid_i0
-ad_connect axi_ad9361_dac_dma/m_axis msk_top/s_axis
-# the below signals should already be in the axis bus
-#ad_connect axi_ad9361_dac_dma/m_axis_tlast msk_top/s_axis_tlast
-#ad_connect axi_ad9361_dac_dma/m_axis_tkeep msk_top/s_axis_tkeep
+
+# instead of this command, we connect everything explicitly
+#ad_connect axi_ad9361_dac_dma/m_axis msk_top/s_axis
+
+# EXPLICIT AXIS CONNECTIONS - Wire each signal individually
+ad_connect  axi_ad9361_dac_dma/m_axis_data  msk_top/s_axis_tdata
+ad_connect  axi_ad9361_dac_dma/m_axis_valid msk_top/s_axis_tvalid
+ad_connect  msk_top/s_axis_tready           axi_ad9361_dac_dma/m_axis_ready
+ad_connect  axi_ad9361_dac_dma/m_axis_last  msk_top/s_axis_tlast
+ad_connect  axi_ad9361_dac_dma/m_axis_keep  msk_top/s_axis_tkeep
+
+
 
 #MSK Connects RX
 
@@ -452,6 +460,7 @@ ad_connect  msk_top/rx_svalid axi_ad9361/adc_valid_i0
 # FIFO to AXIS conversion:
 #ad_connect msk_top/rx_data axi_ad9361_adc_dma/fifo_wr_din
 #ad_connect msk_top/rx_dvalid axi_ad9361_adc_dma/fifo_wr_en
-ad_connect msk_top/m_axis axi_ad9361_adc_dma/s_axis
+#ad_connect msk_top/m_axis axi_ad9361_adc_dma/s_axis
 
-
+# RX AXIS - Use interface connection (DMA doesn't expose individual pins)
+ad_connect  msk_top/m_axis axi_ad9361_adc_dma/s_axis

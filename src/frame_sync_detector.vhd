@@ -34,9 +34,9 @@ ENTITY frame_sync_detector IS
         m_axis_tlast    : OUT std_logic;
         
         -- Status Outputs
-        sync_locked     : OUT std_logic;
+        frame_sync_locked     : OUT std_logic;
         frames_received : OUT std_logic_vector(31 DOWNTO 0);
-        sync_errors     : OUT std_logic_vector(31 DOWNTO 0);
+        frame_sync_errors     : OUT std_logic_vector(31 DOWNTO 0);
         buffer_overflow : OUT std_logic
     );
 END ENTITY frame_sync_detector;
@@ -93,9 +93,9 @@ ARCHITECTURE rtl OF frame_sync_detector IS
 
 BEGIN
 
-    sync_locked <= lock_status;
+    frame_sync_locked <= lock_status;
     frames_received <= std_logic_vector(frames_count);
-    sync_errors <= std_logic_vector(errors_count);
+    frame_sync_errors <= std_logic_vector(errors_count);
     m_axis_tvalid <= tvalid_int;
     m_axis_tlast <= tlast_int;
 
