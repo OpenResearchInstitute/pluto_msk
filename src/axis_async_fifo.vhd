@@ -96,60 +96,96 @@ BEGIN
     s_axis_tready <= tready_int;
     m_axis_tvalid <= tvalid_int;
     
-    ------------------------------------------------------------------------------
-    -- Write Clock Domain (DMA side)
-    ------------------------------------------------------------------------------
-    write_proc: PROCESS(wr_aclk)
-        VARIABLE wr_ptr_bin_next : std_logic_vector(ADDR_WIDTH DOWNTO 0);
-        VARIABLE rd_ptr_bin_sync : std_logic_vector(ADDR_WIDTH DOWNTO 0);
-    BEGIN
-        IF rising_edge(wr_aclk) THEN
-            IF wr_aresetn = '0' THEN
-                wr_ptr_bin <= (OTHERS => '0');
-                wr_ptr_gray <= (OTHERS => '0');
-                full_int <= '0';
-                tready_int <= '0';
-                prog_full <= '0';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+write_proc: PROCESS(wr_aclk)
+    VARIABLE wr_ptr_bin_next : std_logic_vector(ADDR_WIDTH DOWNTO 0);
+    VARIABLE rd_ptr_bin_sync : std_logic_vector(ADDR_WIDTH DOWNTO 0);
+BEGIN
+    IF rising_edge(wr_aclk) THEN
+        IF wr_aresetn = '0' THEN
+            wr_ptr_bin <= (OTHERS => '0');
+            wr_ptr_gray <= (OTHERS => '0');
+            full_int <= '0';
+            tready_int <= '0';
+            prog_full <= '0';
+            
+        ELSE
+            -- Synchronize read pointer into write domain (2-stage)
+            rd_ptr_gray_sync1 <= rd_ptr_gray;
+            rd_ptr_gray_sync2 <= rd_ptr_gray_sync1;
+            
+            -- Convert synchronized gray to binary
+            rd_ptr_bin_sync := gray_to_bin(rd_ptr_gray_sync2);
+            
+            -- AXIS handshake: write when valid and ready
+            IF s_axis_tvalid = '1' AND tready_int = '1' THEN
+                -- Write data and TLAST to RAM
+                ram(to_integer(unsigned(wr_ptr_bin(ADDR_WIDTH-1 DOWNTO 0)))).data <= s_axis_tdata;
+                ram(to_integer(unsigned(wr_ptr_bin(ADDR_WIDTH-1 DOWNTO 0)))).last <= s_axis_tlast;
                 
+                -- Increment write pointer
+                wr_ptr_bin_next := std_logic_vector(unsigned(wr_ptr_bin) + 1);
+                wr_ptr_bin <= wr_ptr_bin_next;
+                wr_ptr_gray <= bin_to_gray(wr_ptr_bin_next);
+            END IF;
+            
+            -- Full flag: write pointer caught up with read pointer
+            IF wr_ptr_bin(ADDR_WIDTH) /= rd_ptr_bin_sync(ADDR_WIDTH) AND
+               wr_ptr_bin(ADDR_WIDTH-1 DOWNTO 0) = rd_ptr_bin_sync(ADDR_WIDTH-1 DOWNTO 0) THEN
+                full_int <= '1';
             ELSE
-                -- Synchronize read pointer into write domain (2-stage)
-                rd_ptr_gray_sync1 <= rd_ptr_gray;
-                rd_ptr_gray_sync2 <= rd_ptr_gray_sync1;
-                
-                -- Convert synchronized gray to binary
-                rd_ptr_bin_sync := gray_to_bin(rd_ptr_gray_sync2);
-                
-                -- AXIS handshake: write when valid and ready
-                IF s_axis_tvalid = '1' AND tready_int = '1' THEN
-                    -- Write data and TLAST to RAM
-                    ram(to_integer(unsigned(wr_ptr_bin(ADDR_WIDTH-1 DOWNTO 0)))).data <= s_axis_tdata;
-                    ram(to_integer(unsigned(wr_ptr_bin(ADDR_WIDTH-1 DOWNTO 0)))).last <= s_axis_tlast;
-                    
-                    -- Increment write pointer
-                    wr_ptr_bin_next := std_logic_vector(unsigned(wr_ptr_bin) + 1);
-                    wr_ptr_bin <= wr_ptr_bin_next;
-                    wr_ptr_gray <= bin_to_gray(wr_ptr_bin_next);
-                END IF;
-                
-                -- Full flag: write pointer caught up with read pointer
-                IF wr_ptr_bin(ADDR_WIDTH) /= rd_ptr_bin_sync(ADDR_WIDTH) AND
-                   wr_ptr_bin(ADDR_WIDTH-1 DOWNTO 0) = rd_ptr_bin_sync(ADDR_WIDTH-1 DOWNTO 0) THEN
-                    full_int <= '1';
-                    tready_int <= '0';
-                ELSE
-                    full_int <= '0';
-                    tready_int <= '1';
-                END IF;
-                
-                -- Programmable full: within 512 entries of full
-                IF unsigned(wr_ptr_bin) + 512 >= unsigned(rd_ptr_bin_sync) + DEPTH THEN
-                    prog_full <= '1';
-                ELSE
-                    prog_full <= '0';
-                END IF;
+                full_int <= '0';
+            END IF;
+            
+            -- Programmable full: within 512 entries of full
+            IF unsigned(wr_ptr_bin) + 512 >= unsigned(rd_ptr_bin_sync) + DEPTH THEN
+                prog_full <= '1';
+            ELSE
+                prog_full <= '0';
+            END IF;
+            
+            -- Control tready: block when prog_full OR full
+            -- This provides early backpressure before overflow
+            IF prog_full = '1' OR full_int = '1' THEN
+                tready_int <= '0';
+            ELSE
+                tready_int <= '1';
             END IF;
         END IF;
-    END PROCESS write_proc;
+    END IF;
+END PROCESS write_proc;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     ------------------------------------------------------------------------------
     -- Read Clock Domain (Symbol clock side)
