@@ -70,6 +70,10 @@ ARCHITECTURE rtl OF axis_async_fifo IS
     SIGNAL empty_int        : std_logic := '1';
     SIGNAL tready_int       : std_logic := '0';
     SIGNAL tvalid_int       : std_logic := '0';
+
+    -- intermediate signals because we can't read from OUT port
+    SIGNAL prog_full_int    : std_logic := '0';
+    SIGNAL prog_empty_int   : std_logic := '0';
     
     -- Binary to Gray conversion
     FUNCTION bin_to_gray(bin : std_logic_vector) RETURN std_logic_vector IS
@@ -96,15 +100,9 @@ BEGIN
     s_axis_tready <= tready_int;
     m_axis_tvalid <= tvalid_int;
     
-
-
-
-
-
-
-
-
-
+    -- status assignements for programmable full and empty
+    prog_full <= prog_full_int;
+    prog_empty <= prog_empty_int;
 
 
 
@@ -121,7 +119,7 @@ BEGIN
             wr_ptr_gray <= (OTHERS => '0');
             full_int <= '0';
             tready_int <= '0';
-            prog_full <= '0';
+            prog_full_int <= '0';
             
         ELSE
             -- Synchronize read pointer into write domain (2-stage)
@@ -153,14 +151,14 @@ BEGIN
             
             -- Programmable full: within 512 entries of full
             IF unsigned(wr_ptr_bin) + 512 >= unsigned(rd_ptr_bin_sync) + DEPTH THEN
-                prog_full <= '1';
+                prog_full_int <= '1';
             ELSE
-                prog_full <= '0';
+                prog_full_int <= '0';
             END IF;
             
-            -- Control tready: block when prog_full OR full
+            -- Control tready: block when prog_full_int OR full
             -- This provides early backpressure before overflow
-            IF prog_full = '1' OR full_int = '1' THEN
+            IF prog_full_int = '1' OR full_int = '1' THEN
                 tready_int <= '0';
             ELSE
                 tready_int <= '1';
@@ -200,7 +198,7 @@ END PROCESS write_proc;
                 rd_ptr_gray <= (OTHERS => '0');
                 empty_int <= '1';
                 tvalid_int <= '0';
-                prog_empty <= '1';
+                prog_empty_int <= '1';
                 m_axis_tdata <= (OTHERS => '0');
                 m_axis_tlast <= '0';
                 
@@ -238,9 +236,9 @@ END PROCESS write_proc;
                 
                 -- Programmable empty: 271 or fewer entries available (one frame)
                 IF unsigned(wr_ptr_bin_sync) <= unsigned(rd_ptr_bin) + 271 THEN
-                    prog_empty <= '1';
+                    prog_empty_int <= '1';
                 ELSE
-                    prog_empty <= '0';
+                    prog_empty_int <= '0';
                 END IF;
             END IF;
         END IF;
