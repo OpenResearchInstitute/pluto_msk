@@ -3,6 +3,7 @@
 ------------------------------------------------------------------------------------------------------
 -- Dual-clock FIFO with AXIS handshaking and TLAST support
 -- Implements gray code pointers for safe clock domain crossing
+-- FIXED: Split RECORD into separate arrays for Block RAM inference
 ------------------------------------------------------------------------------------------------------
 
 LIBRARY ieee;
@@ -12,7 +13,7 @@ USE ieee.numeric_std.ALL;
 ENTITY axis_async_fifo IS
     GENERIC (
         DATA_WIDTH  : NATURAL := 8;
-        ADDR_WIDTH  : NATURAL := 11  -- 2^11 = 2048 bytes (enough for ~7 frames)
+        ADDR_WIDTH  : NATURAL := 11  -- 2^11 = 2048 bytes
     );
     PORT (
         -- Write clock domain (DMA side)
@@ -36,8 +37,8 @@ ENTITY axis_async_fifo IS
         m_axis_tlast    : OUT std_logic;
         
         -- Status signals
-        prog_full       : OUT std_logic;  -- Programmable full threshold
-        prog_empty      : OUT std_logic   -- Programmable empty threshold
+        prog_full       : OUT std_logic;
+        prog_empty      : OUT std_logic
     );
 END ENTITY axis_async_fifo;
 
@@ -45,15 +46,19 @@ ARCHITECTURE rtl OF axis_async_fifo IS
 
     CONSTANT DEPTH : NATURAL := 2**ADDR_WIDTH;
     
-    -- Dual-port RAM with TLAST bit
-    TYPE ram_entry_t IS RECORD
-        data : std_logic_vector(DATA_WIDTH-1 DOWNTO 0);
-        last : std_logic;
-    END RECORD;
-    TYPE ram_type IS ARRAY (0 TO DEPTH-1) OF ram_entry_t;
-    SIGNAL ram : ram_type;
+    -- FIX: Separate arrays instead of RECORD for Block RAM inference
+    TYPE ram_data_type IS ARRAY (0 TO DEPTH-1) OF std_logic_vector(DATA_WIDTH-1 DOWNTO 0);
+    TYPE ram_last_type IS ARRAY (0 TO DEPTH-1) OF std_logic;
     
-    -- Gray code pointers (one bit wider to detect full/empty)
+    SIGNAL ram_data : ram_data_type;
+    SIGNAL ram_last : ram_last_type;
+    
+    -- Force Block RAM usage (now Vivado can actually do it!)
+    ATTRIBUTE ram_style : STRING;
+    ATTRIBUTE ram_style OF ram_data : SIGNAL IS "block";
+    ATTRIBUTE ram_style OF ram_last : SIGNAL IS "block";
+    
+    -- Gray code pointers
     SIGNAL wr_ptr_gray      : std_logic_vector(ADDR_WIDTH DOWNTO 0) := (OTHERS => '0');
     SIGNAL wr_ptr_bin       : std_logic_vector(ADDR_WIDTH DOWNTO 0) := (OTHERS => '0');
     SIGNAL rd_ptr_gray      : std_logic_vector(ADDR_WIDTH DOWNTO 0) := (OTHERS => '0');
@@ -70,8 +75,6 @@ ARCHITECTURE rtl OF axis_async_fifo IS
     SIGNAL empty_int        : std_logic := '1';
     SIGNAL tready_int       : std_logic := '0';
     SIGNAL tvalid_int       : std_logic := '0';
-
-    -- intermediate signals because we can't read from OUT port
     SIGNAL prog_full_int    : std_logic := '0';
     SIGNAL prog_empty_int   : std_logic := '0';
     
@@ -96,97 +99,71 @@ ARCHITECTURE rtl OF axis_async_fifo IS
 
 BEGIN
 
-    -- AXIS interface assignments
     s_axis_tready <= tready_int;
     m_axis_tvalid <= tvalid_int;
-    
-    -- status assignements for programmable full and empty
     prog_full <= prog_full_int;
     prog_empty <= prog_empty_int;
 
-
-
-
-
-
-write_proc: PROCESS(wr_aclk)
-    VARIABLE wr_ptr_bin_next : std_logic_vector(ADDR_WIDTH DOWNTO 0);
-    VARIABLE rd_ptr_bin_sync : std_logic_vector(ADDR_WIDTH DOWNTO 0);
-BEGIN
-    IF rising_edge(wr_aclk) THEN
-        IF wr_aresetn = '0' THEN
-            wr_ptr_bin <= (OTHERS => '0');
-            wr_ptr_gray <= (OTHERS => '0');
-            full_int <= '0';
-            tready_int <= '0';
-            prog_full_int <= '0';
-            
-        ELSE
-            -- Synchronize read pointer into write domain (2-stage)
-            rd_ptr_gray_sync1 <= rd_ptr_gray;
-            rd_ptr_gray_sync2 <= rd_ptr_gray_sync1;
-            
-            -- Convert synchronized gray to binary
-            rd_ptr_bin_sync := gray_to_bin(rd_ptr_gray_sync2);
-            
-            -- AXIS handshake: write when valid and ready
-            IF s_axis_tvalid = '1' AND tready_int = '1' THEN
-                -- Write data and TLAST to RAM
-                ram(to_integer(unsigned(wr_ptr_bin(ADDR_WIDTH-1 DOWNTO 0)))).data <= s_axis_tdata;
-                ram(to_integer(unsigned(wr_ptr_bin(ADDR_WIDTH-1 DOWNTO 0)))).last <= s_axis_tlast;
-                
-                -- Increment write pointer
-                wr_ptr_bin_next := std_logic_vector(unsigned(wr_ptr_bin) + 1);
-                wr_ptr_bin <= wr_ptr_bin_next;
-                wr_ptr_gray <= bin_to_gray(wr_ptr_bin_next);
-            END IF;
-            
-            -- Full flag: write pointer caught up with read pointer
-            IF wr_ptr_bin(ADDR_WIDTH) /= rd_ptr_bin_sync(ADDR_WIDTH) AND
-               wr_ptr_bin(ADDR_WIDTH-1 DOWNTO 0) = rd_ptr_bin_sync(ADDR_WIDTH-1 DOWNTO 0) THEN
-                full_int <= '1';
-            ELSE
+    ------------------------------------------------------------------------------
+    -- Write Clock Domain
+    ------------------------------------------------------------------------------
+    write_proc: PROCESS(wr_aclk)
+        VARIABLE wr_ptr_bin_next : std_logic_vector(ADDR_WIDTH DOWNTO 0);
+        VARIABLE rd_ptr_bin_sync : std_logic_vector(ADDR_WIDTH DOWNTO 0);
+    BEGIN
+        IF rising_edge(wr_aclk) THEN
+            IF wr_aresetn = '0' THEN
+                wr_ptr_bin <= (OTHERS => '0');
+                wr_ptr_gray <= (OTHERS => '0');
                 full_int <= '0';
-            END IF;
-            
-            -- Programmable full: within 512 entries of full
-            IF unsigned(wr_ptr_bin) + 512 >= unsigned(rd_ptr_bin_sync) + DEPTH THEN
-                prog_full_int <= '1';
-            ELSE
-                prog_full_int <= '0';
-            END IF;
-            
-            -- Control tready: block when prog_full_int OR full
-            -- This provides early backpressure before overflow
-            IF prog_full_int = '1' OR full_int = '1' THEN
                 tready_int <= '0';
+                prog_full_int <= '0';
+                
             ELSE
-                tready_int <= '1';
+                -- Synchronize read pointer
+                rd_ptr_gray_sync1 <= rd_ptr_gray;
+                rd_ptr_gray_sync2 <= rd_ptr_gray_sync1;
+                rd_ptr_bin_sync := gray_to_bin(rd_ptr_gray_sync2);
+                
+                -- AXIS write handshake
+                IF s_axis_tvalid = '1' AND tready_int = '1' THEN
+                    -- Write to separate arrays (now Vivado can infer Block RAM!)
+                    ram_data(to_integer(unsigned(wr_ptr_bin(ADDR_WIDTH-1 DOWNTO 0)))) <= s_axis_tdata;
+                    ram_last(to_integer(unsigned(wr_ptr_bin(ADDR_WIDTH-1 DOWNTO 0)))) <= s_axis_tlast;
+                    
+                    -- Increment write pointer
+                    wr_ptr_bin_next := std_logic_vector(unsigned(wr_ptr_bin) + 1);
+                    wr_ptr_bin <= wr_ptr_bin_next;
+                    wr_ptr_gray <= bin_to_gray(wr_ptr_bin_next);
+                END IF;
+                
+                -- Full detection
+                IF wr_ptr_bin(ADDR_WIDTH) /= rd_ptr_bin_sync(ADDR_WIDTH) AND
+                   wr_ptr_bin(ADDR_WIDTH-1 DOWNTO 0) = rd_ptr_bin_sync(ADDR_WIDTH-1 DOWNTO 0) THEN
+                    full_int <= '1';
+                ELSE
+                    full_int <= '0';
+                END IF;
+                
+                -- Programmable full
+                IF unsigned(wr_ptr_bin) + 512 >= unsigned(rd_ptr_bin_sync) + DEPTH THEN
+                    prog_full_int <= '1';
+                ELSE
+                    prog_full_int <= '0';
+                END IF;
+                
+                -- Control tready
+                IF prog_full_int = '1' OR full_int = '1' THEN
+                    tready_int <= '0';
+                ELSE
+                    tready_int <= '1';
+                END IF;
             END IF;
         END IF;
-    END IF;
-END PROCESS write_proc;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    END PROCESS write_proc;
 
     ------------------------------------------------------------------------------
-    -- Read Clock Domain (Symbol clock side)
+    -- Read Clock Domain
     ------------------------------------------------------------------------------
     read_proc: PROCESS(rd_aclk)
         VARIABLE rd_ptr_bin_next : std_logic_vector(ADDR_WIDTH DOWNTO 0);
@@ -203,38 +180,35 @@ END PROCESS write_proc;
                 m_axis_tlast <= '0';
                 
             ELSE
-                -- Synchronize write pointer into read domain (2-stage)
+                -- Synchronize write pointer
                 wr_ptr_gray_sync1 <= wr_ptr_gray;
                 wr_ptr_gray_sync2 <= wr_ptr_gray_sync1;
-                
-                -- Convert synchronized gray to binary
                 wr_ptr_bin_sync := gray_to_bin(wr_ptr_gray_sync2);
                 
-                -- AXIS handshake: read when valid and ready
+                -- AXIS read handshake
                 IF tvalid_int = '1' AND m_axis_tready = '1' THEN
-                    -- Increment read pointer
                     rd_ptr_bin_next := std_logic_vector(unsigned(rd_ptr_bin) + 1);
                     rd_ptr_bin <= rd_ptr_bin_next;
                     rd_ptr_gray <= bin_to_gray(rd_ptr_bin_next);
                 END IF;
                 
-                -- Always present data at output when not empty
+                -- Present data when not empty
                 IF empty_int = '0' THEN
-                    m_axis_tdata <= ram(to_integer(unsigned(rd_ptr_bin(ADDR_WIDTH-1 DOWNTO 0)))).data;
-                    m_axis_tlast <= ram(to_integer(unsigned(rd_ptr_bin(ADDR_WIDTH-1 DOWNTO 0)))).last;
+                    m_axis_tdata <= ram_data(to_integer(unsigned(rd_ptr_bin(ADDR_WIDTH-1 DOWNTO 0))));
+                    m_axis_tlast <= ram_last(to_integer(unsigned(rd_ptr_bin(ADDR_WIDTH-1 DOWNTO 0))));
                     tvalid_int <= '1';
                 ELSE
                     tvalid_int <= '0';
                 END IF;
                 
-                -- Empty flag: read pointer caught up with write pointer
+                -- Empty detection
                 IF rd_ptr_bin = wr_ptr_bin_sync THEN
                     empty_int <= '1';
                 ELSE
                     empty_int <= '0';
                 END IF;
                 
-                -- Programmable empty: 271 or fewer entries available (one frame)
+                -- Programmable empty
                 IF unsigned(wr_ptr_bin_sync) <= unsigned(rd_ptr_bin) + 271 THEN
                     prog_empty_int <= '1';
                 ELSE

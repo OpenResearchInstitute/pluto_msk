@@ -54,6 +54,10 @@ ARCHITECTURE rtl OF frame_sync_detector IS
     CONSTANT BUFFER_SIZE : NATURAL := 2**BUFFER_DEPTH;
     TYPE byte_buffer_t IS ARRAY(0 TO BUFFER_SIZE-1) OF std_logic_vector(7 DOWNTO 0);
     SIGNAL circ_buffer : byte_buffer_t;
+    -- Force Block RAM usage for circular buffer
+    ATTRIBUTE ram_style : STRING;
+    ATTRIBUTE ram_style OF circ_buffer : SIGNAL IS "block";
+
     
     SIGNAL wr_ptr : unsigned(BUFFER_DEPTH-1 DOWNTO 0) := (OTHERS => '0');
     SIGNAL rd_ptr : unsigned(BUFFER_DEPTH-1 DOWNTO 0) := (OTHERS => '0');
