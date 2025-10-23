@@ -1,9 +1,8 @@
 ------------------------------------------------------------------------------------------------------
--- Frame Sync Detector with Circular Buffer
+-- Frame Sync Detector with Circular Buffer - FIXED VERSION
 ------------------------------------------------------------------------------------------------------
--- Continuously searches for sync word in byte stream
--- Outputs payload bytes with TLAST marking frame boundaries
--- Uses circular buffer to decouple reception from output
+-- FIX: Removed multi-driver bug where output_active was assigned in two processes
+-- Now uses frame_ready handshake signal between reception_proc and output_proc
 ------------------------------------------------------------------------------------------------------
 
 LIBRARY ieee;
@@ -71,7 +70,12 @@ ARCHITECTURE rtl OF frame_sync_detector IS
     SIGNAL consecutive_good : natural range 0 to LOCK_FRAMES := 0;
     SIGNAL lock_status      : std_logic := '0';
     
-    SIGNAL output_active    : std_logic := '0';
+    -- FIX: Handshake signals replace output_active being driven by two processes
+    SIGNAL frame_ready      : std_logic := '0';  -- Reception sets, output clears
+    SIGNAL frame_ack        : std_logic := '0';  -- Output acknowledges frame taken
+    SIGNAL frame_rd_ptr     : unsigned(BUFFER_DEPTH-1 DOWNTO 0) := (OTHERS => '0');
+    
+    SIGNAL output_active    : std_logic := '0';  -- NOW ONLY IN output_proc
     SIGNAL output_count     : natural range 0 to PAYLOAD_BYTES := 0;
     SIGNAL tvalid_int       : std_logic := '0';
     SIGNAL tlast_int        : std_logic := '0';
@@ -117,11 +121,17 @@ BEGIN
                 frame_byte_count <= 0;
                 consecutive_good <= 0;
                 lock_status <= '0';
-                output_active <= '0';
+                frame_ready <= '0';
+                frame_rd_ptr <= (OTHERS => '0');
                 buffer_overflow <= '0';
                 
             ELSE
                 buffer_overflow <= '0';
+                
+                -- Clear frame_ready when acknowledged
+                IF frame_ack = '1' THEN
+                    frame_ready <= '0';
+                END IF;
                 
                 IF rx_bit_valid = '1' THEN
                     -- Shift in one bit for sync detection
@@ -136,7 +146,7 @@ BEGIN
                     WHEN HUNTING =>
                         -- Check current sync_shift_bits value
                         hamming_dist := calc_hamming_distance(
-                            sync_shift_bits,  -- Compare the CURRENT register value
+                            sync_shift_bits,
                             SYNC_WORD
                         );
                         IF hamming_dist <= SYNC_THRESHOLD THEN
@@ -176,11 +186,13 @@ BEGIN
                                     frame_byte_count <= frame_byte_count + 1;
                                 ELSE
                                     -- Frame complete
-                                    IF output_active = '0' THEN
-                                        output_active <= '1';
-                                        rd_ptr <= frame_start_ptr;
+                                    IF frame_ready = '0' THEN
+                                        -- Signal frame is ready for output
+                                        frame_ready <= '1';
+                                        frame_rd_ptr <= frame_start_ptr;
                                         frames_count <= frames_count + 1;
                                     ELSE
+                                        -- Output process hasn't taken previous frame yet
                                         errors_count <= errors_count + 1;
                                     END IF;
                                     
@@ -212,9 +224,22 @@ BEGIN
                 tlast_int <= '0';
                 output_count <= 0;
                 output_active <= '0';
+                frame_ack <= '0';
                 rd_ptr <= (OTHERS => '0');
                 
             ELSE
+                -- Default: no ack
+                frame_ack <= '0';
+                
+                -- Check if new frame is ready
+                IF frame_ready = '1' AND output_active = '0' THEN
+                    output_active <= '1';
+                    rd_ptr <= frame_rd_ptr;
+                    output_count <= 0;
+                    frame_ack <= '1';  -- Acknowledge we took the frame
+                END IF;
+                
+                -- Output state machine
                 IF output_active = '1' THEN
                     IF m_axis_tready = '1' OR tvalid_int = '0' THEN
                         m_axis_tdata <= circ_buffer(to_integer(rd_ptr));
