@@ -225,8 +225,9 @@ ad_ip_parameter axi_ad9361_dac_dma CONFIG.DMA_DATA_WIDTH_DEST 32
 ad_ip_instance xlslice interp_slice
 ad_ip_instance util_upack2 tx_upack
 
+# changed DMA_TYPE_SRC from 2 (FIFO) to 1 (AXIS)
 ad_ip_instance axi_dmac axi_ad9361_adc_dma
-ad_ip_parameter axi_ad9361_adc_dma CONFIG.DMA_TYPE_SRC 2
+ad_ip_parameter axi_ad9361_adc_dma CONFIG.DMA_TYPE_SRC 1
 ad_ip_parameter axi_ad9361_adc_dma CONFIG.DMA_TYPE_DEST 0
 ad_ip_parameter axi_ad9361_adc_dma CONFIG.CYCLIC 0
 ad_ip_parameter axi_ad9361_adc_dma CONFIG.SYNC_TRANSFER_START 0
@@ -322,10 +323,17 @@ ad_connect  tx_upack/fifo_rd_underflow axi_ad9361/dac_dunf
 ad_connect axi_ad9361/up_dac_gpio_out interp_slice/Din
 #ad_connect  tx_fir_interpolator/active interp_slice/Dout
 
-ad_connect  axi_ad9361/l_clk axi_ad9361_adc_dma/fifo_wr_clk
+# Old FIFO connection
+#ad_connect  axi_ad9361/l_clk axi_ad9361_adc_dma/fifo_wr_clk
+# New AXIS connection
+ad_connect  axi_ad9361/l_clk axi_ad9361_adc_dma/s_axis_aclk
+
 ad_connect  axi_ad9361/l_clk axi_ad9361_dac_dma/m_axis_aclk
 #ad_connect  sys_cpu_clk axi_ad9361_dac_dma/m_axis_aclk
-ad_connect  cpack/fifo_wr_overflow axi_ad9361/adc_dovf
+
+# removied and replaced with direct connection
+#ad_connect  cpack/fifo_wr_overflow axi_ad9361/adc_dovf
+ad_connect GND axi_ad9361/adc_dovf
 
 # External TDD
 set TDD_CHANNEL_CNT 3
@@ -358,7 +366,13 @@ ad_connect logic_inv/Res  axi_tdd_0/resetn
 ad_connect axi_ad9361/l_clk axi_tdd_0/clk
 ad_connect axi_tdd_0/sync_in tdd_ext_sync
 ad_connect axi_tdd_0/tdd_channel_0 txdata_o
-ad_connect axi_tdd_0/tdd_channel_1 axi_ad9361_adc_dma/fifo_wr_sync
+# remove this for FIFO to AXIS conversion
+#ad_connect axi_tdd_0/tdd_channel_1 axi_ad9361_adc_dma/fifo_wr_sync
+
+# Replace with (sync not needed for now)
+# ad_connect axi_tdd_0/tdd_channel_1 GND
+# Or connect to frame sync if you want TDD control:
+# ad_connect axi_tdd_0/tdd_channel_1 msk_top/sync_locked
 
 ad_connect  logic_or_1/Op1  axi_ad9361/rst
 ad_connect  logic_or_1/Op2  axi_tdd_0/tdd_channel_2
@@ -423,10 +437,18 @@ ad_connect  msk_top/tx_samples_I axi_ad9361/dac_data_i0
 ad_connect  msk_top/tx_samples_Q axi_ad9361/dac_data_q0
 ad_connect  msk_top/tx_enable axi_ad9361/dac_enable_i0
 ad_connect  msk_top/tx_valid axi_ad9361/dac_valid_i0
-ad_connect axi_ad9361_dac_dma/m_axis msk_top/s_axis
-# the below signals should already be in the axis bus
-#ad_connect axi_ad9361_dac_dma/m_axis_tlast msk_top/s_axis_tlast
-#ad_connect axi_ad9361_dac_dma/m_axis_tkeep msk_top/s_axis_tkeep
+
+# instead of this command, we connect everything explicitly
+#ad_connect axi_ad9361_dac_dma/m_axis msk_top/s_axis
+
+# EXPLICIT AXIS CONNECTIONS - Wire each signal individually
+ad_connect  axi_ad9361_dac_dma/m_axis_data  msk_top/s_axis_tdata
+ad_connect  axi_ad9361_dac_dma/m_axis_valid msk_top/s_axis_tvalid
+ad_connect  msk_top/s_axis_tready           axi_ad9361_dac_dma/m_axis_ready
+ad_connect  axi_ad9361_dac_dma/m_axis_last  msk_top/s_axis_tlast
+ad_connect  axi_ad9361_dac_dma/m_axis_keep  msk_top/s_axis_tkeep
+
+
 
 #MSK Connects RX
 
@@ -435,8 +457,10 @@ ad_connect  msk_top/rx_samples_Q axi_ad9361/adc_data_q0
 ad_connect  msk_top/rx_enable axi_ad9361/adc_enable_i0
 ad_connect  msk_top/rx_svalid axi_ad9361/adc_valid_i0
 
-ad_connect msk_top/rx_data axi_ad9361_adc_dma/fifo_wr_din
-ad_connect msk_top/rx_dvalid axi_ad9361_adc_dma/fifo_wr_en
+# FIFO to AXIS conversion:
+#ad_connect msk_top/rx_data axi_ad9361_adc_dma/fifo_wr_din
+#ad_connect msk_top/rx_dvalid axi_ad9361_adc_dma/fifo_wr_en
+#ad_connect msk_top/m_axis axi_ad9361_adc_dma/s_axis
 
-
-
+# RX AXIS - Use interface connection (DMA doesn't expose individual pins)
+ad_connect  msk_top/m_axis axi_ad9361_adc_dma/s_axis

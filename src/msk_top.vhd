@@ -1,4 +1,4 @@
-	------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------
 --  _______                             ________                                            ______
 --  __  __ \________ _____ _______      ___  __ \_____ _____________ ______ ___________________  /_
@@ -82,7 +82,7 @@ ENTITY msk_top IS
 		C_S_AXI_DATA_WIDTH	: NATURAL := 32;
 		C_S_AXI_ADDR_WIDTH	: NATURAL := 32;
 		SYNC_CNT_W 			: NATURAL := 24;
-		FIFO_ADDR_WIDTH 	: NATURAL := 11  -- NEW: 2048 byte FIFO
+		FIFO_ADDR_WIDTH 	: NATURAL := 11  -- 2048 byte FIFO (used in both tx and rx)
 	);
 	PORT (
 		clk 			: IN  std_logic;
@@ -111,9 +111,9 @@ ENTITY msk_top IS
 
 		s_axis_aresetn 	: IN  std_logic;
 		s_axis_aclk 	: IN  std_logic;
-		s_axis_valid 	: IN  std_logic;
-		s_axis_ready    : OUT std_logic;
-		s_axis_data		: IN  std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
+		s_axis_tvalid 	: IN  std_logic;
+		s_axis_tready    : OUT std_logic;
+		s_axis_tdata		: IN  std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
 		s_axis_tlast 	: IN  std_logic;  -- NEW: Frame boundary marker
 		s_axis_tkeep    : IN  std_logic_vector((S_AXIS_DATA_W/8) -1 DOWNTO 0);  -- NEW: Byte enables
 
@@ -127,8 +127,16 @@ ENTITY msk_top IS
 		rx_samples_I	: IN  std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 		rx_samples_Q	: IN  std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 
-		rx_dvalid 		: OUT std_logic;
-		rx_data 		: OUT std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0)
+		m_axis_tdata	: OUT std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
+		m_axis_tvalid	: OUT std_logic;
+		m_axis_tready	: IN std_logic;
+		m_axis_tlast	: OUT std_logic;
+
+		frame_sync_locked	: OUT std_logic;
+		frames_received	: OUT std_logic_vector(31 DOWNTO 0);
+		frame_sync_errors	: OUT std_logic_vector(31 DOWNTO 0);
+		fifo_overflow	: OUT std_logic
+
 	);
 END ENTITY msk_top;
 
@@ -147,7 +155,7 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL tx_data_bit_d3 	: std_logic;
 	SIGNAL tx_data_bit_d4 	: std_logic;
 
-	-- NEW: FIFO chain signals
+	-- TX chain signals
 	SIGNAL adapter_tdata    : std_logic_vector(7 DOWNTO 0);
 	SIGNAL adapter_tvalid   : std_logic;
 	SIGNAL adapter_tready   : std_logic;
@@ -162,7 +170,20 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL fifo_prog_full   : std_logic;
 	SIGNAL fifo_prog_empty  : std_logic;
 
-	-- Original signals continue...
+	-- RX chain signals
+	SIGNAL rx_byte              : std_logic_vector(7 DOWNTO 0);
+	SIGNAL rx_byte_valid        : std_logic;
+    
+	SIGNAL sync_det_tdata       : std_logic_vector(7 DOWNTO 0);
+	SIGNAL sync_det_tvalid      : std_logic;
+	SIGNAL sync_det_tready      : std_logic;
+	SIGNAL sync_det_tlast       : std_logic;
+    
+	SIGNAL rx_fifo_overflow     : std_logic;
+	SIGNAL rx_frame_sync_locked       : std_logic;
+	SIGNAL rx_frames_count      : std_logic_vector(31 DOWNTO 0);
+	SIGNAL rx_frame_sync_errors       : std_logic_vector(31 DOWNTO 0);
+
 	SIGNAL rx_bit   		: std_logic;
 	SIGNAL rx_bit_corr 		: std_logic;
 	SIGNAL rx_bit_valid 	: std_logic;
@@ -252,7 +273,7 @@ ARCHITECTURE struct OF msk_top IS
 BEGIN 
 
 ------------------------------------------------------------------------------------------------------
--- NEW: OPULENT VOICE TX FIFO CHAIN
+-- OPULENT VOICE TX FIFO CHAIN
 ------------------------------------------------------------------------------------------------------
 
 	-- Stage 1: DMA Adapter (32-bit to 8-bit)
@@ -265,9 +286,9 @@ BEGIN
 			aclk            => s_axis_aclk,
 			aresetn         => s_axis_aresetn,
 			
-			s_axis_tdata    => s_axis_data,
-			s_axis_tvalid   => s_axis_valid,
-			s_axis_tready   => s_axis_ready,
+			s_axis_tdata    => s_axis_tdata,
+			s_axis_tvalid   => s_axis_tvalid,
+			s_axis_tready   => s_axis_tready,
 			s_axis_tlast    => s_axis_tlast,
 			s_axis_tkeep    => s_axis_tkeep,
 			
@@ -325,7 +346,7 @@ BEGIN
 		);
 
 ------------------------------------------------------------------------------------------------------
--- ORIGINAL ARCHITECTURE CONTINUES (modified sections marked)
+-- Pipeline for tx_data_bit
 ------------------------------------------------------------------------------------------------------
 
 	tx_samples_I 	<= tx_samples_I_int;
@@ -333,10 +354,7 @@ BEGIN
 
 	rx_samples_mux <= std_logic_vector(resize(signed(tx_samples_I_int), 16)) WHEN loopback_ena = '1' ELSE rx_samples_I;
 
-	-- REMOVED: Original par2ser_proc - now handled by deserializer above
-	-- REMOVED: Original saxis_cdc - now handled by async FIFO
-
-	-- Delay pipeline for tx_data_bit (preserved)
+	-- Delay pipeline for tx_data_bit
 	tx_delay_proc : PROCESS (clk)
 	BEGIN
 		IF clk'EVENT AND clk = '1' THEN
@@ -359,7 +377,11 @@ BEGIN
 		END IF;
 	END PROCESS tx_delay_proc;
 
-	-- PRBS Generator (preserved)
+------------------------------------------------------------------------------------------------------
+-- PRBS Generator
+------------------------------------------------------------------------------------------------------
+
+	-- PRBS Generator
 	u_prbs_gen : ENTITY work.prbs_gen(rtl)
 		GENERIC MAP (
 			DATA_W 			=> DATA_W,
@@ -380,7 +402,7 @@ BEGIN
 		);
 
 ------------------------------------------------------------------------------------------------------
--- MSK MODULATOR (preserved)
+-- MSK MODULATOR
 ------------------------------------------------------------------------------------------------------
 
 	u_mod : ENTITY work.msk_modulator(rtl)
@@ -417,48 +439,106 @@ BEGIN
 			tx_samples_Q	=> tx_samples_Q_int
 		);
 
+
+
+
+
+
+
+    
+    ------------------------------------------------------------------------------
+    -- RX Stage 2: Frame Sync Detector
+    ------------------------------------------------------------------------------
+    u_rx_frame_sync : ENTITY work.frame_sync_detector
+        GENERIC MAP (
+            SYNC_WORD      => x"E25F35",
+            PAYLOAD_BYTES  => 268,
+            SYNC_THRESHOLD => 3,
+            BUFFER_DEPTH   => 11,         -- 2048 bytes
+            LOCK_FRAMES    => 3
+        )
+        PORT MAP (
+            clk             => clk,
+            reset           => rxinit,
+            
+            rx_bit          => rx_bit_corr,
+            rx_bit_valid    => rx_bit_valid,
+            
+            m_axis_tdata    => sync_det_tdata,
+            m_axis_tvalid   => sync_det_tvalid,
+            m_axis_tready   => sync_det_tready,
+            m_axis_tlast    => sync_det_tlast,
+	    frame_sync_locked => rx_frame_sync_locked,            
+            frames_received => rx_frames_count,
+            frame_sync_errors     => rx_frame_sync_errors,
+            buffer_overflow => rx_fifo_overflow
+        );
+    
+    ------------------------------------------------------------------------------
+    -- RX Stage 3: Async FIFO (Clock Domain Crossing)
+    -- Reuses existing axis_async_fifo component!
+    ------------------------------------------------------------------------------
+    u_rx_async_fifo : ENTITY work.axis_async_fifo
+        GENERIC MAP (
+            DATA_WIDTH  => 8,
+            ADDR_WIDTH  => FIFO_ADDR_WIDTH  -- Reuse generic (11 = 2048 bytes)
+        )
+        PORT MAP (
+            -- Write side (symbol clock domain)
+            wr_aclk         => clk,
+            wr_aresetn      => NOT rxinit,
+            
+            s_axis_tdata    => sync_det_tdata,
+            s_axis_tvalid   => sync_det_tvalid,
+            s_axis_tready   => sync_det_tready,
+            s_axis_tlast    => sync_det_tlast,
+            
+            -- Read side (AXI clock domain)
+            rd_aclk         => s_axis_aclk,  -- Use system AXI clock
+            rd_aresetn      => s_axis_aresetn,
+            
+            m_axis_tdata    => m_axis_tdata(7 DOWNTO 0),
+            m_axis_tvalid   => m_axis_tvalid,
+            m_axis_tready   => m_axis_tready,
+            m_axis_tlast    => m_axis_tlast,
+            
+            prog_full       => OPEN,
+            prog_empty      => OPEN
+        );
+    
+    -- Zero-pad upper bits of m_axis_tdata if wider than 8 bits
+    m_axis_tdata(S_AXIS_DATA_W-1 DOWNTO 8) <= (OTHERS => '0');
+    
+    -- Connect status outputs to top-level ports
+    frame_sync_locked     <= rx_frame_sync_locked;
+    frames_received       <= rx_frames_count;
+    frame_sync_errors     <= rx_frame_sync_errors;
+    fifo_overflow         <= rx_fifo_overflow;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        rx_bit_corr <= rx_bit WHEN rx_invert = '0' ELSE NOT rx_bit;
+
+
 ------------------------------------------------------------------------------------------------------
--- RX SERIAL TO PARALLEL (preserved)
-------------------------------------------------------------------------------------------------------
-
-	rx_bit_corr <= rx_bit WHEN rx_invert = '0' ELSE NOT rx_bit;
-
-	ser2par_proc : PROCESS (clk)
-		VARIABLE bit_width : INTEGER;
-	BEGIN
-		IF clk'EVENT AND clk = '1' THEN
-			bit_width := to_integer(unsigned(rx_data_w));
-			rx_dvalid <= '0';
-
-			IF rx_bit_valid = '1' THEN
-				rx_data_int(rx_bit_index) 	<= rx_bit_corr;
-				rx_bit_index 				<= rx_bit_index + 1;
-
-				IF rx_bit_index = bit_width -1 THEN
-					rx_bit_index	<= 0;
-					rx_data_valid	<= '1';
-				END IF;
-			END IF;
-
-			IF rx_data_valid = '1' THEN
-				rx_dvalid 		<= '1';
-				rx_data 		<= rx_data_int;
-				rx_data_int(bit_width -1 DOWNTO 1) <= (OTHERS => '0');
-				rx_data_valid 	<= '0';
-			END IF;
-
-			IF rxinit = '1' THEN
-				rx_bit_index	<= 6;
-				rx_data_int 	<= (OTHERS => '0');
-				rx_data 		<= (OTHERS => '0');
-				rx_dvalid 		<= '0';
-				rx_data_valid 	<= '0';
-			END IF;
-		END IF;
-	END PROCESS ser2par_proc;
-
-------------------------------------------------------------------------------------------------------
--- MSK DEMODULATOR (preserved)
+-- MSK DEMODULATOR
 ------------------------------------------------------------------------------------------------------
 
 	u_discard : PROCESS (clk)
@@ -647,7 +727,7 @@ BEGIN
 		rx_enable 		=> rx_enable,
 		demod_sync_lock => demod_sync_lock,
 		tx_req 			=> tx_req,
-		tx_axis_valid 	=> s_axis_valid,
+		tx_axis_valid 	=> s_axis_tvalid,
 		xfer_count 		=> std_logic_vector(tx_bit_counter),
 		tx_bit_counter 	=> std_logic_vector(tx_bit_counter),
 		tx_ena_counter 	=> std_logic_vector(tx_ena_counter),		
