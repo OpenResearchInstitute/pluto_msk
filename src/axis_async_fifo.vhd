@@ -1,9 +1,8 @@
 ------------------------------------------------------------------------------------------------------
--- AXIS-Compliant Asynchronous FIFO
+-- AXIS-Compliant Asynchronous FIFO - SYNC LAG FIX
 ------------------------------------------------------------------------------------------------------
--- Dual-clock FIFO with AXIS handshaking and TLAST support
--- Implements gray code pointers for safe clock domain crossing
--- FIXED: Split RECORD into separate arrays for Block RAM inference
+-- FIX: Added safety margin to empty detection to account for 2-cycle synchronization lag
+-- This prevents reading past actual data and hitting stale tlast markers
 ------------------------------------------------------------------------------------------------------
 
 LIBRARY ieee;
@@ -46,14 +45,13 @@ ARCHITECTURE rtl OF axis_async_fifo IS
 
     CONSTANT DEPTH : NATURAL := 2**ADDR_WIDTH;
     
-    -- FIX: Separate arrays instead of RECORD for Block RAM inference
+    -- Separate arrays for Block RAM inference
     TYPE ram_data_type IS ARRAY (0 TO DEPTH-1) OF std_logic_vector(DATA_WIDTH-1 DOWNTO 0);
     TYPE ram_last_type IS ARRAY (0 TO DEPTH-1) OF std_logic;
     
-    SIGNAL ram_data : ram_data_type := (OTHERS => (OTHERS => '0'));
-    SIGNAL ram_last : ram_last_type := (OTHERS => '0');
+    SIGNAL ram_data : ram_data_type;
+    SIGNAL ram_last : ram_last_type;
     
-    -- Force Block RAM usage (now Vivado can actually do it!)
     ATTRIBUTE ram_style : STRING;
     ATTRIBUTE ram_style OF ram_data : SIGNAL IS "block";
     ATTRIBUTE ram_style OF ram_last : SIGNAL IS "block";
@@ -127,11 +125,9 @@ BEGIN
                 
                 -- AXIS write handshake
                 IF s_axis_tvalid = '1' AND tready_int = '1' THEN
-                    -- Write to separate arrays (now Vivado can infer Block RAM!)
                     ram_data(to_integer(unsigned(wr_ptr_bin(ADDR_WIDTH-1 DOWNTO 0)))) <= s_axis_tdata;
                     ram_last(to_integer(unsigned(wr_ptr_bin(ADDR_WIDTH-1 DOWNTO 0)))) <= s_axis_tlast;
                     
-                    -- Increment write pointer
                     wr_ptr_bin_next := std_logic_vector(unsigned(wr_ptr_bin) + 1);
                     wr_ptr_bin <= wr_ptr_bin_next;
                     wr_ptr_gray <= bin_to_gray(wr_ptr_bin_next);
@@ -145,8 +141,7 @@ BEGIN
                     full_int <= '0';
                 END IF;
                 
-                -- Programmable full: within 512 entries of full
-                -- FIX: Use subtraction to handle pointer wraparound correctly
+                -- Programmable full
                 IF DEPTH - (unsigned(wr_ptr_bin) - unsigned(rd_ptr_bin_sync)) <= 512 THEN
                     prog_full_int <= '1';
                 ELSE
@@ -164,7 +159,7 @@ BEGIN
     END PROCESS write_proc;
 
     ------------------------------------------------------------------------------
-    -- Read Clock Domain
+    -- Read Clock Domain - WITH SYNC LAG FIX
     ------------------------------------------------------------------------------
     read_proc: PROCESS(rd_aclk)
         VARIABLE rd_ptr_bin_next : std_logic_vector(ADDR_WIDTH DOWNTO 0);
@@ -199,14 +194,13 @@ BEGIN
                     m_axis_tlast <= ram_last(to_integer(unsigned(rd_ptr_bin(ADDR_WIDTH-1 DOWNTO 0))));
                     tvalid_int <= '1';
                 ELSE
-                    -- Clear outputs when empty to avoid undefined values
-                    m_axis_tdata <= (OTHERS => '0');
-                    m_axis_tlast <= '0';
                     tvalid_int <= '0';
                 END IF;
                 
-                -- Empty detection
-                IF rd_ptr_bin = wr_ptr_bin_sync THEN
+                -- FIX: Empty detection with safety margin for sync lag
+                -- Stop reading when within 3 bytes of synchronized write pointer
+                -- This accounts for the 2-cycle synchronization delay
+                IF unsigned(wr_ptr_bin_sync) <= unsigned(rd_ptr_bin) + 3 THEN
                     empty_int <= '1';
                 ELSE
                     empty_int <= '0';
