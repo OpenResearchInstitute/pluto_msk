@@ -145,8 +145,9 @@ BEGIN
                     full_int <= '0';
                 END IF;
                 
-                -- Programmable full
-                IF unsigned(wr_ptr_bin) + 512 >= unsigned(rd_ptr_bin_sync) + DEPTH THEN
+                -- Programmable full: within 512 entries of full
+                -- FIX: Use subtraction to handle pointer wraparound correctly
+                IF DEPTH - (unsigned(wr_ptr_bin) - unsigned(rd_ptr_bin_sync)) <= 512 THEN
                     prog_full_int <= '1';
                 ELSE
                     prog_full_int <= '0';
@@ -208,14 +209,21 @@ BEGIN
                     empty_int <= '0';
                 END IF;
                 
-                -- Programmable empty
-                IF unsigned(wr_ptr_bin_sync) <= unsigned(rd_ptr_bin) + 271 THEN
-                    prog_empty_int <= '1';
+                -- Programmable empty (NEW LOGIC - replaces old)
+                IF rd_ptr_bin = wr_ptr_bin_sync THEN
+                    prog_empty_int <= '1';  -- Definitely empty
+                ELSIF unsigned(wr_ptr_bin_sync) > unsigned(rd_ptr_bin) THEN
+                    -- Normal case: wr ahead of rd
+                    IF unsigned(wr_ptr_bin_sync) - unsigned(rd_ptr_bin) <= 271 THEN
+                        prog_empty_int <= '1';
+                    ELSE
+                        prog_empty_int <= '0';
+                    END IF;
                 ELSE
+                    -- Sync is stale - be conservative
                     prog_empty_int <= '0';
                 END IF;
             END IF;
         END IF;
     END PROCESS read_proc;
-
 END ARCHITECTURE rtl;
