@@ -50,8 +50,8 @@ ARCHITECTURE rtl OF axis_async_fifo IS
     TYPE ram_data_type IS ARRAY (0 TO DEPTH-1) OF std_logic_vector(DATA_WIDTH-1 DOWNTO 0);
     TYPE ram_last_type IS ARRAY (0 TO DEPTH-1) OF std_logic;
     
-    SIGNAL ram_data : ram_data_type;
-    SIGNAL ram_last : ram_last_type;
+    SIGNAL ram_data : ram_data_type := (OTHERS => (OTHERS => '0'));
+    SIGNAL ram_last : ram_last_type := (OTHERS => '0');
     
     -- Force Block RAM usage (now Vivado can actually do it!)
     ATTRIBUTE ram_style : STRING;
@@ -199,6 +199,9 @@ BEGIN
                     m_axis_tlast <= ram_last(to_integer(unsigned(rd_ptr_bin(ADDR_WIDTH-1 DOWNTO 0))));
                     tvalid_int <= '1';
                 ELSE
+                    -- Clear outputs when empty to avoid undefined values
+                    m_axis_tdata <= (OTHERS => '0');
+                    m_axis_tlast <= '0';
                     tvalid_int <= '0';
                 END IF;
                 
@@ -209,21 +212,14 @@ BEGIN
                     empty_int <= '0';
                 END IF;
                 
-                -- Programmable empty (NEW LOGIC - replaces old)
-                IF rd_ptr_bin = wr_ptr_bin_sync THEN
-                    prog_empty_int <= '1';  -- Definitely empty
-                ELSIF unsigned(wr_ptr_bin_sync) > unsigned(rd_ptr_bin) THEN
-                    -- Normal case: wr ahead of rd
-                    IF unsigned(wr_ptr_bin_sync) - unsigned(rd_ptr_bin) <= 271 THEN
-                        prog_empty_int <= '1';
-                    ELSE
-                        prog_empty_int <= '0';
-                    END IF;
+                -- Programmable empty
+                IF unsigned(wr_ptr_bin_sync) <= unsigned(rd_ptr_bin) + 271 THEN
+                    prog_empty_int <= '1';
                 ELSE
-                    -- Sync is stale - be conservative
                     prog_empty_int <= '0';
                 END IF;
             END IF;
         END IF;
     END PROCESS read_proc;
+
 END ARCHITECTURE rtl;

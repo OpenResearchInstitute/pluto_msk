@@ -238,7 +238,8 @@ BEGIN
                 -- Check if new frame is ready
                 IF frame_ready = '1' AND output_active = '0' THEN
                     output_active <= '1';
-                    rd_ptr <= frame_rd_ptr;
+                    -- DON'T reset rd_ptr here! Let it continue from where it left off
+                    -- rd_ptr <= frame_rd_ptr;  -- removed to properly drain FIFO
                     output_count <= 0;
                     frame_ack <= '1';  -- Acknowledge we took the frame
                 END IF;
