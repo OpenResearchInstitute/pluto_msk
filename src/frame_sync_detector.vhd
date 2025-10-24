@@ -1,8 +1,9 @@
 ------------------------------------------------------------------------------------------------------
--- Frame Sync Detector with Circular Buffer - VERSION 3
+-- Frame Sync Detector with Circular Buffer - VERSION 3 (FIXED)
 ------------------------------------------------------------------------------------------------------
 -- FIX: Simplified handshake - once output starts, it MUST complete all 268 bytes
 -- No early exits, no edge detection complexity
+-- BUGFIX: Added internal signal for m_axis_tvalid to allow readback
 ------------------------------------------------------------------------------------------------------
 
 LIBRARY ieee;
@@ -76,6 +77,9 @@ ARCHITECTURE rtl OF frame_sync_detector IS
     SIGNAL frame_ack : std_logic := '0';  -- output sets when consuming
     SIGNAL frame_available_ptr : unsigned(BUFFER_DEPTH-1 DOWNTO 0) := (OTHERS => '0');
     
+    -- Internal version of m_axis_tvalid that we CAN read
+    SIGNAL m_axis_tvalid_int : std_logic := '0';
+    
     -- Output state - SIMPLIFIED
     TYPE output_state_t IS (IDLE, OUTPUTTING);
     SIGNAL output_state     : output_state_t := IDLE;
@@ -102,6 +106,9 @@ BEGIN
     frame_sync_locked <= lock_status;
     frames_received <= std_logic_vector(frames_count);
     frame_sync_errors <= std_logic_vector(errors_count);
+    
+    -- Connect internal signal to output port
+    m_axis_tvalid <= m_axis_tvalid_int;
 
     ------------------------------------------------------------------------------
     -- Reception Process
@@ -203,7 +210,7 @@ BEGIN
         IF rising_edge(clk) THEN
             IF reset = '1' THEN
                 m_axis_tdata <= (OTHERS => '0');
-                m_axis_tvalid <= '0';
+                m_axis_tvalid_int <= '0';
                 m_axis_tlast <= '0';
                 output_count <= 0;
                 output_state <= IDLE;
@@ -218,7 +225,7 @@ BEGIN
                 CASE output_state IS
                     
                     WHEN IDLE =>
-                        m_axis_tvalid <= '0';
+                        m_axis_tvalid_int <= '0';
                         m_axis_tlast <= '0';
                         
                         -- Start output if frame is available
@@ -232,9 +239,9 @@ BEGIN
                     
                     WHEN OUTPUTTING =>
                         -- Output bytes with AXI handshaking
-                        IF m_axis_tready = '1' OR m_axis_tvalid = '0' THEN
+                        IF m_axis_tready = '1' OR m_axis_tvalid_int = '0' THEN
                             m_axis_tdata <= circ_buffer(to_integer(output_rd_ptr));
-                            m_axis_tvalid <= '1';
+                            m_axis_tvalid_int <= '1';
                             
                             -- Check if last byte
                             IF output_count = PAYLOAD_BYTES - 1 THEN
