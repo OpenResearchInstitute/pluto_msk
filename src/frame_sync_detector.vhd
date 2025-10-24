@@ -1,7 +1,8 @@
 ------------------------------------------------------------------------------------------------------
--- Frame Sync Detector with Circular Buffer - FIXED VERSION
+-- Frame Sync Detector with Circular Buffer - FIXED VERSION 2.0
 ------------------------------------------------------------------------------------------------------
--- FIX: Removed multi-driver bug where output_active was assigned in two processes
+-- FIX #1: Removed multi-driver bug where output_active was assigned in two processes
+-- FIX #2: Added proper output state machine to prevent infinite re-reading of same frame
 -- Now uses frame_ready handshake signal between reception_proc and output_proc
 ------------------------------------------------------------------------------------------------------
 
@@ -62,9 +63,9 @@ ARCHITECTURE rtl OF frame_sync_detector IS
     SIGNAL wr_ptr : unsigned(BUFFER_DEPTH-1 DOWNTO 0) := (OTHERS => '0');
     SIGNAL rd_ptr : unsigned(BUFFER_DEPTH-1 DOWNTO 0) := (OTHERS => '0');
     
-    -- State machine
-    TYPE state_t IS (HUNTING, LOCKED, OUTPUTTING);
-    SIGNAL state : state_t := HUNTING;
+    -- Reception state machine
+    TYPE rx_state_t IS (HUNTING, LOCKED);
+    SIGNAL rx_state : rx_state_t := HUNTING;
     
     -- Frame tracking
     SIGNAL frame_start_ptr  : unsigned(BUFFER_DEPTH-1 DOWNTO 0);
@@ -74,12 +75,14 @@ ARCHITECTURE rtl OF frame_sync_detector IS
     SIGNAL consecutive_good : natural range 0 to LOCK_FRAMES := 0;
     SIGNAL lock_status      : std_logic := '0';
     
-    -- FIX: Handshake signals replace output_active being driven by two processes
-    SIGNAL frame_ready      : std_logic := '0';  -- Reception sets, output clears
-    SIGNAL frame_ack        : std_logic := '0';  -- Output acknowledges frame taken
+    -- FIX: Proper handshake signals with edge detection
+    SIGNAL frame_ready      : std_logic := '0';  -- Reception sets when frame complete
+    SIGNAL frame_ready_prev : std_logic := '0';  -- For edge detection
     SIGNAL frame_rd_ptr     : unsigned(BUFFER_DEPTH-1 DOWNTO 0) := (OTHERS => '0');
     
-    SIGNAL output_active    : std_logic := '0';  -- NOW ONLY IN output_proc
+    -- Output state machine - FIXED!
+    TYPE output_state_t IS (IDLE, OUTPUTTING, WAIT_CLEAR);
+    SIGNAL output_state     : output_state_t := IDLE;
     SIGNAL output_count     : natural range 0 to PAYLOAD_BYTES := 0;
     SIGNAL tvalid_int       : std_logic := '0';
     SIGNAL tlast_int        : std_logic := '0';
@@ -120,7 +123,7 @@ BEGIN
                 byte_shift_reg <= (OTHERS => '0');
                 bit_count <= (OTHERS => '0');
                 wr_ptr <= (OTHERS => '0');
-                state <= HUNTING;
+                rx_state <= HUNTING;
                 frame_start_ptr <= (OTHERS => '0');
                 frame_byte_count <= 0;
                 consecutive_good <= 0;
@@ -132,10 +135,7 @@ BEGIN
             ELSE
                 buffer_overflow <= '0';
                 
-                -- Clear frame_ready when acknowledged
-                IF frame_ack = '1' THEN
-                    frame_ready <= '0';
-                END IF;
+                -- Default: frame_ready stays at current value until cleared by output
                 
                 IF rx_bit_valid = '1' THEN
                     -- Shift in one bit for sync detection
@@ -146,7 +146,7 @@ BEGIN
                 END IF;
                 
                 -- Check for sync AFTER the shift (compare current value)
-                CASE state IS
+                CASE rx_state IS
                     WHEN HUNTING =>
                         -- Check current sync_shift_bits value
                         hamming_dist := calc_hamming_distance(
@@ -157,7 +157,7 @@ BEGIN
                             -- Found sync! Now we know bit alignment
                             frame_byte_count <= 0;
                             bit_count <= (OTHERS => '0');
-                            state <= LOCKED;
+                            rx_state <= LOCKED;
                             
                             IF consecutive_good < LOCK_FRAMES THEN
                                 consecutive_good <= consecutive_good + 1;
@@ -189,27 +189,29 @@ BEGIN
                                 IF frame_byte_count < PAYLOAD_BYTES - 1 THEN
                                     frame_byte_count <= frame_byte_count + 1;
                                 ELSE
-                                    -- Frame complete
+                                    -- Frame complete!
+                                    -- Check if output is ready for a new frame
                                     IF frame_ready = '0' THEN
-                                        -- Signal frame is ready for output
+                                        -- Output is ready, signal new frame available
                                         frame_ready <= '1';
                                         frame_rd_ptr <= frame_start_ptr;
                                         frames_count <= frames_count + 1;
                                     ELSE
-                                        -- Output process hasn't taken previous frame yet
+                                        -- Output hasn't consumed previous frame yet - overflow!
                                         errors_count <= errors_count + 1;
+                                        buffer_overflow <= '1';
                                     END IF;
                                     
-                                    -- Return to hunting for next frame
+                                    -- Start next frame
                                     frame_start_ptr <= wr_ptr;
-                                    state <= HUNTING;
+                                    rx_state <= HUNTING;
                                     frame_byte_count <= 0;
                                 END IF;
                             END IF;
                         END IF;
                         
                     WHEN OTHERS =>
-                        state <= HUNTING;
+                        rx_state <= HUNTING;
                 END CASE;
                 
             END IF;
@@ -218,6 +220,7 @@ BEGIN
 
     ------------------------------------------------------------------------------
     -- Output Process: Stream bytes to AXIS interface
+    -- FIXED: Proper state machine prevents re-reading same frame!
     ------------------------------------------------------------------------------
     output_proc: PROCESS(clk)
     BEGIN
@@ -227,47 +230,92 @@ BEGIN
                 tvalid_int <= '0';
                 tlast_int <= '0';
                 output_count <= 0;
-                output_active <= '0';
-                frame_ack <= '0';
+                output_state <= IDLE;
+                frame_ready_prev <= '0';
                 rd_ptr <= (OTHERS => '0');
                 
             ELSE
-                -- Default: no ack
-                frame_ack <= '0';
-                
-                -- Check if new frame is ready
-                IF frame_ready = '1' AND output_active = '0' THEN
-                    output_active <= '1';
-                    -- DON'T reset rd_ptr here! Let it continue from where it left off
-                    -- rd_ptr <= frame_rd_ptr;  -- removed to properly drain FIFO
-                    output_count <= 0;
-                    frame_ack <= '1';  -- Acknowledge we took the frame
-                END IF;
+                -- Track previous frame_ready for edge detection
+                frame_ready_prev <= frame_ready;
                 
                 -- Output state machine
-                IF output_active = '1' THEN
-                    IF m_axis_tready = '1' OR tvalid_int = '0' THEN
-                        m_axis_tdata <= circ_buffer(to_integer(rd_ptr));
-                        tvalid_int <= '1';
-                        rd_ptr <= rd_ptr + 1;
-                        
-                        IF output_count = PAYLOAD_BYTES - 1 THEN
-                            tlast_int <= '1';
-                            output_active <= '0';
+                CASE output_state IS
+                    
+                    WHEN IDLE =>
+                        -- Wait for RISING EDGE of frame_ready
+                        IF frame_ready = '1' AND frame_ready_prev = '0' THEN
+                            -- New frame available! Start outputting
+                            output_state <= OUTPUTTING;
+                            rd_ptr <= frame_rd_ptr;  -- Load starting address
                             output_count <= 0;
-                        ELSE
-                            tlast_int <= '0';
-                            output_count <= output_count + 1;
+                            -- Don't clear frame_ready yet - let output complete first
                         END IF;
-                    END IF;
-                ELSE
-                    IF m_axis_tready = '1' THEN
-                        tvalid_int <= '0';
-                        tlast_int <= '0';
-                    END IF;
-                END IF;
+                        
+                        -- Keep outputs quiet when idle
+                        IF m_axis_tready = '1' THEN
+                            tvalid_int <= '0';
+                            tlast_int <= '0';
+                        END IF;
+                    
+                    WHEN OUTPUTTING =>
+                        -- Output frame bytes with AXI-Stream handshaking
+                        IF m_axis_tready = '1' OR tvalid_int = '0' THEN
+                            -- Present next byte
+                            m_axis_tdata <= circ_buffer(to_integer(rd_ptr));
+                            tvalid_int <= '1';
+                            rd_ptr <= rd_ptr + 1;
+                            
+                            -- Check if this is the last byte
+                            IF output_count = PAYLOAD_BYTES - 1 THEN
+                                tlast_int <= '1';
+                                output_count <= 0;
+                                output_state <= WAIT_CLEAR;
+                            ELSE
+                                tlast_int <= '0';
+                                output_count <= output_count + 1;
+                            END IF;
+                        END IF;
+                    
+                    WHEN WAIT_CLEAR =>
+                        -- Wait for downstream to accept the last byte
+                        IF m_axis_tready = '1' THEN
+                            tvalid_int <= '0';
+                            tlast_int <= '0';
+                        END IF;
+                        
+                        -- Wait for frame_ready to go low before accepting next frame
+                        -- This prevents re-triggering on the same frame!
+                        IF frame_ready = '0' THEN
+                            output_state <= IDLE;
+                        END IF;
+                        
+                    WHEN OTHERS =>
+                        output_state <= IDLE;
+                        
+                END CASE;
+                
             END IF;
         END IF;
     END PROCESS output_proc;
+    
+    ------------------------------------------------------------------------------
+    -- Frame Ready Clear Process
+    -- Clears frame_ready after output completes to signal reception can continue
+    ------------------------------------------------------------------------------
+    clear_proc: PROCESS(clk)
+    BEGIN
+        IF rising_edge(clk) THEN
+            IF reset = '1' THEN
+                -- Reset handled in reception_proc
+            ELSE
+                -- Clear frame_ready when output transitions to WAIT_CLEAR
+                -- This allows reception to signal the next frame
+                IF output_state = OUTPUTTING AND output_count = PAYLOAD_BYTES - 1 AND 
+                   (m_axis_tready = '1' OR tvalid_int = '0') THEN
+                    frame_ready <= '0';
+                END IF;
+            END IF;
+        END IF;
+    END PROCESS clear_proc;
 
 END ARCHITECTURE rtl;
