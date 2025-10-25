@@ -1,7 +1,11 @@
 ------------------------------------------------------------------------------------------------------
--- Frame Sync Detector with Circular Buffer - FIXED VERSION
+-- Frame Sync Detector with Circular Buffer - MSB-FIRST VERSION
 ------------------------------------------------------------------------------------------------------
--- FIX: Removed multi-driver bug where output_active was assigned in two processes
+-- MODIFIED: Now uses MSB-first bit ordering (standard serial convention)
+-- Receives bit 7 first, assembles bytes in standard order
+-- Sync word updated to 0xE25F35 (matches TX, no bit reversal!)
+------------------------------------------------------------------------------------------------------
+-- Original FIX: Removed multi-driver bug where output_active was assigned in two processes
 -- Now uses frame_ready handshake signal between reception_proc and output_proc
 ------------------------------------------------------------------------------------------------------
 
@@ -12,7 +16,7 @@ USE ieee.numeric_std.ALL;
 
 ENTITY frame_sync_detector IS
     GENERIC (
-        SYNC_WORD : std_logic_vector(23 DOWNTO 0) := x"447FAA";
+        SYNC_WORD : std_logic_vector(23 DOWNTO 0) := x"E25F35";  -- MSB-first sync word
         PAYLOAD_BYTES   : NATURAL := 268;
         SYNC_THRESHOLD  : NATURAL := 3;
         BUFFER_DEPTH    : NATURAL := 11;
@@ -43,10 +47,10 @@ END ENTITY frame_sync_detector;
 
 ARCHITECTURE rtl OF frame_sync_detector IS
 
-    -- Bit-level sync detection
+    -- Bit-level sync detection (MSB shifts in from left)
     SIGNAL sync_shift_bits : std_logic_vector(23 DOWNTO 0) := (OTHERS => '0');
     
-    -- Byte assembly for output
+    -- Byte assembly for output (MSB shifts in from left)
     SIGNAL byte_shift_reg  : std_logic_vector(7 DOWNTO 0);
     SIGNAL bit_count       : unsigned(2 DOWNTO 0);
     
@@ -74,7 +78,7 @@ ARCHITECTURE rtl OF frame_sync_detector IS
     SIGNAL consecutive_good : natural range 0 to LOCK_FRAMES := 0;
     SIGNAL lock_status      : std_logic := '0';
     
-    -- FIX: Handshake signals replace output_active being driven by two processes
+    -- Handshake signals replace output_active being driven by two processes
     SIGNAL frame_ready      : std_logic := '0';  -- Reception sets, output clears
     SIGNAL frame_ack        : std_logic := '0';  -- Output acknowledges frame taken
     SIGNAL frame_rd_ptr     : unsigned(BUFFER_DEPTH-1 DOWNTO 0) := (OTHERS => '0');
@@ -109,6 +113,7 @@ BEGIN
 
     ------------------------------------------------------------------------------
     -- Main Process: Bit-by-Bit Sync Detection + Byte Assembly
+    -- MODIFIED: MSB-first bit ordering
     ------------------------------------------------------------------------------
     reception_proc: PROCESS(clk)
         VARIABLE hamming_dist : natural range 0 to 24;
@@ -137,87 +142,106 @@ BEGIN
                     frame_ready <= '0';
                 END IF;
                 
-                IF rx_bit_valid = '1' THEN
-                    -- Shift in one bit for sync detection
-                    sync_shift_bits <= sync_shift_bits(22 DOWNTO 0) & rx_bit;
-                    
-                    -- Also assemble into bytes for storage
-                    byte_shift_reg <= byte_shift_reg(6 DOWNTO 0) & rx_bit;
+
+
+IF rx_bit_valid = '1' THEN
+    -- MSB-FIRST: Shift LEFT so first bit ends up at position 23
+    sync_shift_bits <= sync_shift_bits(22 DOWNTO 0) & rx_bit;
+    byte_shift_reg <= byte_shift_reg(6 DOWNTO 0) & rx_bit;
+END IF;
+
+
+
+-- Check state on EVERY clock (not just when rx_bit_valid)
+CASE state IS
+    WHEN HUNTING =>
+        IF rx_bit_valid = '1' THEN
+            hamming_dist := calc_hamming_distance(
+                sync_shift_bits,
+                SYNC_WORD
+            );
+            IF hamming_dist <= SYNC_THRESHOLD THEN
+                -- Found sync!
+                frame_byte_count <= 0;
+                bit_count <= (OTHERS => '0');
+                state <= LOCKED;
+                IF consecutive_good < LOCK_FRAMES THEN
+                    consecutive_good <= consecutive_good + 1;
+                ELSE
+                    lock_status <= '1';
                 END IF;
-                
-                -- Check for sync AFTER the shift (compare current value)
-                CASE state IS
-                    WHEN HUNTING =>
-                        -- Check current sync_shift_bits value
-                        hamming_dist := calc_hamming_distance(
-                            sync_shift_bits,
-                            SYNC_WORD
-                        );
-                        IF hamming_dist <= SYNC_THRESHOLD THEN
-                            -- Found sync! Now we know bit alignment
-                            frame_byte_count <= 0;
-                            bit_count <= (OTHERS => '0');
-                            state <= LOCKED;
-                            
-                            IF consecutive_good < LOCK_FRAMES THEN
-                                consecutive_good <= consecutive_good + 1;
-                            ELSE
-                                lock_status <= '1';
-                            END IF;
-                        END IF;
-                        
-                    WHEN LOCKED =>
-                        IF rx_bit_valid = '1' THEN
-                            -- Collecting frame bytes
-                            bit_count <= bit_count + 1;
-                            
-                            IF bit_count = 7 THEN
-                                -- Byte complete
-                                assembled_byte := byte_shift_reg(6 DOWNTO 0) & rx_bit;
-                                
-                                -- Write to circular buffer
-                                circ_buffer(to_integer(wr_ptr)) <= assembled_byte;
-                                wr_ptr <= wr_ptr + 1;
-                                
-                                IF wr_ptr + 1 = rd_ptr THEN
-                                    buffer_overflow <= '1';
-                                    errors_count <= errors_count + 1;
-                                END IF;
-                                
-                                bit_count <= (OTHERS => '0');
-                                
-                                IF frame_byte_count < PAYLOAD_BYTES - 1 THEN
-                                    frame_byte_count <= frame_byte_count + 1;
-                                ELSE
-                                    -- Frame complete
-                                    IF frame_ready = '0' THEN
-                                        -- Signal frame is ready for output
-                                        frame_ready <= '1';
-                                        frame_rd_ptr <= frame_start_ptr;
-                                        frames_count <= frames_count + 1;
-                                    ELSE
-                                        -- Output process hasn't taken previous frame yet
-                                        errors_count <= errors_count + 1;
-                                    END IF;
-                                    
-                                    -- Return to hunting for next frame
-                                    frame_start_ptr <= wr_ptr;
-                                    state <= HUNTING;
-                                    frame_byte_count <= 0;
-                                END IF;
-                            END IF;
-                        END IF;
-                        
-                    WHEN OTHERS =>
-                        state <= HUNTING;
-                END CASE;
-                
             END IF;
         END IF;
+
+
+
+
+-- The LOCKED state stays outside since it has its own rx_bit_valid check
+    WHEN LOCKED =>
+        IF rx_bit_valid = '1' THEN
+            -- Collecting frame bytes
+            bit_count <= bit_count + 1;
+            
+            IF bit_count = 7 THEN
+                -- Byte complete (MSB-first assembly)
+                -- Last bit received (rx_bit) is the LSB
+                assembled_byte := byte_shift_reg;
+                
+                -- Write to circular buffer
+                circ_buffer(to_integer(wr_ptr)) <= assembled_byte;
+                wr_ptr <= wr_ptr + 1;
+                
+                IF wr_ptr + 1 = rd_ptr THEN
+                    buffer_overflow <= '1';
+                    errors_count <= errors_count + 1;
+                END IF;
+                
+                bit_count <= (OTHERS => '0');
+                
+                IF frame_byte_count < PAYLOAD_BYTES - 1 THEN
+                    frame_byte_count <= frame_byte_count + 1;
+                ELSE
+                    -- Frame complete
+                    IF frame_ready = '0' THEN
+                        -- Signal frame is ready for output
+                        frame_ready <= '1';
+                        frame_rd_ptr <= frame_start_ptr;
+                        frames_count <= frames_count + 1;
+                    ELSE
+                        -- Output process hasn't taken previous frame yet
+                        errors_count <= errors_count + 1;
+                    END IF;
+                    
+                    -- Return to hunting for next frame
+                    frame_start_ptr <= wr_ptr;
+                    state <= HUNTING;
+                    frame_byte_count <= 0;
+                END IF;
+            END IF;
+        END IF;
+        
+    WHEN OTHERS =>
+        state <= HUNTING;
+END CASE;
+
+
+
+
+            END IF;  -- End of ELSE for reset
+        END IF;  -- End of rising_edge(clk)
+
+
+
+
+
+
+
+                
     END PROCESS reception_proc;
 
     ------------------------------------------------------------------------------
     -- Output Process: Stream bytes to AXIS interface
+    -- (No changes needed - byte-level interface)
     ------------------------------------------------------------------------------
     output_proc: PROCESS(clk)
     BEGIN

@@ -56,6 +56,9 @@
 -- Modified from original msk_top.vhd to add AXIS FIFO for frame-based operation
 -- Preserves all existing functionality while adding async FIFO between DMA and modulator
 ------------------------------------------------------------------------------------------------------
+-- MODIFIED FOR MSB-FIRST: Updated sync word from 0xACFA47/0xE25F35 to 0xE25F35/0xE25F35
+-- Both TX and RX now use the same sync word pattern (no bit reversal)
+------------------------------------------------------------------------------------------------------
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
@@ -114,8 +117,8 @@ ENTITY msk_top IS
 		s_axis_tvalid 	: IN  std_logic;
 		s_axis_tready    : OUT std_logic;
 		s_axis_tdata		: IN  std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
-		s_axis_tlast 	: IN  std_logic;  -- NEW: Frame boundary marker
-		s_axis_tkeep    : IN  std_logic_vector((S_AXIS_DATA_W/8) -1 DOWNTO 0);  -- NEW: Byte enables
+		s_axis_tlast 	: IN  std_logic;  -- Frame boundary marker
+		s_axis_tkeep    : IN  std_logic_vector((S_AXIS_DATA_W/8) -1 DOWNTO 0);  -- Byte enables
 
 		tx_enable 		: IN std_logic;
 		tx_valid 		: IN std_logic;
@@ -325,7 +328,7 @@ BEGIN
 			prog_empty      => fifo_prog_empty
 		);
 
-	-- Stage 3: Byte-to-Bit De-serializer
+	-- Stage 3: Byte-to-Bit De-serializer (MSB-FIRST VERSION)
 	u_deserializer : ENTITY work.byte_to_bit_deserializer
 		GENERIC MAP (
 			BYTE_WIDTH => 8
@@ -447,11 +450,12 @@ BEGIN
 
     
     ------------------------------------------------------------------------------
-    -- RX Stage 2: Frame Sync Detector
+    -- RX Stage 2: Frame Sync Detector (MSB-FIRST VERSION)
+    -- MODIFIED: Sync word changed from 0xE25F35 to 0xE25F35 (matches TX now!)
     ------------------------------------------------------------------------------
     u_rx_frame_sync : ENTITY work.frame_sync_detector
         GENERIC MAP (
-            SYNC_WORD      => x"E25F35",
+            SYNC_WORD      => x"E25F35",  -- MSB-first sync word (same as TX!)
             PAYLOAD_BYTES  => 268,
             SYNC_THRESHOLD => 3,
             BUFFER_DEPTH   => 11,         -- 2048 bytes
