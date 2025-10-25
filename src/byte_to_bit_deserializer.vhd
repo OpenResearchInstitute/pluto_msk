@@ -1,6 +1,10 @@
 ------------------------------------------------------------------------------------------------------
 -- Byte to Bit De-serializer with Sync Word Insertion
 ------------------------------------------------------------------------------------------------------
+-- MODIFIED: Now uses MSB-first bit ordering (standard serial convention)
+-- Sends bit 7 first, then bit 6, 5, 4, 3, 2, 1, 0
+-- Sync word updated to match MSB-first ordering
+------------------------------------------------------------------------------------------------------
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
@@ -28,8 +32,12 @@ END ENTITY byte_to_bit_deserializer;
 
 ARCHITECTURE rtl OF byte_to_bit_deserializer IS
 
-    -- Barker code: 0xACFA47 (produces 0xE25F35 at RX after bit reversal)
-    CONSTANT SYNC_WORD : std_logic_vector(23 DOWNTO 0) := "101011001111101001000111";
+    -- Sync word: 0xE25F35 sent MSB-first
+    -- This is the SAME pattern the receiver expects (no bit reversal!)
+    -- Bit 23 (leftmost) is sent first
+    CONSTANT SYNC_WORD : std_logic_vector(23 DOWNTO 0) := "111000100101111100110101";
+    --                                                       E  2   5  F   3  5
+    -- E2 = 11100010, 5F = 01011111, 35 = 00110101
 
     SIGNAL shift_reg         : std_logic_vector(7 DOWNTO 0);
     SIGNAL bit_counter       : integer range 0 to 31;
@@ -70,25 +78,25 @@ BEGIN
                         IF s_axis_tvalid = '1' THEN
                             state <= SENDING_SYNC;
                             ready_int <= '0';
-                            bit_counter <= 0;
-                            -- Pre-load first sync bit for immediate output
-                            tx_data_int <= SYNC_WORD(0);
+                            bit_counter <= 23;  -- Start from MSB (bit 23)
+                            -- Pre-load first sync bit (MSB) for immediate output
+                            tx_data_int <= SYNC_WORD(23);
                         END IF;
                         
                     WHEN SENDING_SYNC =>
                         IF tx_req = '1' THEN
                             -- Current bit already on tx_data_int from previous cycle
                             
-                            IF bit_counter = 23 THEN
-                                -- Sync word complete (just output bit 23)
-                                bit_counter <= 0;
+                            IF bit_counter = 0 THEN
+                                -- Sync word complete (just output last bit)
+                                bit_counter <= 7;  -- Prepare for data bits (start at bit 7)
                                 state <= SHIFTING_DATA;
                                 ready_int <= '1';
                                 tx_data_int <= '0';  -- Default for next state
                             ELSE
-                                -- Prepare NEXT bit for output
-                                bit_counter <= bit_counter + 1;
-                                tx_data_int <= SYNC_WORD(bit_counter + 1);
+                                -- Prepare NEXT bit for output (count down from MSB)
+                                bit_counter <= bit_counter - 1;
+                                tx_data_int <= SYNC_WORD(bit_counter - 1);
                             END IF;
                         END IF;
                         
@@ -96,18 +104,17 @@ BEGIN
                         IF s_axis_tvalid = '1' AND ready_int = '1' THEN
                             shift_reg <= s_axis_tdata;
                             last_byte <= s_axis_tlast;
-                            bit_counter <= 0;
+                            bit_counter <= 7;  -- Start from MSB (bit 7)
                             ready_int <= '0';
-                            -- Pre-load first data bit
-                            tx_data_int <= s_axis_tdata(0);
+                            -- Pre-load first data bit (MSB)
+                            tx_data_int <= s_axis_tdata(7);
                         END IF;
                         
                         IF tx_req = '1' AND ready_int = '0' THEN
                             -- Current bit already on tx_data_int
-                            shift_reg <= '0' & shift_reg(7 DOWNTO 1);
                             
-                            IF bit_counter = 7 THEN
-                                bit_counter <= 0;
+                            IF bit_counter = 0 THEN
+                                -- Byte complete (just sent bit 0, the LSB)
                                 
                                 IF last_byte = '1' THEN
                                     frame_complete <= '1';
@@ -115,13 +122,14 @@ BEGIN
                                     state <= IDLE;
                                     tx_data_int <= '0';
                                 ELSE
+                                    bit_counter <= 7;  -- Reset for next byte
                                     ready_int <= '1';
                                     tx_data_int <= '0';  -- Will be updated when new byte arrives
                                 END IF;
                             ELSE
-                                -- Prepare NEXT bit for output
-                                bit_counter <= bit_counter + 1;
-                                tx_data_int <= shift_reg(1);  -- Next bit after current shift
+                                -- Prepare NEXT bit for output (count down)
+                                bit_counter <= bit_counter - 1;
+                                tx_data_int <= shift_reg(bit_counter - 1);
                             END IF;
                         END IF;
                         
