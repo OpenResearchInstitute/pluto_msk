@@ -64,8 +64,6 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
 
-USE work.pkg_msk_top_regs.ALL;
-
 ENTITY msk_top IS 
 	GENERIC (
 		HASH_ID_LO 			: std_logic_vector := X"AAAA5555";

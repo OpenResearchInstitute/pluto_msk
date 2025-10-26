@@ -1,0 +1,552 @@
+//----------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+//  _______                             ________                                            ______
+//  __  __ \________ _____ _______      ___  __ \_____ _____________ ______ ___________________  /_
+//  _  / / /___  __ \_  _ \__  __ \     __  /_/ /_  _ \__  ___/_  _ \_  __ `/__  ___/_  ___/__  __ \
+//  / /_/ / __  /_/ //  __/_  / / /     _  _, _/ /  __/_(__  ) /  __// /_/ / _  /    / /__  _  / / /
+//  \____/  _  .___/ \___/ /_/ /_/      /_/ |_|  \___/ /____/  \___/ \__,_/  /_/     \___/  /_/ /_/
+//          /_/
+//                   ________                _____ _____ _____         _____
+//                   ____  _/_______ __________  /____(_)__  /_____  ____  /______
+//                    __  /  __  __ \__  ___/_  __/__  / _  __/_  / / /_  __/_  _ \
+//                   __/ /   _  / / /_(__  ) / /_  _  /  / /_  / /_/ / / /_  /  __/
+//                   /___/   /_/ /_/ /____/  \__/  /_/   \__/  \__,_/  \__/  \___/
+//
+//----------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+//
+// Copyright 2024, 2025 by M. Wishek <matthew@wishek.com>
+//
+//----------------------------------------------------------------------------------------------------
+// License
+//----------------------------------------------------------------------------------------------------
+//
+// This source describes Open Hardware and is licensed under the CERN-OHL-W v2.
+//
+// You may redistribute and modify this source and make products using it under
+// the terms of the CERN-OHL-W v2 (https://ohwr.org/cern_ohl_w_v2.txt).
+//
+// This source is distributed WITHOUT ANY EXPRESS OR IMPLIED WARRANTY, INCLUDING
+// OF MERCHANTABILITY, SATISFACTORY QUALITY AND FITNESS FOR A PARTICULAR PURPOSE.
+// Please see the CERN-OHL-W v2 for applicable conditions.
+//
+// Source location: TBD
+//
+// As per CERN-OHL-W v2 section 4.1, should You produce hardware based on this
+// source, You must maintain the Source Location visible on the external case of
+// the products you make using this source.
+//
+//----------------------------------------------------------------------------------------------------
+// Block name and description
+//----------------------------------------------------------------------------------------------------
+//
+// SystemRDL register definitions for Pluto MSK modem
+//
+// Documentation location: TBD
+//
+//----------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+
+
+addrmap msk_top_regs {
+
+    name="Pluto MSK Registers";
+    desc="MSK Modem Configuration and Status Registers";
+    lsb0;
+    default accesswidth = 32;
+    default regwidth = 32;
+    default sw = rw;
+    default hw = r;
+
+    reg msk_hash_lo {
+    
+        name = "Pluto MSK FPGA Hash ID - Lower 32-bits";
+    
+        default sw = r; 
+        default hw = na;
+    
+        field { 
+            name = "Hash ID Lower 32-bits";
+            desc = "Lower 32-bits of Pluto MSK FPGA Hash ID";
+        } hash_id_lo[31:0] = 0xAAAA5555;
+    };
+
+    reg msk_hash_hi {
+    
+        name = "Pluto MSK FPGA Hash ID - Upper 32-bits";
+    
+        default sw = r; 
+        default hw = na;
+    
+        field { 
+            name = "Hash ID Upper 32-bits";
+            desc = "Upper 32-bits of Pluto MSK FPGA Hash ID";
+        } hash_id_hi[31:0] = 0x5555AAAA;
+    };
+
+    reg msk_init {
+    
+        name = "MSK Modem Initialization Control";
+        desc = "Synchronous initialization of MSK Modem functions, does not affect configuration registers.";
+    
+        field { 
+            name = "Tx/Rx Init Enable";
+            desc = "0 -> Normal modem operation 
+                    1 -> Initialize Tx and Rx";
+        } txrxinit = 1;
+    
+        field { 
+            name = "Tx Init Enable";
+            desc = "0 -> Normal Tx operation 
+                    1 -> Initialize Tx";
+        } txinit = 1;
+    
+        field { 
+            name = "Rx Init Enable";
+            desc = "0 -> Normal Rx operation 
+                    1 -> Initialize Rx";
+        } rxinit = 1;
+    };
+
+    reg msk_ctrl {
+    
+        name = "MSK Modem Control";
+        desc = "MSK Modem Configuration and Control";
+    
+        field { 
+            name = "Push-to-Talk Enable";
+            desc = "0 -> PTT Disabled
+                    1 -> PTT Enabled";
+        } ptt = 0;
+        field { 
+            name = "Modem Digital Tx -> Rx Loopback Enable";
+            desc = "0 -> Modem loopback disabled
+                    1 -> Modem loopback enabled";
+        } loopback_ena = 0;
+        field { 
+            name = "Rx Data Invert Enable";
+            desc = "0 -> Rx data normal
+                    1 -> Rx data inverted";
+        } rx_invert = 0;
+        field { 
+            desc = "Clear Tx Bit Counter and Tx Enable Counter";
+            name = "Clear Status Counters";
+            singlepulse = true; 
+        } clear_counts = 0;
+        field { 
+            name = "Differential Encoder -> Decoder Loopback Enable";
+            desc = "0 -> Differential Encoder -> Decoder loopback disabled
+                    1 -> Differential Encoder -> Decoder loopback enabled";
+        } diff_encoder_loopback = 0;
+    };
+
+    reg msk_stat_0 {
+        name = "MSK Modem Status 0";
+        desc = "Modem status bits";
+        regwidth = 32;
+        field { 
+            name = "Demodulator Sync Status";
+            desc = "Demodulator Sync Status - not currently implemented";
+            sw = r; 
+            hw = w; 
+        } demod_sync_lock = 0;
+        field { 
+            name = "AD9363 DAC Interface Tx Enable Input Active";
+            desc = "1 -> Data to DAC Enabled
+                    0 -> Data to DAC Disabled";
+            sw = r; 
+            hw = w; 
+        } tx_enable=0;
+        field { 
+            name = "AD9363 ADC Interface Rx Enable Input Active";
+            desc = "1 -> Data from ADC Enabled
+                    0 -> Data from ADC Disabled";
+            sw = r; 
+            hw = w; 
+        } rx_enable = 0;
+        field { 
+            name = "Tx S_AXIS_VALID";
+            desc = "1 -> S_AXIS_VALID Enabled
+                    0 -> S_AXIS_VALID Disabled";
+            sw = r; 
+            hw = w; 
+        } tx_axis_valid = 0;
+    };
+
+    reg msk_stat_1 {
+        name = "MSK Modem Status 1";
+        desc = "Modem status data";
+        regwidth = 32;
+        field { 
+            name = "Tx Bit Count";
+            desc = "Count of data requests made by modem";
+            sw = r; 
+            hw = w; 
+        } tx_bit_counter[31:0];
+    };
+
+    reg msk_stat_2 {
+        name = "MSK Modem Status 2";
+        desc = "Modem status data";
+        regwidth = 32;
+        field { 
+            desc = "Number of clocks on which Tx Enable is active";
+            name = "Tx Enable Count";
+            sw = r; 
+            hw = w; 
+        } tx_ena_counter[31:0] = 0;
+    };
+
+    reg config_nco_fw {
+        regwidth = 32;
+        field { 
+            name = "Frequency Control Word";
+            desc = "Sets the center frequency of the NCO as FW = Fn * 2^32/Fs, 
+                    where Fn is the desired NCO frequency, and Fs is the NCO sample rate";
+        } config_data[31:0] = 0;
+    };
+
+    reg rx_sample_discard {
+        name = "Rx Sample Discard";
+        desc = "Configure samples discard operation for demodulator";
+        regwidth = 32;
+        field { 
+            desc = "Number of Rx samples to discard";
+            name = "Rx Sample Discard Value";
+        } rx_sample_discard[7:0] = 0;
+        field { 
+            desc = "Number of NCO samples to discard";
+            name = "Rx NCO Sample Discard Value";
+        } rx_nco_discard[15:8] = 0;
+    };
+
+    reg lpf_config_0 {
+        name = "PI Controller Configuration and Low-pass Filter Configuration";
+        desc = "Configure PI controller and low-pass filter";
+        regwidth = 32;
+        field { 
+            name = "Freeze the accumulator's current value";
+            desc = "0 -> Normal operation
+                    1 -> Freeze current value";
+        } lpf_freeze = 0;
+        field { 
+            name = "Hold the PI Accumulator at zero";
+            desc = "0 -> Normal operation
+                    1 -> Zero and hold accumulator";
+        } lpf_zero = 0;
+        field { 
+            name = "Reserved";
+        } prbs_reserved[7:2] = 0;
+        field { 
+            name = "Lowpass IIR filter alpha";
+            desc = "Value controls the filter rolloff";
+        } lpf_alpha[31:8] = 0;
+    };
+
+    reg lpf_config_1 {
+        name = "PI Controller Configuration Configuration Register 1";
+        desc = "Configures PI Controller I-gain and divisor";
+        regwidth = 32;
+        field { 
+            name = "Integral Gain Value";
+            desc = "Value m of 0-16,777,215 sets the integral multiplier";
+        } i_gain[23:0] = 0;
+        field { 
+            name = "Integral Gain Bit Shift";
+            desc = "Value n of 0-32 sets the integral divisor as 2^-n";
+        } i_shift[31:24] = 0;
+    };
+
+    reg lpf_config_2 {
+        name = "PI Controller Configuration Configuration Register 2";
+        desc = "Configures PI Controller I-gain and divisor";
+        regwidth = 32;
+        field { 
+            name = "Proportional Gain Value";
+            desc = "Value m of 0-16,777,215 sets the proportional multiplier";
+        } p_gain[23:0] = 0;
+        field { 
+            name = "Proportional Gain Bit Shift";
+            desc = "Value n of 0-32 sets the proportional divisor as 2^-n";
+        } p_shift[31:24] = 0;
+    };
+
+    reg data_width {
+        regwidth = 32;
+        field { 
+            name = "Modem input/output data width";
+            desc = "Set the data width of the modem input/output";
+        } data_width[7:0] = 8;
+    };
+
+    reg prbs_ctrl {
+        name = "PRBS Control 0";
+        desc = "Configures operation of the PRBS Generator and Monitor";
+        regwidth = 32;
+        field { 
+            name = "PRBS Data Select";
+            desc = "0 -> Select Normal Tx Data
+                    1 -> Select PRBS Tx Data";
+        } prbs_sel = 0;
+        field { 
+            name = "PRBS Error Insert";
+            desc = "0 -> 1 :  Insert bit error in Tx data (both Normal and PRBS)
+                    1 -> 0 : Insert bit error in Tx data (both Normal and PRBS)";
+            sw = w; 
+            hw = r; 
+            singlepulse = true; 
+        } prbs_error_insert = 0;
+        field { 
+            name = "PRBS Clear Counters";
+            desc = "0 -> 1 : Clear PRBS Counters
+                    1 -> 0 : Clear PRBS Counters";
+            sw = w; 
+            hw = r; 
+            singlepulse = true; 
+        } prbs_clear = 0;
+        field { 
+            name = "PRBS Manual Sync";
+            desc = "0 -> 1 : Synchronize PRBS monitor
+                    1 -> 0 : Synchronize PRBS monitor";
+            sw = w; 
+            hw = r; 
+            singlepulse = true; 
+        } prbs_manual_sync = 0;    
+        field { 
+            name = "Reserved";
+        } prbs_reserved[15:4] = 0;
+        field { 
+            name = "PRBS Auto Sync Threshold";
+            desc = "0 : Auto Sync Disabled
+                    N > 0 : Auto sync after N errors";
+        } prbs_sync_threshold[31:16] = 0;
+    };
+
+    reg config_prbs_seed {
+        name = "PRBS Control 1";
+        desc = "PRBS Initial State";
+        regwidth = 32;
+        field { 
+            name = "PRBS Seed";
+            desc = "Sets the starting value of the PRBS generator";
+        } config_data[31:0] = 0;
+    };
+
+    reg config_prbs_poly {
+        name = "PRBS Control 2";
+        desc = "PRBS Polynomial";
+        regwidth = 32;
+        field { 
+            name = "PRBS Polynomial";
+            desc = "Bit positions set to '1' indicate polynomial feedback positions";
+        } config_data[31:0] = 0;
+    };
+
+    reg config_prbs_errmask {
+        name = "PRBS Control 3";
+        desc = "PRBS Error Mask";
+        regwidth = 32;
+        field { 
+            name = "PRBS Error Mask";
+            desc = "Bit positions set to '1' indicate bits that are inverted when a bit error is inserted";
+        } config_data[31:0] = 0;
+    };
+
+    reg stat_32_bits {
+        name = "PRBS Status 0";
+        desc = "PRBS Bits Received";
+        regwidth = 32;
+        field { 
+            name = "PRBS Bits Received";
+            desc = "Number of bits received by the PRBS monitor since last
+                    BER can be calculated as the ratio of received bits to errored-bits";
+            sw = r; 
+            hw = w; 
+        } status_data[31:0] = 0;
+    };
+
+    reg stat_32_errs {
+        name = "PRBS Status 1";
+        desc = "PRBS Bit Errors";
+        regwidth = 32;
+        field { 
+            name = "PRBS Bit Errors";
+            desc = "Number of errored-bits received by the PRBS monitor since last sync
+                    BER can be calculated as the ratio of received bits to errored-bits";
+            sw = r; 
+            hw = w; 
+        } status_data[31:0] = 0;
+    };
+
+    reg stat_32_lpf_acc {
+        regwidth = 32;
+        field { 
+            name = "PI Controller Accumulator Value";
+            desc = "PI Controller Accumulator Value";
+            sw = r; 
+            hw = w; 
+        } status_data[31:0] = 0;
+    };
+
+    reg msk_stat_3 {
+        name = "MSK Modem Status 3";
+        desc = "Modem status data";
+        regwidth = 32;
+        field { 
+            desc = "Number completed S_AXIS transfers";
+            name = "S_AXIS Transfers";
+            sw = r; 
+            hw = w; 
+        } xfer_count[31:0] = 0;
+    };
+
+    reg tx_sync_ctrl {
+        name = "Transmitter Sync Control";
+        desc = "Provides control bits for generation of transmitter synchronization patterns";
+        regwidth = 32;
+        field { 
+            name = "Tx Sync Enable";
+            desc = "0 -> Disable sync transmission
+                    1 -> Enable sync transmission when PTT is asserted";
+        } tx_sync_ena = 0;
+        field { 
+            name = "Tx Sync Force";
+            desc = "0 : Normal operation)
+                    1 : Transmit synchronization pattern)";
+        } tx_sync_force = 0;
+        field { 
+            name = "Tx F1 Sync Enable";
+            desc = "Enables/Disables transmission of F1 tone for receiver synchronization
+                    0 : F1 tone transmission disabled
+                    1 : F1 tone transmission enabled
+                    Both F1 and F2 can be enabled at the same time";
+        } tx_sync_f1 = 0;
+        field { 
+            name = "Tx F2 Sync Enable";
+            desc = "Enables/Disables transmission of F2 tone for receiver synchronization
+                    0 : F2 tone transmission disabled
+                    1 : F2 tone transmission enabled
+                    Both F1 and F2 can be enabled at the same time";
+        } tx_sync_f2 = 0;
+    };
+
+    reg tx_sync_cnt {
+        name = "Transmitter Sync Duration";
+        desc = "Sets the duration of the synchronization tones when enabled";
+        regwidth = 32;
+        field { 
+            name = "Tx sync duration";
+            desc = "Value from 0x00_0000 to 0xFF_FFFF. 
+                    This value represents the number bit-times the synchronization 
+                    signal should be sent after PTT is asserted.";
+            sw = rw; 
+            hw = r; 
+        } tx_sync_cnt[23:0] = 0;
+    };
+
+    reg lowpass_ema_alpha {
+        name = "Exponential Moving Average Alpha";
+        desc = "Sets the alpha for the EMA";
+        regwidth = 32;
+        field { 
+            name = "EMA alpha";
+            desc = "Value from 0x0_0000 to 0x3_FFFF represent the EMA alpha";
+        } alpha[17:0] = 0;
+    };
+
+    reg rx_power {
+        name = "Receive Power";
+        desc = "Receive power computed from I/Q ssamples";
+        regwidth = 32;
+        field { 
+            name = "Receive Power";
+            desc = "Value that represent the RMS power of the incoming I;";
+            sw = r; 
+            hw = w; 
+        } rx_power[22:0] = 0;
+    };
+
+    field data32 {
+        fieldwidth = 32;
+        sw = r;
+        hw = w;
+    };
+
+    reg observation_data {
+        regwidth = 32;
+        data32 data[31:0] = 0;
+    };
+
+
+                msk_hash_lo         Hash_ID_Low;
+                msk_hash_hi         Hash_ID_High;
+                msk_init            MSK_Init;
+                msk_ctrl            MSK_Control;
+                msk_stat_0          MSK_Status;
+                msk_stat_1          Tx_Bit_Count;
+                msk_stat_2          Tx_Enable_Count;
+                config_nco_fw       Fb_FreqWord;
+                                    Fb_FreqWord->desc = "Set Modem Data Rate";
+                                    Fb_FreqWord->name = "Bitrate NCO Frequency Control Word";
+                config_nco_fw       TX_F1_FreqWord;
+                                    TX_F1_FreqWord->desc = "Set Modulator F1 Frequency";
+                                    TX_F1_FreqWord->name = "Tx F1 NCO Frequency Control Word";
+                config_nco_fw       TX_F2_FreqWord;
+                                    TX_F2_FreqWord->desc = "Set Modulator F2 Frequency";
+                                    TX_F2_FreqWord->name = "Tx F2 NCO Frequency Control Word";
+                config_nco_fw       RX_F1_FreqWord;
+                                    RX_F1_FreqWord->desc = "Set Demodulator F1 Frequency";
+                                    RX_F1_FreqWord->name = "Rx F1 NCO Frequency Control Word";
+                config_nco_fw       RX_F2_FreqWord;
+                                    RX_F2_FreqWord->desc = "Set Demodulator F2 Frequency";
+                                    RX_F2_FreqWord->name = "Rx F2 NCO Frequency Control Word";
+                lpf_config_0        LPF_Config_0;
+                lpf_config_1        LPF_Config_1;
+                data_width          Tx_Data_Width;
+                                    Tx_Data_Width->desc = "Set the parallel data width of the parallel-to-serial converter";
+                                    Tx_Data_Width->name = "Modem Tx Input Data Width";
+                data_width          Rx_Data_Width;
+                                    Rx_Data_Width->desc = "Set the parallel data width of the serial-to-parallel converter";
+                                    Rx_Data_Width->name = "Modem Rx Output Data Width";
+                prbs_ctrl           PRBS_Control;
+                config_prbs_seed    PRBS_Initial_State;
+                config_prbs_poly    PRBS_Polynomial;
+                config_prbs_errmask PRBS_Error_Mask;
+                stat_32_bits        PRBS_Bit_Count;
+                stat_32_errs        PRBS_Error_Count;
+                stat_32_lpf_acc     LPF_Accum_F1;
+                                    LPF_Accum_F1->name = "F1 PI Controller Accumulator";
+                                    LPF_Accum_F1->desc = "Value of the F1 PI Controller Accumulator";
+                stat_32_lpf_acc     LPF_Accum_F2;
+                                    LPF_Accum_F2->name = "F2 PI Controller Accumulator";
+                                    LPF_Accum_F2->desc = "Value of the F2 PI Controller Accumulator";
+                msk_stat_3          axis_xfer_count;
+                rx_sample_discard   Rx_Sample_Discard;
+                lpf_config_2        LPF_Config_2;
+                observation_data    f1_nco_adjust;
+                                    f1_nco_adjust->name = "F1 NCO Frequency Adjust";
+                                    f1_nco_adjust->desc = "Frequency offet applied to the F1 NCO";
+                                    f1_nco_adjust.data->name = "F1 NCO Frequency Adjust";
+                                    f1_nco_adjust.data->desc = "Frequency offet applied to the F1 NCO";
+                observation_data    f2_nco_adjust;
+                                    f2_nco_adjust->name = "F2 NCO Frequency Adjust";
+                                    f2_nco_adjust->desc = "Frequency offet applied to the F2 NCO";
+                                    f2_nco_adjust.data->name = "F2 NCO Frequency Adjust";
+                                    f2_nco_adjust.data->desc = "Frequency offet applied to the F2 NCO";
+                observation_data    f1_error;
+                                    f1_error->name = "F1 Error Value";
+                                    f1_error->desc = "Error value of the F1 Costas loop after each active bit period";
+                                    f1_error.data->name = "F1 Error Value";
+                                    f1_error.data->desc = "Error value of the F1 Costas loop after each active bit period";
+                observation_data    f2_error;
+                                    f2_error->name = "F2 Error Value";
+                                    f2_error->desc = "Error value of the F2 Costas loop after each active bit period";
+                                    f2_error.data->name = "F2 Error Value";
+                                    f2_error.data->desc = "Error value of the F2 Costas loop after each active bit period";
+                tx_sync_ctrl        Tx_Sync_Ctrl;
+                tx_sync_cnt         Tx_Sync_Cnt;
+                lowpass_ema_alpha   lowpass_ema_alpha1;
+                lowpass_ema_alpha   lowpass_ema_alpha2;
+                rx_power            rx_power;
+
+};

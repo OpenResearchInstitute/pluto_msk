@@ -17,16 +17,17 @@ ifeq ($(SIM),nvc)
 endif
 
 SRC = ../src
-RDL = ../rdl/vhdl/msk_top_regs
-
-VHDL_SOURCES_desyrdl = ../rdl/vhdl/desyrdl/pkg_desyrdl_common.vhd
-
-VHDL_LIB_ORDER = desyrdl
+RDL = ../rdl/
 
 # use VHDL_SOURCES for VHDL files
-VHDL_SOURCES += $(RDL)/msk_top_regs_decoder_axi4l.vhd \
-				$(RDL)/pkg_msk_top_regs.vhd \
-				$(RDL)/msk_top_regs.vhd \
+VHDL_SOURCES += $(RDL)/src/axi4lite_intf_pkg.vhd \
+				$(RDL)/src/reg_utils.vhd \
+				$(RDL)/outputs/rtl/msk_top_regs_pkg.vhd \
+				$(RDL)/outputs/rtl/msk_top_regs.vhd \
+				$(SRC)/cdc_resync.vhd \
+				$(SRC)/axis_async_fifo.vhd \
+				$(SRC)/axis_dma_adapter.vhd \
+				$(SRC)/byte_to_bit_deserializer.vhd \
 				$(SRC)/msk_top_csr.vhd \
 				../lowpass_ema/src/lowpass_ema.vhd \
 				../power_detector/src/power_detector.vhd \

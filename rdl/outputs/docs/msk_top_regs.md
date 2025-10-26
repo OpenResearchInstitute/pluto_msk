@@ -1,24 +1,15 @@
 <!---
 Markdown description for SystemRDL register map.
 
-Don't override. Generated from: Pluto_MSK_Modem
-  - msk_top_regs.rdl
+Don't override. Generated from: msk_top_regs
+  - src/regblock_udps.rdl
+  - src/msk_top_regs.rdl
 -->
 
-## Pluto_MSK_Modem address map
+## msk_top_regs address map
 
 - Absolute Address: 0x0
 - Base Offset: 0x0
-- Size: 0x43C00090
-
-|  Offset  |  Identifier  |        Name       |
-|----------|--------------|-------------------|
-|0x43C00000|pluto_msk_regs|Pluto MSK Registers|
-
-## pluto_msk_regs address map
-
-- Absolute Address: 0x43C00000
-- Base Offset: 0x43C00000
 - Size: 0x90
 
 <p>MSK Modem Configuration and Status Registers</p>
@@ -27,8 +18,8 @@ Don't override. Generated from: Pluto_MSK_Modem
 |------|------------------|-------------------------------------------------------------|
 | 0x00 |    Hash_ID_Low   |            Pluto MSK FPGA Hash ID - Lower 32-bits           |
 | 0x04 |   Hash_ID_High   |            Pluto MSK FPGA Hash ID - Upper 32-bits           |
-| 0x08 |     MSK_Init     |                     MSK Modem Control 0                     |
-| 0x0C |    MSK_Control   |                     MSK Modem Control 1                     |
+| 0x08 |     MSK_Init     |               MSK Modem Initialization Control              |
+| 0x0C |    MSK_Control   |                      MSK Modem Control                      |
 | 0x10 |    MSK_Status    |                      MSK Modem Status 0                     |
 | 0x14 |   Tx_Bit_Count   |                      MSK Modem Status 1                     |
 | 0x18 |  Tx_Enable_Count |                      MSK Modem Status 2                     |
@@ -64,7 +55,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### Hash_ID_Low register
 
-- Absolute Address: 0x43C00000
+- Absolute Address: 0x0
 - Base Offset: 0x0
 - Size: 0x4
 
@@ -78,7 +69,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### Hash_ID_High register
 
-- Absolute Address: 0x43C00004
+- Absolute Address: 0x4
 - Base Offset: 0x4
 - Size: 0x4
 
@@ -92,7 +83,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### MSK_Init register
 
-- Absolute Address: 0x43C00008
+- Absolute Address: 0x8
 - Base Offset: 0x8
 - Size: 0x4
 
@@ -121,7 +112,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### MSK_Control register
 
-- Absolute Address: 0x43C0000C
+- Absolute Address: 0xC
 - Base Offset: 0xC
 - Size: 0x4
 
@@ -130,7 +121,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 |Bits|      Identifier     |Access|Reset|                      Name                     |
 |----|---------------------|------|-----|-----------------------------------------------|
 |  0 |         ptt         |  rw  | 0x0 |              Push-to-Talk Enable              |
-|  1 |     loopback_ena    |  rw  | 0x0 |             Modem Loopback Enable             |
+|  1 |     loopback_ena    |  rw  | 0x0 |     Modem Digital Tx -> Rx Loopback Enable    |
 |  2 |      rx_invert      |  rw  | 0x0 |             Rx Data Invert Enable             |
 |  3 |     clear_counts    |  rw  | 0x0 |             Clear Status Counters             |
 |  4 |diff_encoder_loopback|  rw  | 0x0 |Differential Encoder -> Decoder Loopback Enable|
@@ -161,7 +152,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### MSK_Status register
 
-- Absolute Address: 0x43C00010
+- Absolute Address: 0x10
 - Base Offset: 0x10
 - Size: 0x4
 
@@ -195,7 +186,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### Tx_Bit_Count register
 
-- Absolute Address: 0x43C00014
+- Absolute Address: 0x14
 - Base Offset: 0x14
 - Size: 0x4
 
@@ -203,7 +194,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 |Bits|  Identifier  |Access|Reset|    Name    |
 |----|--------------|------|-----|------------|
-|31:0|tx_bit_counter|   r  | 0x0 |Tx Bit Count|
+|31:0|tx_bit_counter|   r  |  —  |Tx Bit Count|
 
 #### tx_bit_counter field
 
@@ -211,7 +202,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### Tx_Enable_Count register
 
-- Absolute Address: 0x43C00018
+- Absolute Address: 0x18
 - Base Offset: 0x18
 - Size: 0x4
 
@@ -227,7 +218,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### Fb_FreqWord register
 
-- Absolute Address: 0x43C0001C
+- Absolute Address: 0x1C
 - Base Offset: 0x1C
 - Size: 0x4
 
@@ -239,11 +230,12 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 #### config_data field
 
-<p>Sets the center frequency of the NCO as FW = Fn * 2^32/Fs, where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
+<p>Sets the center frequency of the NCO as FW = Fn * 2^32/Fs, 
+where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
 
 ### TX_F1_FreqWord register
 
-- Absolute Address: 0x43C00020
+- Absolute Address: 0x20
 - Base Offset: 0x20
 - Size: 0x4
 
@@ -255,11 +247,12 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 #### config_data field
 
-<p>Sets the center frequency of the NCO as FW = Fn * 2^32/Fs, where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
+<p>Sets the center frequency of the NCO as FW = Fn * 2^32/Fs, 
+where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
 
 ### TX_F2_FreqWord register
 
-- Absolute Address: 0x43C00024
+- Absolute Address: 0x24
 - Base Offset: 0x24
 - Size: 0x4
 
@@ -271,11 +264,12 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 #### config_data field
 
-<p>Sets the center frequency of the NCO as FW = Fn * 2^32/Fs, where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
+<p>Sets the center frequency of the NCO as FW = Fn * 2^32/Fs, 
+where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
 
 ### RX_F1_FreqWord register
 
-- Absolute Address: 0x43C00028
+- Absolute Address: 0x28
 - Base Offset: 0x28
 - Size: 0x4
 
@@ -287,11 +281,12 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 #### config_data field
 
-<p>Sets the center frequency of the NCO as FW = Fn * 2^32/Fs, where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
+<p>Sets the center frequency of the NCO as FW = Fn * 2^32/Fs, 
+where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
 
 ### RX_F2_FreqWord register
 
-- Absolute Address: 0x43C0002C
+- Absolute Address: 0x2C
 - Base Offset: 0x2C
 - Size: 0x4
 
@@ -303,11 +298,12 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 #### config_data field
 
-<p>Sets the center frequency of the NCO as FW = Fn * 2^32/Fs, where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
+<p>Sets the center frequency of the NCO as FW = Fn * 2^32/Fs, 
+where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
 
 ### LPF_Config_0 register
 
-- Absolute Address: 0x43C00030
+- Absolute Address: 0x30
 - Base Offset: 0x30
 - Size: 0x4
 
@@ -317,7 +313,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 |----|-------------|------|-----|--------------------------------------|
 |  0 |  lpf_freeze |  rw  | 0x0 |Freeze the accumulator's current value|
 |  1 |   lpf_zero  |  rw  | 0x0 |    Hold the PI Accumulator at zero   |
-| 7:2|prbs_reserved|   w  | 0x0 |                   —                  |
+| 7:2|prbs_reserved|  rw  | 0x0 |               Reserved               |
 |31:8|  lpf_alpha  |  rw  | 0x0 |       Lowpass IIR filter alpha       |
 
 #### lpf_freeze field
@@ -336,7 +332,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### LPF_Config_1 register
 
-- Absolute Address: 0x43C00034
+- Absolute Address: 0x34
 - Base Offset: 0x34
 - Size: 0x4
 
@@ -357,7 +353,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### Tx_Data_Width register
 
-- Absolute Address: 0x43C00038
+- Absolute Address: 0x38
 - Base Offset: 0x38
 - Size: 0x4
 
@@ -373,7 +369,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### Rx_Data_Width register
 
-- Absolute Address: 0x43C0003C
+- Absolute Address: 0x3C
 - Base Offset: 0x3C
 - Size: 0x4
 
@@ -389,7 +385,7 @@ Don't override. Generated from: Pluto_MSK_Modem
 
 ### PRBS_Control register
 
-- Absolute Address: 0x43C00040
+- Absolute Address: 0x40
 - Base Offset: 0x40
 - Size: 0x4
 
@@ -401,8 +397,8 @@ Don't override. Generated from: Pluto_MSK_Modem
 |  1  | prbs_error_insert |   w  | 0x0 |    PRBS Error Insert   |
 |  2  |     prbs_clear    |   w  | 0x0 |   PRBS Clear Counters  |
 |  3  |  prbs_manual_sync |   w  | 0x0 |    PRBS Manual Sync    |
-| 15:4|   prbs_reserved   |   w  | 0x0 |            —           |
-|31:16|prbs_sync_threshold|   w  | 0x0 |PRBS Auto Sync Threshold|
+| 15:4|   prbs_reserved   |  rw  | 0x0 |        Reserved        |
+|31:16|prbs_sync_threshold|  rw  | 0x0 |PRBS Auto Sync Threshold|
 
 #### prbs_sel field
 
@@ -431,7 +427,7 @@ N &gt; 0 : Auto sync after N errors</p>
 
 ### PRBS_Initial_State register
 
-- Absolute Address: 0x43C00044
+- Absolute Address: 0x44
 - Base Offset: 0x44
 - Size: 0x4
 
@@ -447,7 +443,7 @@ N &gt; 0 : Auto sync after N errors</p>
 
 ### PRBS_Polynomial register
 
-- Absolute Address: 0x43C00048
+- Absolute Address: 0x48
 - Base Offset: 0x48
 - Size: 0x4
 
@@ -463,7 +459,7 @@ N &gt; 0 : Auto sync after N errors</p>
 
 ### PRBS_Error_Mask register
 
-- Absolute Address: 0x43C0004C
+- Absolute Address: 0x4C
 - Base Offset: 0x4C
 - Size: 0x4
 
@@ -479,7 +475,7 @@ N &gt; 0 : Auto sync after N errors</p>
 
 ### PRBS_Bit_Count register
 
-- Absolute Address: 0x43C00050
+- Absolute Address: 0x50
 - Base Offset: 0x50
 - Size: 0x4
 
@@ -496,7 +492,7 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 ### PRBS_Error_Count register
 
-- Absolute Address: 0x43C00054
+- Absolute Address: 0x54
 - Base Offset: 0x54
 - Size: 0x4
 
@@ -513,7 +509,7 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 ### LPF_Accum_F1 register
 
-- Absolute Address: 0x43C00058
+- Absolute Address: 0x58
 - Base Offset: 0x58
 - Size: 0x4
 
@@ -529,7 +525,7 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 ### LPF_Accum_F2 register
 
-- Absolute Address: 0x43C0005C
+- Absolute Address: 0x5C
 - Base Offset: 0x5C
 - Size: 0x4
 
@@ -545,7 +541,7 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 ### axis_xfer_count register
 
-- Absolute Address: 0x43C00060
+- Absolute Address: 0x60
 - Base Offset: 0x60
 - Size: 0x4
 
@@ -561,7 +557,7 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 ### Rx_Sample_Discard register
 
-- Absolute Address: 0x43C00064
+- Absolute Address: 0x64
 - Base Offset: 0x64
 - Size: 0x4
 
@@ -582,7 +578,7 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 ### LPF_Config_2 register
 
-- Absolute Address: 0x43C00068
+- Absolute Address: 0x68
 - Base Offset: 0x68
 - Size: 0x4
 
@@ -603,7 +599,7 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 ### f1_nco_adjust register
 
-- Absolute Address: 0x43C0006C
+- Absolute Address: 0x6C
 - Base Offset: 0x6C
 - Size: 0x4
 
@@ -619,7 +615,7 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 ### f2_nco_adjust register
 
-- Absolute Address: 0x43C00070
+- Absolute Address: 0x70
 - Base Offset: 0x70
 - Size: 0x4
 
@@ -635,7 +631,7 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 ### f1_error register
 
-- Absolute Address: 0x43C00074
+- Absolute Address: 0x74
 - Base Offset: 0x74
 - Size: 0x4
 
@@ -651,7 +647,7 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 ### f2_error register
 
-- Absolute Address: 0x43C00078
+- Absolute Address: 0x78
 - Base Offset: 0x78
 - Size: 0x4
 
@@ -667,7 +663,7 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 ### Tx_Sync_Ctrl register
 
-- Absolute Address: 0x43C0007C
+- Absolute Address: 0x7C
 - Base Offset: 0x7C
 - Size: 0x4
 
@@ -706,7 +702,7 @@ Both F1 and F2 can be enabled at the same time</p>
 
 ### Tx_Sync_Cnt register
 
-- Absolute Address: 0x43C00080
+- Absolute Address: 0x80
 - Base Offset: 0x80
 - Size: 0x4
 
@@ -718,11 +714,13 @@ Both F1 and F2 can be enabled at the same time</p>
 
 #### tx_sync_cnt field
 
-<p>Value from 0x00_0000 to 0xFF_FFFF. This value represents the number bit-times the synchronization signal should be sent after PTT is asserted.</p>
+<p>Value from 0x00_0000 to 0xFF_FFFF. 
+This value represents the number bit-times the synchronization 
+signal should be sent after PTT is asserted.</p>
 
 ### lowpass_ema_alpha1 register
 
-- Absolute Address: 0x43C00084
+- Absolute Address: 0x84
 - Base Offset: 0x84
 - Size: 0x4
 
@@ -738,7 +736,7 @@ Both F1 and F2 can be enabled at the same time</p>
 
 ### lowpass_ema_alpha2 register
 
-- Absolute Address: 0x43C00088
+- Absolute Address: 0x88
 - Base Offset: 0x88
 - Size: 0x4
 
@@ -754,7 +752,7 @@ Both F1 and F2 can be enabled at the same time</p>
 
 ### rx_power register
 
-- Absolute Address: 0x43C0008C
+- Absolute Address: 0x8C
 - Base Offset: 0x8C
 - Size: 0x4
 
