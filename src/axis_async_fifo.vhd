@@ -256,8 +256,6 @@ BEGIN
                 --prog_full       <= '0';
                 fifo_overflow   <= '0';
                 fifo_underflow  <= '0';
-                fifo_wr_ptr     <= (OTHERS => '0');
-                fifo_rd_ptr     <= (OTHERS => '0');
                 status_ack      <= '0';
             ELSE
 
@@ -304,6 +302,7 @@ BEGIN
                 wr_status_req_sync1 <= '0';
                 wr_status_req_sync2 <= '0';
                 wr_status_ack       <= '0';
+                fifo_wr_ptr         <= (OTHERS => '0');
             ELSE 
                 wr_status_req_sync1 <= srequest;
                 wr_status_req_sync2 <= wr_status_req_sync1;
@@ -323,6 +322,7 @@ BEGIN
                 rd_status_req_sync1 <= '0';
                 rd_status_req_sync2 <= '0';
                 rd_status_ack       <= '0';
+                fifo_rd_ptr         <= (OTHERS => '0');
             ELSE 
                 rd_status_req_sync1 <= srequest;
                 rd_status_req_sync2 <= rd_status_req_sync1;

@@ -763,7 +763,7 @@ async def msk_test_1(dut):
     await RisingEdge(dut.clk)
 
     msksim = msk(dut, dut.clk, dut.tx_samples_I, dut.tx_samples_Q, dut.rx_sample_clk, dut.rx_samples_dec)
-    #pn = prbs(dut, dut.clk, axis, tx_data_width, rx_data_width, dut.rx_data, dut.rx_dvalid)
+    pn = prbs(dut, dut.clk, axis, tx_data_width, rx_data_width, dut.m_axis_tdata, dut.m_axis_tvalid)
 
     ducsim = duc(dut, msksim, local_osc, tx_sample_period)
     ddcsim = ddc(dut, msksim, ducsim, local_osc, tx_sample_period)
@@ -772,8 +772,8 @@ async def msk_test_1(dut):
     await cocotb.start(msksim.rx_sample_capture())
     await cocotb.start(ducsim.upconvert())
     await cocotb.start(ddcsim.downconvert())
-    # await cocotb.start(pn.generate_data())
-    # await cocotb.start(pn.check_data())
+    await cocotb.start(pn.generate_data())
+    await cocotb.start(pn.check_data())
 
     sim_time = get_sim_time("us")
     sim_start = sim_time
@@ -783,8 +783,8 @@ async def msk_test_1(dut):
 
     msksim.sim_run = True
 
-    #pn.sim_run = True
-    #pn.sync = 100
+    pn.sim_run = True
+    pn.sync = 100
 
     while sim_time < run_time: #sim_start + run_time:
 
