@@ -308,7 +308,7 @@ BEGIN
                 wr_status_req_sync2 <= wr_status_req_sync1;
                 wr_status_ack       <= wr_status_req_sync2;
 
-                IF wr_status_req_sync2 THEN
+                IF wr_status_req_sync2 = '1' THEN
                     fifo_wr_ptr     <= wr_ptr_bin;
                 END IF;
             END IF;
