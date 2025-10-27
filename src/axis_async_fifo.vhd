@@ -328,7 +328,7 @@ BEGIN
                 rd_status_req_sync2 <= rd_status_req_sync1;
                 rd_status_ack       <= rd_status_req_sync2;
 
-                IF rd_status_req_sync2 THEN
+                IF rd_status_req_sync2 = '1' THEN
                     fifo_rd_ptr     <= rd_ptr_bin;
                 END IF;
             END IF;
