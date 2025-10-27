@@ -164,6 +164,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.rx_power'):
             self.assertEqual(self.dut.rx_power.inst_name, 'rx_power') # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_power.full_inst_name, 'msk_top_regs.rx_power')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.tx_async_fifo_rd_wr_ptr'):
+            self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.inst_name, 'tx_async_fifo_rd_wr_ptr') # type: ignore[union-attr]
+            self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.full_inst_name, 'msk_top_regs.tx_async_fifo_rd_wr_ptr')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
+            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.inst_name, 'rx_async_fifo_rd_wr_ptr') # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.full_inst_name, 'msk_top_regs.rx_async_fifo_rd_wr_ptr')  # type: ignore[union-attr]
         with self.subTest(msg='node: msk_top_regs.Hash_ID_Low.hash_id_lo'):
             self.assertEqual(self.dut.Hash_ID_Low.hash_id_lo.inst_name, 'hash_id_lo') # type: ignore[union-attr]
             self.assertEqual(self.dut.Hash_ID_Low.hash_id_lo.full_inst_name, 'msk_top_regs.Hash_ID_Low.hash_id_lo')  # type: ignore[union-attr]
@@ -341,6 +347,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.rx_power.rx_power'):
             self.assertEqual(self.dut.rx_power.rx_power.inst_name, 'rx_power') # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_power.rx_power.full_inst_name, 'msk_top_regs.rx_power.rx_power')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.tx_async_fifo_rd_wr_ptr.data'):
+            self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.data.inst_name, 'data') # type: ignore[union-attr]
+            self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.data.full_inst_name, 'msk_top_regs.tx_async_fifo_rd_wr_ptr.data')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.rx_async_fifo_rd_wr_ptr.data'):
+            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.data.inst_name, 'data') # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.data.full_inst_name, 'msk_top_regs.rx_async_fifo_rd_wr_ptr.data')  # type: ignore[union-attr]
         
 
     def test_name_property(self)  -> None:
@@ -596,6 +608,20 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             
                 
             self.assertEqual(self.dut.rx_power.rdl_name, "Receive Power") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.tx_async_fifo_rd_wr_ptr'):
+            
+                
+            self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.rdl_name, "Tx async FIFO read and write pointers") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
+            
+                
+            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.rdl_name, "Rx async FIFO read and write pointers") # type: ignore[union-attr]
                 
             
 
@@ -1012,6 +1038,20 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
             
 
+        with self.subTest(msg='node: msk_top_regs.tx_async_fifo_rd_wr_ptr.data'):
+            
+                
+            self.assertIsNone(self.dut.tx_async_fifo_rd_wr_ptr.data.rdl_name)  # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.rx_async_fifo_rd_wr_ptr.data'):
+            
+                
+            self.assertIsNone(self.dut.rx_async_fifo_rd_wr_ptr.data.rdl_name)  # type: ignore[union-attr]
+                
+            
+
         
 
     def test_desc(self)  -> None:
@@ -1267,6 +1307,20 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             
                 
             self.assertEqual(self.dut.rx_power.rdl_desc, "Receive power computed from I/Q ssamples") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.tx_async_fifo_rd_wr_ptr'):
+            
+                
+            self.assertIsNone(self.dut.tx_async_fifo_rd_wr_ptr.rdl_desc)  # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
+            
+                
+            self.assertIsNone(self.dut.rx_async_fifo_rd_wr_ptr.rdl_desc)  # type: ignore[union-attr]
                 
             
 
@@ -1683,6 +1737,20 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
             
 
+        with self.subTest(msg='node: msk_top_regs.tx_async_fifo_rd_wr_ptr.data'):
+            
+                
+            self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.data.rdl_desc, "Bits 31:16 -\u003e write pointer (12-bits)\nBits 15:00 -\u003e read pointer (12-bits)") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.rx_async_fifo_rd_wr_ptr.data'):
+            
+                
+            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.data.rdl_desc, "Bits 31:16 -\u003e write pointer (12-bits)\nBits 15:00 -\u003e read pointer (12-bits)") # type: ignore[union-attr]
+                
+            
+
         
 
     def test_sizes(self) -> None:
@@ -1761,12 +1829,16 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(self.dut.lowpass_ema_alpha2.size, 4) # type: ignore[union-attr]
         with self.subTest(msg='node: msk_top_regs.rx_power'):
             self.assertEqual(self.dut.rx_power.size, 4) # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.tx_async_fifo_rd_wr_ptr'):
+            self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.size, 4) # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
+            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.size, 4) # type: ignore[union-attr]
         
 
         # check the size of the address map itself
         
         with self.subTest(msg='node: msk_top_regs'):
-            self.assertEqual(self.dut.size, 144) # type: ignore[union-attr]
+            self.assertEqual(self.dut.size, 152) # type: ignore[union-attr]
         
 
 
@@ -1955,6 +2027,16 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(self.dut.rx_power.width, 32) # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_power.size, 4) # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_power.accesswidth, 32) # type: ignore[union-attr]
+        with self.subTest(msg='register: msk_top_regs.tx_async_fifo_rd_wr_ptr'):
+            self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.address, 144) # type: ignore[union-attr]
+            self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.width, 32) # type: ignore[union-attr]
+            self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.size, 4) # type: ignore[union-attr]
+            self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.accesswidth, 32) # type: ignore[union-attr]
+        with self.subTest(msg='register: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
+            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.address, 148) # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.width, 32) # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.size, 4) # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.accesswidth, 32) # type: ignore[union-attr]
         
 
     def test_memory_properties(self)  -> None:
@@ -2916,12 +2998,46 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(fut.default,0)
                 
             self.assertEqual(fut.is_volatile,True)
+        with self.subTest(msg='field: msk_top_regs.tx_async_fifo_rd_wr_ptr.data'):
+            # test properties of field: msk_top_regs.tx_async_fifo_rd_wr_ptr.data
+            fut = self.dut.tx_async_fifo_rd_wr_ptr.data # type: ignore[union-attr]
+            if not isinstance(fut, Field):
+                raise TypeError('This test relies on node being of type Field')
+            self.assertEqual(fut.lsb,0)
+            self.assertEqual(fut.msb,31)
+            self.assertEqual(fut.low,0)
+            self.assertEqual(fut.high,31)
+            self.assertEqual(fut.bitmask,0xFFFFFFFF)
+            self.assertEqual(fut.inverse_bitmask,0x0)
+            self.assertEqual(fut.max_value,0xFFFFFFFF)
+                
+            self.assertEqual(fut.default,0)
+                
+            self.assertEqual(fut.is_volatile,True)
+        with self.subTest(msg='field: msk_top_regs.rx_async_fifo_rd_wr_ptr.data'):
+            # test properties of field: msk_top_regs.rx_async_fifo_rd_wr_ptr.data
+            fut = self.dut.rx_async_fifo_rd_wr_ptr.data # type: ignore[union-attr]
+            if not isinstance(fut, Field):
+                raise TypeError('This test relies on node being of type Field')
+            self.assertEqual(fut.lsb,0)
+            self.assertEqual(fut.msb,31)
+            self.assertEqual(fut.low,0)
+            self.assertEqual(fut.high,31)
+            self.assertEqual(fut.bitmask,0xFFFFFFFF)
+            self.assertEqual(fut.inverse_bitmask,0x0)
+            self.assertEqual(fut.max_value,0xFFFFFFFF)
+                
+            self.assertEqual(fut.default,0)
+                
+            self.assertEqual(fut.is_volatile,True)
         
 
     def test_field_encoding_properties(self)  -> None:
         """
         Check that enumeration has the name and desc meta data from the systemRDL
         """
+        
+        
         
         
         
@@ -3130,6 +3246,14 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='register: msk_top_regs.rx_power'):
             
             self.assertDictEqual(self.dut.rx_power.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.tx_async_fifo_rd_wr_ptr'):
+            
+            self.assertDictEqual(self.dut.tx_async_fifo_rd_wr_ptr.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
+            
+            self.assertDictEqual(self.dut.rx_async_fifo_rd_wr_ptr.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Hash_ID_Low.hash_id_lo'):
             
@@ -3366,6 +3490,14 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='register: msk_top_regs.rx_power.rx_power'):
             
             self.assertDictEqual(self.dut.rx_power.rx_power.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.tx_async_fifo_rd_wr_ptr.data'):
+            
+            self.assertDictEqual(self.dut.tx_async_fifo_rd_wr_ptr.data.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.rx_async_fifo_rd_wr_ptr.data'):
+            
+            self.assertDictEqual(self.dut.rx_async_fifo_rd_wr_ptr.data.udp,{})
             
         
 
@@ -6161,6 +6293,122 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await rut.read(), random_value)
                 read_callback_mock.assert_called_once_with(
                                     addr=140,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+                
+
+                
+                # test that a non-writable register has no write method and attempting one generates and error
+                with self.assertRaises(AttributeError):
+                    await rut.write(0) # type: ignore[attr-defined]
+
+                # check the read has not been called in the write test
+                read_callback_mock.assert_not_called()
+        # test access operations (read and/or write) to register:
+        # msk_top_regs.tx_async_fifo_rd_wr_ptr
+        with self.subTest(msg='register: msk_top_regs.tx_async_fifo_rd_wr_ptr'):
+            rut=self.dut.tx_async_fifo_rd_wr_ptr # type: ignore[union-attr,assignment]
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                patch(base_name + '.read_addr_space', return_value=1) as read_callback_mock:
+
+                
+                if not isinstance(rut, (RegAsyncReadOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Readable Async Type')
+                
+                # test reading back 1 (the unpatched version returns 0 so this confirms the patch works)
+                self.assertEqual(await rut.read(), 1)
+                read_callback_mock.assert_called_once_with(
+                                    addr=144,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read check with high value
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0xFFFFFFFF
+                self.assertEqual(await rut.read(), 0xFFFFFFFF)
+                read_callback_mock.assert_called_once_with(
+                                    addr=144,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read of the low value
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0
+                self.assertEqual(await rut.read(), 0x0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=144,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read of a random value
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = random_value
+                self.assertEqual(await rut.read(), random_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=144,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+                
+
+                
+                # test that a non-writable register has no write method and attempting one generates and error
+                with self.assertRaises(AttributeError):
+                    await rut.write(0) # type: ignore[attr-defined]
+
+                # check the read has not been called in the write test
+                read_callback_mock.assert_not_called()
+        # test access operations (read and/or write) to register:
+        # msk_top_regs.rx_async_fifo_rd_wr_ptr
+        with self.subTest(msg='register: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
+            rut=self.dut.rx_async_fifo_rd_wr_ptr # type: ignore[union-attr,assignment]
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                patch(base_name + '.read_addr_space', return_value=1) as read_callback_mock:
+
+                
+                if not isinstance(rut, (RegAsyncReadOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Readable Async Type')
+                
+                # test reading back 1 (the unpatched version returns 0 so this confirms the patch works)
+                self.assertEqual(await rut.read(), 1)
+                read_callback_mock.assert_called_once_with(
+                                    addr=148,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read check with high value
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0xFFFFFFFF
+                self.assertEqual(await rut.read(), 0xFFFFFFFF)
+                read_callback_mock.assert_called_once_with(
+                                    addr=148,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read of the low value
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0
+                self.assertEqual(await rut.read(), 0x0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=148,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read of a random value
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = random_value
+                self.assertEqual(await rut.read(), random_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=148,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -10344,6 +10592,102 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.reset_mock()
                 write_callback_mock.assert_not_called()
 
+        # test access operations (read and/or write) to field:
+        # msk_top_regs.tx_async_fifo_rd_wr_ptr.data
+        with self.subTest(msg='field: msk_top_regs.tx_async_fifo_rd_wr_ptr.data'):
+            fut = self.dut.tx_async_fifo_rd_wr_ptr.data # type: ignore[union-attr]
+            with patch(base_name + '.write_addr_space') as write_callback_mock,\
+                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
+
+                
+                
+                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a readable async field')
+                
+
+                # read back - zero, this is achieved by setting the register to inverse bitmask
+                read_callback_mock.return_value = 0x0
+                self.assertEqual(await fut.read(),
+                                 0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=144,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - max_value, this is achieved by setting the register to bitmask
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0xFFFFFFFF
+                self.assertEqual(await fut.read(),
+                                 0xFFFFFFFF)
+                read_callback_mock.assert_called_once_with(
+                                    addr=144,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - random value
+                read_callback_mock.reset_mock()
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.return_value = random_value
+                random_field_value = (random_value & 0xFFFFFFFF) >> 0
+                self.assertEqual(await fut.read(),
+                                 random_field_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=144,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+
+        # test access operations (read and/or write) to field:
+        # msk_top_regs.rx_async_fifo_rd_wr_ptr.data
+        with self.subTest(msg='field: msk_top_regs.rx_async_fifo_rd_wr_ptr.data'):
+            fut = self.dut.rx_async_fifo_rd_wr_ptr.data # type: ignore[union-attr]
+            with patch(base_name + '.write_addr_space') as write_callback_mock,\
+                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
+
+                
+                
+                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a readable async field')
+                
+
+                # read back - zero, this is achieved by setting the register to inverse bitmask
+                read_callback_mock.return_value = 0x0
+                self.assertEqual(await fut.read(),
+                                 0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=148,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - max_value, this is achieved by setting the register to bitmask
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0xFFFFFFFF
+                self.assertEqual(await fut.read(),
+                                 0xFFFFFFFF)
+                read_callback_mock.assert_called_once_with(
+                                    addr=148,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - random value
+                read_callback_mock.reset_mock()
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.return_value = random_value
+                random_field_value = (random_value & 0xFFFFFFFF) >> 0
+                self.assertEqual(await fut.read(),
+                                 random_field_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=148,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+
     
 
     async def test_register_read_fields(self) -> None:
@@ -11753,6 +12097,70 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.reset_mock()
 
                 self.assertDictEqual(await self.dut.rx_power.read_fields(),
+                                     reference_read_fields)
+                read_callback_mock.assert_called_once()
+                write_callback_mock.assert_not_called()
+        with self.subTest(msg='register: msk_top_regs.tx_async_fifo_rd_wr_ptr'):
+            # test read_fields to register:
+            # msk_top_regs.tx_async_fifo_rd_wr_ptr
+            # build up the register value with a random base value, overlaid with
+            # a random value for each field
+            rand_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0xFFFFFFFF + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0x0) | (rand_field_value << 0)
+                        
+                    
+                
+            
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                 patch(base_name + '.read_addr_space', return_value=rand_reg_value) as read_callback_mock:
+                # the read_fields method gets a dictionary back
+                # from the object with all the read back field
+                # values
+                reference_read_fields = { 
+                                          'data' : await self.dut.tx_async_fifo_rd_wr_ptr.data.read()
+                                        }
+
+                read_callback_mock.reset_mock()
+
+                self.assertDictEqual(await self.dut.tx_async_fifo_rd_wr_ptr.read_fields(),
+                                     reference_read_fields)
+                read_callback_mock.assert_called_once()
+                write_callback_mock.assert_not_called()
+        with self.subTest(msg='register: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
+            # test read_fields to register:
+            # msk_top_regs.rx_async_fifo_rd_wr_ptr
+            # build up the register value with a random base value, overlaid with
+            # a random value for each field
+            rand_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0xFFFFFFFF + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0x0) | (rand_field_value << 0)
+                        
+                    
+                
+            
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                 patch(base_name + '.read_addr_space', return_value=rand_reg_value) as read_callback_mock:
+                # the read_fields method gets a dictionary back
+                # from the object with all the read back field
+                # values
+                reference_read_fields = { 
+                                          'data' : await self.dut.rx_async_fifo_rd_wr_ptr.data.read()
+                                        }
+
+                read_callback_mock.reset_mock()
+
+                self.assertDictEqual(await self.dut.rx_async_fifo_rd_wr_ptr.read_fields(),
                                      reference_read_fields)
                 read_callback_mock.assert_called_once()
                 write_callback_mock.assert_not_called()
@@ -13392,6 +13800,78 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
 
                 read_callback_mock.assert_called_once()
                 write_callback_mock.assert_not_called()
+        # test context manager to register:
+        # msk_top_regs.tx_async_fifo_rd_wr_ptr
+        # build up the register value with a random base value, overlaid with
+        # a random value for each field
+        with self.subTest(msg='register: msk_top_regs.tx_async_fifo_rd_wr_ptr'):
+            rand_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0xFFFFFFFF + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0x0) | (rand_field_value << 0)
+                        
+                    
+                
+            
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                 patch(base_name + '.read_addr_space', return_value=rand_reg_value) as read_callback_mock:
+
+                # first read the fields using the "normal" method, then compare the result to reading
+                # via the context manager
+                reference_read_fields = { 
+                                          'data' : await self.dut.tx_async_fifo_rd_wr_ptr.data.read()  # type: ignore[union-attr]
+                                        }
+                read_callback_mock.reset_mock()
+
+                
+                async with self.dut.tx_async_fifo_rd_wr_ptr.single_read() as reg_context: # type: ignore[union-attr]
+                    self.assertEqual(reference_read_fields['data'],
+                                      await reg_context.get_child_by_system_rdl_name('data').read()
+                                     )
+                    pass
+
+                read_callback_mock.assert_called_once()
+                write_callback_mock.assert_not_called()
+        # test context manager to register:
+        # msk_top_regs.rx_async_fifo_rd_wr_ptr
+        # build up the register value with a random base value, overlaid with
+        # a random value for each field
+        with self.subTest(msg='register: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
+            rand_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0xFFFFFFFF + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0x0) | (rand_field_value << 0)
+                        
+                    
+                
+            
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                 patch(base_name + '.read_addr_space', return_value=rand_reg_value) as read_callback_mock:
+
+                # first read the fields using the "normal" method, then compare the result to reading
+                # via the context manager
+                reference_read_fields = { 
+                                          'data' : await self.dut.rx_async_fifo_rd_wr_ptr.data.read()  # type: ignore[union-attr]
+                                        }
+                read_callback_mock.reset_mock()
+
+                
+                async with self.dut.rx_async_fifo_rd_wr_ptr.single_read() as reg_context: # type: ignore[union-attr]
+                    self.assertEqual(reference_read_fields['data'],
+                                      await reg_context.get_child_by_system_rdl_name('data').read()
+                                     )
+                    pass
+
+                read_callback_mock.assert_called_once()
+                write_callback_mock.assert_not_called()
 
     async def test_register_write_context_manager(self) -> None:
         """
@@ -13982,6 +14462,16 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
                 self.dut.rx_power.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.tx_async_fifo_rd_wr_ptr'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.tx_async_fifo_rd_wr_ptr.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.rx_async_fifo_rd_wr_ptr.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
         with self.subTest(msg='node: msk_top_regs.Hash_ID_Low.hash_id_lo'):
             with self.assertRaises(AttributeError):
                 # this line is trying to set an illegal value so by definition should fail the type
@@ -14277,6 +14767,16 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
                 self.dut.rx_power.rx_power.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.tx_async_fifo_rd_wr_ptr.data'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.tx_async_fifo_rd_wr_ptr.data.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.rx_async_fifo_rd_wr_ptr.data'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.rx_async_fifo_rd_wr_ptr.data.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
         
 
     
@@ -14362,6 +14862,10 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                         
                                     self.dut.rx_power, # type: ignore[union-attr,list-item] 
                                         
+                                    self.dut.tx_async_fifo_rd_wr_ptr, # type: ignore[union-attr,list-item] 
+                                        
+                                    self.dut.rx_async_fifo_rd_wr_ptr, # type: ignore[union-attr,list-item] 
+                                        
                                      ]
         readable_regs = []
         for readable_reg in self.dut.get_readable_registers(unroll=True):  # type: ignore[union-attr]
@@ -14441,6 +14945,10 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                        
                                    self.dut.rx_power, # type: ignore[union-attr,list-item] 
                                        
+                                   self.dut.tx_async_fifo_rd_wr_ptr, # type: ignore[union-attr,list-item] 
+                                       
+                                   self.dut.rx_async_fifo_rd_wr_ptr, # type: ignore[union-attr,list-item] 
+                                       
                                     ]
         readable_regs = []
         for readable_reg in self.dut.get_readable_registers(unroll=False):  # type: ignore[union-attr]
@@ -14517,6 +15025,10 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                    self.dut.lowpass_ema_alpha1, # type: ignore[union-attr,list-item] 
                                        
                                    self.dut.lowpass_ema_alpha2, # type: ignore[union-attr,list-item] 
+                                       
+                                   
+                                       
+                                   
                                        
                                    
                                        
@@ -14599,6 +15111,10 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                        
                                    
                                        
+                                   
+                                       
+                                   
+                                       
                                     ]
         writable_regs = []
         for writable_reg in self.dut.get_writable_registers(unroll=False):  # type: ignore[union-attr]
@@ -14607,6 +15123,10 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
 
         # check the sections
         expected_sections = [
+                                  
+                              
+                                  
+                              
                                   
                               
                                   
@@ -14757,6 +15277,10 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                   
                               
                                   
+                              
+                                  
+                              
+                                  
                                ]
         sections = []
         for section in self.dut.get_sections(unroll=False):  # type: ignore[union-attr]
@@ -14836,6 +15360,10 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                   
                               
                                   
+                              
+                                  
+                              
+                                  
                                ]
         memories = []
         for memory in self.dut.get_memories(unroll=True):  # type: ignore[union-attr]
@@ -14844,6 +15372,10 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         self.assertCountEqual(expected_memories, memories)
         
         expected_memories = [
+                                  
+                              
+                                  
+                              
                                   
                               
                                   
@@ -16129,6 +16661,56 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 readable_fields.append(readable_field)
             self.assertCountEqual(expected_readable_fields, readable_fields)
                     
+        with self.subTest(msg='register: msk_top_regs.tx_async_fifo_rd_wr_ptr'):
+                
+            expected_fields = [self.dut.tx_async_fifo_rd_wr_ptr.data, # type: ignore[union-attr,list-item]
+                                        
+                                    
+                                 
+                                         ]
+            fields = []
+            for field in self.dut.tx_async_fifo_rd_wr_ptr.fields:  # type: ignore[union-attr]
+                fields.append(field)
+            self.assertCountEqual(expected_fields, fields)
+                
+            # register should not have writable_fields attribute
+            self.assertFalse(hasattr(self.dut.tx_async_fifo_rd_wr_ptr, 'writable_fields')) # type: ignore[union-attr]
+                    
+                    
+            expected_readable_fields = [self.dut.tx_async_fifo_rd_wr_ptr.data, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            readable_fields = []
+            for readable_field in self.dut.tx_async_fifo_rd_wr_ptr.readable_fields: # type: ignore[union-attr]
+                readable_fields.append(readable_field)
+            self.assertCountEqual(expected_readable_fields, readable_fields)
+                    
+        with self.subTest(msg='register: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
+                
+            expected_fields = [self.dut.rx_async_fifo_rd_wr_ptr.data, # type: ignore[union-attr,list-item]
+                                        
+                                    
+                                 
+                                         ]
+            fields = []
+            for field in self.dut.rx_async_fifo_rd_wr_ptr.fields:  # type: ignore[union-attr]
+                fields.append(field)
+            self.assertCountEqual(expected_fields, fields)
+                
+            # register should not have writable_fields attribute
+            self.assertFalse(hasattr(self.dut.rx_async_fifo_rd_wr_ptr, 'writable_fields')) # type: ignore[union-attr]
+                    
+                    
+            expected_readable_fields = [self.dut.rx_async_fifo_rd_wr_ptr.data, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            readable_fields = []
+            for readable_field in self.dut.rx_async_fifo_rd_wr_ptr.readable_fields: # type: ignore[union-attr]
+                readable_fields.append(readable_field)
+            self.assertCountEqual(expected_readable_fields, readable_fields)
+                    
         
         # test all the memories
         
@@ -16469,6 +17051,20 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         
         
         self.assertEqual(self.dut.rx_power.get_child_by_system_rdl_name('rx_power').inst_name, 'rx_power')
+        
+        
+        
+        
+        
+        self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.get_child_by_system_rdl_name('data').inst_name, 'data')
+        
+        
+        
+        
+        
+        self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.get_child_by_system_rdl_name('data').inst_name, 'data')
+        
+        
         
         
         

@@ -10,48 +10,50 @@ Don't override. Generated from: msk_top_regs
 
 - Absolute Address: 0x0
 - Base Offset: 0x0
-- Size: 0x90
+- Size: 0x98
 
 <p>MSK Modem Configuration and Status Registers</p>
 
-|Offset|    Identifier    |                             Name                            |
-|------|------------------|-------------------------------------------------------------|
-| 0x00 |    Hash_ID_Low   |            Pluto MSK FPGA Hash ID - Lower 32-bits           |
-| 0x04 |   Hash_ID_High   |            Pluto MSK FPGA Hash ID - Upper 32-bits           |
-| 0x08 |     MSK_Init     |               MSK Modem Initialization Control              |
-| 0x0C |    MSK_Control   |                      MSK Modem Control                      |
-| 0x10 |    MSK_Status    |                      MSK Modem Status 0                     |
-| 0x14 |   Tx_Bit_Count   |                      MSK Modem Status 1                     |
-| 0x18 |  Tx_Enable_Count |                      MSK Modem Status 2                     |
-| 0x1C |    Fb_FreqWord   |              Bitrate NCO Frequency Control Word             |
-| 0x20 |  TX_F1_FreqWord  |               Tx F1 NCO Frequency Control Word              |
-| 0x24 |  TX_F2_FreqWord  |               Tx F2 NCO Frequency Control Word              |
-| 0x28 |  RX_F1_FreqWord  |               Rx F1 NCO Frequency Control Word              |
-| 0x2C |  RX_F2_FreqWord  |               Rx F2 NCO Frequency Control Word              |
-| 0x30 |   LPF_Config_0   |PI Controller Configuration and Low-pass Filter Configuration|
-| 0x34 |   LPF_Config_1   |     PI Controller Configuration Configuration Register 1    |
-| 0x38 |   Tx_Data_Width  |                  Modem Tx Input Data Width                  |
-| 0x3C |   Rx_Data_Width  |                  Modem Rx Output Data Width                 |
-| 0x40 |   PRBS_Control   |                        PRBS Control 0                       |
-| 0x44 |PRBS_Initial_State|                        PRBS Control 1                       |
-| 0x48 |  PRBS_Polynomial |                        PRBS Control 2                       |
-| 0x4C |  PRBS_Error_Mask |                        PRBS Control 3                       |
-| 0x50 |  PRBS_Bit_Count  |                        PRBS Status 0                        |
-| 0x54 | PRBS_Error_Count |                        PRBS Status 1                        |
-| 0x58 |   LPF_Accum_F1   |                 F1 PI Controller Accumulator                |
-| 0x5C |   LPF_Accum_F2   |                 F2 PI Controller Accumulator                |
-| 0x60 |  axis_xfer_count |                      MSK Modem Status 3                     |
-| 0x64 | Rx_Sample_Discard|                      Rx Sample Discard                      |
-| 0x68 |   LPF_Config_2   |     PI Controller Configuration Configuration Register 2    |
-| 0x6C |   f1_nco_adjust  |                   F1 NCO Frequency Adjust                   |
-| 0x70 |   f2_nco_adjust  |                   F2 NCO Frequency Adjust                   |
-| 0x74 |     f1_error     |                        F1 Error Value                       |
-| 0x78 |     f2_error     |                        F2 Error Value                       |
-| 0x7C |   Tx_Sync_Ctrl   |                   Transmitter Sync Control                  |
-| 0x80 |    Tx_Sync_Cnt   |                  Transmitter Sync Duration                  |
-| 0x84 |lowpass_ema_alpha1|               Exponential Moving Average Alpha              |
-| 0x88 |lowpass_ema_alpha2|               Exponential Moving Average Alpha              |
-| 0x8C |     rx_power     |                        Receive Power                        |
+|Offset|       Identifier      |                             Name                            |
+|------|-----------------------|-------------------------------------------------------------|
+| 0x00 |      Hash_ID_Low      |            Pluto MSK FPGA Hash ID - Lower 32-bits           |
+| 0x04 |      Hash_ID_High     |            Pluto MSK FPGA Hash ID - Upper 32-bits           |
+| 0x08 |        MSK_Init       |               MSK Modem Initialization Control              |
+| 0x0C |      MSK_Control      |                      MSK Modem Control                      |
+| 0x10 |       MSK_Status      |                      MSK Modem Status 0                     |
+| 0x14 |      Tx_Bit_Count     |                      MSK Modem Status 1                     |
+| 0x18 |    Tx_Enable_Count    |                      MSK Modem Status 2                     |
+| 0x1C |      Fb_FreqWord      |              Bitrate NCO Frequency Control Word             |
+| 0x20 |     TX_F1_FreqWord    |               Tx F1 NCO Frequency Control Word              |
+| 0x24 |     TX_F2_FreqWord    |               Tx F2 NCO Frequency Control Word              |
+| 0x28 |     RX_F1_FreqWord    |               Rx F1 NCO Frequency Control Word              |
+| 0x2C |     RX_F2_FreqWord    |               Rx F2 NCO Frequency Control Word              |
+| 0x30 |      LPF_Config_0     |PI Controller Configuration and Low-pass Filter Configuration|
+| 0x34 |      LPF_Config_1     |     PI Controller Configuration Configuration Register 1    |
+| 0x38 |     Tx_Data_Width     |                  Modem Tx Input Data Width                  |
+| 0x3C |     Rx_Data_Width     |                  Modem Rx Output Data Width                 |
+| 0x40 |      PRBS_Control     |                        PRBS Control 0                       |
+| 0x44 |   PRBS_Initial_State  |                        PRBS Control 1                       |
+| 0x48 |    PRBS_Polynomial    |                        PRBS Control 2                       |
+| 0x4C |    PRBS_Error_Mask    |                        PRBS Control 3                       |
+| 0x50 |     PRBS_Bit_Count    |                        PRBS Status 0                        |
+| 0x54 |    PRBS_Error_Count   |                        PRBS Status 1                        |
+| 0x58 |      LPF_Accum_F1     |                 F1 PI Controller Accumulator                |
+| 0x5C |      LPF_Accum_F2     |                 F2 PI Controller Accumulator                |
+| 0x60 |    axis_xfer_count    |                      MSK Modem Status 3                     |
+| 0x64 |   Rx_Sample_Discard   |                      Rx Sample Discard                      |
+| 0x68 |      LPF_Config_2     |     PI Controller Configuration Configuration Register 2    |
+| 0x6C |     f1_nco_adjust     |                   F1 NCO Frequency Adjust                   |
+| 0x70 |     f2_nco_adjust     |                   F2 NCO Frequency Adjust                   |
+| 0x74 |        f1_error       |                        F1 Error Value                       |
+| 0x78 |        f2_error       |                        F2 Error Value                       |
+| 0x7C |      Tx_Sync_Ctrl     |                   Transmitter Sync Control                  |
+| 0x80 |      Tx_Sync_Cnt      |                  Transmitter Sync Duration                  |
+| 0x84 |   lowpass_ema_alpha1  |               Exponential Moving Average Alpha              |
+| 0x88 |   lowpass_ema_alpha2  |               Exponential Moving Average Alpha              |
+| 0x8C |        rx_power       |                        Receive Power                        |
+| 0x90 |tx_async_fifo_rd_wr_ptr|            Tx async FIFO read and write pointers            |
+| 0x94 |rx_async_fifo_rd_wr_ptr|            Rx async FIFO read and write pointers            |
 
 ### Hash_ID_Low register
 
@@ -765,3 +767,33 @@ signal should be sent after PTT is asserted.</p>
 #### rx_power field
 
 <p>Value that represent the RMS power of the incoming I;</p>
+
+### tx_async_fifo_rd_wr_ptr register
+
+- Absolute Address: 0x90
+- Base Offset: 0x90
+- Size: 0x4
+
+|Bits|Identifier| Access |Reset|Name|
+|----|----------|--------|-----|----|
+|31:0|   data   |r, ruser| 0x0 |  — |
+
+#### data field
+
+<p>Bits 31:16 -&gt; write pointer (12-bits)
+Bits 15:00 -&gt; read pointer (12-bits)</p>
+
+### rx_async_fifo_rd_wr_ptr register
+
+- Absolute Address: 0x94
+- Base Offset: 0x94
+- Size: 0x4
+
+|Bits|Identifier| Access |Reset|Name|
+|----|----------|--------|-----|----|
+|31:0|   data   |r, ruser| 0x0 |  — |
+
+#### data field
+
+<p>Bits 31:16 -&gt; write pointer (12-bits)
+Bits 15:00 -&gt; read pointer (12-bits)</p>

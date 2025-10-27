@@ -84,7 +84,8 @@ ENTITY msk_top_csr IS
 		SYNC_W 				: NATURAL := 16;
 		C_S_AXI_DATA_WIDTH	: NATURAL := 32;
 		C_S_AXI_ADDR_WIDTH	: NATURAL := 32;
-		SYNC_CNT_W 			: NATURAL := 24
+		SYNC_CNT_W 			: NATURAL := 24;
+		FIFO_ADDR_WIDTH 	: NATURAL := 11
 	);
 	PORT (
 		clk 				: IN  std_logic;
@@ -127,6 +128,15 @@ ENTITY msk_top_csr IS
 		f2_nco_adjust		: IN std_logic_vector(31 DOWNTO 0);
 		f1_error			: IN std_logic_vector(31 DOWNTO 0);
 		f2_error			: IN std_logic_vector(31 DOWNTO 0);
+
+		tx_async_fifo_wr_ptr		: IN  std_logic_vector(FIFO_ADDR_WIDTH DOWNTO 0);
+		tx_async_fifo_rd_ptr 		: IN  std_logic_vector(FIFO_ADDR_WIDTH DOWNTO 0);
+		tx_async_fifo_status_req 	: OUT std_logic;
+		tx_async_fifo_status_ack 	: IN  std_logic;
+		rx_async_fifo_wr_ptr		: IN  std_logic_vector(FIFO_ADDR_WIDTH DOWNTO 0);
+		rx_async_fifo_rd_ptr 		: IN  std_logic_vector(FIFO_ADDR_WIDTH DOWNTO 0);
+		rx_async_fifo_status_req 	: OUT std_logic;
+		rx_async_fifo_status_ack 	: IN  std_logic;
 
 		txinit 				: out std_logic;
 		rxinit 				: out std_logic;
@@ -332,6 +342,17 @@ BEGIN
     utlp2_c: data_capture PORT MAP (clk, csr_init, lpf_accum_f2_req,	lpf_accum_f2, 		hwif_in.LPF_Accum_F2.rd_data 	);
     utpwr_c: data_capture PORT MAP (clk, csr_init, pd_power_req, 		std_logic_vector(resize(unsigned(pd_power),32)),	
     																						hwif_in.rx_power.rd_data);
+
+    -- FIFO status reads
+	rx_async_fifo_status_req 				<= hwif_out.rx_async_fifo_rd_wr_ptr.req;
+	hwif_in.rx_async_fifo_rd_wr_ptr.rd_ack	<= rx_async_fifo_status_ack;
+    hwif_in.rx_async_fifo_rd_wr_ptr.rd_data <= std_logic_vector(resize(unsigned(rx_async_fifo_wr_ptr), 16) &
+    															resize(unsigned(rx_async_fifo_rd_ptr), 16));
+
+	tx_async_fifo_status_req 				<= hwif_out.tx_async_fifo_rd_wr_ptr.req;
+	hwif_in.tx_async_fifo_rd_wr_ptr.rd_ack	<= tx_async_fifo_status_ack;
+    hwif_in.tx_async_fifo_rd_wr_ptr.rd_data <= std_logic_vector(resize(unsigned(tx_async_fifo_wr_ptr), 16) &
+    															resize(unsigned(tx_async_fifo_rd_ptr), 16));
 
     -- Control from AXI to MDM
     u01s: cdc_resync PORT MAP (clk, csr_init, hwif_out.MSK_Init.txrxinit.value, 		  		txrxinit			);

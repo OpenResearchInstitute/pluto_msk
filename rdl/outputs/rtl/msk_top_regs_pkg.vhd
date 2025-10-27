@@ -9,7 +9,7 @@ package msk_top_regs_pkg is
 
     constant MSK_TOP_REGS_DATA_WIDTH : positive := 32;
     constant MSK_TOP_REGS_MIN_ADDR_WIDTH : positive := 8;
-    constant MSK_TOP_REGS_SIZE : positive := 144;
+    constant MSK_TOP_REGS_SIZE : positive := 152;
 
     type \msk_top_regs.msk_stat_0.demod_sync_lock_in_t\ is record
         next_q : std_logic;
@@ -94,6 +94,16 @@ package msk_top_regs_pkg is
         rd_data : std_logic_vector(31 downto 0);
     end record;
 
+    type \msk_top_regs.observation_data_data_cf6acbd7_name_aa4ec676__external_in_t\ is record
+        rd_ack : std_logic;
+        rd_data : std_logic_vector(31 downto 0);
+    end record;
+
+    type \msk_top_regs.observation_data_data_cf6acbd7_name_8a90eed1__external_in_t\ is record
+        rd_ack : std_logic;
+        rd_data : std_logic_vector(31 downto 0);
+    end record;
+
     type msk_top_regs_in_t is record
         MSK_Status : \msk_top_regs.msk_stat_0_in_t\;
         Tx_Bit_Count : \msk_top_regs.msk_stat_1__external_in_t\;
@@ -108,6 +118,8 @@ package msk_top_regs_pkg is
         f1_error : \msk_top_regs.observation_data_data_25a21249_desc_417e1c96_name_3b640507__external_in_t\;
         f2_error : \msk_top_regs.observation_data_data_272a00b6_desc_70869502_name_3de9a0d3__external_in_t\;
         rx_power : \msk_top_regs.rx_power__external_in_t\;
+        tx_async_fifo_rd_wr_ptr : \msk_top_regs.observation_data_data_cf6acbd7_name_aa4ec676__external_in_t\;
+        rx_async_fifo_rd_wr_ptr : \msk_top_regs.observation_data_data_cf6acbd7_name_8a90eed1__external_in_t\;
     end record;
 
     type \msk_top_regs.msk_init.txrxinit_out_t\ is record
@@ -430,6 +442,16 @@ package msk_top_regs_pkg is
         req_is_wr : std_logic;
     end record;
 
+    type \msk_top_regs.observation_data_data_cf6acbd7_name_aa4ec676__external_out_t\ is record
+        req : std_logic;
+        req_is_wr : std_logic;
+    end record;
+
+    type \msk_top_regs.observation_data_data_cf6acbd7_name_8a90eed1__external_out_t\ is record
+        req : std_logic;
+        req_is_wr : std_logic;
+    end record;
+
     type msk_top_regs_out_t is record
         MSK_Init : \msk_top_regs.msk_init_out_t\;
         MSK_Control : \msk_top_regs.msk_ctrl_out_t\;
@@ -464,5 +486,7 @@ package msk_top_regs_pkg is
         lowpass_ema_alpha1 : \msk_top_regs.lowpass_ema_alpha_out_t\;
         lowpass_ema_alpha2 : \msk_top_regs.lowpass_ema_alpha_out_t\;
         rx_power : \msk_top_regs.rx_power__external_out_t\;
+        tx_async_fifo_rd_wr_ptr : \msk_top_regs.observation_data_data_cf6acbd7_name_aa4ec676__external_out_t\;
+        rx_async_fifo_rd_wr_ptr : \msk_top_regs.observation_data_data_cf6acbd7_name_8a90eed1__external_out_t\;
     end record;
 end package;

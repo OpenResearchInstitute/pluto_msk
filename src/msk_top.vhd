@@ -173,8 +173,8 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL tx_async_fifo_prog_empty	: std_logic;
 	SIGNAL tx_async_fifo_overflow	: std_logic;
 	SIGNAL tx_async_fifo_underflow	: std_logic;
-	SIGNAL tx_async_fifo_wr_ptr		: std_logic(FIFO_ADDR_WIDTH DOWNTO 0);
-	SIGNAL tx_async_fifo_rd_ptr 	: std_logic(FIFO_ADDR_WIDTH DOWNTO 0);
+	SIGNAL tx_async_fifo_wr_ptr		: std_logic_vector(FIFO_ADDR_WIDTH DOWNTO 0);
+	SIGNAL tx_async_fifo_rd_ptr 	: std_logic_vector(FIFO_ADDR_WIDTH DOWNTO 0);
 	SIGNAL tx_async_fifo_status_req : std_logic;
 	SIGNAL tx_async_fifo_status_ack : std_logic;
 
@@ -182,8 +182,8 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL rx_async_fifo_prog_empty	: std_logic;
 	SIGNAL rx_async_fifo_overflow	: std_logic;
 	SIGNAL rx_async_fifo_underflow	: std_logic;
-	SIGNAL rx_async_fifo_wr_ptr		: std_logic(FIFO_ADDR_WIDTH DOWNTO 0);
-	SIGNAL rx_async_fifo_rd_ptr 	: std_logic(FIFO_ADDR_WIDTH DOWNTO 0);
+	SIGNAL rx_async_fifo_wr_ptr		: std_logic_vector(FIFO_ADDR_WIDTH DOWNTO 0);
+	SIGNAL rx_async_fifo_rd_ptr 	: std_logic_vector(FIFO_ADDR_WIDTH DOWNTO 0);
 	SIGNAL rx_async_fifo_status_req : std_logic;
 	SIGNAL rx_async_fifo_status_ack : std_logic;
 
@@ -339,16 +339,16 @@ BEGIN
 			m_axis_tlast    => fifo_tlast,
 			
             -- status signals synchronized to AXI control/status bus
-			prog_aclk 		=> s_axi_aclk,
-			prog_aresetn	=> s_axi_aresetn,
-			prog_status_req => tx_async_fifo_status_req,
-			prog_status_ack => tx_async_fifo_status_ack,
+			status_aclk 	=> s_axi_aclk,
+			status_aresetn	=> s_axi_aresetn,
+			status_req 		=> tx_async_fifo_status_req,
+			status_ack 		=> tx_async_fifo_status_ack,
 			prog_full       => tx_async_fifo_prog_full,
 			prog_empty      => tx_async_fifo_prog_empty,
-			prog_overflow	=> tx_async_fifo_overflow,
-			prog_underflow  => tx_async_fifo_underflow,
-			prog_wr_ptr  	=> tx_async_fifo_wr_ptr,
-			prog_rd_ptr 	=> tx_async_fifo_rd_ptr
+			fifo_overflow	=> tx_async_fifo_overflow,
+			fifo_underflow  => tx_async_fifo_underflow,
+			fifo_wr_ptr  	=> tx_async_fifo_wr_ptr,
+			fifo_rd_ptr 	=> tx_async_fifo_rd_ptr
 		);
 
 	-- Stage 3: Byte-to-Bit De-serializer (MSB-FIRST VERSION)
@@ -523,16 +523,16 @@ BEGIN
             m_axis_tlast    => m_axis_tlast,
             
             -- status signals synchronized to AXI control/status bus
-			prog_aclk 		=> s_axi_aclk,
-			prog_aresetn	=> s_axi_aresetn,
-			prog_status_req => rx_async_fifo_status_req,
-			prog_status_ack => rx_async_fifo_status_ack,
-            prog_full       => rx_async_fifo_prog_full,
-            prog_empty      => rx_async_fifo_prog_empty,
-			prog_overflow	=> rx_async_fifo_overflow,
-			prog_underflow  => rx_async_fifo_underflow,
-			prog_wr_ptr  	=> rx_async_fifo_wr_ptr,
-			prog_rd_ptr 	=> rx_async_fifo_rd_ptr
+			status_aclk 	=> s_axi_aclk,
+			status_aresetn	=> s_axi_aresetn,
+			status_req 		=> rx_async_fifo_status_req,
+			status_ack 		=> rx_async_fifo_status_ack,
+			prog_full       => rx_async_fifo_prog_full,
+			prog_empty      => rx_async_fifo_prog_empty,
+			fifo_overflow	=> rx_async_fifo_overflow,
+			fifo_underflow  => rx_async_fifo_underflow,
+			fifo_wr_ptr  	=> rx_async_fifo_wr_ptr,
+			fifo_rd_ptr 	=> rx_async_fifo_rd_ptr
         );
     
     -- Zero-pad upper bits of m_axis_tdata if wider than 8 bits
@@ -767,6 +767,14 @@ BEGIN
 		f2_nco_adjust	=> f2_nco_adjust,
 		f1_error		=> f1_error,
 		f2_error		=> f2_error,
+		tx_async_fifo_wr_ptr		=> tx_async_fifo_wr_ptr,
+		tx_async_fifo_rd_ptr 		=> tx_async_fifo_rd_ptr,
+		tx_async_fifo_status_req	=> tx_async_fifo_status_req,
+		tx_async_fifo_status_ack	=> tx_async_fifo_status_ack,
+		rx_async_fifo_wr_ptr		=> rx_async_fifo_wr_ptr,
+		rx_async_fifo_rd_ptr 		=> rx_async_fifo_rd_ptr,
+		rx_async_fifo_status_req	=> rx_async_fifo_status_req,
+		rx_async_fifo_status_ack	=> rx_async_fifo_status_ack,
 		txinit 				=> txinit,
 		rxinit 				=> rxinit,
 		ptt 				=> ptt,

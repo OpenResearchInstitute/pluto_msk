@@ -551,5 +551,12 @@ addrmap msk_top_regs {
                 lowpass_ema_alpha   lowpass_ema_alpha1;
                 lowpass_ema_alpha   lowpass_ema_alpha2;
     external    rx_power            rx_power;
-
+    external    observation_data    tx_async_fifo_rd_wr_ptr;
+                                    tx_async_fifo_rd_wr_ptr->name = "Tx async FIFO read and write pointers";
+                                    tx_async_fifo_rd_wr_ptr.data->desc = "Bits 31:16 -> write pointer (12-bits)
+                                                                          Bits 15:00 -> read pointer (12-bits)";
+    external    observation_data    rx_async_fifo_rd_wr_ptr;
+                                    rx_async_fifo_rd_wr_ptr->name = "Rx async FIFO read and write pointers";
+                                    rx_async_fifo_rd_wr_ptr.data->desc = "Bits 31:16 -> write pointer (12-bits)
+                                                                          Bits 15:00 -> read pointer (12-bits)";
 };

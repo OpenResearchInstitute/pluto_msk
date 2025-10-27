@@ -115,6 +115,8 @@ architecture rtl of msk_top_regs is
         lowpass_ema_alpha1 : std_logic;
         lowpass_ema_alpha2 : std_logic;
         rx_power : std_logic;
+        tx_async_fifo_rd_wr_ptr : std_logic;
+        rx_async_fifo_rd_wr_ptr : std_logic;
     end record;
     signal decoded_reg_strb : decoded_reg_strb_t;
     signal decoded_strb_is_external : std_logic;
@@ -764,7 +766,7 @@ architecture rtl of msk_top_regs is
     signal readback_err : std_logic;
     signal readback_done : std_logic;
     signal readback_data : std_logic_vector(31 downto 0);
-    signal readback_array : std_logic_vector_array1(0 to 35)(31 downto 0);
+    signal readback_array : std_logic_vector_array1(0 to 37)(31 downto 0);
 
 begin
 
@@ -1050,6 +1052,10 @@ begin
         decoded_reg_strb.lowpass_ema_alpha2 <= cpuif_req_masked and (cpuif_addr = 16#88#);
         decoded_reg_strb.rx_power <= cpuif_req_masked and (cpuif_addr = 16#8C#);
         is_external := is_external or ((cpuif_req_masked and (cpuif_addr = 16#8C#)) and not cpuif_req_is_wr);
+        decoded_reg_strb.tx_async_fifo_rd_wr_ptr <= cpuif_req_masked and (cpuif_addr = 16#90#);
+        is_external := is_external or ((cpuif_req_masked and (cpuif_addr = 16#90#)) and not cpuif_req_is_wr);
+        decoded_reg_strb.rx_async_fifo_rd_wr_ptr <= cpuif_req_masked and (cpuif_addr = 16#94#);
+        is_external := is_external or ((cpuif_req_masked and (cpuif_addr = 16#94#)) and not cpuif_req_is_wr);
         decoded_strb_is_external <= is_external;
         external_req <= is_external;
     end process;
@@ -2303,6 +2309,12 @@ begin
     hwif_out.rx_power.req <= decoded_reg_strb.rx_power when not decoded_req_is_wr else '0';
     hwif_out.rx_power.req_is_wr <= decoded_req_is_wr;
 
+    hwif_out.tx_async_fifo_rd_wr_ptr.req <= decoded_reg_strb.tx_async_fifo_rd_wr_ptr when not decoded_req_is_wr else '0';
+    hwif_out.tx_async_fifo_rd_wr_ptr.req_is_wr <= decoded_req_is_wr;
+
+    hwif_out.rx_async_fifo_rd_wr_ptr.req <= decoded_reg_strb.rx_async_fifo_rd_wr_ptr when not decoded_req_is_wr else '0';
+    hwif_out.rx_async_fifo_rd_wr_ptr.req_is_wr <= decoded_req_is_wr;
+
     ----------------------------------------------------------------------------
     -- Write response
     ----------------------------------------------------------------------------
@@ -2336,6 +2348,8 @@ begin
         rd_ack := rd_ack or hwif_in.f1_error.rd_ack;
         rd_ack := rd_ack or hwif_in.f2_error.rd_ack;
         rd_ack := rd_ack or hwif_in.rx_power.rd_ack;
+        rd_ack := rd_ack or hwif_in.tx_async_fifo_rd_wr_ptr.rd_ack;
+        rd_ack := rd_ack or hwif_in.rx_async_fifo_rd_wr_ptr.rd_ack;
         readback_external_rd_ack_c <= rd_ack;
     end process;
 
@@ -2409,6 +2423,8 @@ begin
     readback_array(34)(17 downto 0) <= field_storage.lowpass_ema_alpha2.alpha.value when (decoded_reg_strb.lowpass_ema_alpha2 and not decoded_req_is_wr) else (others => '0');
     readback_array(34)(31 downto 18) <= (others => '0');
     readback_array(35) <= hwif_in.rx_power.rd_data when hwif_in.rx_power.rd_ack else (others => '0');
+    readback_array(36) <= hwif_in.tx_async_fifo_rd_wr_ptr.rd_data when hwif_in.tx_async_fifo_rd_wr_ptr.rd_ack else (others => '0');
+    readback_array(37) <= hwif_in.rx_async_fifo_rd_wr_ptr.rd_data when hwif_in.rx_async_fifo_rd_wr_ptr.rd_ack else (others => '0');
 
     -- Reduce the array
     process(all)

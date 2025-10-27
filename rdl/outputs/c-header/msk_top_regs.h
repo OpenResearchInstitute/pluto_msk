@@ -312,6 +312,18 @@ extern "C" {
 #define MSK_TOP_REGS__RX_POWER__RX_POWER_bw 23
 #define MSK_TOP_REGS__RX_POWER__RX_POWER_reset 0x0
 
+// Reg - msk_top_regs::observation_data_data_cf6acbd7_name_aa4ec676
+#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_CF6ACBD7_NAME_AA4EC676__DATA_bm 0xffffffff
+#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_CF6ACBD7_NAME_AA4EC676__DATA_bp 0
+#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_CF6ACBD7_NAME_AA4EC676__DATA_bw 32
+#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_CF6ACBD7_NAME_AA4EC676__DATA_reset 0x0
+
+// Reg - msk_top_regs::observation_data_data_cf6acbd7_name_8a90eed1
+#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_CF6ACBD7_NAME_8A90EED1__DATA_bm 0xffffffff
+#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_CF6ACBD7_NAME_8A90EED1__DATA_bp 0
+#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_CF6ACBD7_NAME_8A90EED1__DATA_bw 32
+#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_CF6ACBD7_NAME_8A90EED1__DATA_reset 0x0
+
 // Addrmap - msk_top_regs
 typedef struct __attribute__ ((__packed__)) {
     uint32_t Hash_ID_Low;
@@ -350,10 +362,12 @@ typedef struct __attribute__ ((__packed__)) {
     uint32_t lowpass_ema_alpha1;
     uint32_t lowpass_ema_alpha2;
     uint32_t rx_power;
+    uint32_t tx_async_fifo_rd_wr_ptr;
+    uint32_t rx_async_fifo_rd_wr_ptr;
 } msk_top_regs_t;
 
 
-static_assert(sizeof(msk_top_regs_t) == 0x90, "Packing error");
+static_assert(sizeof(msk_top_regs_t) == 0x98, "Packing error");
 
 #ifdef __cplusplus
 }

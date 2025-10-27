@@ -165,6 +165,14 @@ class msk_top_regs_simulator_cls(Simulator):
     Register(width=32, full_inst_name='msk_top_regs.rx_power', readable=True, writable=False,
                                          fields=[FieldDefinition(high=22, low=0, msb=22, lsb=0, inst_name='rx_power'),
                                                 ]),
+            144 : 
+    Register(width=32, full_inst_name='msk_top_regs.tx_async_fifo_rd_wr_ptr', readable=True, writable=False,
+                                         fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='data'),
+                                                ]),
+            148 : 
+    Register(width=32, full_inst_name='msk_top_regs.rx_async_fifo_rd_wr_ptr', readable=True, writable=False,
+                                         fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='data'),
+                                                ]),
         }
 
     def _build_memories(self) -> list[MemoryEntry]:

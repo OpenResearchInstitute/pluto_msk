@@ -130,9 +130,11 @@ class axis_bus:
 
         self.aclk           = dut.s_axis_aclk
         self.aresetn        = dut.s_axis_aresetn
-        self.tvalid         = dut.s_axis_valid
-        self.tready         = dut.s_axis_ready
-        self.tdata          = dut.s_axis_data
+        self.tvalid         = dut.s_axis_tvalid
+        self.tready         = dut.s_axis_tready
+        self.tdata          = dut.s_axis_tdata
+        self.tlast          = dut.s_axis_tlast
+        self.tkeep          = dut.s_axis_tkeep
 
         self.aresetn.value  = 1
         self.tvalid.value   = 0 
@@ -793,12 +795,11 @@ async def msk_test_1(dut):
         #     dut.s_axi_awvalid.value = 1
         #     await regs.write("msk_top_regs", "PRBS_Control", data)    
 
-        # if sim_time_d <= sim_start + 20000 and sim_time >= sim_start + 20000:
-        #     data = await regs.read("msk_top_regs", "PRBS_Control")
-        #     data = data ^ 0x8
-        #     dut.s_axi_wvalid.value = 1
-        #     dut.s_axi_awvalid.value = 1
-        #     await regs.write("msk_top_regs", "PRBS_Control", data)    
+        # if sim_time_d <= sim_start + 30000 and sim_time >= sim_start + 30000:
+        #     data = await regs.tx_async_fifo_rd_wr_ptr.read()
+        #     print("Tx FIFO Pointers", hex(data))
+        #     data = await regs.rx_async_fifo_rd_wr_ptr.read()
+        #     print("Rx FIFO Pointers", hex(data))
 
         if sim_time_d <= sim_start + 20000 and sim_time >= sim_start + 20000:
             data = await regs.PRBS_Control.read()
@@ -833,6 +834,10 @@ async def msk_test_1(dut):
         print("F1 Error: ", hex(data))
         data = await regs.f2_error.read()
         print("F2 Error: ", hex(data))
+        data = await regs.tx_async_fifo_rd_wr_ptr.read()
+        print("Tx FIFO Pointers", hex(data))
+        data = await regs.rx_async_fifo_rd_wr_ptr.read()
+        print("Rx FIFO Pointers", hex(data))
         #data = await regs.read("msk_top_regs", "LPF_Accum_F1")
         # print("F1 Acc: ", hex(data))
         # data = await regs.read("msk_top_regs", "LPF_Accum_F2")
