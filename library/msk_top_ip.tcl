@@ -10,6 +10,7 @@ read_vhdl -library "desyrdl" "../rdl/vhdl/desyrdl/pkg_desyrdl_common.vhd"
 
 #set_property FILE_TYPE {VHDL 2008} [get_files $ad_hdl_dir/library/msk_top/src/*.vhd]
 adi_ip_files msk_top [list \
+  "../rdl/src/axi4lite_intf_pkg.vhd" \
   "../rdl/vhdl/msk_top_regs/msk_top_regs_decoder_axi4l.vhd" \
   "../rdl/vhdl/msk_top_regs/pkg_msk_top_regs.vhd" \
   "../rdl/vhdl/msk_top_regs/msk_top_regs.vhd" \
