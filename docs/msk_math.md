@@ -115,10 +115,12 @@ The four resulting values for the f1 mix are
 cos(2𝝿f1t)*cos(2𝝿f1t) = 1/2 [ cos(2𝝿f1t - 2𝝿f1t) + cos(2𝝿f1t + 2𝝿f1t) ]
 					  = 1/2 [ cos(0) + cos(4𝝿f1t) ]
 					  = 1/2 [ 1 + cos(4𝝿f1t)]
+					  = 1/2 + 1/2cos(2𝝿2f1t)
 
 -cos(2𝝿f1t)*cos(2𝝿f1t) = -1/2 [ cos(2𝝿f1t - 2𝝿f1t) + cos(2𝝿f1t + 2𝝿f1t) ]
 					   = -1/2 [ cos(0) + cos(4𝝿f1t) ]
 					   = -1/2 [ 1 + cos(4𝝿f1t)]
+					   = -1/2 - 1/2cos(2𝝿2f1t)
 
 (both the previous results are a DC value and a sinusoid at 2*f1)
 
@@ -149,20 +151,28 @@ cos(2𝝿f1t)*sin(2𝝿f1t) = 1/2 [ sin(2𝝿f1t + 2𝝿f1t + theta) - sin(2𝝿
 					  = 1/2 sin(4𝝿f1t + theta)
 
 
--cos(2𝝿f1t)*sin(2𝝿f1t) = -1/2 [ sin(2𝝿f1t + 2𝝿f1t) - sin(2𝝿f1t - 2𝝿f1t) ]
-					   = -1/2 [ sin(4𝝿f1t) - sin(0) ]
-					   = -1/2 sin(4𝝿f1t)
+-cos(2𝝿f1t)*sin(2𝝿f1t) = -1/2 [ sin(2𝝿f1t + 2𝝿f1t + theta) - sin(2𝝿f1t - 2𝝿f1t + theta) ]
+					   = -1/2 [ sin(2𝝿2f1t + theta) - sin(theta) ]
+					   = -1/2 sin(2𝝿2f1t + theta) 
 
 again we only care about the DC component, which when the phases are aligned is 0. If the phases are not aligned the 
 sin(0) term becomes sin(Δφ) a constant.
 
 
 cos(2𝝿f1t)*sin(2𝝿f1t) = 1/2 [ sin(2𝝿f2t + 2𝝿f1t) - sin(2𝝿f2t - 2𝝿f1t) ]
-					  = 1/2 [ sin(2𝝿(f2+f1)t) - sin(2𝝿(f2-f1)t) ]
+					  = 1/2 [ sin(2𝝿(f2+f1)t) - sin(2𝝿(f2-f1)t) ]	
 
 
 cos(2𝝿f1t)*sin(2𝝿f1t) = -1/2 [ sin(2𝝿f2t + 2𝝿f1t) - sin(2𝝿f2t - 2𝝿f1t) ]
 					  = -1/2 [ sin(2𝝿(f2+f1)t) - sin(2𝝿(f2-f1)t) ]
 
+
+
+
+error_instant =  1/2 sin(2𝝿2f1t + theta) * sign( 1/2 + 1/2cos(2𝝿2f1t))
+      = -1/2 sin(2𝝿2f1t + theta) * sign(-1/2 - 1/2cos(2𝝿2f1t))
+      =  1/2 sin(2𝝿2f1t + theta)
+
+error = SUM_T(1/2 sin(2𝝿2f1t + theta)) = -cos(2𝝿2f1t + theta) + C
 
 

@@ -168,8 +168,24 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL fifo_tlast       : std_logic;
 	
 	SIGNAL frame_complete   : std_logic;
-	SIGNAL fifo_prog_full   : std_logic;
-	SIGNAL fifo_prog_empty  : std_logic;
+
+	SIGNAL tx_async_fifo_prog_full	: std_logic;
+	SIGNAL tx_async_fifo_prog_empty	: std_logic;
+	SIGNAL tx_async_fifo_overflow	: std_logic;
+	SIGNAL tx_async_fifo_underflow	: std_logic;
+	SIGNAL tx_async_fifo_wr_ptr		: std_logic(FIFO_ADDR_WIDTH DOWNTO 0);
+	SIGNAL tx_async_fifo_rd_ptr 	: std_logic(FIFO_ADDR_WIDTH DOWNTO 0);
+	SIGNAL tx_async_fifo_status_req : std_logic;
+	SIGNAL tx_async_fifo_status_ack : std_logic;
+
+	SIGNAL rx_async_fifo_prog_full	: std_logic;
+	SIGNAL rx_async_fifo_prog_empty	: std_logic;
+	SIGNAL rx_async_fifo_overflow	: std_logic;
+	SIGNAL rx_async_fifo_underflow	: std_logic;
+	SIGNAL rx_async_fifo_wr_ptr		: std_logic(FIFO_ADDR_WIDTH DOWNTO 0);
+	SIGNAL rx_async_fifo_rd_ptr 	: std_logic(FIFO_ADDR_WIDTH DOWNTO 0);
+	SIGNAL rx_async_fifo_status_req : std_logic;
+	SIGNAL rx_async_fifo_status_ack : std_logic;
 
 	-- RX chain signals
 	SIGNAL rx_byte              : std_logic_vector(7 DOWNTO 0);
@@ -322,8 +338,17 @@ BEGIN
 			m_axis_tready   => fifo_tready,
 			m_axis_tlast    => fifo_tlast,
 			
-			prog_full       => fifo_prog_full,
-			prog_empty      => fifo_prog_empty
+            -- status signals synchronized to AXI control/status bus
+			prog_aclk 		=> s_axi_aclk,
+			prog_aresetn	=> s_axi_aresetn,
+			prog_status_req => tx_async_fifo_status_req,
+			prog_status_ack => tx_async_fifo_status_ack,
+			prog_full       => tx_async_fifo_prog_full,
+			prog_empty      => tx_async_fifo_prog_empty,
+			prog_overflow	=> tx_async_fifo_overflow,
+			prog_underflow  => tx_async_fifo_underflow,
+			prog_wr_ptr  	=> tx_async_fifo_wr_ptr,
+			prog_rd_ptr 	=> tx_async_fifo_rd_ptr
 		);
 
 	-- Stage 3: Byte-to-Bit De-serializer (MSB-FIRST VERSION)
@@ -439,13 +464,6 @@ BEGIN
 			tx_samples_I	=> tx_samples_I_int,
 			tx_samples_Q	=> tx_samples_Q_int
 		);
-
-
-
-
-
-
-
     
     ------------------------------------------------------------------------------
     -- RX Stage 2: Frame Sync Detector (MSB-FIRST VERSION)
@@ -470,9 +488,9 @@ BEGIN
             m_axis_tvalid   => sync_det_tvalid,
             m_axis_tready   => sync_det_tready,
             m_axis_tlast    => sync_det_tlast,
-	    frame_sync_locked => rx_frame_sync_locked,            
-            frames_received => rx_frames_count,
-            frame_sync_errors     => rx_frame_sync_errors,
+	    	frame_sync_locked 	=> rx_frame_sync_locked,            
+            frames_received 	=> rx_frames_count,
+            frame_sync_errors   => rx_frame_sync_errors,
             buffer_overflow => rx_fifo_overflow
         );
     
@@ -504,8 +522,17 @@ BEGIN
             m_axis_tready   => m_axis_tready,
             m_axis_tlast    => m_axis_tlast,
             
-            prog_full       => OPEN,
-            prog_empty      => OPEN
+            -- status signals synchronized to AXI control/status bus
+			prog_aclk 		=> s_axi_aclk,
+			prog_aresetn	=> s_axi_aresetn,
+			prog_status_req => rx_async_fifo_status_req,
+			prog_status_ack => rx_async_fifo_status_ack,
+            prog_full       => rx_async_fifo_prog_full,
+            prog_empty      => rx_async_fifo_prog_empty,
+			prog_overflow	=> rx_async_fifo_overflow,
+			prog_underflow  => rx_async_fifo_underflow,
+			prog_wr_ptr  	=> rx_async_fifo_wr_ptr,
+			prog_rd_ptr 	=> rx_async_fifo_rd_ptr
         );
     
     -- Zero-pad upper bits of m_axis_tdata if wider than 8 bits
@@ -537,7 +564,6 @@ BEGIN
 
 
         rx_bit_corr <= rx_bit WHEN rx_invert = '0' ELSE NOT rx_bit;
-
 
 ------------------------------------------------------------------------------------------------------
 -- MSK DEMODULATOR

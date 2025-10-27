@@ -35,9 +35,20 @@ ENTITY axis_async_fifo IS
         m_axis_tready   : IN  std_logic;
         m_axis_tlast    : OUT std_logic;
         
+        -- Control signals
+        --prog_packet_size: IN  std_logic_vector...
+
         -- Status signals
         prog_full       : OUT std_logic;
-        prog_empty      : OUT std_logic
+        prog_empty      : OUT std_logic;
+        status_aclk     : IN  std_logic;
+        status_aresetn  : IN  std_logic;
+        status_req      : IN  std_logic;
+        status_ack      : OUT std_logic;
+        fifo_overflow   : OUT std_logic;
+        fifo_underflow  : OUT std_logic;
+        fifo_wr_ptr     : OUT std_logic_vector(ADDR_WIDTH DOWNTO 0);
+        fifo_rd_ptr     : OUT srd_logic_vector(ADDR_WIDTH DOWNTO 0)
     );
 END ENTITY axis_async_fifo;
 
@@ -215,5 +226,85 @@ BEGIN
             END IF;
         END IF;
     END PROCESS read_proc;
+
+    ------------------------------------------------------------------------------
+    -- Status Clock Domain
+    ------------------------------------------------------------------------------
+    status_proc : PROCESS (prog_aclk)
+    BEGIN
+        IF rising_edge(prog_aclk) BEGIN
+            IF prog_aresetn = '0' THEN
+                --prog_empty      <= '0';
+                --prog_full       <= '0';
+                fifo_overflow   <= '0';
+                fifo_underflow  <= '0';
+                fifo_wr_ptr     <= (OTHERS => '0');
+                fifo_rd_ptr     <= (OTHERS => '0');
+                fifo_status_ack <= '0';
+            ELSE
+
+                wr_status_ack_sync1 <= wr_status_ack;
+                wr_status_ack_sync2 <= wr_status_ack_sync1;
+                wr_status_ack_sync3 <= wr_status_ack_sync2;
+
+                IF (wr_status_req_sync2 XOR wr_status_ack_sync3) = '1' THEN
+                    prog_wr_status_ack <= '1';
+                END IF;
+
+                rd_status_ack_sync1 <= rd_status_ack;
+                rd_status_ack_sync2 <= rd_status_ack_sync1;
+                rd_status_ack_sync3 <= rd_status_ack_sync2;
+
+                IF (rd_status_req_sync2 XOR rd_status_ack_sync3) = '1' THEN
+                    prog_rd_status_ack <= '1';
+                END IF;
+
+                IF prog_wr_status_ack = '1' AND prod_rd_status_ack = '1' THEN
+                    prog_status_ack <= '1';
+                ELSE
+                    prog_status_ack <= '0';
+                END IF;
+
+            END IF;
+        END IF;
+    END PROCESS status_proc;
+
+    status_wrclk : PROCESS (wr_aclk)
+    BEGIN
+        IF rising_edge(wr_aclk) THEN
+            IF wr_aresetn = '0' THEN
+                wr_status_req_sync1 <= '0';
+                wr_status_req_sync2 <= '0';
+                wr_status_ack       <= '0';
+            ELSE 
+                wr_status_req_sync1 <= prog_status_req;
+                wr_status_req_sync2 <= wr_status_req_sync1;
+
+                IF wr_status_req_sync2 THEN
+                    fifo_wr_ptr     <= wr_ptr_bin;
+                    wr_status_ack   <= NOT wr_status_ack;
+                END IF;
+            END IF;
+        END IF;
+    END PROCESS status_wrclk;
+
+    status_rdclk : PROCESS (rd_aclk)
+    BEGIN
+        IF rising_edge(rd_aclk) THEN
+            IF rd_aresetn = '0' THEN
+                rd_status_req_sync1 <= '0';
+                rd_status_req_sync2 <= '0';
+                rd_status_ack       <= '0';
+            ELSE 
+                rd_status_req_sync1 <= prog_status_req;
+                rd_status_req_sync2 <= rd_status_req_sync1;
+
+                IF rd_status_req_sync2 THEN
+                    fifo_rd_ptr     <= rd_ptr_bin;
+                    rd_status_ack   <= NOT rd_status_ack;
+                END IF;
+            END IF;
+        END IF;
+    END PROCESS status_wrclk;
 
 END ARCHITECTURE rtl;
