@@ -188,17 +188,56 @@ ARCHITECTURE rtl OF msk_top_csr IS
 	SIGNAL txrxinit 		: std_logic;
 
 	COMPONENT cdc_resync IS 
-		GENERIC (
-			STAGES 		: NATURAL := 2
-		);
 		PORT (
 			clk			: IN  std_logic;
-			resetn		: IN  std_logic;
+			sync_reset	: IN  std_logic;
 	
 			di 			: IN  std_logic;
 			do 			: OUT std_logic
 		);
 	END COMPONENT cdc_resync;
+
+	COMPONENT pulse_detect IS 
+		PORT (
+			clk			: IN  std_logic;
+			sync_reset	: IN  std_logic;
+	
+			di 			: IN  std_logic;
+			do 			: OUT std_logic
+		);
+	END COMPONENT pulse_detect;
+
+	COMPONENT data_capture IS 
+		GENERIC (
+			data_width 	: natural := 32
+		);
+		PORT (
+			clk			: IN  std_logic;
+			sync_reset	: IN  std_logic;
+	
+			capture 	: IN  std_logic;
+	
+			di 			: IN  std_logic_vector(data_width -1 DOWNTO 0);
+			do 			: OUT std_logic_vector(data_width -1 DOWNTO 0)
+		);
+	END COMPONENT data_capture;
+
+	SIGNAL csr_meta 	: std_logic;
+	SIGNAL csr_init 	: std_logic;
+
+	SIGNAL tx_bit_counter_req	: std_logic;
+	SIGNAL tx_ena_counter_req	: std_logic;
+	SIGNAL f1_error_req			: std_logic;
+	SIGNAL f2_error_req			: std_logic;
+	SIGNAL f1_nco_adjust_req	: std_logic;
+	SIGNAL f2_nco_adjust_req	: std_logic;
+
+	SIGNAL prbs_bits_req		: std_logic;
+	SIGNAL prbs_errs_req		: std_logic;
+	SIGNAL lpf_accum_f1_req		: std_logic;
+	SIGNAL lpf_accum_f2_req		: std_logic;
+	SIGNAL pd_power_req			: std_logic;
+	SIGNAL axis_xfer_count_req 	: std_logic;
 
 BEGIN
 
@@ -225,7 +264,7 @@ BEGIN
 
 	u_msk_regs : ENTITY work.msk_top_regs(rtl)
 	PORT MAP (
-    	clk 		=> 	   s_axi_aclk,
+    	clk 		=> s_axi_aclk,
     	rst 		=> NOT s_axi_aresetn,
     	s_axil_i  	=> s_axil_i,
     	s_axil_o 	=> s_axil_o,
@@ -234,41 +273,83 @@ BEGIN
     	hwif_out	=> hwif_out 
   	);
 
-    -- Status signals crossing from local clock domain to the AXI clock domain
-    hwif_in.MSK_Status.demod_sync_lock.next_q 		<= '0';
-    hwif_in.MSK_Status.tx_enable.next_q 			<= tx_enable;
-    hwif_in.MSK_Status.rx_enable.next_q 			<= rx_enable;
-    hwif_in.MSK_Status.tx_axis_valid.next_q 		<= tx_axis_valid;
-    hwif_in.Tx_Bit_Count.tx_bit_counter.next_q		<= tx_bit_counter;
-    hwif_in.Tx_Enable_Count.tx_ena_counter.next_q 	<= tx_ena_counter;
-    hwif_in.axis_xfer_count.xfer_count.next_q 		<= xfer_count;
-    hwif_in.PRBS_Bit_Count.status_data.next_q 		<= prbs_bits;
-    hwif_in.PRBS_Error_Count.status_data.next_q 	<= prbs_errs;
-    hwif_in.LPF_Accum_F1.status_data.next_q 		<= lpf_accum_f1;
-    hwif_in.LPF_Accum_F2.status_data.next_q 		<= lpf_accum_f2;
-    hwif_in.f1_nco_adjust.data.next_q 				<= f1_nco_adjust;
-    hwif_in.f2_nco_adjust.data.next_q 				<= f2_nco_adjust;
-    hwif_in.f1_error.data.next_q 					<= f1_error;
-    hwif_in.f2_error.data.next_q 					<= f2_error;
-    hwif_in.rx_power.rx_power.next_q 				<= pd_power;
+    csr_init_proc : PROCESS (clk, s_axi_aresetn)
+    BEGIN
+    	IF s_axi_aresetn = '0' THEN
+    		csr_meta <= '1';
+    		csr_init <= '1';
+    	ELSIF clk'EVENT AND clk = '1' THEN
+    		csr_meta <= '0';
+    		csr_init <= csr_meta;
+    	END IF;
+    END PROCESS csr_init_proc;
 
-    -- Control signals requiring re-sync from AXI clock domain to local clock domain
-    u01s: cdc_resync PORT MAP (clk, '1', hwif_out.MSK_Init.txrxinit.value, 		  			txrxinit			);
-    u02s: cdc_resync PORT MAP (clk, '1', hwif_out.MSK_Init.txinit.value OR txrxinit, 		txinit 				);
-    u03s: cdc_resync PORT MAP (clk, '1', hwif_out.MSK_Init.rxinit.value OR txrxinit, 		rxinit 				);
-    u04s: cdc_resync PORT MAP (clk, '1', hwif_out.MSK_Control.ptt.value, 			  		ptt 				);
-    u05s: cdc_resync PORT MAP (clk, '1', hwif_out.MSK_Control.loopback_ena.value, 	  		loopback_ena 		);
-    u06s: cdc_resync PORT MAP (clk, '1', hwif_out.MSK_Control.diff_encoder_loopback.value, 	diff_encdec_lbk_ena	);
-    u07s: cdc_resync PORT MAP (clk, '1', hwif_out.MSK_Control.rx_invert.value, 				rx_invert 			);
-    u08s: cdc_resync PORT MAP (clk, '1', hwif_out.MSK_Control.clear_counts.value, 			clear_counts 		);
-    u09s: cdc_resync PORT MAP (clk, '1', hwif_out.LPF_Config_0.lpf_freeze.value,			lpf_freeze 			);
-    u10s: cdc_resync PORT MAP (clk, '1', hwif_out.LPF_Config_0.lpf_zero.value, 				lpf_zero 			);
-    u11s: cdc_resync PORT MAP (clk, '1', hwif_out.PRBS_Control.prbs_sel.value, 				prbs_sel 			);
-    u12s: cdc_resync PORT MAP (clk, '1', hwif_out.PRBS_Control.prbs_clear.value, 			prbs_clear 			);
-    u13s: cdc_resync PORT MAP (clk, '1', hwif_out.PRBS_Control.prbs_error_insert.value, 	prbs_err_insert 	);
-    u14s: cdc_resync PORT MAP (clk, '1', hwif_out.PRBS_Control.prbs_manual_sync.value, 		prbs_manual_sync 	);
-    u15s: cdc_resync PORT MAP (clk, '1', hwif_out.Tx_Sync_Ctrl.tx_sync_ena.value, 			tx_sync_ena 		);
-    u16s: cdc_resync PORT MAP (clk, '1', hwif_out.Tx_Sync_Ctrl.tx_sync_force.value, 		tx_sync_force 		);
+    ulck_s: cdc_resync PORT MAP (s_axi_aclk, NOT s_axi_aresetn, '0',		hwif_in.MSK_Status.demod_sync_lock.next_q);
+    utxe_s: cdc_resync PORT MAP (s_axi_aclk, NOT s_axi_aresetn, tx_enable,	hwif_in.MSK_Status.tx_enable.next_q);
+    urxe_s: cdc_resync PORT MAP (s_axi_aclk, NOT s_axi_aresetn, rx_enable,	hwif_in.MSK_Status.rx_enable.next_q);
+
+    hwif_in.MSK_Status.tx_axis_valid.next_q	<= tx_axis_valid;
+
+    -- Status Request from AXI to MDM
+    utbc_r:  pulse_detect PORT MAP (clk, csr_init, hwif_out.Tx_Bit_Count.req, 				tx_bit_counter_req	);
+    utbe_r:  pulse_detect PORT MAP (clk, csr_init, hwif_out.Tx_Enable_Count.req,			tx_ena_counter_req	);
+    utatc_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.axis_xfer_count.req,			axis_xfer_count_req	);
+    utf1e_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.f1_error.req, 					f1_error_req		);
+    utf2e_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.f2_error.req, 					f2_error_req		);
+    utf1a_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.f1_nco_adjust.req, 				f1_nco_adjust_req	);
+    utf2a_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.f2_nco_adjust.req, 				f2_nco_adjust_req	);
+    utprb_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.PRBS_Bit_Count.req,				prbs_bits_req		);
+    utpre_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.PRBS_Error_Count.req,			prbs_errs_req		);
+    utlp1_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.LPF_Accum_F1.req, 				lpf_accum_f1_req	);
+    utlp2_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.LPF_Accum_F2.req, 				lpf_accum_f2_req	);
+    utpwr_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.rx_power.req, 					pd_power_req		);
+
+    -- Status acknowledge from MDM to AXI
+    utbc_a : pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, tx_bit_counter_req,		hwif_in.Tx_Bit_Count.rd_ack		);
+    utbe_a : pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, tx_ena_counter_req,		hwif_in.Tx_Enable_Count.rd_ack 	);
+    utatc_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, axis_xfer_count_req,		hwif_in.axis_xfer_count.rd_ack  );
+    utf1e_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, f1_error_req,			hwif_in.f1_error.rd_ack 		);
+    utf2e_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, f2_error_req,			hwif_in.f2_error.rd_ack 		);
+    utf1a_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, f1_nco_adjust_req,		hwif_in.f1_nco_adjust.rd_ack	);
+    utf2a_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, f2_nco_adjust_req,		hwif_in.f2_nco_adjust.rd_ack	);
+    utprb_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, prbs_bits_req,			hwif_in.PRBS_Bit_Count.rd_ack	);
+    utpre_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, prbs_errs_req,			hwif_in.PRBS_Error_Count.rd_ack );
+    utlp1_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, lpf_accum_f1_req,		hwif_in.LPF_Accum_F1.rd_ack 	);
+    utlp2_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, lpf_accum_f2_req,		hwif_in.LPF_Accum_F2.rd_ack 	);
+    utpwr_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, pd_power_req,			hwif_in.rx_power.rd_ack			);
+
+    -- Status capture from MDM to AXI
+    utbc_c : data_capture PORT MAP (clk, csr_init, tx_bit_counter_req,	tx_bit_counter,		hwif_in.Tx_Bit_Count.rd_data	);
+    utbe_c : data_capture PORT MAP (clk, csr_init, tx_ena_counter_req,	tx_ena_counter, 	hwif_in.Tx_Enable_Count.rd_data );
+    utatc_c: data_capture PORT MAP (clk, csr_init, axis_xfer_count_req,	xfer_count, 		hwif_in.axis_xfer_count.rd_data );
+    utf1e_c: data_capture PORT MAP (clk, csr_init, f1_error_req,		f1_error, 			hwif_in.f1_error.rd_data 		);
+    utf2e_c: data_capture PORT MAP (clk, csr_init, f2_error_req,		f2_error, 			hwif_in.f2_error.rd_data 		);
+    utf1a_c: data_capture PORT MAP (clk, csr_init, f1_nco_adjust_req,	f1_nco_adjust, 		hwif_in.f1_nco_adjust.rd_data	);
+    utf2a_c: data_capture PORT MAP (clk, csr_init, f2_nco_adjust_req,	f2_nco_adjust, 		hwif_in.f2_nco_adjust.rd_data	);
+    utprb_c: data_capture PORT MAP (clk, csr_init, prbs_bits_req,		prbs_bits, 			hwif_in.PRBS_Bit_Count.rd_data	);
+    utpre_c: data_capture PORT MAP (clk, csr_init, prbs_errs_req,		prbs_errs, 			hwif_in.PRBS_Error_Count.rd_data);
+    utlp1_c: data_capture PORT MAP (clk, csr_init, lpf_accum_f1_req,	lpf_accum_f1, 		hwif_in.LPF_Accum_F1.rd_data 	);
+    utlp2_c: data_capture PORT MAP (clk, csr_init, lpf_accum_f2_req,	lpf_accum_f2, 		hwif_in.LPF_Accum_F2.rd_data 	);
+    utpwr_c: data_capture PORT MAP (clk, csr_init, pd_power_req, 		std_logic_vector(resize(unsigned(pd_power),32)),	
+    																						hwif_in.rx_power.rd_data);
+
+    -- Control from AXI to MDM
+    u01s: cdc_resync PORT MAP (clk, csr_init, hwif_out.MSK_Init.txrxinit.value, 		  		txrxinit			);
+    u02s: cdc_resync PORT MAP (clk, csr_init, hwif_out.MSK_Init.txinit.value OR txrxinit, 		txinit 				);
+    u03s: cdc_resync PORT MAP (clk, csr_init, hwif_out.MSK_Init.rxinit.value OR txrxinit, 		rxinit 				);
+    u04s: cdc_resync PORT MAP (clk, csr_init, hwif_out.MSK_Control.ptt.value, 			  		ptt 				);
+    u05s: cdc_resync PORT MAP (clk, csr_init, hwif_out.MSK_Control.loopback_ena.value, 	  		loopback_ena 		);
+    u06s: cdc_resync PORT MAP (clk, csr_init, hwif_out.MSK_Control.diff_encoder_loopback.value, diff_encdec_lbk_ena	);
+    u07s: cdc_resync PORT MAP (clk, csr_init, hwif_out.MSK_Control.rx_invert.value, 			rx_invert 			);
+    u08s: cdc_resync PORT MAP (clk, csr_init, hwif_out.MSK_Control.clear_counts.value, 			clear_counts 		);
+    u09s: cdc_resync PORT MAP (clk, csr_init, hwif_out.LPF_Config_0.lpf_freeze.value,			lpf_freeze 			);
+    u10s: cdc_resync PORT MAP (clk, csr_init, hwif_out.LPF_Config_0.lpf_zero.value, 			lpf_zero 			);
+    u11s: cdc_resync PORT MAP (clk, csr_init, hwif_out.PRBS_Control.prbs_sel.value, 			prbs_sel 			);
+    u12s: cdc_resync PORT MAP (clk, csr_init, hwif_out.PRBS_Control.prbs_clear.value, 			prbs_clear 			);
+    u13s: cdc_resync PORT MAP (clk, csr_init, hwif_out.PRBS_Control.prbs_error_insert.value, 	prbs_err_insert 	);
+    u14s: cdc_resync PORT MAP (clk, csr_init, hwif_out.PRBS_Control.prbs_manual_sync.value, 	prbs_manual_sync 	);
+    u15s: cdc_resync PORT MAP (clk, csr_init, hwif_out.Tx_Sync_Ctrl.tx_sync_ena.value, 			tx_sync_ena 		);
+    u16s: cdc_resync PORT MAP (clk, csr_init, hwif_out.Tx_Sync_Ctrl.tx_sync_force.value, 		tx_sync_force 		);
 
     -- The remaining control signals also cross from the AXI to the local clock domain. These are static signals
     -- that are configured while the txrxinit is active. The active txrxinit hold the destination FFs to an 

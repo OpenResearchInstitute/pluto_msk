@@ -182,6 +182,7 @@ addrmap msk_top_regs {
             desc = "Count of data requests made by modem";
             sw = r; 
             hw = w; 
+            onread = ruser;
         } tx_bit_counter[31:0];
     };
 
@@ -194,6 +195,7 @@ addrmap msk_top_regs {
             name = "Tx Enable Count";
             sw = r; 
             hw = w; 
+            onread = ruser;
         } tx_ena_counter[31:0] = 0;
     };
 
@@ -470,6 +472,7 @@ addrmap msk_top_regs {
         fieldwidth = 32;
         sw = r;
         hw = w;
+        onread = ruser;
     };
 
     reg observation_data {
@@ -483,8 +486,8 @@ addrmap msk_top_regs {
                 msk_init            MSK_Init;
                 msk_ctrl            MSK_Control;
                 msk_stat_0          MSK_Status;
-                msk_stat_1          Tx_Bit_Count;
-                msk_stat_2          Tx_Enable_Count;
+    external    msk_stat_1          Tx_Bit_Count;
+    external    msk_stat_2          Tx_Enable_Count;
                 config_nco_fw       Fb_FreqWord;
                                     Fb_FreqWord->desc = "Set Modem Data Rate";
                                     Fb_FreqWord->name = "Bitrate NCO Frequency Control Word";
@@ -512,33 +515,33 @@ addrmap msk_top_regs {
                 config_prbs_seed    PRBS_Initial_State;
                 config_prbs_poly    PRBS_Polynomial;
                 config_prbs_errmask PRBS_Error_Mask;
-                stat_32_bits        PRBS_Bit_Count;
-                stat_32_errs        PRBS_Error_Count;
-                stat_32_lpf_acc     LPF_Accum_F1;
+    external    stat_32_bits        PRBS_Bit_Count;
+    external    stat_32_errs        PRBS_Error_Count;
+    external    stat_32_lpf_acc     LPF_Accum_F1;
                                     LPF_Accum_F1->name = "F1 PI Controller Accumulator";
                                     LPF_Accum_F1->desc = "Value of the F1 PI Controller Accumulator";
-                stat_32_lpf_acc     LPF_Accum_F2;
+    external    stat_32_lpf_acc     LPF_Accum_F2;
                                     LPF_Accum_F2->name = "F2 PI Controller Accumulator";
                                     LPF_Accum_F2->desc = "Value of the F2 PI Controller Accumulator";
-                msk_stat_3          axis_xfer_count;
+    external    msk_stat_3          axis_xfer_count;
                 rx_sample_discard   Rx_Sample_Discard;
                 lpf_config_2        LPF_Config_2;
-                observation_data    f1_nco_adjust;
+    external    observation_data    f1_nco_adjust;
                                     f1_nco_adjust->name = "F1 NCO Frequency Adjust";
                                     f1_nco_adjust->desc = "Frequency offet applied to the F1 NCO";
                                     f1_nco_adjust.data->name = "F1 NCO Frequency Adjust";
                                     f1_nco_adjust.data->desc = "Frequency offet applied to the F1 NCO";
-                observation_data    f2_nco_adjust;
+    external    observation_data    f2_nco_adjust;
                                     f2_nco_adjust->name = "F2 NCO Frequency Adjust";
                                     f2_nco_adjust->desc = "Frequency offet applied to the F2 NCO";
                                     f2_nco_adjust.data->name = "F2 NCO Frequency Adjust";
                                     f2_nco_adjust.data->desc = "Frequency offet applied to the F2 NCO";
-                observation_data    f1_error;
+    external    observation_data    f1_error;
                                     f1_error->name = "F1 Error Value";
                                     f1_error->desc = "Error value of the F1 Costas loop after each active bit period";
                                     f1_error.data->name = "F1 Error Value";
                                     f1_error.data->desc = "Error value of the F1 Costas loop after each active bit period";
-                observation_data    f2_error;
+    external    observation_data    f2_error;
                                     f2_error->name = "F2 Error Value";
                                     f2_error->desc = "Error value of the F2 Costas loop after each active bit period";
                                     f2_error.data->name = "F2 Error Value";
@@ -547,6 +550,6 @@ addrmap msk_top_regs {
                 tx_sync_cnt         Tx_Sync_Cnt;
                 lowpass_ema_alpha   lowpass_ema_alpha1;
                 lowpass_ema_alpha   lowpass_ema_alpha2;
-                rx_power            rx_power;
+    external    rx_power            rx_power;
 
 };

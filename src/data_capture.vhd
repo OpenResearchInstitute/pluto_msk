@@ -68,34 +68,34 @@ USE ieee.numeric_std.ALL;
 ------------------------------------------------------------------------------------------------------
 -- Entity
 
-ENTITY cdc_resync IS 
+ENTITY data_capture IS 
+	GENERIC (
+		data_width 	: natural := 32
+	);
 	PORT (
 		clk			: IN  std_logic;
 		sync_reset	: IN  std_logic;
 
-		di 			: IN  std_logic;
-		do 			: OUT std_logic
+		capture 	: IN  std_logic;
+
+		di 			: IN  std_logic_vector(data_width -1 DOWNTO 0);
+		do 			: OUT std_logic_vector(data_width -1 DOWNTO 0)
 	);
-END ENTITY cdc_resync;
+END ENTITY data_capture;
 
-ARCHITECTURE rtl OF cdc_resync IS 
-
-	SIGNAL di_s : std_logic_vector(0 TO 1);
-
+ARCHITECTURE rtl OF data_capture IS 
 BEGIN
 
-	do <= di_s(1);
-
-	resync : PROCESS (clk)
+	capture_proc : PROCESS (clk)
 	BEGIN
 		IF clk'EVENT AND clk = '1' THEN
 			IF sync_reset = '1' THEN
-				di_s <= (OTHERS => '0');
-			ELSE
-				di_s <= di & di_s(0 TO 0);
+				do  <= (OTHERS => '0');
+			ELSIF capture = '1' THEN
+				do <= di;
 			END IF;
 		END IF;
-	END PROCESS resync;
+	END PROCESS capture_proc;
 
 END ARCHITECTURE rtl;
 

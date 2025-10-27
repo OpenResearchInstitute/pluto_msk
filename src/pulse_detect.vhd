@@ -68,7 +68,7 @@ USE ieee.numeric_std.ALL;
 ------------------------------------------------------------------------------------------------------
 -- Entity
 
-ENTITY cdc_resync IS 
+ENTITY pulse_detect IS 
 	PORT (
 		clk			: IN  std_logic;
 		sync_reset	: IN  std_logic;
@@ -76,26 +76,33 @@ ENTITY cdc_resync IS
 		di 			: IN  std_logic;
 		do 			: OUT std_logic
 	);
-END ENTITY cdc_resync;
+END ENTITY pulse_detect;
 
-ARCHITECTURE rtl OF cdc_resync IS 
+ARCHITECTURE rtl OF pulse_detect IS 
 
-	SIGNAL di_s : std_logic_vector(0 TO 1);
+	SIGNAL detect_q 	: std_logic;
+	SIGNAL detect_q1 	: std_logic;
+	SIGNAL detect_q2 	: std_logic;
 
 BEGIN
 
-	do <= di_s(1);
+	do <= detect_q1 AND NOT detect_q2;
 
-	resync : PROCESS (clk)
+	detect : PROCESS (clk, di)
 	BEGIN
-		IF clk'EVENT AND clk = '1' THEN
-			IF sync_reset = '1' THEN
-				di_s <= (OTHERS => '0');
+		IF di = '1' THEN
+			detect_q <= '1';
+		ELSIF clk'EVENT AND clk = '1' THEN
+			IF sync_reset = '1' OR detect_q2 = '1' THEN
+				detect_q  <= '0';
+				detect_q1 <= '0';
+				detect_q2 <= '0';
 			ELSE
-				di_s <= di & di_s(0 TO 0);
+				detect_q1 <= detect_q;
+				detect_q2 <= detect_q1;
 			END IF;
 		END IF;
-	END PROCESS resync;
+	END PROCESS detect;
 
 END ARCHITECTURE rtl;
 

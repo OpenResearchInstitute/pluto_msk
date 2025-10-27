@@ -24,6 +24,8 @@ VHDL_SOURCES += $(RDL)/src/axi4lite_intf_pkg.vhd \
 				$(RDL)/src/reg_utils.vhd \
 				$(RDL)/outputs/rtl/msk_top_regs_pkg.vhd \
 				$(RDL)/outputs/rtl/msk_top_regs.vhd \
+				$(SRC)/pulse_detect.vhd \
+				$(SRC)/data_capture.vhd \
 				$(SRC)/cdc_resync.vhd \
 				$(SRC)/axis_async_fifo.vhd \
 				$(SRC)/axis_dma_adapter.vhd \

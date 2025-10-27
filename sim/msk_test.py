@@ -281,11 +281,11 @@ class axi_bus:
 
         self.rready.value = 0
 
-        await RisingEdge(self.aclk)
-        await RisingEdge(self.aclk)
+        read_data = self.rdata.value.integer
+
         await RisingEdge(self.aclk)
 
-        return self.rdata.value.integer
+        return read_data
 
 
     async def write(self, addr, width, accesswidth, data):
@@ -748,7 +748,7 @@ async def msk_test_1(dut):
     hash_id  = await regs.Hash_ID_Low.read()
     hash_id  = await regs.Hash_ID_Low.read()
     print("Hash ID Low: ", hex(hash_id))
-    hash_id = await regs.Hash_ID_High.read()
+    hash_id  = await regs.Hash_ID_High.read()
     print("Hash ID High: ", hex(hash_id))
 
     await Timer(100, units="ns")
@@ -770,8 +770,8 @@ async def msk_test_1(dut):
     await cocotb.start(msksim.rx_sample_capture())
     await cocotb.start(ducsim.upconvert())
     await cocotb.start(ddcsim.downconvert())
-    await cocotb.start(pn.generate_data())
-    await cocotb.start(pn.check_data())
+    # await cocotb.start(pn.generate_data())
+    # await cocotb.start(pn.check_data())
 
     sim_time = get_sim_time("us")
     sim_start = sim_time

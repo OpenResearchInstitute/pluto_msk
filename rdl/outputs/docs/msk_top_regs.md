@@ -192,9 +192,9 @@ Don't override. Generated from: msk_top_regs
 
 <p>Modem status data</p>
 
-|Bits|  Identifier  |Access|Reset|    Name    |
-|----|--------------|------|-----|------------|
-|31:0|tx_bit_counter|   r  |  —  |Tx Bit Count|
+|Bits|  Identifier  | Access |Reset|    Name    |
+|----|--------------|--------|-----|------------|
+|31:0|tx_bit_counter|r, ruser|  —  |Tx Bit Count|
 
 #### tx_bit_counter field
 
@@ -208,9 +208,9 @@ Don't override. Generated from: msk_top_regs
 
 <p>Modem status data</p>
 
-|Bits|  Identifier  |Access|Reset|      Name     |
-|----|--------------|------|-----|---------------|
-|31:0|tx_ena_counter|   r  | 0x0 |Tx Enable Count|
+|Bits|  Identifier  | Access |Reset|      Name     |
+|----|--------------|--------|-----|---------------|
+|31:0|tx_ena_counter|r, ruser| 0x0 |Tx Enable Count|
 
 #### tx_ena_counter field
 
@@ -605,9 +605,9 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 <p>Frequency offet applied to the F1 NCO</p>
 
-|Bits|Identifier|Access|Reset|          Name         |
-|----|----------|------|-----|-----------------------|
-|31:0|   data   |   r  | 0x0 |F1 NCO Frequency Adjust|
+|Bits|Identifier| Access |Reset|          Name         |
+|----|----------|--------|-----|-----------------------|
+|31:0|   data   |r, ruser| 0x0 |F1 NCO Frequency Adjust|
 
 #### data field
 
@@ -621,9 +621,9 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 <p>Frequency offet applied to the F2 NCO</p>
 
-|Bits|Identifier|Access|Reset|          Name         |
-|----|----------|------|-----|-----------------------|
-|31:0|   data   |   r  | 0x0 |F2 NCO Frequency Adjust|
+|Bits|Identifier| Access |Reset|          Name         |
+|----|----------|--------|-----|-----------------------|
+|31:0|   data   |r, ruser| 0x0 |F2 NCO Frequency Adjust|
 
 #### data field
 
@@ -637,9 +637,9 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 <p>Error value of the F1 Costas loop after each active bit period</p>
 
-|Bits|Identifier|Access|Reset|     Name     |
-|----|----------|------|-----|--------------|
-|31:0|   data   |   r  | 0x0 |F1 Error Value|
+|Bits|Identifier| Access |Reset|     Name     |
+|----|----------|--------|-----|--------------|
+|31:0|   data   |r, ruser| 0x0 |F1 Error Value|
 
 #### data field
 
@@ -653,9 +653,9 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 <p>Error value of the F2 Costas loop after each active bit period</p>
 
-|Bits|Identifier|Access|Reset|     Name     |
-|----|----------|------|-----|--------------|
-|31:0|   data   |   r  | 0x0 |F2 Error Value|
+|Bits|Identifier| Access |Reset|     Name     |
+|----|----------|--------|-----|--------------|
+|31:0|   data   |r, ruser| 0x0 |F2 Error Value|
 
 #### data field
 
