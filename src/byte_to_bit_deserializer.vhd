@@ -32,12 +32,12 @@ END ENTITY byte_to_bit_deserializer;
 
 ARCHITECTURE rtl OF byte_to_bit_deserializer IS
 
-    -- Sync word: 0xE25F35 sent MSB-first
+    -- Sync word: 0x02B8DB sent MSB-first
     -- This is the SAME pattern the receiver expects (no bit reversal!)
     -- Bit 23 (leftmost) is sent first
-    CONSTANT SYNC_WORD : std_logic_vector(23 DOWNTO 0) := "111000100101111100110101";
-    --                                                       E  2   5  F   3  5
-    -- E2 = 11100010, 5F = 01011111, 35 = 00110101
+    CONSTANT SYNC_WORD : std_logic_vector(23 DOWNTO 0) := "000000101011100011011011";
+    --                                                        0   2   B   8   D   B
+    -- 02 00000010  B8 10111000  DB 11011011 
 
     SIGNAL shift_reg         : std_logic_vector(7 DOWNTO 0);
     SIGNAL bit_counter       : integer range 0 to 31;

@@ -3,9 +3,8 @@
 ------------------------------------------------------------------------------------------------------
 -- MODIFIED: Now uses MSB-first bit ordering (standard serial convention)
 -- Receives bit 7 first, assembles bytes in standard order
--- Sync word updated to 0xE25F35 (matches TX, no bit reversal!)
+-- Sync word updated to 0x02B8DB (matches TX, no bit reversal!)
 ------------------------------------------------------------------------------------------------------
--- Original FIX: Removed multi-driver bug where output_active was assigned in two processes
 -- Now uses frame_ready handshake signal between reception_proc and output_proc
 ------------------------------------------------------------------------------------------------------
 
@@ -16,7 +15,7 @@ USE ieee.numeric_std.ALL;
 
 ENTITY frame_sync_detector IS
     GENERIC (
-        SYNC_WORD : std_logic_vector(23 DOWNTO 0) := x"E25F35";  -- MSB-first sync word
+        SYNC_WORD : std_logic_vector(23 DOWNTO 0) := x"02B8DB";  -- MSB-first sync word
         PAYLOAD_BYTES   : NATURAL := 268;
         SYNC_THRESHOLD  : NATURAL := 3;
         BUFFER_DEPTH    : NATURAL := 11;

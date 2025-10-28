@@ -451,11 +451,10 @@ BEGIN
     
     ------------------------------------------------------------------------------
     -- RX Stage 2: Frame Sync Detector (MSB-FIRST VERSION)
-    -- MODIFIED: Sync word changed from 0xE25F35 to 0xE25F35 (matches TX now!)
     ------------------------------------------------------------------------------
     u_rx_frame_sync : ENTITY work.frame_sync_detector
         GENERIC MAP (
-            SYNC_WORD      => x"E25F35",  -- MSB-first sync word (same as TX!)
+            SYNC_WORD      => x"02B8DB",  -- MSB-first sync word (same as TX!)
             PAYLOAD_BYTES  => 268,
             SYNC_THRESHOLD => 3,
             BUFFER_DEPTH   => 11,         -- 2048 bytes
