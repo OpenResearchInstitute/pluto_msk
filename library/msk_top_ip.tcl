@@ -6,7 +6,6 @@ source $ad_hdl_dir/library/scripts/adi_ip_xilinx.tcl
 
 adi_ip_create msk_top
 
-read_vhdl -library "desyrdl" "../rdl/vhdl/desyrdl/pkg_desyrdl_common.vhd"
 read_vhdl -vhdl2008 "../rdl/src/axi4lite_intf_pkg.vhd"
 read_vhdl "../rdl/src/reg_utils.vhd"
 read_vhdl "../rdl/outputs/rtl/msk_top_regs_pkg.vhd"
