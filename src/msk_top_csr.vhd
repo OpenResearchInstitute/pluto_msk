@@ -62,8 +62,7 @@ USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
 
 USE work.axi4lite_intf_pkg.ALL;
---USE work.msk_top_regs_pkg.ALL;
-USE work.pkg_msk_top_regs.ALL;
+USE work.msk_top_regs_pkg.ALL;
 
 ------------------------------------------------------------------------------------------------------
 -- ╔═╗┌┐┌┌┬┐┬┌┬┐┬ ┬
