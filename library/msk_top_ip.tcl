@@ -12,7 +12,7 @@ read_vhdl "../rdl/outputs/rtl/msk_top_regs_pkg.vhd"
 
 #set_property FILE_TYPE {VHDL 2008} [get_files $ad_hdl_dir/library/msk_top/src/*.vhd]
 adi_ip_files msk_top [list \
-  "../rdl/vhdl/msk_top_regs/msk_top_regs.vhd" \
+  "../rdl/outputs/msk_top_regs/msk_top_regs.vhd" \
   "../msk_demodulator/src/costas_loop.vhd" \
   "../pi_controller/src/pi_controller.vhd" \
   "../lowpass_ema/src/lowpass_ema.vhd" \
