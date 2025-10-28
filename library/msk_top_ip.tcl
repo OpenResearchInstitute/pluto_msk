@@ -19,6 +19,9 @@ adi_ip_files msk_top [list \
   "../power_detector/src/power_detector.vhd" \
   "../msk_demodulator/src/msk_demodulator.vhd" \
   "../msk_modulator/src/msk_modulator.vhd" \
+  "../src/cdc_resync.vhd" \
+  "../src/pulse_detect.vhd" \
+  "../src/data_capture.vhd" \
   "../src/msk_top.vhd" \
   "../src/msk_top_csr.vhd" \
   "../src/axis_dma_adapter.vhd" \
