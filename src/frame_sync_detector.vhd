@@ -262,6 +262,7 @@ BEGIN
                                     -- Now expect next sync word
                                     state <= VERIFYING_SYNC;
                                     sync_bit_count <= (OTHERS => '0');
+                                    sync_shift_bits <= (OTHERS => '0');  -- AI!!!
                                 END IF;
                             END IF;
                         END IF;
