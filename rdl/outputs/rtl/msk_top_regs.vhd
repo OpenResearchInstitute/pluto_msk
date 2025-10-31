@@ -14,10 +14,10 @@ entity msk_top_regs is
         rst : in std_logic;
 
         s_axil_i : in axi4lite_slave_in_intf(
-            AWADDR(7 downto 0),
+            AWADDR(6 downto 0),
             WDATA(31 downto 0),
             WSTRB(3 downto 0),
-            ARADDR(7 downto 0)
+            ARADDR(6 downto 0)
         );
         s_axil_o : out axi4lite_slave_out_intf(
             RDATA(31 downto 0)
@@ -34,7 +34,7 @@ architecture rtl of msk_top_regs is
     ----------------------------------------------------------------------------
     signal cpuif_req : std_logic;
     signal cpuif_req_is_wr : std_logic;
-    signal cpuif_addr : std_logic_vector(7 downto 0);
+    signal cpuif_addr : std_logic_vector(6 downto 0);
     signal cpuif_wr_data : std_logic_vector(31 downto 0);
     signal cpuif_wr_biten : std_logic_vector(31 downto 0);
     signal cpuif_req_stall_wr : std_logic;
@@ -52,10 +52,10 @@ architecture rtl of msk_top_regs is
     signal axil_n_in_flight : unsigned(1 downto 0);
     signal axil_prev_was_rd : std_logic;
     signal axil_arvalid : std_logic;
-    signal axil_araddr : std_logic_vector(7 downto 0);
+    signal axil_araddr : std_logic_vector(6 downto 0);
     signal axil_ar_accept : std_logic;
     signal axil_awvalid : std_logic;
-    signal axil_awaddr : std_logic_vector(7 downto 0);
+    signal axil_awaddr : std_logic_vector(6 downto 0);
     signal axil_wvalid : std_logic;
     signal axil_wdata : std_logic_vector(31 downto 0);
     signal axil_wstrb : std_logic_vector(3 downto 0);
@@ -70,10 +70,6 @@ architecture rtl of msk_top_regs is
     signal axil_resp_buffer : axil_resp_buffer_array_t(1 downto 0);
     signal axil_resp_wptr : unsigned(1 downto 0);
     signal axil_resp_rptr : unsigned(1 downto 0);
-    signal external_req : std_logic;
-    signal external_pending : std_logic;
-    signal external_wr_ack : std_logic;
-    signal external_rd_ack : std_logic;
 
     ----------------------------------------------------------------------------
     -- Address Decode Signals
@@ -84,8 +80,6 @@ architecture rtl of msk_top_regs is
         MSK_Init : std_logic;
         MSK_Control : std_logic;
         MSK_Status : std_logic;
-        Tx_Bit_Count : std_logic;
-        Tx_Enable_Count : std_logic;
         Fb_FreqWord : std_logic;
         TX_F1_FreqWord : std_logic;
         TX_F2_FreqWord : std_logic;
@@ -99,28 +93,14 @@ architecture rtl of msk_top_regs is
         PRBS_Initial_State : std_logic;
         PRBS_Polynomial : std_logic;
         PRBS_Error_Mask : std_logic;
-        PRBS_Bit_Count : std_logic;
-        PRBS_Error_Count : std_logic;
-        LPF_Accum_F1 : std_logic;
-        LPF_Accum_F2 : std_logic;
-        axis_xfer_count : std_logic;
         Rx_Sample_Discard : std_logic;
         LPF_Config_2 : std_logic;
-        f1_nco_adjust : std_logic;
-        f2_nco_adjust : std_logic;
-        f1_error : std_logic;
-        f2_error : std_logic;
         Tx_Sync_Ctrl : std_logic;
         Tx_Sync_Cnt : std_logic;
         lowpass_ema_alpha1 : std_logic;
         lowpass_ema_alpha2 : std_logic;
-        rx_power : std_logic;
-        tx_async_fifo_rd_wr_ptr : std_logic;
-        rx_async_fifo_rd_wr_ptr : std_logic;
     end record;
     signal decoded_reg_strb : decoded_reg_strb_t;
-    signal decoded_strb_is_external : std_logic;
-    
     signal decoded_req : std_logic;
     signal decoded_req_is_wr : std_logic;
     signal decoded_wr_data : std_logic_vector(31 downto 0);
@@ -761,12 +741,10 @@ architecture rtl of msk_top_regs is
     ----------------------------------------------------------------------------
     -- Readback Signals
     ----------------------------------------------------------------------------
-    signal readback_external_rd_ack_c : std_logic;
-    signal readback_external_rd_ack : std_logic;
     signal readback_err : std_logic;
     signal readback_done : std_logic;
     signal readback_data : std_logic_vector(31 downto 0);
-    signal readback_array : std_logic_vector_array1(0 to 37)(31 downto 0);
+    signal readback_array : std_logic_vector_array1(0 to 23)(31 downto 0);
 
 begin
 
@@ -870,21 +848,21 @@ begin
             if axil_arvalid and not axil_prev_was_rd then
                 cpuif_req <= '1';
                 cpuif_req_is_wr <= '0';
-                cpuif_addr <= (7 downto 2 => axil_araddr(7 downto 2), others => '0');
+                cpuif_addr <= (6 downto 2 => axil_araddr(6 downto 2), others => '0');
                 if not cpuif_req_stall_rd then
                     axil_ar_accept <= '1';
                 end if;
             elsif axil_awvalid and axil_wvalid then
                 cpuif_req <= '1';
                 cpuif_req_is_wr <= '1';
-                cpuif_addr <= (7 downto 2 => axil_awaddr(7 downto 2), others => '0');
+                cpuif_addr <= (6 downto 2 => axil_awaddr(6 downto 2), others => '0');
                 if not cpuif_req_stall_wr then
                     axil_aw_accept <= '1';
                 end if;
             elsif axil_arvalid then
                 cpuif_req <= '1';
                 cpuif_req_is_wr <= '0';
-                cpuif_addr <= (7 downto 2 => axil_araddr(7 downto 2), others => '0');
+                cpuif_addr <= (6 downto 2 => axil_araddr(6 downto 2), others => '0');
                 if not cpuif_req_stall_rd then
                     axil_ar_accept <= '1';
                 end if;
@@ -960,32 +938,10 @@ begin
             s_axil_o.RRESP <= "00";
         end if;
     end process;
-    process(clk) begin
-        if false then -- async reset
-            external_pending <= '0';
-        elsif rising_edge(clk) then
-            if rst then -- sync reset
-                external_pending <= '0';
-            else
-                if external_req and not external_wr_ack and not external_rd_ack then
-                    external_pending <= '1';
-                elsif external_wr_ack or external_rd_ack then
-                    external_pending <= '0';
-                end if;
-                --pragma translate_off
-                assert_bad_ext_wr_ack: assert not external_wr_ack or (external_pending or external_req)
-                    report "An external wr_ack strobe was asserted when no external request was active";
-                assert_bad_ext_rd_ack: assert not external_rd_ack or (external_pending or external_req)
-                    report "An external rd_ack strobe was asserted when no external request was active";
-                --pragma translate_on
-            end if;
-        end if;
-    end process;
 
     -- Read & write latencies are balanced. Stalls not required
-    -- except if external
-    cpuif_req_stall_rd <= external_pending;
-    cpuif_req_stall_wr <= external_pending;
+    cpuif_req_stall_rd <= '0';
+    cpuif_req_stall_wr <= '0';
     cpuif_req_masked <= cpuif_req
                         and not (not cpuif_req_is_wr and cpuif_req_stall_rd)
                         and not (cpuif_req_is_wr and cpuif_req_stall_wr);
@@ -1001,63 +957,31 @@ begin
             result := '1' when unsigned(L) = R else '0';
             return result;
         end;
-        variable is_external: std_logic;
     begin
-        is_external := '0';
         decoded_reg_strb.Hash_ID_Low <= cpuif_req_masked and (cpuif_addr = 16#0#);
         decoded_reg_strb.Hash_ID_High <= cpuif_req_masked and (cpuif_addr = 16#4#);
         decoded_reg_strb.MSK_Init <= cpuif_req_masked and (cpuif_addr = 16#8#);
         decoded_reg_strb.MSK_Control <= cpuif_req_masked and (cpuif_addr = 16#C#);
         decoded_reg_strb.MSK_Status <= cpuif_req_masked and (cpuif_addr = 16#10#);
-        decoded_reg_strb.Tx_Bit_Count <= cpuif_req_masked and (cpuif_addr = 16#14#);
-        is_external := is_external or ((cpuif_req_masked and (cpuif_addr = 16#14#)) and not cpuif_req_is_wr);
-        decoded_reg_strb.Tx_Enable_Count <= cpuif_req_masked and (cpuif_addr = 16#18#);
-        is_external := is_external or ((cpuif_req_masked and (cpuif_addr = 16#18#)) and not cpuif_req_is_wr);
-        decoded_reg_strb.Fb_FreqWord <= cpuif_req_masked and (cpuif_addr = 16#1C#);
-        decoded_reg_strb.TX_F1_FreqWord <= cpuif_req_masked and (cpuif_addr = 16#20#);
-        decoded_reg_strb.TX_F2_FreqWord <= cpuif_req_masked and (cpuif_addr = 16#24#);
-        decoded_reg_strb.RX_F1_FreqWord <= cpuif_req_masked and (cpuif_addr = 16#28#);
-        decoded_reg_strb.RX_F2_FreqWord <= cpuif_req_masked and (cpuif_addr = 16#2C#);
-        decoded_reg_strb.LPF_Config_0 <= cpuif_req_masked and (cpuif_addr = 16#30#);
-        decoded_reg_strb.LPF_Config_1 <= cpuif_req_masked and (cpuif_addr = 16#34#);
-        decoded_reg_strb.Tx_Data_Width <= cpuif_req_masked and (cpuif_addr = 16#38#);
-        decoded_reg_strb.Rx_Data_Width <= cpuif_req_masked and (cpuif_addr = 16#3C#);
-        decoded_reg_strb.PRBS_Control <= cpuif_req_masked and (cpuif_addr = 16#40#);
-        decoded_reg_strb.PRBS_Initial_State <= cpuif_req_masked and (cpuif_addr = 16#44#);
-        decoded_reg_strb.PRBS_Polynomial <= cpuif_req_masked and (cpuif_addr = 16#48#);
-        decoded_reg_strb.PRBS_Error_Mask <= cpuif_req_masked and (cpuif_addr = 16#4C#);
-        decoded_reg_strb.PRBS_Bit_Count <= cpuif_req_masked and (cpuif_addr = 16#50#);
-        is_external := is_external or ((cpuif_req_masked and (cpuif_addr = 16#50#)) and not cpuif_req_is_wr);
-        decoded_reg_strb.PRBS_Error_Count <= cpuif_req_masked and (cpuif_addr = 16#54#);
-        is_external := is_external or ((cpuif_req_masked and (cpuif_addr = 16#54#)) and not cpuif_req_is_wr);
-        decoded_reg_strb.LPF_Accum_F1 <= cpuif_req_masked and (cpuif_addr = 16#58#);
-        is_external := is_external or ((cpuif_req_masked and (cpuif_addr = 16#58#)) and not cpuif_req_is_wr);
-        decoded_reg_strb.LPF_Accum_F2 <= cpuif_req_masked and (cpuif_addr = 16#5C#);
-        is_external := is_external or ((cpuif_req_masked and (cpuif_addr = 16#5C#)) and not cpuif_req_is_wr);
-        decoded_reg_strb.axis_xfer_count <= cpuif_req_masked and (cpuif_addr = 16#60#);
-        is_external := is_external or ((cpuif_req_masked and (cpuif_addr = 16#60#)) and not cpuif_req_is_wr);
-        decoded_reg_strb.Rx_Sample_Discard <= cpuif_req_masked and (cpuif_addr = 16#64#);
-        decoded_reg_strb.LPF_Config_2 <= cpuif_req_masked and (cpuif_addr = 16#68#);
-        decoded_reg_strb.f1_nco_adjust <= cpuif_req_masked and (cpuif_addr = 16#6C#);
-        is_external := is_external or ((cpuif_req_masked and (cpuif_addr = 16#6C#)) and not cpuif_req_is_wr);
-        decoded_reg_strb.f2_nco_adjust <= cpuif_req_masked and (cpuif_addr = 16#70#);
-        is_external := is_external or ((cpuif_req_masked and (cpuif_addr = 16#70#)) and not cpuif_req_is_wr);
-        decoded_reg_strb.f1_error <= cpuif_req_masked and (cpuif_addr = 16#74#);
-        is_external := is_external or ((cpuif_req_masked and (cpuif_addr = 16#74#)) and not cpuif_req_is_wr);
-        decoded_reg_strb.f2_error <= cpuif_req_masked and (cpuif_addr = 16#78#);
-        is_external := is_external or ((cpuif_req_masked and (cpuif_addr = 16#78#)) and not cpuif_req_is_wr);
-        decoded_reg_strb.Tx_Sync_Ctrl <= cpuif_req_masked and (cpuif_addr = 16#7C#);
-        decoded_reg_strb.Tx_Sync_Cnt <= cpuif_req_masked and (cpuif_addr = 16#80#);
-        decoded_reg_strb.lowpass_ema_alpha1 <= cpuif_req_masked and (cpuif_addr = 16#84#);
-        decoded_reg_strb.lowpass_ema_alpha2 <= cpuif_req_masked and (cpuif_addr = 16#88#);
-        decoded_reg_strb.rx_power <= cpuif_req_masked and (cpuif_addr = 16#8C#);
-        is_external := is_external or ((cpuif_req_masked and (cpuif_addr = 16#8C#)) and not cpuif_req_is_wr);
-        decoded_reg_strb.tx_async_fifo_rd_wr_ptr <= cpuif_req_masked and (cpuif_addr = 16#90#);
-        is_external := is_external or ((cpuif_req_masked and (cpuif_addr = 16#90#)) and not cpuif_req_is_wr);
-        decoded_reg_strb.rx_async_fifo_rd_wr_ptr <= cpuif_req_masked and (cpuif_addr = 16#94#);
-        is_external := is_external or ((cpuif_req_masked and (cpuif_addr = 16#94#)) and not cpuif_req_is_wr);
-        decoded_strb_is_external <= is_external;
-        external_req <= is_external;
+        decoded_reg_strb.Fb_FreqWord <= cpuif_req_masked and (cpuif_addr = 16#14#);
+        decoded_reg_strb.TX_F1_FreqWord <= cpuif_req_masked and (cpuif_addr = 16#18#);
+        decoded_reg_strb.TX_F2_FreqWord <= cpuif_req_masked and (cpuif_addr = 16#1C#);
+        decoded_reg_strb.RX_F1_FreqWord <= cpuif_req_masked and (cpuif_addr = 16#20#);
+        decoded_reg_strb.RX_F2_FreqWord <= cpuif_req_masked and (cpuif_addr = 16#24#);
+        decoded_reg_strb.LPF_Config_0 <= cpuif_req_masked and (cpuif_addr = 16#28#);
+        decoded_reg_strb.LPF_Config_1 <= cpuif_req_masked and (cpuif_addr = 16#2C#);
+        decoded_reg_strb.Tx_Data_Width <= cpuif_req_masked and (cpuif_addr = 16#30#);
+        decoded_reg_strb.Rx_Data_Width <= cpuif_req_masked and (cpuif_addr = 16#34#);
+        decoded_reg_strb.PRBS_Control <= cpuif_req_masked and (cpuif_addr = 16#38#);
+        decoded_reg_strb.PRBS_Initial_State <= cpuif_req_masked and (cpuif_addr = 16#3C#);
+        decoded_reg_strb.PRBS_Polynomial <= cpuif_req_masked and (cpuif_addr = 16#40#);
+        decoded_reg_strb.PRBS_Error_Mask <= cpuif_req_masked and (cpuif_addr = 16#44#);
+        decoded_reg_strb.Rx_Sample_Discard <= cpuif_req_masked and (cpuif_addr = 16#48#);
+        decoded_reg_strb.LPF_Config_2 <= cpuif_req_masked and (cpuif_addr = 16#4C#);
+        decoded_reg_strb.Tx_Sync_Ctrl <= cpuif_req_masked and (cpuif_addr = 16#50#);
+        decoded_reg_strb.Tx_Sync_Cnt <= cpuif_req_masked and (cpuif_addr = 16#54#);
+        decoded_reg_strb.lowpass_ema_alpha1 <= cpuif_req_masked and (cpuif_addr = 16#58#);
+        decoded_reg_strb.lowpass_ema_alpha2 <= cpuif_req_masked and (cpuif_addr = 16#5C#);
     end process;
 
     -- Pass down signals to next stage
@@ -1306,12 +1230,6 @@ begin
         end if;
     end process;
     hwif_out.MSK_Control.diff_encoder_loopback.value <= field_storage.MSK_Control.diff_encoder_loopback.value;
-
-    hwif_out.Tx_Bit_Count.req <= decoded_reg_strb.Tx_Bit_Count when not decoded_req_is_wr else '0';
-    hwif_out.Tx_Bit_Count.req_is_wr <= decoded_req_is_wr;
-
-    hwif_out.Tx_Enable_Count.req <= decoded_reg_strb.Tx_Enable_Count when not decoded_req_is_wr else '0';
-    hwif_out.Tx_Enable_Count.req_is_wr <= decoded_req_is_wr;
 
     -- Field: msk_top_regs.Fb_FreqWord.config_data
     process(all)
@@ -1960,21 +1878,6 @@ begin
     end process;
     hwif_out.PRBS_Error_Mask.config_data.value <= field_storage.PRBS_Error_Mask.config_data.value;
 
-    hwif_out.PRBS_Bit_Count.req <= decoded_reg_strb.PRBS_Bit_Count when not decoded_req_is_wr else '0';
-    hwif_out.PRBS_Bit_Count.req_is_wr <= decoded_req_is_wr;
-
-    hwif_out.PRBS_Error_Count.req <= decoded_reg_strb.PRBS_Error_Count when not decoded_req_is_wr else '0';
-    hwif_out.PRBS_Error_Count.req_is_wr <= decoded_req_is_wr;
-
-    hwif_out.LPF_Accum_F1.req <= decoded_reg_strb.LPF_Accum_F1 when not decoded_req_is_wr else '0';
-    hwif_out.LPF_Accum_F1.req_is_wr <= decoded_req_is_wr;
-
-    hwif_out.LPF_Accum_F2.req <= decoded_reg_strb.LPF_Accum_F2 when not decoded_req_is_wr else '0';
-    hwif_out.LPF_Accum_F2.req_is_wr <= decoded_req_is_wr;
-
-    hwif_out.axis_xfer_count.req <= decoded_reg_strb.axis_xfer_count when not decoded_req_is_wr else '0';
-    hwif_out.axis_xfer_count.req_is_wr <= decoded_req_is_wr;
-
     -- Field: msk_top_regs.Rx_Sample_Discard.rx_sample_discard
     process(all)
         variable next_c: std_logic_vector(7 downto 0);
@@ -2090,18 +1993,6 @@ begin
         end if;
     end process;
     hwif_out.LPF_Config_2.p_shift.value <= field_storage.LPF_Config_2.p_shift.value;
-
-    hwif_out.f1_nco_adjust.req <= decoded_reg_strb.f1_nco_adjust when not decoded_req_is_wr else '0';
-    hwif_out.f1_nco_adjust.req_is_wr <= decoded_req_is_wr;
-
-    hwif_out.f2_nco_adjust.req <= decoded_reg_strb.f2_nco_adjust when not decoded_req_is_wr else '0';
-    hwif_out.f2_nco_adjust.req_is_wr <= decoded_req_is_wr;
-
-    hwif_out.f1_error.req <= decoded_reg_strb.f1_error when not decoded_req_is_wr else '0';
-    hwif_out.f1_error.req_is_wr <= decoded_req_is_wr;
-
-    hwif_out.f2_error.req <= decoded_reg_strb.f2_error when not decoded_req_is_wr else '0';
-    hwif_out.f2_error.req_is_wr <= decoded_req_is_wr;
 
     -- Field: msk_top_regs.Tx_Sync_Ctrl.tx_sync_ena
     process(all)
@@ -2306,54 +2197,16 @@ begin
     end process;
     hwif_out.lowpass_ema_alpha2.alpha.value <= field_storage.lowpass_ema_alpha2.alpha.value;
 
-    hwif_out.rx_power.req <= decoded_reg_strb.rx_power when not decoded_req_is_wr else '0';
-    hwif_out.rx_power.req_is_wr <= decoded_req_is_wr;
-
-    hwif_out.tx_async_fifo_rd_wr_ptr.req <= decoded_reg_strb.tx_async_fifo_rd_wr_ptr when not decoded_req_is_wr else '0';
-    hwif_out.tx_async_fifo_rd_wr_ptr.req_is_wr <= decoded_req_is_wr;
-
-    hwif_out.rx_async_fifo_rd_wr_ptr.req <= decoded_reg_strb.rx_async_fifo_rd_wr_ptr when not decoded_req_is_wr else '0';
-    hwif_out.rx_async_fifo_rd_wr_ptr.req_is_wr <= decoded_req_is_wr;
-
     ----------------------------------------------------------------------------
     -- Write response
     ----------------------------------------------------------------------------
-    process(all)
-        variable wr_ack: std_logic;
-    begin
-        wr_ack := '0';
-        
-        external_wr_ack <= wr_ack;
-    end process;
-    cpuif_wr_ack <= external_wr_ack or (decoded_req and decoded_req_is_wr and not decoded_strb_is_external);
+    cpuif_wr_ack <= decoded_req and decoded_req_is_wr;
     -- Writes are always granted with no error response
     cpuif_wr_err <= '0';
 
     ----------------------------------------------------------------------------
     -- Readback
     ----------------------------------------------------------------------------
-    process(all)
-        variable rd_ack: std_logic;
-    begin
-        rd_ack := '0';
-        rd_ack := rd_ack or hwif_in.Tx_Bit_Count.rd_ack;
-        rd_ack := rd_ack or hwif_in.Tx_Enable_Count.rd_ack;
-        rd_ack := rd_ack or hwif_in.PRBS_Bit_Count.rd_ack;
-        rd_ack := rd_ack or hwif_in.PRBS_Error_Count.rd_ack;
-        rd_ack := rd_ack or hwif_in.LPF_Accum_F1.rd_ack;
-        rd_ack := rd_ack or hwif_in.LPF_Accum_F2.rd_ack;
-        rd_ack := rd_ack or hwif_in.axis_xfer_count.rd_ack;
-        rd_ack := rd_ack or hwif_in.f1_nco_adjust.rd_ack;
-        rd_ack := rd_ack or hwif_in.f2_nco_adjust.rd_ack;
-        rd_ack := rd_ack or hwif_in.f1_error.rd_ack;
-        rd_ack := rd_ack or hwif_in.f2_error.rd_ack;
-        rd_ack := rd_ack or hwif_in.rx_power.rd_ack;
-        rd_ack := rd_ack or hwif_in.tx_async_fifo_rd_wr_ptr.rd_ack;
-        rd_ack := rd_ack or hwif_in.rx_async_fifo_rd_wr_ptr.rd_ack;
-        readback_external_rd_ack_c <= rd_ack;
-    end process;
-
-    readback_external_rd_ack <= readback_external_rd_ack_c;
 
     -- Assign readback values to a flattened array
     readback_array(0)(31 downto 0) <= 32x"AAAA5555" when (decoded_reg_strb.Hash_ID_Low and not decoded_req_is_wr) else (others => '0');
@@ -2373,64 +2226,50 @@ begin
     readback_array(4)(2 downto 2) <= to_std_logic_vector(hwif_in.MSK_Status.rx_enable.next_q) when (decoded_reg_strb.MSK_Status and not decoded_req_is_wr) else (others => '0');
     readback_array(4)(3 downto 3) <= to_std_logic_vector(hwif_in.MSK_Status.tx_axis_valid.next_q) when (decoded_reg_strb.MSK_Status and not decoded_req_is_wr) else (others => '0');
     readback_array(4)(31 downto 4) <= (others => '0');
-    readback_array(5) <= hwif_in.Tx_Bit_Count.rd_data when hwif_in.Tx_Bit_Count.rd_ack else (others => '0');
-    readback_array(6) <= hwif_in.Tx_Enable_Count.rd_data when hwif_in.Tx_Enable_Count.rd_ack else (others => '0');
-    readback_array(7)(31 downto 0) <= field_storage.Fb_FreqWord.config_data.value when (decoded_reg_strb.Fb_FreqWord and not decoded_req_is_wr) else (others => '0');
-    readback_array(8)(31 downto 0) <= field_storage.TX_F1_FreqWord.config_data.value when (decoded_reg_strb.TX_F1_FreqWord and not decoded_req_is_wr) else (others => '0');
-    readback_array(9)(31 downto 0) <= field_storage.TX_F2_FreqWord.config_data.value when (decoded_reg_strb.TX_F2_FreqWord and not decoded_req_is_wr) else (others => '0');
-    readback_array(10)(31 downto 0) <= field_storage.RX_F1_FreqWord.config_data.value when (decoded_reg_strb.RX_F1_FreqWord and not decoded_req_is_wr) else (others => '0');
-    readback_array(11)(31 downto 0) <= field_storage.RX_F2_FreqWord.config_data.value when (decoded_reg_strb.RX_F2_FreqWord and not decoded_req_is_wr) else (others => '0');
-    readback_array(12)(0 downto 0) <= to_std_logic_vector(field_storage.LPF_Config_0.lpf_freeze.value) when (decoded_reg_strb.LPF_Config_0 and not decoded_req_is_wr) else (others => '0');
-    readback_array(12)(1 downto 1) <= to_std_logic_vector(field_storage.LPF_Config_0.lpf_zero.value) when (decoded_reg_strb.LPF_Config_0 and not decoded_req_is_wr) else (others => '0');
-    readback_array(12)(7 downto 2) <= field_storage.LPF_Config_0.prbs_reserved.value when (decoded_reg_strb.LPF_Config_0 and not decoded_req_is_wr) else (others => '0');
-    readback_array(12)(31 downto 8) <= field_storage.LPF_Config_0.lpf_alpha.value when (decoded_reg_strb.LPF_Config_0 and not decoded_req_is_wr) else (others => '0');
-    readback_array(13)(23 downto 0) <= field_storage.LPF_Config_1.i_gain.value when (decoded_reg_strb.LPF_Config_1 and not decoded_req_is_wr) else (others => '0');
-    readback_array(13)(31 downto 24) <= field_storage.LPF_Config_1.i_shift.value when (decoded_reg_strb.LPF_Config_1 and not decoded_req_is_wr) else (others => '0');
-    readback_array(14)(7 downto 0) <= field_storage.Tx_Data_Width.data_width.value when (decoded_reg_strb.Tx_Data_Width and not decoded_req_is_wr) else (others => '0');
-    readback_array(14)(31 downto 8) <= (others => '0');
-    readback_array(15)(7 downto 0) <= field_storage.Rx_Data_Width.data_width.value when (decoded_reg_strb.Rx_Data_Width and not decoded_req_is_wr) else (others => '0');
-    readback_array(15)(31 downto 8) <= (others => '0');
-    readback_array(16)(0 downto 0) <= to_std_logic_vector(field_storage.PRBS_Control.prbs_sel.value) when (decoded_reg_strb.PRBS_Control and not decoded_req_is_wr) else (others => '0');
-    readback_array(16)(3 downto 1) <= (others => '0');
-    readback_array(16)(15 downto 4) <= field_storage.PRBS_Control.prbs_reserved.value when (decoded_reg_strb.PRBS_Control and not decoded_req_is_wr) else (others => '0');
-    readback_array(16)(31 downto 16) <= field_storage.PRBS_Control.prbs_sync_threshold.value when (decoded_reg_strb.PRBS_Control and not decoded_req_is_wr) else (others => '0');
-    readback_array(17)(31 downto 0) <= field_storage.PRBS_Initial_State.config_data.value when (decoded_reg_strb.PRBS_Initial_State and not decoded_req_is_wr) else (others => '0');
-    readback_array(18)(31 downto 0) <= field_storage.PRBS_Polynomial.config_data.value when (decoded_reg_strb.PRBS_Polynomial and not decoded_req_is_wr) else (others => '0');
-    readback_array(19)(31 downto 0) <= field_storage.PRBS_Error_Mask.config_data.value when (decoded_reg_strb.PRBS_Error_Mask and not decoded_req_is_wr) else (others => '0');
-    readback_array(20) <= hwif_in.PRBS_Bit_Count.rd_data when hwif_in.PRBS_Bit_Count.rd_ack else (others => '0');
-    readback_array(21) <= hwif_in.PRBS_Error_Count.rd_data when hwif_in.PRBS_Error_Count.rd_ack else (others => '0');
-    readback_array(22) <= hwif_in.LPF_Accum_F1.rd_data when hwif_in.LPF_Accum_F1.rd_ack else (others => '0');
-    readback_array(23) <= hwif_in.LPF_Accum_F2.rd_data when hwif_in.LPF_Accum_F2.rd_ack else (others => '0');
-    readback_array(24) <= hwif_in.axis_xfer_count.rd_data when hwif_in.axis_xfer_count.rd_ack else (others => '0');
-    readback_array(25)(7 downto 0) <= field_storage.Rx_Sample_Discard.rx_sample_discard.value when (decoded_reg_strb.Rx_Sample_Discard and not decoded_req_is_wr) else (others => '0');
-    readback_array(25)(15 downto 8) <= field_storage.Rx_Sample_Discard.rx_nco_discard.value when (decoded_reg_strb.Rx_Sample_Discard and not decoded_req_is_wr) else (others => '0');
-    readback_array(25)(31 downto 16) <= (others => '0');
-    readback_array(26)(23 downto 0) <= field_storage.LPF_Config_2.p_gain.value when (decoded_reg_strb.LPF_Config_2 and not decoded_req_is_wr) else (others => '0');
-    readback_array(26)(31 downto 24) <= field_storage.LPF_Config_2.p_shift.value when (decoded_reg_strb.LPF_Config_2 and not decoded_req_is_wr) else (others => '0');
-    readback_array(27) <= hwif_in.f1_nco_adjust.rd_data when hwif_in.f1_nco_adjust.rd_ack else (others => '0');
-    readback_array(28) <= hwif_in.f2_nco_adjust.rd_data when hwif_in.f2_nco_adjust.rd_ack else (others => '0');
-    readback_array(29) <= hwif_in.f1_error.rd_data when hwif_in.f1_error.rd_ack else (others => '0');
-    readback_array(30) <= hwif_in.f2_error.rd_data when hwif_in.f2_error.rd_ack else (others => '0');
-    readback_array(31)(0 downto 0) <= to_std_logic_vector(field_storage.Tx_Sync_Ctrl.tx_sync_ena.value) when (decoded_reg_strb.Tx_Sync_Ctrl and not decoded_req_is_wr) else (others => '0');
-    readback_array(31)(1 downto 1) <= to_std_logic_vector(field_storage.Tx_Sync_Ctrl.tx_sync_force.value) when (decoded_reg_strb.Tx_Sync_Ctrl and not decoded_req_is_wr) else (others => '0');
-    readback_array(31)(2 downto 2) <= to_std_logic_vector(field_storage.Tx_Sync_Ctrl.tx_sync_f1.value) when (decoded_reg_strb.Tx_Sync_Ctrl and not decoded_req_is_wr) else (others => '0');
-    readback_array(31)(3 downto 3) <= to_std_logic_vector(field_storage.Tx_Sync_Ctrl.tx_sync_f2.value) when (decoded_reg_strb.Tx_Sync_Ctrl and not decoded_req_is_wr) else (others => '0');
-    readback_array(31)(31 downto 4) <= (others => '0');
-    readback_array(32)(23 downto 0) <= field_storage.Tx_Sync_Cnt.tx_sync_cnt.value when (decoded_reg_strb.Tx_Sync_Cnt and not decoded_req_is_wr) else (others => '0');
-    readback_array(32)(31 downto 24) <= (others => '0');
-    readback_array(33)(17 downto 0) <= field_storage.lowpass_ema_alpha1.alpha.value when (decoded_reg_strb.lowpass_ema_alpha1 and not decoded_req_is_wr) else (others => '0');
-    readback_array(33)(31 downto 18) <= (others => '0');
-    readback_array(34)(17 downto 0) <= field_storage.lowpass_ema_alpha2.alpha.value when (decoded_reg_strb.lowpass_ema_alpha2 and not decoded_req_is_wr) else (others => '0');
-    readback_array(34)(31 downto 18) <= (others => '0');
-    readback_array(35) <= hwif_in.rx_power.rd_data when hwif_in.rx_power.rd_ack else (others => '0');
-    readback_array(36) <= hwif_in.tx_async_fifo_rd_wr_ptr.rd_data when hwif_in.tx_async_fifo_rd_wr_ptr.rd_ack else (others => '0');
-    readback_array(37) <= hwif_in.rx_async_fifo_rd_wr_ptr.rd_data when hwif_in.rx_async_fifo_rd_wr_ptr.rd_ack else (others => '0');
+    readback_array(5)(31 downto 0) <= field_storage.Fb_FreqWord.config_data.value when (decoded_reg_strb.Fb_FreqWord and not decoded_req_is_wr) else (others => '0');
+    readback_array(6)(31 downto 0) <= field_storage.TX_F1_FreqWord.config_data.value when (decoded_reg_strb.TX_F1_FreqWord and not decoded_req_is_wr) else (others => '0');
+    readback_array(7)(31 downto 0) <= field_storage.TX_F2_FreqWord.config_data.value when (decoded_reg_strb.TX_F2_FreqWord and not decoded_req_is_wr) else (others => '0');
+    readback_array(8)(31 downto 0) <= field_storage.RX_F1_FreqWord.config_data.value when (decoded_reg_strb.RX_F1_FreqWord and not decoded_req_is_wr) else (others => '0');
+    readback_array(9)(31 downto 0) <= field_storage.RX_F2_FreqWord.config_data.value when (decoded_reg_strb.RX_F2_FreqWord and not decoded_req_is_wr) else (others => '0');
+    readback_array(10)(0 downto 0) <= to_std_logic_vector(field_storage.LPF_Config_0.lpf_freeze.value) when (decoded_reg_strb.LPF_Config_0 and not decoded_req_is_wr) else (others => '0');
+    readback_array(10)(1 downto 1) <= to_std_logic_vector(field_storage.LPF_Config_0.lpf_zero.value) when (decoded_reg_strb.LPF_Config_0 and not decoded_req_is_wr) else (others => '0');
+    readback_array(10)(7 downto 2) <= field_storage.LPF_Config_0.prbs_reserved.value when (decoded_reg_strb.LPF_Config_0 and not decoded_req_is_wr) else (others => '0');
+    readback_array(10)(31 downto 8) <= field_storage.LPF_Config_0.lpf_alpha.value when (decoded_reg_strb.LPF_Config_0 and not decoded_req_is_wr) else (others => '0');
+    readback_array(11)(23 downto 0) <= field_storage.LPF_Config_1.i_gain.value when (decoded_reg_strb.LPF_Config_1 and not decoded_req_is_wr) else (others => '0');
+    readback_array(11)(31 downto 24) <= field_storage.LPF_Config_1.i_shift.value when (decoded_reg_strb.LPF_Config_1 and not decoded_req_is_wr) else (others => '0');
+    readback_array(12)(7 downto 0) <= field_storage.Tx_Data_Width.data_width.value when (decoded_reg_strb.Tx_Data_Width and not decoded_req_is_wr) else (others => '0');
+    readback_array(12)(31 downto 8) <= (others => '0');
+    readback_array(13)(7 downto 0) <= field_storage.Rx_Data_Width.data_width.value when (decoded_reg_strb.Rx_Data_Width and not decoded_req_is_wr) else (others => '0');
+    readback_array(13)(31 downto 8) <= (others => '0');
+    readback_array(14)(0 downto 0) <= to_std_logic_vector(field_storage.PRBS_Control.prbs_sel.value) when (decoded_reg_strb.PRBS_Control and not decoded_req_is_wr) else (others => '0');
+    readback_array(14)(3 downto 1) <= (others => '0');
+    readback_array(14)(15 downto 4) <= field_storage.PRBS_Control.prbs_reserved.value when (decoded_reg_strb.PRBS_Control and not decoded_req_is_wr) else (others => '0');
+    readback_array(14)(31 downto 16) <= field_storage.PRBS_Control.prbs_sync_threshold.value when (decoded_reg_strb.PRBS_Control and not decoded_req_is_wr) else (others => '0');
+    readback_array(15)(31 downto 0) <= field_storage.PRBS_Initial_State.config_data.value when (decoded_reg_strb.PRBS_Initial_State and not decoded_req_is_wr) else (others => '0');
+    readback_array(16)(31 downto 0) <= field_storage.PRBS_Polynomial.config_data.value when (decoded_reg_strb.PRBS_Polynomial and not decoded_req_is_wr) else (others => '0');
+    readback_array(17)(31 downto 0) <= field_storage.PRBS_Error_Mask.config_data.value when (decoded_reg_strb.PRBS_Error_Mask and not decoded_req_is_wr) else (others => '0');
+    readback_array(18)(7 downto 0) <= field_storage.Rx_Sample_Discard.rx_sample_discard.value when (decoded_reg_strb.Rx_Sample_Discard and not decoded_req_is_wr) else (others => '0');
+    readback_array(18)(15 downto 8) <= field_storage.Rx_Sample_Discard.rx_nco_discard.value when (decoded_reg_strb.Rx_Sample_Discard and not decoded_req_is_wr) else (others => '0');
+    readback_array(18)(31 downto 16) <= (others => '0');
+    readback_array(19)(23 downto 0) <= field_storage.LPF_Config_2.p_gain.value when (decoded_reg_strb.LPF_Config_2 and not decoded_req_is_wr) else (others => '0');
+    readback_array(19)(31 downto 24) <= field_storage.LPF_Config_2.p_shift.value when (decoded_reg_strb.LPF_Config_2 and not decoded_req_is_wr) else (others => '0');
+    readback_array(20)(0 downto 0) <= to_std_logic_vector(field_storage.Tx_Sync_Ctrl.tx_sync_ena.value) when (decoded_reg_strb.Tx_Sync_Ctrl and not decoded_req_is_wr) else (others => '0');
+    readback_array(20)(1 downto 1) <= to_std_logic_vector(field_storage.Tx_Sync_Ctrl.tx_sync_force.value) when (decoded_reg_strb.Tx_Sync_Ctrl and not decoded_req_is_wr) else (others => '0');
+    readback_array(20)(2 downto 2) <= to_std_logic_vector(field_storage.Tx_Sync_Ctrl.tx_sync_f1.value) when (decoded_reg_strb.Tx_Sync_Ctrl and not decoded_req_is_wr) else (others => '0');
+    readback_array(20)(3 downto 3) <= to_std_logic_vector(field_storage.Tx_Sync_Ctrl.tx_sync_f2.value) when (decoded_reg_strb.Tx_Sync_Ctrl and not decoded_req_is_wr) else (others => '0');
+    readback_array(20)(31 downto 4) <= (others => '0');
+    readback_array(21)(23 downto 0) <= field_storage.Tx_Sync_Cnt.tx_sync_cnt.value when (decoded_reg_strb.Tx_Sync_Cnt and not decoded_req_is_wr) else (others => '0');
+    readback_array(21)(31 downto 24) <= (others => '0');
+    readback_array(22)(17 downto 0) <= field_storage.lowpass_ema_alpha1.alpha.value when (decoded_reg_strb.lowpass_ema_alpha1 and not decoded_req_is_wr) else (others => '0');
+    readback_array(22)(31 downto 18) <= (others => '0');
+    readback_array(23)(17 downto 0) <= field_storage.lowpass_ema_alpha2.alpha.value when (decoded_reg_strb.lowpass_ema_alpha2 and not decoded_req_is_wr) else (others => '0');
+    readback_array(23)(31 downto 18) <= (others => '0');
 
     -- Reduce the array
     process(all)
         variable readback_data_var : std_logic_vector(31 downto 0) := (others => '0');
     begin
-        readback_done <= decoded_req and not decoded_req_is_wr and not decoded_strb_is_external;
+        readback_done <= decoded_req and not decoded_req_is_wr;
         readback_err <= '0';
         readback_data_var := (others => '0');
         for i in readback_array'RANGE loop
@@ -2439,8 +2278,7 @@ begin
         readback_data <= readback_data_var;
     end process;
 
-    external_rd_ack <= readback_external_rd_ack;
-    cpuif_rd_ack <= readback_done or readback_external_rd_ack;
+    cpuif_rd_ack <= readback_done;
     cpuif_rd_data <= readback_data;
     cpuif_rd_err <= readback_err;
 end architecture rtl;

@@ -77,17 +77,6 @@ extern "C" {
 #define MSK_TOP_REGS__MSK_STAT_0__TX_AXIS_VALID_bw 1
 #define MSK_TOP_REGS__MSK_STAT_0__TX_AXIS_VALID_reset 0x0
 
-// Reg - msk_top_regs::msk_stat_1
-#define MSK_TOP_REGS__MSK_STAT_1__TX_BIT_COUNTER_bm 0xffffffff
-#define MSK_TOP_REGS__MSK_STAT_1__TX_BIT_COUNTER_bp 0
-#define MSK_TOP_REGS__MSK_STAT_1__TX_BIT_COUNTER_bw 32
-
-// Reg - msk_top_regs::msk_stat_2
-#define MSK_TOP_REGS__MSK_STAT_2__TX_ENA_COUNTER_bm 0xffffffff
-#define MSK_TOP_REGS__MSK_STAT_2__TX_ENA_COUNTER_bp 0
-#define MSK_TOP_REGS__MSK_STAT_2__TX_ENA_COUNTER_bw 32
-#define MSK_TOP_REGS__MSK_STAT_2__TX_ENA_COUNTER_reset 0x0
-
 // Reg - msk_top_regs::config_nco_fw_desc_c4924cc6_name_0c494469
 #define MSK_TOP_REGS__CONFIG_NCO_FW_DESC_C4924CC6_NAME_0C494469__CONFIG_DATA_bm 0xffffffff
 #define MSK_TOP_REGS__CONFIG_NCO_FW_DESC_C4924CC6_NAME_0C494469__CONFIG_DATA_bp 0
@@ -202,36 +191,6 @@ extern "C" {
 #define MSK_TOP_REGS__CONFIG_PRBS_ERRMASK__CONFIG_DATA_bw 32
 #define MSK_TOP_REGS__CONFIG_PRBS_ERRMASK__CONFIG_DATA_reset 0x0
 
-// Reg - msk_top_regs::stat_32_bits
-#define MSK_TOP_REGS__STAT_32_BITS__STATUS_DATA_bm 0xffffffff
-#define MSK_TOP_REGS__STAT_32_BITS__STATUS_DATA_bp 0
-#define MSK_TOP_REGS__STAT_32_BITS__STATUS_DATA_bw 32
-#define MSK_TOP_REGS__STAT_32_BITS__STATUS_DATA_reset 0x0
-
-// Reg - msk_top_regs::stat_32_errs
-#define MSK_TOP_REGS__STAT_32_ERRS__STATUS_DATA_bm 0xffffffff
-#define MSK_TOP_REGS__STAT_32_ERRS__STATUS_DATA_bp 0
-#define MSK_TOP_REGS__STAT_32_ERRS__STATUS_DATA_bw 32
-#define MSK_TOP_REGS__STAT_32_ERRS__STATUS_DATA_reset 0x0
-
-// Reg - msk_top_regs::stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670
-#define MSK_TOP_REGS__STAT_32_LPF_ACC_DESC_8CEBC7DC_NAME_F20C6670__STATUS_DATA_bm 0xffffffff
-#define MSK_TOP_REGS__STAT_32_LPF_ACC_DESC_8CEBC7DC_NAME_F20C6670__STATUS_DATA_bp 0
-#define MSK_TOP_REGS__STAT_32_LPF_ACC_DESC_8CEBC7DC_NAME_F20C6670__STATUS_DATA_bw 32
-#define MSK_TOP_REGS__STAT_32_LPF_ACC_DESC_8CEBC7DC_NAME_F20C6670__STATUS_DATA_reset 0x0
-
-// Reg - msk_top_regs::stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce
-#define MSK_TOP_REGS__STAT_32_LPF_ACC_DESC_DEA6BD99_NAME_758FD0CE__STATUS_DATA_bm 0xffffffff
-#define MSK_TOP_REGS__STAT_32_LPF_ACC_DESC_DEA6BD99_NAME_758FD0CE__STATUS_DATA_bp 0
-#define MSK_TOP_REGS__STAT_32_LPF_ACC_DESC_DEA6BD99_NAME_758FD0CE__STATUS_DATA_bw 32
-#define MSK_TOP_REGS__STAT_32_LPF_ACC_DESC_DEA6BD99_NAME_758FD0CE__STATUS_DATA_reset 0x0
-
-// Reg - msk_top_regs::msk_stat_3
-#define MSK_TOP_REGS__MSK_STAT_3__XFER_COUNT_bm 0xffffffff
-#define MSK_TOP_REGS__MSK_STAT_3__XFER_COUNT_bp 0
-#define MSK_TOP_REGS__MSK_STAT_3__XFER_COUNT_bw 32
-#define MSK_TOP_REGS__MSK_STAT_3__XFER_COUNT_reset 0x0
-
 // Reg - msk_top_regs::rx_sample_discard
 #define MSK_TOP_REGS__RX_SAMPLE_DISCARD__RX_SAMPLE_DISCARD_bm 0xff
 #define MSK_TOP_REGS__RX_SAMPLE_DISCARD__RX_SAMPLE_DISCARD_bp 0
@@ -251,30 +210,6 @@ extern "C" {
 #define MSK_TOP_REGS__LPF_CONFIG_2__P_SHIFT_bp 24
 #define MSK_TOP_REGS__LPF_CONFIG_2__P_SHIFT_bw 8
 #define MSK_TOP_REGS__LPF_CONFIG_2__P_SHIFT_reset 0x0
-
-// Reg - msk_top_regs::observation_data_data_0c017ef4_desc_64ff3689_name_d8ad3b25
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_0C017EF4_DESC_64FF3689_NAME_D8AD3B25__DATA_bm 0xffffffff
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_0C017EF4_DESC_64FF3689_NAME_D8AD3B25__DATA_bp 0
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_0C017EF4_DESC_64FF3689_NAME_D8AD3B25__DATA_bw 32
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_0C017EF4_DESC_64FF3689_NAME_D8AD3B25__DATA_reset 0x0
-
-// Reg - msk_top_regs::observation_data_data_0515efaa_desc_ebde6d39_name_2c154788
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_0515EFAA_DESC_EBDE6D39_NAME_2C154788__DATA_bm 0xffffffff
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_0515EFAA_DESC_EBDE6D39_NAME_2C154788__DATA_bp 0
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_0515EFAA_DESC_EBDE6D39_NAME_2C154788__DATA_bw 32
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_0515EFAA_DESC_EBDE6D39_NAME_2C154788__DATA_reset 0x0
-
-// Reg - msk_top_regs::observation_data_data_25a21249_desc_417e1c96_name_3b640507
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_25A21249_DESC_417E1C96_NAME_3B640507__DATA_bm 0xffffffff
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_25A21249_DESC_417E1C96_NAME_3B640507__DATA_bp 0
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_25A21249_DESC_417E1C96_NAME_3B640507__DATA_bw 32
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_25A21249_DESC_417E1C96_NAME_3B640507__DATA_reset 0x0
-
-// Reg - msk_top_regs::observation_data_data_272a00b6_desc_70869502_name_3de9a0d3
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_272A00B6_DESC_70869502_NAME_3DE9A0D3__DATA_bm 0xffffffff
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_272A00B6_DESC_70869502_NAME_3DE9A0D3__DATA_bp 0
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_272A00B6_DESC_70869502_NAME_3DE9A0D3__DATA_bw 32
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_272A00B6_DESC_70869502_NAME_3DE9A0D3__DATA_reset 0x0
 
 // Reg - msk_top_regs::tx_sync_ctrl
 #define MSK_TOP_REGS__TX_SYNC_CTRL__TX_SYNC_ENA_bm 0x1
@@ -306,24 +241,6 @@ extern "C" {
 #define MSK_TOP_REGS__LOWPASS_EMA_ALPHA__ALPHA_bw 18
 #define MSK_TOP_REGS__LOWPASS_EMA_ALPHA__ALPHA_reset 0x0
 
-// Reg - msk_top_regs::rx_power
-#define MSK_TOP_REGS__RX_POWER__RX_POWER_bm 0x7fffff
-#define MSK_TOP_REGS__RX_POWER__RX_POWER_bp 0
-#define MSK_TOP_REGS__RX_POWER__RX_POWER_bw 23
-#define MSK_TOP_REGS__RX_POWER__RX_POWER_reset 0x0
-
-// Reg - msk_top_regs::observation_data_data_cf6acbd7_name_aa4ec676
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_CF6ACBD7_NAME_AA4EC676__DATA_bm 0xffffffff
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_CF6ACBD7_NAME_AA4EC676__DATA_bp 0
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_CF6ACBD7_NAME_AA4EC676__DATA_bw 32
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_CF6ACBD7_NAME_AA4EC676__DATA_reset 0x0
-
-// Reg - msk_top_regs::observation_data_data_cf6acbd7_name_8a90eed1
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_CF6ACBD7_NAME_8A90EED1__DATA_bm 0xffffffff
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_CF6ACBD7_NAME_8A90EED1__DATA_bp 0
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_CF6ACBD7_NAME_8A90EED1__DATA_bw 32
-#define MSK_TOP_REGS__OBSERVATION_DATA_DATA_CF6ACBD7_NAME_8A90EED1__DATA_reset 0x0
-
 // Addrmap - msk_top_regs
 typedef struct __attribute__ ((__packed__)) {
     uint32_t Hash_ID_Low;
@@ -331,8 +248,6 @@ typedef struct __attribute__ ((__packed__)) {
     uint32_t MSK_Init;
     uint32_t MSK_Control;
     uint32_t MSK_Status;
-    uint32_t Tx_Bit_Count;
-    uint32_t Tx_Enable_Count;
     uint32_t Fb_FreqWord;
     uint32_t TX_F1_FreqWord;
     uint32_t TX_F2_FreqWord;
@@ -346,28 +261,16 @@ typedef struct __attribute__ ((__packed__)) {
     uint32_t PRBS_Initial_State;
     uint32_t PRBS_Polynomial;
     uint32_t PRBS_Error_Mask;
-    uint32_t PRBS_Bit_Count;
-    uint32_t PRBS_Error_Count;
-    uint32_t LPF_Accum_F1;
-    uint32_t LPF_Accum_F2;
-    uint32_t axis_xfer_count;
     uint32_t Rx_Sample_Discard;
     uint32_t LPF_Config_2;
-    uint32_t f1_nco_adjust;
-    uint32_t f2_nco_adjust;
-    uint32_t f1_error;
-    uint32_t f2_error;
     uint32_t Tx_Sync_Ctrl;
     uint32_t Tx_Sync_Cnt;
     uint32_t lowpass_ema_alpha1;
     uint32_t lowpass_ema_alpha2;
-    uint32_t rx_power;
-    uint32_t tx_async_fifo_rd_wr_ptr;
-    uint32_t rx_async_fifo_rd_wr_ptr;
 } msk_top_regs_t;
 
 
-static_assert(sizeof(msk_top_regs_t) == 0x98, "Packing error");
+static_assert(sizeof(msk_top_regs_t) == 0x60, "Packing error");
 
 #ifdef __cplusplus
 }

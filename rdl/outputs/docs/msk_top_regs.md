@@ -10,50 +10,36 @@ Don't override. Generated from: msk_top_regs
 
 - Absolute Address: 0x0
 - Base Offset: 0x0
-- Size: 0x98
+- Size: 0x60
 
 <p>MSK Modem Configuration and Status Registers</p>
 
-|Offset|       Identifier      |                             Name                            |
-|------|-----------------------|-------------------------------------------------------------|
-| 0x00 |      Hash_ID_Low      |            Pluto MSK FPGA Hash ID - Lower 32-bits           |
-| 0x04 |      Hash_ID_High     |            Pluto MSK FPGA Hash ID - Upper 32-bits           |
-| 0x08 |        MSK_Init       |               MSK Modem Initialization Control              |
-| 0x0C |      MSK_Control      |                      MSK Modem Control                      |
-| 0x10 |       MSK_Status      |                      MSK Modem Status 0                     |
-| 0x14 |      Tx_Bit_Count     |                      MSK Modem Status 1                     |
-| 0x18 |    Tx_Enable_Count    |                      MSK Modem Status 2                     |
-| 0x1C |      Fb_FreqWord      |              Bitrate NCO Frequency Control Word             |
-| 0x20 |     TX_F1_FreqWord    |               Tx F1 NCO Frequency Control Word              |
-| 0x24 |     TX_F2_FreqWord    |               Tx F2 NCO Frequency Control Word              |
-| 0x28 |     RX_F1_FreqWord    |               Rx F1 NCO Frequency Control Word              |
-| 0x2C |     RX_F2_FreqWord    |               Rx F2 NCO Frequency Control Word              |
-| 0x30 |      LPF_Config_0     |PI Controller Configuration and Low-pass Filter Configuration|
-| 0x34 |      LPF_Config_1     |     PI Controller Configuration Configuration Register 1    |
-| 0x38 |     Tx_Data_Width     |                  Modem Tx Input Data Width                  |
-| 0x3C |     Rx_Data_Width     |                  Modem Rx Output Data Width                 |
-| 0x40 |      PRBS_Control     |                        PRBS Control 0                       |
-| 0x44 |   PRBS_Initial_State  |                        PRBS Control 1                       |
-| 0x48 |    PRBS_Polynomial    |                        PRBS Control 2                       |
-| 0x4C |    PRBS_Error_Mask    |                        PRBS Control 3                       |
-| 0x50 |     PRBS_Bit_Count    |                        PRBS Status 0                        |
-| 0x54 |    PRBS_Error_Count   |                        PRBS Status 1                        |
-| 0x58 |      LPF_Accum_F1     |                 F1 PI Controller Accumulator                |
-| 0x5C |      LPF_Accum_F2     |                 F2 PI Controller Accumulator                |
-| 0x60 |    axis_xfer_count    |                      MSK Modem Status 3                     |
-| 0x64 |   Rx_Sample_Discard   |                      Rx Sample Discard                      |
-| 0x68 |      LPF_Config_2     |     PI Controller Configuration Configuration Register 2    |
-| 0x6C |     f1_nco_adjust     |                   F1 NCO Frequency Adjust                   |
-| 0x70 |     f2_nco_adjust     |                   F2 NCO Frequency Adjust                   |
-| 0x74 |        f1_error       |                        F1 Error Value                       |
-| 0x78 |        f2_error       |                        F2 Error Value                       |
-| 0x7C |      Tx_Sync_Ctrl     |                   Transmitter Sync Control                  |
-| 0x80 |      Tx_Sync_Cnt      |                  Transmitter Sync Duration                  |
-| 0x84 |   lowpass_ema_alpha1  |               Exponential Moving Average Alpha              |
-| 0x88 |   lowpass_ema_alpha2  |               Exponential Moving Average Alpha              |
-| 0x8C |        rx_power       |                        Receive Power                        |
-| 0x90 |tx_async_fifo_rd_wr_ptr|            Tx async FIFO read and write pointers            |
-| 0x94 |rx_async_fifo_rd_wr_ptr|            Rx async FIFO read and write pointers            |
+|Offset|    Identifier    |                             Name                            |
+|------|------------------|-------------------------------------------------------------|
+| 0x00 |    Hash_ID_Low   |            Pluto MSK FPGA Hash ID - Lower 32-bits           |
+| 0x04 |   Hash_ID_High   |            Pluto MSK FPGA Hash ID - Upper 32-bits           |
+| 0x08 |     MSK_Init     |               MSK Modem Initialization Control              |
+| 0x0C |    MSK_Control   |                      MSK Modem Control                      |
+| 0x10 |    MSK_Status    |                      MSK Modem Status 0                     |
+| 0x14 |    Fb_FreqWord   |              Bitrate NCO Frequency Control Word             |
+| 0x18 |  TX_F1_FreqWord  |               Tx F1 NCO Frequency Control Word              |
+| 0x1C |  TX_F2_FreqWord  |               Tx F2 NCO Frequency Control Word              |
+| 0x20 |  RX_F1_FreqWord  |               Rx F1 NCO Frequency Control Word              |
+| 0x24 |  RX_F2_FreqWord  |               Rx F2 NCO Frequency Control Word              |
+| 0x28 |   LPF_Config_0   |PI Controller Configuration and Low-pass Filter Configuration|
+| 0x2C |   LPF_Config_1   |     PI Controller Configuration Configuration Register 1    |
+| 0x30 |   Tx_Data_Width  |                  Modem Tx Input Data Width                  |
+| 0x34 |   Rx_Data_Width  |                  Modem Rx Output Data Width                 |
+| 0x38 |   PRBS_Control   |                        PRBS Control 0                       |
+| 0x3C |PRBS_Initial_State|                        PRBS Control 1                       |
+| 0x40 |  PRBS_Polynomial |                        PRBS Control 2                       |
+| 0x44 |  PRBS_Error_Mask |                        PRBS Control 3                       |
+| 0x48 | Rx_Sample_Discard|                      Rx Sample Discard                      |
+| 0x4C |   LPF_Config_2   |     PI Controller Configuration Configuration Register 2    |
+| 0x50 |   Tx_Sync_Ctrl   |                   Transmitter Sync Control                  |
+| 0x54 |    Tx_Sync_Cnt   |                  Transmitter Sync Duration                  |
+| 0x58 |lowpass_ema_alpha1|               Exponential Moving Average Alpha              |
+| 0x5C |lowpass_ema_alpha2|               Exponential Moving Average Alpha              |
 
 ### Hash_ID_Low register
 
@@ -186,42 +172,10 @@ Don't override. Generated from: msk_top_regs
 <p>1 -&gt; S_AXIS_VALID Enabled
 0 -&gt; S_AXIS_VALID Disabled</p>
 
-### Tx_Bit_Count register
+### Fb_FreqWord register
 
 - Absolute Address: 0x14
 - Base Offset: 0x14
-- Size: 0x4
-
-<p>Modem status data</p>
-
-|Bits|  Identifier  | Access |Reset|    Name    |
-|----|--------------|--------|-----|------------|
-|31:0|tx_bit_counter|r, ruser|  —  |Tx Bit Count|
-
-#### tx_bit_counter field
-
-<p>Count of data requests made by modem</p>
-
-### Tx_Enable_Count register
-
-- Absolute Address: 0x18
-- Base Offset: 0x18
-- Size: 0x4
-
-<p>Modem status data</p>
-
-|Bits|  Identifier  | Access |Reset|      Name     |
-|----|--------------|--------|-----|---------------|
-|31:0|tx_ena_counter|r, ruser| 0x0 |Tx Enable Count|
-
-#### tx_ena_counter field
-
-<p>Number of clocks on which Tx Enable is active</p>
-
-### Fb_FreqWord register
-
-- Absolute Address: 0x1C
-- Base Offset: 0x1C
 - Size: 0x4
 
 <p>Set Modem Data Rate</p>
@@ -237,8 +191,8 @@ where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
 
 ### TX_F1_FreqWord register
 
-- Absolute Address: 0x20
-- Base Offset: 0x20
+- Absolute Address: 0x18
+- Base Offset: 0x18
 - Size: 0x4
 
 <p>Set Modulator F1 Frequency</p>
@@ -254,8 +208,8 @@ where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
 
 ### TX_F2_FreqWord register
 
-- Absolute Address: 0x24
-- Base Offset: 0x24
+- Absolute Address: 0x1C
+- Base Offset: 0x1C
 - Size: 0x4
 
 <p>Set Modulator F2 Frequency</p>
@@ -271,8 +225,8 @@ where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
 
 ### RX_F1_FreqWord register
 
-- Absolute Address: 0x28
-- Base Offset: 0x28
+- Absolute Address: 0x20
+- Base Offset: 0x20
 - Size: 0x4
 
 <p>Set Demodulator F1 Frequency</p>
@@ -288,8 +242,8 @@ where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
 
 ### RX_F2_FreqWord register
 
-- Absolute Address: 0x2C
-- Base Offset: 0x2C
+- Absolute Address: 0x24
+- Base Offset: 0x24
 - Size: 0x4
 
 <p>Set Demodulator F2 Frequency</p>
@@ -305,8 +259,8 @@ where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
 
 ### LPF_Config_0 register
 
-- Absolute Address: 0x30
-- Base Offset: 0x30
+- Absolute Address: 0x28
+- Base Offset: 0x28
 - Size: 0x4
 
 <p>Configure PI controller and low-pass filter</p>
@@ -334,8 +288,8 @@ where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
 
 ### LPF_Config_1 register
 
-- Absolute Address: 0x34
-- Base Offset: 0x34
+- Absolute Address: 0x2C
+- Base Offset: 0x2C
 - Size: 0x4
 
 <p>Configures PI Controller I-gain and divisor</p>
@@ -355,8 +309,8 @@ where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
 
 ### Tx_Data_Width register
 
-- Absolute Address: 0x38
-- Base Offset: 0x38
+- Absolute Address: 0x30
+- Base Offset: 0x30
 - Size: 0x4
 
 <p>Set the parallel data width of the parallel-to-serial converter</p>
@@ -371,8 +325,8 @@ where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
 
 ### Rx_Data_Width register
 
-- Absolute Address: 0x3C
-- Base Offset: 0x3C
+- Absolute Address: 0x34
+- Base Offset: 0x34
 - Size: 0x4
 
 <p>Set the parallel data width of the serial-to-parallel converter</p>
@@ -387,8 +341,8 @@ where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
 
 ### PRBS_Control register
 
-- Absolute Address: 0x40
-- Base Offset: 0x40
+- Absolute Address: 0x38
+- Base Offset: 0x38
 - Size: 0x4
 
 <p>Configures operation of the PRBS Generator and Monitor</p>
@@ -429,8 +383,8 @@ N &gt; 0 : Auto sync after N errors</p>
 
 ### PRBS_Initial_State register
 
-- Absolute Address: 0x44
-- Base Offset: 0x44
+- Absolute Address: 0x3C
+- Base Offset: 0x3C
 - Size: 0x4
 
 <p>PRBS Initial State</p>
@@ -445,8 +399,8 @@ N &gt; 0 : Auto sync after N errors</p>
 
 ### PRBS_Polynomial register
 
-- Absolute Address: 0x48
-- Base Offset: 0x48
+- Absolute Address: 0x40
+- Base Offset: 0x40
 - Size: 0x4
 
 <p>PRBS Polynomial</p>
@@ -461,8 +415,8 @@ N &gt; 0 : Auto sync after N errors</p>
 
 ### PRBS_Error_Mask register
 
-- Absolute Address: 0x4C
-- Base Offset: 0x4C
+- Absolute Address: 0x44
+- Base Offset: 0x44
 - Size: 0x4
 
 <p>PRBS Error Mask</p>
@@ -475,92 +429,10 @@ N &gt; 0 : Auto sync after N errors</p>
 
 <p>Bit positions set to '1' indicate bits that are inverted when a bit error is inserted</p>
 
-### PRBS_Bit_Count register
-
-- Absolute Address: 0x50
-- Base Offset: 0x50
-- Size: 0x4
-
-<p>PRBS Bits Received</p>
-
-|Bits| Identifier|Access|Reset|       Name       |
-|----|-----------|------|-----|------------------|
-|31:0|status_data|   r  | 0x0 |PRBS Bits Received|
-
-#### status_data field
-
-<p>Number of bits received by the PRBS monitor since last
-BER can be calculated as the ratio of received bits to errored-bits</p>
-
-### PRBS_Error_Count register
-
-- Absolute Address: 0x54
-- Base Offset: 0x54
-- Size: 0x4
-
-<p>PRBS Bit Errors</p>
-
-|Bits| Identifier|Access|Reset|      Name     |
-|----|-----------|------|-----|---------------|
-|31:0|status_data|   r  | 0x0 |PRBS Bit Errors|
-
-#### status_data field
-
-<p>Number of errored-bits received by the PRBS monitor since last sync
-BER can be calculated as the ratio of received bits to errored-bits</p>
-
-### LPF_Accum_F1 register
-
-- Absolute Address: 0x58
-- Base Offset: 0x58
-- Size: 0x4
-
-<p>Value of the F1 PI Controller Accumulator</p>
-
-|Bits| Identifier|Access|Reset|              Name             |
-|----|-----------|------|-----|-------------------------------|
-|31:0|status_data|   r  | 0x0 |PI Controller Accumulator Value|
-
-#### status_data field
-
-<p>PI Controller Accumulator Value</p>
-
-### LPF_Accum_F2 register
-
-- Absolute Address: 0x5C
-- Base Offset: 0x5C
-- Size: 0x4
-
-<p>Value of the F2 PI Controller Accumulator</p>
-
-|Bits| Identifier|Access|Reset|              Name             |
-|----|-----------|------|-----|-------------------------------|
-|31:0|status_data|   r  | 0x0 |PI Controller Accumulator Value|
-
-#### status_data field
-
-<p>PI Controller Accumulator Value</p>
-
-### axis_xfer_count register
-
-- Absolute Address: 0x60
-- Base Offset: 0x60
-- Size: 0x4
-
-<p>Modem status data</p>
-
-|Bits|Identifier|Access|Reset|      Name      |
-|----|----------|------|-----|----------------|
-|31:0|xfer_count|   r  | 0x0 |S_AXIS Transfers|
-
-#### xfer_count field
-
-<p>Number completed S_AXIS transfers</p>
-
 ### Rx_Sample_Discard register
 
-- Absolute Address: 0x64
-- Base Offset: 0x64
+- Absolute Address: 0x48
+- Base Offset: 0x48
 - Size: 0x4
 
 <p>Configure samples discard operation for demodulator</p>
@@ -580,8 +452,8 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 ### LPF_Config_2 register
 
-- Absolute Address: 0x68
-- Base Offset: 0x68
+- Absolute Address: 0x4C
+- Base Offset: 0x4C
 - Size: 0x4
 
 <p>Configures PI Controller I-gain and divisor</p>
@@ -599,74 +471,10 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 <p>Value n of 0-32 sets the proportional divisor as 2^-n</p>
 
-### f1_nco_adjust register
-
-- Absolute Address: 0x6C
-- Base Offset: 0x6C
-- Size: 0x4
-
-<p>Frequency offet applied to the F1 NCO</p>
-
-|Bits|Identifier| Access |Reset|          Name         |
-|----|----------|--------|-----|-----------------------|
-|31:0|   data   |r, ruser| 0x0 |F1 NCO Frequency Adjust|
-
-#### data field
-
-<p>Frequency offet applied to the F1 NCO</p>
-
-### f2_nco_adjust register
-
-- Absolute Address: 0x70
-- Base Offset: 0x70
-- Size: 0x4
-
-<p>Frequency offet applied to the F2 NCO</p>
-
-|Bits|Identifier| Access |Reset|          Name         |
-|----|----------|--------|-----|-----------------------|
-|31:0|   data   |r, ruser| 0x0 |F2 NCO Frequency Adjust|
-
-#### data field
-
-<p>Frequency offet applied to the F2 NCO</p>
-
-### f1_error register
-
-- Absolute Address: 0x74
-- Base Offset: 0x74
-- Size: 0x4
-
-<p>Error value of the F1 Costas loop after each active bit period</p>
-
-|Bits|Identifier| Access |Reset|     Name     |
-|----|----------|--------|-----|--------------|
-|31:0|   data   |r, ruser| 0x0 |F1 Error Value|
-
-#### data field
-
-<p>Error value of the F1 Costas loop after each active bit period</p>
-
-### f2_error register
-
-- Absolute Address: 0x78
-- Base Offset: 0x78
-- Size: 0x4
-
-<p>Error value of the F2 Costas loop after each active bit period</p>
-
-|Bits|Identifier| Access |Reset|     Name     |
-|----|----------|--------|-----|--------------|
-|31:0|   data   |r, ruser| 0x0 |F2 Error Value|
-
-#### data field
-
-<p>Error value of the F2 Costas loop after each active bit period</p>
-
 ### Tx_Sync_Ctrl register
 
-- Absolute Address: 0x7C
-- Base Offset: 0x7C
+- Absolute Address: 0x50
+- Base Offset: 0x50
 - Size: 0x4
 
 <p>Provides control bits for generation of transmitter synchronization patterns</p>
@@ -704,8 +512,8 @@ Both F1 and F2 can be enabled at the same time</p>
 
 ### Tx_Sync_Cnt register
 
-- Absolute Address: 0x80
-- Base Offset: 0x80
+- Absolute Address: 0x54
+- Base Offset: 0x54
 - Size: 0x4
 
 <p>Sets the duration of the synchronization tones when enabled</p>
@@ -722,8 +530,8 @@ signal should be sent after PTT is asserted.</p>
 
 ### lowpass_ema_alpha1 register
 
-- Absolute Address: 0x84
-- Base Offset: 0x84
+- Absolute Address: 0x58
+- Base Offset: 0x58
 - Size: 0x4
 
 <p>Sets the alpha for the EMA</p>
@@ -738,8 +546,8 @@ signal should be sent after PTT is asserted.</p>
 
 ### lowpass_ema_alpha2 register
 
-- Absolute Address: 0x88
-- Base Offset: 0x88
+- Absolute Address: 0x5C
+- Base Offset: 0x5C
 - Size: 0x4
 
 <p>Sets the alpha for the EMA</p>
@@ -751,49 +559,3 @@ signal should be sent after PTT is asserted.</p>
 #### alpha field
 
 <p>Value from 0x0_0000 to 0x3_FFFF represent the EMA alpha</p>
-
-### rx_power register
-
-- Absolute Address: 0x8C
-- Base Offset: 0x8C
-- Size: 0x4
-
-<p>Receive power computed from I/Q ssamples</p>
-
-|Bits|Identifier|Access|Reset|     Name    |
-|----|----------|------|-----|-------------|
-|22:0| rx_power |   r  | 0x0 |Receive Power|
-
-#### rx_power field
-
-<p>Value that represent the RMS power of the incoming I;</p>
-
-### tx_async_fifo_rd_wr_ptr register
-
-- Absolute Address: 0x90
-- Base Offset: 0x90
-- Size: 0x4
-
-|Bits|Identifier| Access |Reset|Name|
-|----|----------|--------|-----|----|
-|31:0|   data   |r, ruser| 0x0 |  — |
-
-#### data field
-
-<p>Bits 31:16 -&gt; write pointer (12-bits)
-Bits 15:00 -&gt; read pointer (12-bits)</p>
-
-### rx_async_fifo_rd_wr_ptr register
-
-- Absolute Address: 0x94
-- Base Offset: 0x94
-- Size: 0x4
-
-|Bits|Identifier| Access |Reset|Name|
-|----|----------|--------|-----|----|
-|31:0|   data   |r, ruser| 0x0 |  — |
-
-#### data field
-
-<p>Bits 31:16 -&gt; write pointer (12-bits)
-Bits 15:00 -&gt; read pointer (12-bits)</p>

@@ -76,481 +76,6 @@ from ..lib import AsyncCallbackSet, AsyncCallbackSetLegacy
     
     
     
-class msk_top_regs_data32_desc_7b98a70e_cls(FieldAsyncReadOnly):
-    
-    """
-    Class to represent a register field in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Bits 31:16 -&gt; write pointer (12-bits) Bits 15:00 -&gt; read  |
-    |              |      pointer (12-bits)</p>                                              |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = []
-
-    
-
-    
-    
-
-    @property
-    def rdl_desc(self) -> str:
-        return "Bits 31:16 -\u003e write pointer (12-bits)\nBits 15:00 -\u003e read pointer (12-bits)"
-    
-    
-    
-
-    
-    
-class msk_top_regs_observation_data_data_cf6acbd7_name_8a90eed1_cls(RegAsyncReadOnly):
-    """
-    Class to represent a register in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      Rx async FIFO read and write pointers                              |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = ['__data']
-
-    def __init__(self,
-                 address: int,
-                 width: int,
-                 accesswidth: int,
-                 logger_handle: str,
-                 inst_name: str,
-                 parent: Union[AsyncAddressMap,AsyncRegFile,ReadableAsyncMemory]):
-
-        super().__init__(address=address,
-                         width=width,
-                         accesswidth=accesswidth,
-                         logger_handle=logger_handle,
-                         inst_name=inst_name,
-                         parent=parent)
-
-        # build the field attributes
-        
-        self.__data:msk_top_regs_data32_desc_7b98a70e_cls = msk_top_regs_data32_desc_7b98a70e_cls(
-            parent_register=self,
-            size_props=FieldSizeProps(
-                width=32,
-                lsb=0,
-                msb=31,
-                low=0,
-                high=31),
-            misc_props=FieldMiscProps(
-                default=0,
-                is_volatile=True),
-            logger_handle=logger_handle+'.data',
-            inst_name='data',
-            field_type=int)
-
-    @property
-    def fields(self) -> Iterator[Union[FieldAsyncReadOnly, FieldAsyncWriteOnly,FieldAsyncReadWrite]]:
-        """
-        generator that produces has all the fields within the register
-        """
-        yield self.data
-        
-        # Empty generator in case there are no children of this type
-        if False: yield
-
-
-    
-
-    # build the properties for the fields
-    
-    @property
-    def data(self) -> msk_top_regs_data32_desc_7b98a70e_cls:
-        """
-        Property to access data field of the register
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Bits 31:16 -&gt; write pointer (12-bits) Bits 15:00 -&gt; read  |
-        |              |      pointer (12-bits)</p>                                              |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__data
-
-    
-    @property
-    def systemrdl_python_child_name_map(self) -> dict[str, str]:
-        """
-        In some cases systemRDL names need to be converted make them python safe, this dictionary
-        is used to map the original systemRDL names to the names of the python attributes of this
-        class
-
-        Returns: dictionary whose key is the systemRDL names and value it the property name
-        """
-        return {'data':'data',
-            }
-
-    
-    
-    
-    
-    
-    
-                
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data32_desc_7b98a70e_cls:
-        return super().get_child_by_system_rdl_name(name)
-                
-    
-
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "Rx async FIFO read and write pointers"
-    
-    
-    
-
-    
-    
-    
-class msk_top_regs_data32_desc_7b98a70e_0x0x1075e913_cls(FieldAsyncReadOnly):
-    
-    """
-    Class to represent a register field in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Bits 31:16 -&gt; write pointer (12-bits) Bits 15:00 -&gt; read  |
-    |              |      pointer (12-bits)</p>                                              |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = []
-
-    
-
-    
-    
-
-    @property
-    def rdl_desc(self) -> str:
-        return "Bits 31:16 -\u003e write pointer (12-bits)\nBits 15:00 -\u003e read pointer (12-bits)"
-    
-    
-    
-
-    
-    
-class msk_top_regs_observation_data_data_cf6acbd7_name_aa4ec676_cls(RegAsyncReadOnly):
-    """
-    Class to represent a register in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      Tx async FIFO read and write pointers                              |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = ['__data']
-
-    def __init__(self,
-                 address: int,
-                 width: int,
-                 accesswidth: int,
-                 logger_handle: str,
-                 inst_name: str,
-                 parent: Union[AsyncAddressMap,AsyncRegFile,ReadableAsyncMemory]):
-
-        super().__init__(address=address,
-                         width=width,
-                         accesswidth=accesswidth,
-                         logger_handle=logger_handle,
-                         inst_name=inst_name,
-                         parent=parent)
-
-        # build the field attributes
-        
-        self.__data:msk_top_regs_data32_desc_7b98a70e_0x0x1075e913_cls = msk_top_regs_data32_desc_7b98a70e_0x0x1075e913_cls(
-            parent_register=self,
-            size_props=FieldSizeProps(
-                width=32,
-                lsb=0,
-                msb=31,
-                low=0,
-                high=31),
-            misc_props=FieldMiscProps(
-                default=0,
-                is_volatile=True),
-            logger_handle=logger_handle+'.data',
-            inst_name='data',
-            field_type=int)
-
-    @property
-    def fields(self) -> Iterator[Union[FieldAsyncReadOnly, FieldAsyncWriteOnly,FieldAsyncReadWrite]]:
-        """
-        generator that produces has all the fields within the register
-        """
-        yield self.data
-        
-        # Empty generator in case there are no children of this type
-        if False: yield
-
-
-    
-
-    # build the properties for the fields
-    
-    @property
-    def data(self) -> msk_top_regs_data32_desc_7b98a70e_0x0x1075e913_cls:
-        """
-        Property to access data field of the register
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Bits 31:16 -&gt; write pointer (12-bits) Bits 15:00 -&gt; read  |
-        |              |      pointer (12-bits)</p>                                              |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__data
-
-    
-    @property
-    def systemrdl_python_child_name_map(self) -> dict[str, str]:
-        """
-        In some cases systemRDL names need to be converted make them python safe, this dictionary
-        is used to map the original systemRDL names to the names of the python attributes of this
-        class
-
-        Returns: dictionary whose key is the systemRDL names and value it the property name
-        """
-        return {'data':'data',
-            }
-
-    
-    
-    
-    
-    
-    
-                
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data32_desc_7b98a70e_0x0x1075e913_cls:
-        return super().get_child_by_system_rdl_name(name)
-                
-    
-
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "Tx async FIFO read and write pointers"
-    
-    
-    
-
-    
-    
-    
-class msk_top_regs_rx_power_rx_power_cls(FieldAsyncReadOnly):
-    
-    """
-    Class to represent a register field in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      Receive Power                                                      |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Value that represent the RMS power of the incoming I;</p>       |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = []
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "Receive Power"
-    @property
-    def rdl_desc(self) -> str:
-        return "Value that represent the RMS power of the incoming I;"
-    
-    
-    
-
-    
-    
-class msk_top_regs_rx_power_cls(RegAsyncReadOnly):
-    """
-    Class to represent a register in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      Receive Power                                                      |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Receive power computed from I/Q ssamples</p>                    |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = ['__rx_power']
-
-    def __init__(self,
-                 address: int,
-                 width: int,
-                 accesswidth: int,
-                 logger_handle: str,
-                 inst_name: str,
-                 parent: Union[AsyncAddressMap,AsyncRegFile,ReadableAsyncMemory]):
-
-        super().__init__(address=address,
-                         width=width,
-                         accesswidth=accesswidth,
-                         logger_handle=logger_handle,
-                         inst_name=inst_name,
-                         parent=parent)
-
-        # build the field attributes
-        
-        self.__rx_power:msk_top_regs_rx_power_rx_power_cls = msk_top_regs_rx_power_rx_power_cls(
-            parent_register=self,
-            size_props=FieldSizeProps(
-                width=23,
-                lsb=0,
-                msb=22,
-                low=0,
-                high=22),
-            misc_props=FieldMiscProps(
-                default=0,
-                is_volatile=True),
-            logger_handle=logger_handle+'.rx_power',
-            inst_name='rx_power',
-            field_type=int)
-
-    @property
-    def fields(self) -> Iterator[Union[FieldAsyncReadOnly, FieldAsyncWriteOnly,FieldAsyncReadWrite]]:
-        """
-        generator that produces has all the fields within the register
-        """
-        yield self.rx_power
-        
-        # Empty generator in case there are no children of this type
-        if False: yield
-
-
-    
-
-    # build the properties for the fields
-    
-    @property
-    def rx_power(self) -> msk_top_regs_rx_power_rx_power_cls:
-        """
-        Property to access rx_power field of the register
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      Receive Power                                                      |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Value that represent the RMS power of the incoming I;</p>       |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__rx_power
-
-    
-    @property
-    def systemrdl_python_child_name_map(self) -> dict[str, str]:
-        """
-        In some cases systemRDL names need to be converted make them python safe, this dictionary
-        is used to map the original systemRDL names to the names of the python attributes of this
-        class
-
-        Returns: dictionary whose key is the systemRDL names and value it the property name
-        """
-        return {'rx_power':'rx_power',
-            }
-
-    
-    
-    
-    
-    
-    
-                
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_rx_power_rx_power_cls:
-        return super().get_child_by_system_rdl_name(name)
-                
-    
-
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "Receive Power"
-    @property
-    def rdl_desc(self) -> str:
-        return "Receive power computed from I/Q ssamples"
-    
-    
-    
-
-    
-    
-    
 class msk_top_regs_lowpass_ema_alpha_alpha_cls(FieldAsyncReadWrite):
     
     """
@@ -720,7 +245,7 @@ class msk_top_regs_lowpass_ema_alpha_cls(RegAsyncReadWrite):
     
     
     
-class msk_top_regs_lowpass_ema_alpha_alpha_0x0x1075e9a9_cls(FieldAsyncReadWrite):
+class msk_top_regs_lowpass_ema_alpha_alpha_0x0x106443d4_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -758,7 +283,7 @@ class msk_top_regs_lowpass_ema_alpha_alpha_0x0x1075e9a9_cls(FieldAsyncReadWrite)
 
     
     
-class msk_top_regs_lowpass_ema_alpha_0x0x1075e9f4_cls(RegAsyncReadWrite):
+class msk_top_regs_lowpass_ema_alpha_0x0x1062ef8f_cls(RegAsyncReadWrite):
     """
     Class to represent a register in the register model
 
@@ -795,7 +320,7 @@ class msk_top_regs_lowpass_ema_alpha_0x0x1075e9f4_cls(RegAsyncReadWrite):
 
         # build the field attributes
         
-        self.__alpha:msk_top_regs_lowpass_ema_alpha_alpha_0x0x1075e9a9_cls = msk_top_regs_lowpass_ema_alpha_alpha_0x0x1075e9a9_cls(
+        self.__alpha:msk_top_regs_lowpass_ema_alpha_alpha_0x0x106443d4_cls = msk_top_regs_lowpass_ema_alpha_alpha_0x0x106443d4_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=18,
@@ -826,7 +351,7 @@ class msk_top_regs_lowpass_ema_alpha_0x0x1075e9f4_cls(RegAsyncReadWrite):
     # build the properties for the fields
     
     @property
-    def alpha(self) -> msk_top_regs_lowpass_ema_alpha_alpha_0x0x1075e9a9_cls:
+    def alpha(self) -> msk_top_regs_lowpass_ema_alpha_alpha_0x0x106443d4_cls:
         """
         Property to access alpha field of the register
 
@@ -865,7 +390,7 @@ class msk_top_regs_lowpass_ema_alpha_0x0x1075e9f4_cls(RegAsyncReadWrite):
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_lowpass_ema_alpha_alpha_0x0x1075e9a9_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_lowpass_ema_alpha_alpha_0x0x106443d4_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -1484,688 +1009,6 @@ class msk_top_regs_tx_sync_ctrl_cls(RegAsyncReadWrite):
     
     
     
-class msk_top_regs_data32_desc_70869502_name_3de9a0d3_cls(FieldAsyncReadOnly):
-    
-    """
-    Class to represent a register field in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      F2 Error Value                                                     |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Error value of the F2 Costas loop after each active bit         |
-    |              |      period</p>                                                         |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = []
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "F2 Error Value"
-    @property
-    def rdl_desc(self) -> str:
-        return "Error value of the F2 Costas loop after each active bit period"
-    
-    
-    
-
-    
-    
-class msk_top_regs_observation_data_data_272a00b6_desc_70869502_name_3de9a0d3_cls(RegAsyncReadOnly):
-    """
-    Class to represent a register in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      F2 Error Value                                                     |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Error value of the F2 Costas loop after each active bit         |
-    |              |      period</p>                                                         |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = ['__data']
-
-    def __init__(self,
-                 address: int,
-                 width: int,
-                 accesswidth: int,
-                 logger_handle: str,
-                 inst_name: str,
-                 parent: Union[AsyncAddressMap,AsyncRegFile,ReadableAsyncMemory]):
-
-        super().__init__(address=address,
-                         width=width,
-                         accesswidth=accesswidth,
-                         logger_handle=logger_handle,
-                         inst_name=inst_name,
-                         parent=parent)
-
-        # build the field attributes
-        
-        self.__data:msk_top_regs_data32_desc_70869502_name_3de9a0d3_cls = msk_top_regs_data32_desc_70869502_name_3de9a0d3_cls(
-            parent_register=self,
-            size_props=FieldSizeProps(
-                width=32,
-                lsb=0,
-                msb=31,
-                low=0,
-                high=31),
-            misc_props=FieldMiscProps(
-                default=0,
-                is_volatile=True),
-            logger_handle=logger_handle+'.data',
-            inst_name='data',
-            field_type=int)
-
-    @property
-    def fields(self) -> Iterator[Union[FieldAsyncReadOnly, FieldAsyncWriteOnly,FieldAsyncReadWrite]]:
-        """
-        generator that produces has all the fields within the register
-        """
-        yield self.data
-        
-        # Empty generator in case there are no children of this type
-        if False: yield
-
-
-    
-
-    # build the properties for the fields
-    
-    @property
-    def data(self) -> msk_top_regs_data32_desc_70869502_name_3de9a0d3_cls:
-        """
-        Property to access data field of the register
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      F2 Error Value                                                     |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Error value of the F2 Costas loop after each active bit         |
-        |              |      period</p>                                                         |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__data
-
-    
-    @property
-    def systemrdl_python_child_name_map(self) -> dict[str, str]:
-        """
-        In some cases systemRDL names need to be converted make them python safe, this dictionary
-        is used to map the original systemRDL names to the names of the python attributes of this
-        class
-
-        Returns: dictionary whose key is the systemRDL names and value it the property name
-        """
-        return {'data':'data',
-            }
-
-    
-    
-    
-    
-    
-    
-                
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data32_desc_70869502_name_3de9a0d3_cls:
-        return super().get_child_by_system_rdl_name(name)
-                
-    
-
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "F2 Error Value"
-    @property
-    def rdl_desc(self) -> str:
-        return "Error value of the F2 Costas loop after each active bit period"
-    
-    
-    
-
-    
-    
-    
-class msk_top_regs_data32_desc_417e1c96_name_3b640507_cls(FieldAsyncReadOnly):
-    
-    """
-    Class to represent a register field in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      F1 Error Value                                                     |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Error value of the F1 Costas loop after each active bit         |
-    |              |      period</p>                                                         |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = []
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "F1 Error Value"
-    @property
-    def rdl_desc(self) -> str:
-        return "Error value of the F1 Costas loop after each active bit period"
-    
-    
-    
-
-    
-    
-class msk_top_regs_observation_data_data_25a21249_desc_417e1c96_name_3b640507_cls(RegAsyncReadOnly):
-    """
-    Class to represent a register in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      F1 Error Value                                                     |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Error value of the F1 Costas loop after each active bit         |
-    |              |      period</p>                                                         |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = ['__data']
-
-    def __init__(self,
-                 address: int,
-                 width: int,
-                 accesswidth: int,
-                 logger_handle: str,
-                 inst_name: str,
-                 parent: Union[AsyncAddressMap,AsyncRegFile,ReadableAsyncMemory]):
-
-        super().__init__(address=address,
-                         width=width,
-                         accesswidth=accesswidth,
-                         logger_handle=logger_handle,
-                         inst_name=inst_name,
-                         parent=parent)
-
-        # build the field attributes
-        
-        self.__data:msk_top_regs_data32_desc_417e1c96_name_3b640507_cls = msk_top_regs_data32_desc_417e1c96_name_3b640507_cls(
-            parent_register=self,
-            size_props=FieldSizeProps(
-                width=32,
-                lsb=0,
-                msb=31,
-                low=0,
-                high=31),
-            misc_props=FieldMiscProps(
-                default=0,
-                is_volatile=True),
-            logger_handle=logger_handle+'.data',
-            inst_name='data',
-            field_type=int)
-
-    @property
-    def fields(self) -> Iterator[Union[FieldAsyncReadOnly, FieldAsyncWriteOnly,FieldAsyncReadWrite]]:
-        """
-        generator that produces has all the fields within the register
-        """
-        yield self.data
-        
-        # Empty generator in case there are no children of this type
-        if False: yield
-
-
-    
-
-    # build the properties for the fields
-    
-    @property
-    def data(self) -> msk_top_regs_data32_desc_417e1c96_name_3b640507_cls:
-        """
-        Property to access data field of the register
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      F1 Error Value                                                     |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Error value of the F1 Costas loop after each active bit         |
-        |              |      period</p>                                                         |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__data
-
-    
-    @property
-    def systemrdl_python_child_name_map(self) -> dict[str, str]:
-        """
-        In some cases systemRDL names need to be converted make them python safe, this dictionary
-        is used to map the original systemRDL names to the names of the python attributes of this
-        class
-
-        Returns: dictionary whose key is the systemRDL names and value it the property name
-        """
-        return {'data':'data',
-            }
-
-    
-    
-    
-    
-    
-    
-                
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data32_desc_417e1c96_name_3b640507_cls:
-        return super().get_child_by_system_rdl_name(name)
-                
-    
-
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "F1 Error Value"
-    @property
-    def rdl_desc(self) -> str:
-        return "Error value of the F1 Costas loop after each active bit period"
-    
-    
-    
-
-    
-    
-    
-class msk_top_regs_data32_desc_ebde6d39_name_2c154788_cls(FieldAsyncReadOnly):
-    
-    """
-    Class to represent a register field in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      F2 NCO Frequency Adjust                                            |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Frequency offet applied to the F2 NCO</p>                       |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = []
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "F2 NCO Frequency Adjust"
-    @property
-    def rdl_desc(self) -> str:
-        return "Frequency offet applied to the F2 NCO"
-    
-    
-    
-
-    
-    
-class msk_top_regs_observation_data_data_0515efaa_desc_ebde6d39_name_2c154788_cls(RegAsyncReadOnly):
-    """
-    Class to represent a register in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      F2 NCO Frequency Adjust                                            |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Frequency offet applied to the F2 NCO</p>                       |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = ['__data']
-
-    def __init__(self,
-                 address: int,
-                 width: int,
-                 accesswidth: int,
-                 logger_handle: str,
-                 inst_name: str,
-                 parent: Union[AsyncAddressMap,AsyncRegFile,ReadableAsyncMemory]):
-
-        super().__init__(address=address,
-                         width=width,
-                         accesswidth=accesswidth,
-                         logger_handle=logger_handle,
-                         inst_name=inst_name,
-                         parent=parent)
-
-        # build the field attributes
-        
-        self.__data:msk_top_regs_data32_desc_ebde6d39_name_2c154788_cls = msk_top_regs_data32_desc_ebde6d39_name_2c154788_cls(
-            parent_register=self,
-            size_props=FieldSizeProps(
-                width=32,
-                lsb=0,
-                msb=31,
-                low=0,
-                high=31),
-            misc_props=FieldMiscProps(
-                default=0,
-                is_volatile=True),
-            logger_handle=logger_handle+'.data',
-            inst_name='data',
-            field_type=int)
-
-    @property
-    def fields(self) -> Iterator[Union[FieldAsyncReadOnly, FieldAsyncWriteOnly,FieldAsyncReadWrite]]:
-        """
-        generator that produces has all the fields within the register
-        """
-        yield self.data
-        
-        # Empty generator in case there are no children of this type
-        if False: yield
-
-
-    
-
-    # build the properties for the fields
-    
-    @property
-    def data(self) -> msk_top_regs_data32_desc_ebde6d39_name_2c154788_cls:
-        """
-        Property to access data field of the register
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      F2 NCO Frequency Adjust                                            |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Frequency offet applied to the F2 NCO</p>                       |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__data
-
-    
-    @property
-    def systemrdl_python_child_name_map(self) -> dict[str, str]:
-        """
-        In some cases systemRDL names need to be converted make them python safe, this dictionary
-        is used to map the original systemRDL names to the names of the python attributes of this
-        class
-
-        Returns: dictionary whose key is the systemRDL names and value it the property name
-        """
-        return {'data':'data',
-            }
-
-    
-    
-    
-    
-    
-    
-                
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data32_desc_ebde6d39_name_2c154788_cls:
-        return super().get_child_by_system_rdl_name(name)
-                
-    
-
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "F2 NCO Frequency Adjust"
-    @property
-    def rdl_desc(self) -> str:
-        return "Frequency offet applied to the F2 NCO"
-    
-    
-    
-
-    
-    
-    
-class msk_top_regs_data32_desc_64ff3689_name_d8ad3b25_cls(FieldAsyncReadOnly):
-    
-    """
-    Class to represent a register field in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      F1 NCO Frequency Adjust                                            |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Frequency offet applied to the F1 NCO</p>                       |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = []
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "F1 NCO Frequency Adjust"
-    @property
-    def rdl_desc(self) -> str:
-        return "Frequency offet applied to the F1 NCO"
-    
-    
-    
-
-    
-    
-class msk_top_regs_observation_data_data_0c017ef4_desc_64ff3689_name_d8ad3b25_cls(RegAsyncReadOnly):
-    """
-    Class to represent a register in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      F1 NCO Frequency Adjust                                            |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Frequency offet applied to the F1 NCO</p>                       |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = ['__data']
-
-    def __init__(self,
-                 address: int,
-                 width: int,
-                 accesswidth: int,
-                 logger_handle: str,
-                 inst_name: str,
-                 parent: Union[AsyncAddressMap,AsyncRegFile,ReadableAsyncMemory]):
-
-        super().__init__(address=address,
-                         width=width,
-                         accesswidth=accesswidth,
-                         logger_handle=logger_handle,
-                         inst_name=inst_name,
-                         parent=parent)
-
-        # build the field attributes
-        
-        self.__data:msk_top_regs_data32_desc_64ff3689_name_d8ad3b25_cls = msk_top_regs_data32_desc_64ff3689_name_d8ad3b25_cls(
-            parent_register=self,
-            size_props=FieldSizeProps(
-                width=32,
-                lsb=0,
-                msb=31,
-                low=0,
-                high=31),
-            misc_props=FieldMiscProps(
-                default=0,
-                is_volatile=True),
-            logger_handle=logger_handle+'.data',
-            inst_name='data',
-            field_type=int)
-
-    @property
-    def fields(self) -> Iterator[Union[FieldAsyncReadOnly, FieldAsyncWriteOnly,FieldAsyncReadWrite]]:
-        """
-        generator that produces has all the fields within the register
-        """
-        yield self.data
-        
-        # Empty generator in case there are no children of this type
-        if False: yield
-
-
-    
-
-    # build the properties for the fields
-    
-    @property
-    def data(self) -> msk_top_regs_data32_desc_64ff3689_name_d8ad3b25_cls:
-        """
-        Property to access data field of the register
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      F1 NCO Frequency Adjust                                            |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Frequency offet applied to the F1 NCO</p>                       |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__data
-
-    
-    @property
-    def systemrdl_python_child_name_map(self) -> dict[str, str]:
-        """
-        In some cases systemRDL names need to be converted make them python safe, this dictionary
-        is used to map the original systemRDL names to the names of the python attributes of this
-        class
-
-        Returns: dictionary whose key is the systemRDL names and value it the property name
-        """
-        return {'data':'data',
-            }
-
-    
-    
-    
-    
-    
-    
-                
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data32_desc_64ff3689_name_d8ad3b25_cls:
-        return super().get_child_by_system_rdl_name(name)
-                
-    
-
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "F1 NCO Frequency Adjust"
-    @property
-    def rdl_desc(self) -> str:
-        return "Frequency offet applied to the F1 NCO"
-    
-    
-    
-
-    
-    
-    
 class msk_top_regs_lpf_config_2_p_shift_cls(FieldAsyncReadWrite):
     
     """
@@ -2665,857 +1508,6 @@ class msk_top_regs_rx_sample_discard_cls(RegAsyncReadWrite):
     @property
     def rdl_desc(self) -> str:
         return "Configure samples discard operation for demodulator"
-    
-    
-    
-
-    
-    
-    
-class msk_top_regs_msk_stat_3_xfer_count_cls(FieldAsyncReadOnly):
-    
-    """
-    Class to represent a register field in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      S_AXIS Transfers                                                   |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Number completed S_AXIS transfers</p>                           |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = []
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "S_AXIS Transfers"
-    @property
-    def rdl_desc(self) -> str:
-        return "Number completed S_AXIS transfers"
-    
-    
-    
-
-    
-    
-class msk_top_regs_msk_stat_3_cls(RegAsyncReadOnly):
-    """
-    Class to represent a register in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      MSK Modem Status 3                                                 |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Modem status data</p>                                           |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = ['__xfer_count']
-
-    def __init__(self,
-                 address: int,
-                 width: int,
-                 accesswidth: int,
-                 logger_handle: str,
-                 inst_name: str,
-                 parent: Union[AsyncAddressMap,AsyncRegFile,ReadableAsyncMemory]):
-
-        super().__init__(address=address,
-                         width=width,
-                         accesswidth=accesswidth,
-                         logger_handle=logger_handle,
-                         inst_name=inst_name,
-                         parent=parent)
-
-        # build the field attributes
-        
-        self.__xfer_count:msk_top_regs_msk_stat_3_xfer_count_cls = msk_top_regs_msk_stat_3_xfer_count_cls(
-            parent_register=self,
-            size_props=FieldSizeProps(
-                width=32,
-                lsb=0,
-                msb=31,
-                low=0,
-                high=31),
-            misc_props=FieldMiscProps(
-                default=0,
-                is_volatile=True),
-            logger_handle=logger_handle+'.xfer_count',
-            inst_name='xfer_count',
-            field_type=int)
-
-    @property
-    def fields(self) -> Iterator[Union[FieldAsyncReadOnly, FieldAsyncWriteOnly,FieldAsyncReadWrite]]:
-        """
-        generator that produces has all the fields within the register
-        """
-        yield self.xfer_count
-        
-        # Empty generator in case there are no children of this type
-        if False: yield
-
-
-    
-
-    # build the properties for the fields
-    
-    @property
-    def xfer_count(self) -> msk_top_regs_msk_stat_3_xfer_count_cls:
-        """
-        Property to access xfer_count field of the register
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      S_AXIS Transfers                                                   |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Number completed S_AXIS transfers</p>                           |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__xfer_count
-
-    
-    @property
-    def systemrdl_python_child_name_map(self) -> dict[str, str]:
-        """
-        In some cases systemRDL names need to be converted make them python safe, this dictionary
-        is used to map the original systemRDL names to the names of the python attributes of this
-        class
-
-        Returns: dictionary whose key is the systemRDL names and value it the property name
-        """
-        return {'xfer_count':'xfer_count',
-            }
-
-    
-    
-    
-    
-    
-    
-                
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_msk_stat_3_xfer_count_cls:
-        return super().get_child_by_system_rdl_name(name)
-                
-    
-
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "MSK Modem Status 3"
-    @property
-    def rdl_desc(self) -> str:
-        return "Modem status data"
-    
-    
-    
-
-    
-    
-    
-class msk_top_regs_stat_32_lpf_acc_status_data_cls(FieldAsyncReadOnly):
-    
-    """
-    Class to represent a register field in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      PI Controller Accumulator Value                                    |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>PI Controller Accumulator Value</p>                             |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = []
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "PI Controller Accumulator Value"
-    @property
-    def rdl_desc(self) -> str:
-        return "PI Controller Accumulator Value"
-    
-    
-    
-
-    
-    
-class msk_top_regs_stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce_cls(RegAsyncReadOnly):
-    """
-    Class to represent a register in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      F2 PI Controller Accumulator                                       |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Value of the F2 PI Controller Accumulator</p>                   |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = ['__status_data']
-
-    def __init__(self,
-                 address: int,
-                 width: int,
-                 accesswidth: int,
-                 logger_handle: str,
-                 inst_name: str,
-                 parent: Union[AsyncAddressMap,AsyncRegFile,ReadableAsyncMemory]):
-
-        super().__init__(address=address,
-                         width=width,
-                         accesswidth=accesswidth,
-                         logger_handle=logger_handle,
-                         inst_name=inst_name,
-                         parent=parent)
-
-        # build the field attributes
-        
-        self.__status_data:msk_top_regs_stat_32_lpf_acc_status_data_cls = msk_top_regs_stat_32_lpf_acc_status_data_cls(
-            parent_register=self,
-            size_props=FieldSizeProps(
-                width=32,
-                lsb=0,
-                msb=31,
-                low=0,
-                high=31),
-            misc_props=FieldMiscProps(
-                default=0,
-                is_volatile=True),
-            logger_handle=logger_handle+'.status_data',
-            inst_name='status_data',
-            field_type=int)
-
-    @property
-    def fields(self) -> Iterator[Union[FieldAsyncReadOnly, FieldAsyncWriteOnly,FieldAsyncReadWrite]]:
-        """
-        generator that produces has all the fields within the register
-        """
-        yield self.status_data
-        
-        # Empty generator in case there are no children of this type
-        if False: yield
-
-
-    
-
-    # build the properties for the fields
-    
-    @property
-    def status_data(self) -> msk_top_regs_stat_32_lpf_acc_status_data_cls:
-        """
-        Property to access status_data field of the register
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      PI Controller Accumulator Value                                    |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>PI Controller Accumulator Value</p>                             |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__status_data
-
-    
-    @property
-    def systemrdl_python_child_name_map(self) -> dict[str, str]:
-        """
-        In some cases systemRDL names need to be converted make them python safe, this dictionary
-        is used to map the original systemRDL names to the names of the python attributes of this
-        class
-
-        Returns: dictionary whose key is the systemRDL names and value it the property name
-        """
-        return {'status_data':'status_data',
-            }
-
-    
-    
-    
-    
-    
-    
-                
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_stat_32_lpf_acc_status_data_cls:
-        return super().get_child_by_system_rdl_name(name)
-                
-    
-
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "F2 PI Controller Accumulator"
-    @property
-    def rdl_desc(self) -> str:
-        return "Value of the F2 PI Controller Accumulator"
-    
-    
-    
-
-    
-    
-    
-class msk_top_regs_stat_32_lpf_acc_status_data_0x0x1073cd31_cls(FieldAsyncReadOnly):
-    
-    """
-    Class to represent a register field in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      PI Controller Accumulator Value                                    |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>PI Controller Accumulator Value</p>                             |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = []
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "PI Controller Accumulator Value"
-    @property
-    def rdl_desc(self) -> str:
-        return "PI Controller Accumulator Value"
-    
-    
-    
-
-    
-    
-class msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls(RegAsyncReadOnly):
-    """
-    Class to represent a register in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      F1 PI Controller Accumulator                                       |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Value of the F1 PI Controller Accumulator</p>                   |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = ['__status_data']
-
-    def __init__(self,
-                 address: int,
-                 width: int,
-                 accesswidth: int,
-                 logger_handle: str,
-                 inst_name: str,
-                 parent: Union[AsyncAddressMap,AsyncRegFile,ReadableAsyncMemory]):
-
-        super().__init__(address=address,
-                         width=width,
-                         accesswidth=accesswidth,
-                         logger_handle=logger_handle,
-                         inst_name=inst_name,
-                         parent=parent)
-
-        # build the field attributes
-        
-        self.__status_data:msk_top_regs_stat_32_lpf_acc_status_data_0x0x1073cd31_cls = msk_top_regs_stat_32_lpf_acc_status_data_0x0x1073cd31_cls(
-            parent_register=self,
-            size_props=FieldSizeProps(
-                width=32,
-                lsb=0,
-                msb=31,
-                low=0,
-                high=31),
-            misc_props=FieldMiscProps(
-                default=0,
-                is_volatile=True),
-            logger_handle=logger_handle+'.status_data',
-            inst_name='status_data',
-            field_type=int)
-
-    @property
-    def fields(self) -> Iterator[Union[FieldAsyncReadOnly, FieldAsyncWriteOnly,FieldAsyncReadWrite]]:
-        """
-        generator that produces has all the fields within the register
-        """
-        yield self.status_data
-        
-        # Empty generator in case there are no children of this type
-        if False: yield
-
-
-    
-
-    # build the properties for the fields
-    
-    @property
-    def status_data(self) -> msk_top_regs_stat_32_lpf_acc_status_data_0x0x1073cd31_cls:
-        """
-        Property to access status_data field of the register
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      PI Controller Accumulator Value                                    |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>PI Controller Accumulator Value</p>                             |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__status_data
-
-    
-    @property
-    def systemrdl_python_child_name_map(self) -> dict[str, str]:
-        """
-        In some cases systemRDL names need to be converted make them python safe, this dictionary
-        is used to map the original systemRDL names to the names of the python attributes of this
-        class
-
-        Returns: dictionary whose key is the systemRDL names and value it the property name
-        """
-        return {'status_data':'status_data',
-            }
-
-    
-    
-    
-    
-    
-    
-                
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_stat_32_lpf_acc_status_data_0x0x1073cd31_cls:
-        return super().get_child_by_system_rdl_name(name)
-                
-    
-
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "F1 PI Controller Accumulator"
-    @property
-    def rdl_desc(self) -> str:
-        return "Value of the F1 PI Controller Accumulator"
-    
-    
-    
-
-    
-    
-    
-class msk_top_regs_stat_32_errs_status_data_cls(FieldAsyncReadOnly):
-    
-    """
-    Class to represent a register field in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      PRBS Bit Errors                                                    |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Number of errored-bits received by the PRBS monitor since last  |
-    |              |      sync BER can be calculated as the ratio of received bits to        |
-    |              |      errored-bits</p>                                                   |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = []
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "PRBS Bit Errors"
-    @property
-    def rdl_desc(self) -> str:
-        return "Number of errored-bits received by the PRBS monitor since last sync\nBER can be calculated as the ratio of received bits to errored-bits"
-    
-    
-    
-
-    
-    
-class msk_top_regs_stat_32_errs_cls(RegAsyncReadOnly):
-    """
-    Class to represent a register in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      PRBS Status 1                                                      |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>PRBS Bit Errors</p>                                             |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = ['__status_data']
-
-    def __init__(self,
-                 address: int,
-                 width: int,
-                 accesswidth: int,
-                 logger_handle: str,
-                 inst_name: str,
-                 parent: Union[AsyncAddressMap,AsyncRegFile,ReadableAsyncMemory]):
-
-        super().__init__(address=address,
-                         width=width,
-                         accesswidth=accesswidth,
-                         logger_handle=logger_handle,
-                         inst_name=inst_name,
-                         parent=parent)
-
-        # build the field attributes
-        
-        self.__status_data:msk_top_regs_stat_32_errs_status_data_cls = msk_top_regs_stat_32_errs_status_data_cls(
-            parent_register=self,
-            size_props=FieldSizeProps(
-                width=32,
-                lsb=0,
-                msb=31,
-                low=0,
-                high=31),
-            misc_props=FieldMiscProps(
-                default=0,
-                is_volatile=True),
-            logger_handle=logger_handle+'.status_data',
-            inst_name='status_data',
-            field_type=int)
-
-    @property
-    def fields(self) -> Iterator[Union[FieldAsyncReadOnly, FieldAsyncWriteOnly,FieldAsyncReadWrite]]:
-        """
-        generator that produces has all the fields within the register
-        """
-        yield self.status_data
-        
-        # Empty generator in case there are no children of this type
-        if False: yield
-
-
-    
-
-    # build the properties for the fields
-    
-    @property
-    def status_data(self) -> msk_top_regs_stat_32_errs_status_data_cls:
-        """
-        Property to access status_data field of the register
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      PRBS Bit Errors                                                    |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Number of errored-bits received by the PRBS monitor since last  |
-        |              |      sync BER can be calculated as the ratio of received bits to        |
-        |              |      errored-bits</p>                                                   |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__status_data
-
-    
-    @property
-    def systemrdl_python_child_name_map(self) -> dict[str, str]:
-        """
-        In some cases systemRDL names need to be converted make them python safe, this dictionary
-        is used to map the original systemRDL names to the names of the python attributes of this
-        class
-
-        Returns: dictionary whose key is the systemRDL names and value it the property name
-        """
-        return {'status_data':'status_data',
-            }
-
-    
-    
-    
-    
-    
-    
-                
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_stat_32_errs_status_data_cls:
-        return super().get_child_by_system_rdl_name(name)
-                
-    
-
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "PRBS Status 1"
-    @property
-    def rdl_desc(self) -> str:
-        return "PRBS Bit Errors"
-    
-    
-    
-
-    
-    
-    
-class msk_top_regs_stat_32_bits_status_data_cls(FieldAsyncReadOnly):
-    
-    """
-    Class to represent a register field in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      PRBS Bits Received                                                 |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Number of bits received by the PRBS monitor since last BER can  |
-    |              |      be calculated as the ratio of received bits to errored-bits</p>    |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = []
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "PRBS Bits Received"
-    @property
-    def rdl_desc(self) -> str:
-        return "Number of bits received by the PRBS monitor since last\nBER can be calculated as the ratio of received bits to errored-bits"
-    
-    
-    
-
-    
-    
-class msk_top_regs_stat_32_bits_cls(RegAsyncReadOnly):
-    """
-    Class to represent a register in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      PRBS Status 0                                                      |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>PRBS Bits Received</p>                                          |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = ['__status_data']
-
-    def __init__(self,
-                 address: int,
-                 width: int,
-                 accesswidth: int,
-                 logger_handle: str,
-                 inst_name: str,
-                 parent: Union[AsyncAddressMap,AsyncRegFile,ReadableAsyncMemory]):
-
-        super().__init__(address=address,
-                         width=width,
-                         accesswidth=accesswidth,
-                         logger_handle=logger_handle,
-                         inst_name=inst_name,
-                         parent=parent)
-
-        # build the field attributes
-        
-        self.__status_data:msk_top_regs_stat_32_bits_status_data_cls = msk_top_regs_stat_32_bits_status_data_cls(
-            parent_register=self,
-            size_props=FieldSizeProps(
-                width=32,
-                lsb=0,
-                msb=31,
-                low=0,
-                high=31),
-            misc_props=FieldMiscProps(
-                default=0,
-                is_volatile=True),
-            logger_handle=logger_handle+'.status_data',
-            inst_name='status_data',
-            field_type=int)
-
-    @property
-    def fields(self) -> Iterator[Union[FieldAsyncReadOnly, FieldAsyncWriteOnly,FieldAsyncReadWrite]]:
-        """
-        generator that produces has all the fields within the register
-        """
-        yield self.status_data
-        
-        # Empty generator in case there are no children of this type
-        if False: yield
-
-
-    
-
-    # build the properties for the fields
-    
-    @property
-    def status_data(self) -> msk_top_regs_stat_32_bits_status_data_cls:
-        """
-        Property to access status_data field of the register
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      PRBS Bits Received                                                 |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Number of bits received by the PRBS monitor since last BER can  |
-        |              |      be calculated as the ratio of received bits to errored-bits</p>    |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__status_data
-
-    
-    @property
-    def systemrdl_python_child_name_map(self) -> dict[str, str]:
-        """
-        In some cases systemRDL names need to be converted make them python safe, this dictionary
-        is used to map the original systemRDL names to the names of the python attributes of this
-        class
-
-        Returns: dictionary whose key is the systemRDL names and value it the property name
-        """
-        return {'status_data':'status_data',
-            }
-
-    
-    
-    
-    
-    
-    
-                
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_stat_32_bits_status_data_cls:
-        return super().get_child_by_system_rdl_name(name)
-                
-    
-
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "PRBS Status 0"
-    @property
-    def rdl_desc(self) -> str:
-        return "PRBS Bits Received"
     
     
     
@@ -4760,7 +2752,7 @@ class msk_top_regs_data_width_desc_6097df38_name_4609588b_cls(RegAsyncReadWrite)
     
     
     
-class msk_top_regs_data_width_data_width_0x0x107468c8_cls(FieldAsyncReadWrite):
+class msk_top_regs_data_width_data_width_0x0x1062d2f0_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -4836,7 +2828,7 @@ class msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls(RegAsyncReadWrite)
 
         # build the field attributes
         
-        self.__data_width:msk_top_regs_data_width_data_width_0x0x107468c8_cls = msk_top_regs_data_width_data_width_0x0x107468c8_cls(
+        self.__data_width:msk_top_regs_data_width_data_width_0x0x1062d2f0_cls = msk_top_regs_data_width_data_width_0x0x1062d2f0_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=8,
@@ -4867,7 +2859,7 @@ class msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls(RegAsyncReadWrite)
     # build the properties for the fields
     
     @property
-    def data_width(self) -> msk_top_regs_data_width_data_width_0x0x107468c8_cls:
+    def data_width(self) -> msk_top_regs_data_width_data_width_0x0x1062d2f0_cls:
         """
         Property to access data_width field of the register
 
@@ -4906,7 +2898,7 @@ class msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls(RegAsyncReadWrite)
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data_width_data_width_0x0x107468c8_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data_width_data_width_0x0x1062d2f0_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -5752,7 +3744,7 @@ class msk_top_regs_config_nco_fw_desc_43c0828f_name_bdc60ecf_cls(RegAsyncReadWri
     
     
     
-class msk_top_regs_config_nco_fw_config_data_0x0x1074bb14_cls(FieldAsyncReadWrite):
+class msk_top_regs_config_nco_fw_config_data_0x0x1055e07d_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -5829,7 +3821,7 @@ class msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls(RegAsyncReadWri
 
         # build the field attributes
         
-        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x1074bb14_cls = msk_top_regs_config_nco_fw_config_data_0x0x1074bb14_cls(
+        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x1055e07d_cls = msk_top_regs_config_nco_fw_config_data_0x0x1055e07d_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -5860,7 +3852,7 @@ class msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls(RegAsyncReadWri
     # build the properties for the fields
     
     @property
-    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x1074bb14_cls:
+    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x1055e07d_cls:
         """
         Property to access config_data field of the register
 
@@ -5901,7 +3893,7 @@ class msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls(RegAsyncReadWri
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x1074bb14_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x1055e07d_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -5925,7 +3917,7 @@ class msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls(RegAsyncReadWri
     
     
     
-class msk_top_regs_config_nco_fw_config_data_0x0x107566c9_cls(FieldAsyncReadWrite):
+class msk_top_regs_config_nco_fw_config_data_0x0x1063cd8e_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -6002,7 +3994,7 @@ class msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls(RegAsyncReadWri
 
         # build the field attributes
         
-        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x107566c9_cls = msk_top_regs_config_nco_fw_config_data_0x0x107566c9_cls(
+        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x1063cd8e_cls = msk_top_regs_config_nco_fw_config_data_0x0x1063cd8e_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -6033,7 +4025,7 @@ class msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls(RegAsyncReadWri
     # build the properties for the fields
     
     @property
-    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x107566c9_cls:
+    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x1063cd8e_cls:
         """
         Property to access config_data field of the register
 
@@ -6074,7 +4066,7 @@ class msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls(RegAsyncReadWri
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x107566c9_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x1063cd8e_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -6098,7 +4090,7 @@ class msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls(RegAsyncReadWri
     
     
     
-class msk_top_regs_config_nco_fw_config_data_0x0x10756468_cls(FieldAsyncReadWrite):
+class msk_top_regs_config_nco_fw_config_data_0x0x1063cc6b_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -6175,7 +4167,7 @@ class msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls(RegAsyncReadWri
 
         # build the field attributes
         
-        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x10756468_cls = msk_top_regs_config_nco_fw_config_data_0x0x10756468_cls(
+        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x1063cc6b_cls = msk_top_regs_config_nco_fw_config_data_0x0x1063cc6b_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -6206,7 +4198,7 @@ class msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls(RegAsyncReadWri
     # build the properties for the fields
     
     @property
-    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x10756468_cls:
+    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x1063cc6b_cls:
         """
         Property to access config_data field of the register
 
@@ -6247,7 +4239,7 @@ class msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls(RegAsyncReadWri
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x10756468_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x1063cc6b_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -6271,7 +4263,7 @@ class msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls(RegAsyncReadWri
     
     
     
-class msk_top_regs_config_nco_fw_config_data_0x0x1075c880_cls(FieldAsyncReadWrite):
+class msk_top_regs_config_nco_fw_config_data_0x0x1064217c_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -6348,7 +4340,7 @@ class msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls(RegAsyncReadWri
 
         # build the field attributes
         
-        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x1075c880_cls = msk_top_regs_config_nco_fw_config_data_0x0x1075c880_cls(
+        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x1064217c_cls = msk_top_regs_config_nco_fw_config_data_0x0x1064217c_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -6379,7 +4371,7 @@ class msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls(RegAsyncReadWri
     # build the properties for the fields
     
     @property
-    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x1075c880_cls:
+    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x1064217c_cls:
         """
         Property to access config_data field of the register
 
@@ -6420,7 +4412,7 @@ class msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls(RegAsyncReadWri
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x1075c880_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x1064217c_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -6437,344 +4429,6 @@ class msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls(RegAsyncReadWri
     @property
     def rdl_desc(self) -> str:
         return "Set Modem Data Rate"
-    
-    
-    
-
-    
-    
-    
-class msk_top_regs_msk_stat_2_tx_ena_counter_cls(FieldAsyncReadOnly):
-    
-    """
-    Class to represent a register field in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      Tx Enable Count                                                    |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Number of clocks on which Tx Enable is active</p>               |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = []
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "Tx Enable Count"
-    @property
-    def rdl_desc(self) -> str:
-        return "Number of clocks on which Tx Enable is active"
-    
-    
-    
-
-    
-    
-class msk_top_regs_msk_stat_2_cls(RegAsyncReadOnly):
-    """
-    Class to represent a register in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      MSK Modem Status 2                                                 |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Modem status data</p>                                           |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = ['__tx_ena_counter']
-
-    def __init__(self,
-                 address: int,
-                 width: int,
-                 accesswidth: int,
-                 logger_handle: str,
-                 inst_name: str,
-                 parent: Union[AsyncAddressMap,AsyncRegFile,ReadableAsyncMemory]):
-
-        super().__init__(address=address,
-                         width=width,
-                         accesswidth=accesswidth,
-                         logger_handle=logger_handle,
-                         inst_name=inst_name,
-                         parent=parent)
-
-        # build the field attributes
-        
-        self.__tx_ena_counter:msk_top_regs_msk_stat_2_tx_ena_counter_cls = msk_top_regs_msk_stat_2_tx_ena_counter_cls(
-            parent_register=self,
-            size_props=FieldSizeProps(
-                width=32,
-                lsb=0,
-                msb=31,
-                low=0,
-                high=31),
-            misc_props=FieldMiscProps(
-                default=0,
-                is_volatile=True),
-            logger_handle=logger_handle+'.tx_ena_counter',
-            inst_name='tx_ena_counter',
-            field_type=int)
-
-    @property
-    def fields(self) -> Iterator[Union[FieldAsyncReadOnly, FieldAsyncWriteOnly,FieldAsyncReadWrite]]:
-        """
-        generator that produces has all the fields within the register
-        """
-        yield self.tx_ena_counter
-        
-        # Empty generator in case there are no children of this type
-        if False: yield
-
-
-    
-
-    # build the properties for the fields
-    
-    @property
-    def tx_ena_counter(self) -> msk_top_regs_msk_stat_2_tx_ena_counter_cls:
-        """
-        Property to access tx_ena_counter field of the register
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      Tx Enable Count                                                    |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Number of clocks on which Tx Enable is active</p>               |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__tx_ena_counter
-
-    
-    @property
-    def systemrdl_python_child_name_map(self) -> dict[str, str]:
-        """
-        In some cases systemRDL names need to be converted make them python safe, this dictionary
-        is used to map the original systemRDL names to the names of the python attributes of this
-        class
-
-        Returns: dictionary whose key is the systemRDL names and value it the property name
-        """
-        return {'tx_ena_counter':'tx_ena_counter',
-            }
-
-    
-    
-    
-    
-    
-    
-                
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_msk_stat_2_tx_ena_counter_cls:
-        return super().get_child_by_system_rdl_name(name)
-                
-    
-
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "MSK Modem Status 2"
-    @property
-    def rdl_desc(self) -> str:
-        return "Modem status data"
-    
-    
-    
-
-    
-    
-    
-class msk_top_regs_msk_stat_1_tx_bit_counter_cls(FieldAsyncReadOnly):
-    
-    """
-    Class to represent a register field in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      Tx Bit Count                                                       |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Count of data requests made by modem</p>                        |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = []
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "Tx Bit Count"
-    @property
-    def rdl_desc(self) -> str:
-        return "Count of data requests made by modem"
-    
-    
-    
-
-    
-    
-class msk_top_regs_msk_stat_1_cls(RegAsyncReadOnly):
-    """
-    Class to represent a register in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      MSK Modem Status 1                                                 |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Modem status data</p>                                           |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = ['__tx_bit_counter']
-
-    def __init__(self,
-                 address: int,
-                 width: int,
-                 accesswidth: int,
-                 logger_handle: str,
-                 inst_name: str,
-                 parent: Union[AsyncAddressMap,AsyncRegFile,ReadableAsyncMemory]):
-
-        super().__init__(address=address,
-                         width=width,
-                         accesswidth=accesswidth,
-                         logger_handle=logger_handle,
-                         inst_name=inst_name,
-                         parent=parent)
-
-        # build the field attributes
-        
-        self.__tx_bit_counter:msk_top_regs_msk_stat_1_tx_bit_counter_cls = msk_top_regs_msk_stat_1_tx_bit_counter_cls(
-            parent_register=self,
-            size_props=FieldSizeProps(
-                width=32,
-                lsb=0,
-                msb=31,
-                low=0,
-                high=31),
-            misc_props=FieldMiscProps(
-                default=None,
-                is_volatile=True),
-            logger_handle=logger_handle+'.tx_bit_counter',
-            inst_name='tx_bit_counter',
-            field_type=int)
-
-    @property
-    def fields(self) -> Iterator[Union[FieldAsyncReadOnly, FieldAsyncWriteOnly,FieldAsyncReadWrite]]:
-        """
-        generator that produces has all the fields within the register
-        """
-        yield self.tx_bit_counter
-        
-        # Empty generator in case there are no children of this type
-        if False: yield
-
-
-    
-
-    # build the properties for the fields
-    
-    @property
-    def tx_bit_counter(self) -> msk_top_regs_msk_stat_1_tx_bit_counter_cls:
-        """
-        Property to access tx_bit_counter field of the register
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      Tx Bit Count                                                       |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Count of data requests made by modem</p>                        |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__tx_bit_counter
-
-    
-    @property
-    def systemrdl_python_child_name_map(self) -> dict[str, str]:
-        """
-        In some cases systemRDL names need to be converted make them python safe, this dictionary
-        is used to map the original systemRDL names to the names of the python attributes of this
-        class
-
-        Returns: dictionary whose key is the systemRDL names and value it the property name
-        """
-        return {'tx_bit_counter':'tx_bit_counter',
-            }
-
-    
-    
-    
-    
-    
-    
-                
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_msk_stat_1_tx_bit_counter_cls:
-        return super().get_child_by_system_rdl_name(name)
-                
-    
-
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "MSK Modem Status 1"
-    @property
-    def rdl_desc(self) -> str:
-        return "Modem status data"
     
     
     
@@ -8353,7 +6007,7 @@ class msk_top_regs_cls(AsyncAddressMap):
     +--------------+-------------------------------------------------------------------------+
     """
 
-    __slots__ : list[str] = ['__Hash_ID_Low', '__Hash_ID_High', '__MSK_Init', '__MSK_Control', '__MSK_Status', '__Tx_Bit_Count', '__Tx_Enable_Count', '__Fb_FreqWord', '__TX_F1_FreqWord', '__TX_F2_FreqWord', '__RX_F1_FreqWord', '__RX_F2_FreqWord', '__LPF_Config_0', '__LPF_Config_1', '__Tx_Data_Width', '__Rx_Data_Width', '__PRBS_Control', '__PRBS_Initial_State', '__PRBS_Polynomial', '__PRBS_Error_Mask', '__PRBS_Bit_Count', '__PRBS_Error_Count', '__LPF_Accum_F1', '__LPF_Accum_F2', '__axis_xfer_count', '__Rx_Sample_Discard', '__LPF_Config_2', '__f1_nco_adjust', '__f2_nco_adjust', '__f1_error', '__f2_error', '__Tx_Sync_Ctrl', '__Tx_Sync_Cnt', '__lowpass_ema_alpha1', '__lowpass_ema_alpha2', '__rx_power', '__tx_async_fifo_rd_wr_ptr', '__rx_async_fifo_rd_wr_ptr']
+    __slots__ : list[str] = ['__Hash_ID_Low', '__Hash_ID_High', '__MSK_Init', '__MSK_Control', '__MSK_Status', '__Fb_FreqWord', '__TX_F1_FreqWord', '__TX_F2_FreqWord', '__RX_F1_FreqWord', '__RX_F2_FreqWord', '__LPF_Config_0', '__LPF_Config_1', '__Tx_Data_Width', '__Rx_Data_Width', '__PRBS_Control', '__PRBS_Initial_State', '__PRBS_Polynomial', '__PRBS_Error_Mask', '__Rx_Sample_Discard', '__LPF_Config_2', '__Tx_Sync_Ctrl', '__Tx_Sync_Cnt', '__lowpass_ema_alpha1', '__lowpass_ema_alpha2']
 
     def __init__(self, *,
                  address:int=0,
@@ -8414,24 +6068,8 @@ class msk_top_regs_cls(AsyncAddressMap):
                                                                      inst_name='MSK_Status', parent=self)
         
             
-        self.__Tx_Bit_Count:msk_top_regs_msk_stat_1_cls = msk_top_regs_msk_stat_1_cls(
-                                                                     address=self.address+20,
-                                                                     accesswidth=32,
-                                                                     width=32,
-                                                                     logger_handle=logger_handle+'.Tx_Bit_Count',
-                                                                     inst_name='Tx_Bit_Count', parent=self)
-        
-            
-        self.__Tx_Enable_Count:msk_top_regs_msk_stat_2_cls = msk_top_regs_msk_stat_2_cls(
-                                                                     address=self.address+24,
-                                                                     accesswidth=32,
-                                                                     width=32,
-                                                                     logger_handle=logger_handle+'.Tx_Enable_Count',
-                                                                     inst_name='Tx_Enable_Count', parent=self)
-        
-            
         self.__Fb_FreqWord:msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls = msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls(
-                                                                     address=self.address+28,
+                                                                     address=self.address+20,
                                                                      accesswidth=32,
                                                                      width=32,
                                                                      logger_handle=logger_handle+'.Fb_FreqWord',
@@ -8439,7 +6077,7 @@ class msk_top_regs_cls(AsyncAddressMap):
         
             
         self.__TX_F1_FreqWord:msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls = msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls(
-                                                                     address=self.address+32,
+                                                                     address=self.address+24,
                                                                      accesswidth=32,
                                                                      width=32,
                                                                      logger_handle=logger_handle+'.TX_F1_FreqWord',
@@ -8447,7 +6085,7 @@ class msk_top_regs_cls(AsyncAddressMap):
         
             
         self.__TX_F2_FreqWord:msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls = msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls(
-                                                                     address=self.address+36,
+                                                                     address=self.address+28,
                                                                      accesswidth=32,
                                                                      width=32,
                                                                      logger_handle=logger_handle+'.TX_F2_FreqWord',
@@ -8455,7 +6093,7 @@ class msk_top_regs_cls(AsyncAddressMap):
         
             
         self.__RX_F1_FreqWord:msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls = msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls(
-                                                                     address=self.address+40,
+                                                                     address=self.address+32,
                                                                      accesswidth=32,
                                                                      width=32,
                                                                      logger_handle=logger_handle+'.RX_F1_FreqWord',
@@ -8463,7 +6101,7 @@ class msk_top_regs_cls(AsyncAddressMap):
         
             
         self.__RX_F2_FreqWord:msk_top_regs_config_nco_fw_desc_43c0828f_name_bdc60ecf_cls = msk_top_regs_config_nco_fw_desc_43c0828f_name_bdc60ecf_cls(
-                                                                     address=self.address+44,
+                                                                     address=self.address+36,
                                                                      accesswidth=32,
                                                                      width=32,
                                                                      logger_handle=logger_handle+'.RX_F2_FreqWord',
@@ -8471,7 +6109,7 @@ class msk_top_regs_cls(AsyncAddressMap):
         
             
         self.__LPF_Config_0:msk_top_regs_lpf_config_0_cls = msk_top_regs_lpf_config_0_cls(
-                                                                     address=self.address+48,
+                                                                     address=self.address+40,
                                                                      accesswidth=32,
                                                                      width=32,
                                                                      logger_handle=logger_handle+'.LPF_Config_0',
@@ -8479,7 +6117,7 @@ class msk_top_regs_cls(AsyncAddressMap):
         
             
         self.__LPF_Config_1:msk_top_regs_lpf_config_1_cls = msk_top_regs_lpf_config_1_cls(
-                                                                     address=self.address+52,
+                                                                     address=self.address+44,
                                                                      accesswidth=32,
                                                                      width=32,
                                                                      logger_handle=logger_handle+'.LPF_Config_1',
@@ -8487,7 +6125,7 @@ class msk_top_regs_cls(AsyncAddressMap):
         
             
         self.__Tx_Data_Width:msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls = msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls(
-                                                                     address=self.address+56,
+                                                                     address=self.address+48,
                                                                      accesswidth=32,
                                                                      width=32,
                                                                      logger_handle=logger_handle+'.Tx_Data_Width',
@@ -8495,7 +6133,7 @@ class msk_top_regs_cls(AsyncAddressMap):
         
             
         self.__Rx_Data_Width:msk_top_regs_data_width_desc_6097df38_name_4609588b_cls = msk_top_regs_data_width_desc_6097df38_name_4609588b_cls(
-                                                                     address=self.address+60,
+                                                                     address=self.address+52,
                                                                      accesswidth=32,
                                                                      width=32,
                                                                      logger_handle=logger_handle+'.Rx_Data_Width',
@@ -8503,7 +6141,7 @@ class msk_top_regs_cls(AsyncAddressMap):
         
             
         self.__PRBS_Control:msk_top_regs_prbs_ctrl_cls = msk_top_regs_prbs_ctrl_cls(
-                                                                     address=self.address+64,
+                                                                     address=self.address+56,
                                                                      accesswidth=32,
                                                                      width=32,
                                                                      logger_handle=logger_handle+'.PRBS_Control',
@@ -8511,7 +6149,7 @@ class msk_top_regs_cls(AsyncAddressMap):
         
             
         self.__PRBS_Initial_State:msk_top_regs_config_prbs_seed_cls = msk_top_regs_config_prbs_seed_cls(
-                                                                     address=self.address+68,
+                                                                     address=self.address+60,
                                                                      accesswidth=32,
                                                                      width=32,
                                                                      logger_handle=logger_handle+'.PRBS_Initial_State',
@@ -8519,7 +6157,7 @@ class msk_top_regs_cls(AsyncAddressMap):
         
             
         self.__PRBS_Polynomial:msk_top_regs_config_prbs_poly_cls = msk_top_regs_config_prbs_poly_cls(
-                                                                     address=self.address+72,
+                                                                     address=self.address+64,
                                                                      accesswidth=32,
                                                                      width=32,
                                                                      logger_handle=logger_handle+'.PRBS_Polynomial',
@@ -8527,55 +6165,15 @@ class msk_top_regs_cls(AsyncAddressMap):
         
             
         self.__PRBS_Error_Mask:msk_top_regs_config_prbs_errmask_cls = msk_top_regs_config_prbs_errmask_cls(
-                                                                     address=self.address+76,
+                                                                     address=self.address+68,
                                                                      accesswidth=32,
                                                                      width=32,
                                                                      logger_handle=logger_handle+'.PRBS_Error_Mask',
                                                                      inst_name='PRBS_Error_Mask', parent=self)
         
             
-        self.__PRBS_Bit_Count:msk_top_regs_stat_32_bits_cls = msk_top_regs_stat_32_bits_cls(
-                                                                     address=self.address+80,
-                                                                     accesswidth=32,
-                                                                     width=32,
-                                                                     logger_handle=logger_handle+'.PRBS_Bit_Count',
-                                                                     inst_name='PRBS_Bit_Count', parent=self)
-        
-            
-        self.__PRBS_Error_Count:msk_top_regs_stat_32_errs_cls = msk_top_regs_stat_32_errs_cls(
-                                                                     address=self.address+84,
-                                                                     accesswidth=32,
-                                                                     width=32,
-                                                                     logger_handle=logger_handle+'.PRBS_Error_Count',
-                                                                     inst_name='PRBS_Error_Count', parent=self)
-        
-            
-        self.__LPF_Accum_F1:msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls = msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls(
-                                                                     address=self.address+88,
-                                                                     accesswidth=32,
-                                                                     width=32,
-                                                                     logger_handle=logger_handle+'.LPF_Accum_F1',
-                                                                     inst_name='LPF_Accum_F1', parent=self)
-        
-            
-        self.__LPF_Accum_F2:msk_top_regs_stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce_cls = msk_top_regs_stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce_cls(
-                                                                     address=self.address+92,
-                                                                     accesswidth=32,
-                                                                     width=32,
-                                                                     logger_handle=logger_handle+'.LPF_Accum_F2',
-                                                                     inst_name='LPF_Accum_F2', parent=self)
-        
-            
-        self.__axis_xfer_count:msk_top_regs_msk_stat_3_cls = msk_top_regs_msk_stat_3_cls(
-                                                                     address=self.address+96,
-                                                                     accesswidth=32,
-                                                                     width=32,
-                                                                     logger_handle=logger_handle+'.axis_xfer_count',
-                                                                     inst_name='axis_xfer_count', parent=self)
-        
-            
         self.__Rx_Sample_Discard:msk_top_regs_rx_sample_discard_cls = msk_top_regs_rx_sample_discard_cls(
-                                                                     address=self.address+100,
+                                                                     address=self.address+72,
                                                                      accesswidth=32,
                                                                      width=32,
                                                                      logger_handle=logger_handle+'.Rx_Sample_Discard',
@@ -8583,47 +6181,15 @@ class msk_top_regs_cls(AsyncAddressMap):
         
             
         self.__LPF_Config_2:msk_top_regs_lpf_config_2_cls = msk_top_regs_lpf_config_2_cls(
-                                                                     address=self.address+104,
+                                                                     address=self.address+76,
                                                                      accesswidth=32,
                                                                      width=32,
                                                                      logger_handle=logger_handle+'.LPF_Config_2',
                                                                      inst_name='LPF_Config_2', parent=self)
         
             
-        self.__f1_nco_adjust:msk_top_regs_observation_data_data_0c017ef4_desc_64ff3689_name_d8ad3b25_cls = msk_top_regs_observation_data_data_0c017ef4_desc_64ff3689_name_d8ad3b25_cls(
-                                                                     address=self.address+108,
-                                                                     accesswidth=32,
-                                                                     width=32,
-                                                                     logger_handle=logger_handle+'.f1_nco_adjust',
-                                                                     inst_name='f1_nco_adjust', parent=self)
-        
-            
-        self.__f2_nco_adjust:msk_top_regs_observation_data_data_0515efaa_desc_ebde6d39_name_2c154788_cls = msk_top_regs_observation_data_data_0515efaa_desc_ebde6d39_name_2c154788_cls(
-                                                                     address=self.address+112,
-                                                                     accesswidth=32,
-                                                                     width=32,
-                                                                     logger_handle=logger_handle+'.f2_nco_adjust',
-                                                                     inst_name='f2_nco_adjust', parent=self)
-        
-            
-        self.__f1_error:msk_top_regs_observation_data_data_25a21249_desc_417e1c96_name_3b640507_cls = msk_top_regs_observation_data_data_25a21249_desc_417e1c96_name_3b640507_cls(
-                                                                     address=self.address+116,
-                                                                     accesswidth=32,
-                                                                     width=32,
-                                                                     logger_handle=logger_handle+'.f1_error',
-                                                                     inst_name='f1_error', parent=self)
-        
-            
-        self.__f2_error:msk_top_regs_observation_data_data_272a00b6_desc_70869502_name_3de9a0d3_cls = msk_top_regs_observation_data_data_272a00b6_desc_70869502_name_3de9a0d3_cls(
-                                                                     address=self.address+120,
-                                                                     accesswidth=32,
-                                                                     width=32,
-                                                                     logger_handle=logger_handle+'.f2_error',
-                                                                     inst_name='f2_error', parent=self)
-        
-            
         self.__Tx_Sync_Ctrl:msk_top_regs_tx_sync_ctrl_cls = msk_top_regs_tx_sync_ctrl_cls(
-                                                                     address=self.address+124,
+                                                                     address=self.address+80,
                                                                      accesswidth=32,
                                                                      width=32,
                                                                      logger_handle=logger_handle+'.Tx_Sync_Ctrl',
@@ -8631,15 +6197,15 @@ class msk_top_regs_cls(AsyncAddressMap):
         
             
         self.__Tx_Sync_Cnt:msk_top_regs_tx_sync_cnt_cls = msk_top_regs_tx_sync_cnt_cls(
-                                                                     address=self.address+128,
+                                                                     address=self.address+84,
                                                                      accesswidth=32,
                                                                      width=32,
                                                                      logger_handle=logger_handle+'.Tx_Sync_Cnt',
                                                                      inst_name='Tx_Sync_Cnt', parent=self)
         
             
-        self.__lowpass_ema_alpha1:msk_top_regs_lowpass_ema_alpha_0x0x1075e9f4_cls = msk_top_regs_lowpass_ema_alpha_0x0x1075e9f4_cls(
-                                                                     address=self.address+132,
+        self.__lowpass_ema_alpha1:msk_top_regs_lowpass_ema_alpha_0x0x1062ef8f_cls = msk_top_regs_lowpass_ema_alpha_0x0x1062ef8f_cls(
+                                                                     address=self.address+88,
                                                                      accesswidth=32,
                                                                      width=32,
                                                                      logger_handle=logger_handle+'.lowpass_ema_alpha1',
@@ -8647,40 +6213,16 @@ class msk_top_regs_cls(AsyncAddressMap):
         
             
         self.__lowpass_ema_alpha2:msk_top_regs_lowpass_ema_alpha_cls = msk_top_regs_lowpass_ema_alpha_cls(
-                                                                     address=self.address+136,
+                                                                     address=self.address+92,
                                                                      accesswidth=32,
                                                                      width=32,
                                                                      logger_handle=logger_handle+'.lowpass_ema_alpha2',
                                                                      inst_name='lowpass_ema_alpha2', parent=self)
         
-            
-        self.__rx_power:msk_top_regs_rx_power_cls = msk_top_regs_rx_power_cls(
-                                                                     address=self.address+140,
-                                                                     accesswidth=32,
-                                                                     width=32,
-                                                                     logger_handle=logger_handle+'.rx_power',
-                                                                     inst_name='rx_power', parent=self)
-        
-            
-        self.__tx_async_fifo_rd_wr_ptr:msk_top_regs_observation_data_data_cf6acbd7_name_aa4ec676_cls = msk_top_regs_observation_data_data_cf6acbd7_name_aa4ec676_cls(
-                                                                     address=self.address+144,
-                                                                     accesswidth=32,
-                                                                     width=32,
-                                                                     logger_handle=logger_handle+'.tx_async_fifo_rd_wr_ptr',
-                                                                     inst_name='tx_async_fifo_rd_wr_ptr', parent=self)
-        
-            
-        self.__rx_async_fifo_rd_wr_ptr:msk_top_regs_observation_data_data_cf6acbd7_name_8a90eed1_cls = msk_top_regs_observation_data_data_cf6acbd7_name_8a90eed1_cls(
-                                                                     address=self.address+148,
-                                                                     accesswidth=32,
-                                                                     width=32,
-                                                                     logger_handle=logger_handle+'.rx_async_fifo_rd_wr_ptr',
-                                                                     inst_name='rx_async_fifo_rd_wr_ptr', parent=self)
-        
 
     @property
     def size(self) -> int:
-        return 152
+        return 96
     @property
     def Hash_ID_Low(self) -> msk_top_regs_msk_hash_lo_cls:
         """
@@ -8773,46 +6315,6 @@ class msk_top_regs_cls(AsyncAddressMap):
         +--------------+-------------------------------------------------------------------------+
         """
         return self.__MSK_Status
-        
-    @property
-    def Tx_Bit_Count(self) -> msk_top_regs_msk_stat_1_cls:
-        """
-        Property to access Tx_Bit_Count 
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      MSK Modem Status 1                                                 |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Modem status data</p>                                           |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__Tx_Bit_Count
-        
-    @property
-    def Tx_Enable_Count(self) -> msk_top_regs_msk_stat_2_cls:
-        """
-        Property to access Tx_Enable_Count 
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      MSK Modem Status 2                                                 |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Modem status data</p>                                           |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__Tx_Enable_Count
         
     @property
     def Fb_FreqWord(self) -> msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls:
@@ -9077,106 +6579,6 @@ class msk_top_regs_cls(AsyncAddressMap):
         return self.__PRBS_Error_Mask
         
     @property
-    def PRBS_Bit_Count(self) -> msk_top_regs_stat_32_bits_cls:
-        """
-        Property to access PRBS_Bit_Count 
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      PRBS Status 0                                                      |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>PRBS Bits Received</p>                                          |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__PRBS_Bit_Count
-        
-    @property
-    def PRBS_Error_Count(self) -> msk_top_regs_stat_32_errs_cls:
-        """
-        Property to access PRBS_Error_Count 
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      PRBS Status 1                                                      |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>PRBS Bit Errors</p>                                             |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__PRBS_Error_Count
-        
-    @property
-    def LPF_Accum_F1(self) -> msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls:
-        """
-        Property to access LPF_Accum_F1 
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      F1 PI Controller Accumulator                                       |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Value of the F1 PI Controller Accumulator</p>                   |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__LPF_Accum_F1
-        
-    @property
-    def LPF_Accum_F2(self) -> msk_top_regs_stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce_cls:
-        """
-        Property to access LPF_Accum_F2 
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      F2 PI Controller Accumulator                                       |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Value of the F2 PI Controller Accumulator</p>                   |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__LPF_Accum_F2
-        
-    @property
-    def axis_xfer_count(self) -> msk_top_regs_msk_stat_3_cls:
-        """
-        Property to access axis_xfer_count 
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      MSK Modem Status 3                                                 |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Modem status data</p>                                           |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__axis_xfer_count
-        
-    @property
     def Rx_Sample_Discard(self) -> msk_top_regs_rx_sample_discard_cls:
         """
         Property to access Rx_Sample_Discard 
@@ -9215,88 +6617,6 @@ class msk_top_regs_cls(AsyncAddressMap):
         +--------------+-------------------------------------------------------------------------+
         """
         return self.__LPF_Config_2
-        
-    @property
-    def f1_nco_adjust(self) -> msk_top_regs_observation_data_data_0c017ef4_desc_64ff3689_name_d8ad3b25_cls:
-        """
-        Property to access f1_nco_adjust 
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      F1 NCO Frequency Adjust                                            |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Frequency offet applied to the F1 NCO</p>                       |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__f1_nco_adjust
-        
-    @property
-    def f2_nco_adjust(self) -> msk_top_regs_observation_data_data_0515efaa_desc_ebde6d39_name_2c154788_cls:
-        """
-        Property to access f2_nco_adjust 
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      F2 NCO Frequency Adjust                                            |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Frequency offet applied to the F2 NCO</p>                       |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__f2_nco_adjust
-        
-    @property
-    def f1_error(self) -> msk_top_regs_observation_data_data_25a21249_desc_417e1c96_name_3b640507_cls:
-        """
-        Property to access f1_error 
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      F1 Error Value                                                     |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Error value of the F1 Costas loop after each active bit         |
-        |              |      period</p>                                                         |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__f1_error
-        
-    @property
-    def f2_error(self) -> msk_top_regs_observation_data_data_272a00b6_desc_70869502_name_3de9a0d3_cls:
-        """
-        Property to access f2_error 
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      F2 Error Value                                                     |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Error value of the F2 Costas loop after each active bit         |
-        |              |      period</p>                                                         |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__f2_error
         
     @property
     def Tx_Sync_Ctrl(self) -> msk_top_regs_tx_sync_ctrl_cls:
@@ -9340,7 +6660,7 @@ class msk_top_regs_cls(AsyncAddressMap):
         return self.__Tx_Sync_Cnt
         
     @property
-    def lowpass_ema_alpha1(self) -> msk_top_regs_lowpass_ema_alpha_0x0x1075e9f4_cls:
+    def lowpass_ema_alpha1(self) -> msk_top_regs_lowpass_ema_alpha_0x0x1062ef8f_cls:
         """
         Property to access lowpass_ema_alpha1 
 
@@ -9379,58 +6699,6 @@ class msk_top_regs_cls(AsyncAddressMap):
         """
         return self.__lowpass_ema_alpha2
         
-    @property
-    def rx_power(self) -> msk_top_regs_rx_power_cls:
-        """
-        Property to access rx_power 
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      Receive Power                                                      |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Receive power computed from I/Q ssamples</p>                    |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__rx_power
-        
-    @property
-    def tx_async_fifo_rd_wr_ptr(self) -> msk_top_regs_observation_data_data_cf6acbd7_name_aa4ec676_cls:
-        """
-        Property to access tx_async_fifo_rd_wr_ptr 
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      Tx async FIFO read and write pointers                              |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__tx_async_fifo_rd_wr_ptr
-        
-    @property
-    def rx_async_fifo_rd_wr_ptr(self) -> msk_top_regs_observation_data_data_cf6acbd7_name_8a90eed1_cls:
-        """
-        Property to access rx_async_fifo_rd_wr_ptr 
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      Rx async FIFO read and write pointers                              |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__rx_async_fifo_rd_wr_ptr
-        
 
     
     @property
@@ -9442,7 +6710,7 @@ class msk_top_regs_cls(AsyncAddressMap):
 
         Returns: dictionary whose key is the systemRDL names and value it the property name
         """
-        return {'Hash_ID_Low':'Hash_ID_Low','Hash_ID_High':'Hash_ID_High','MSK_Init':'MSK_Init','MSK_Control':'MSK_Control','MSK_Status':'MSK_Status','Tx_Bit_Count':'Tx_Bit_Count','Tx_Enable_Count':'Tx_Enable_Count','Fb_FreqWord':'Fb_FreqWord','TX_F1_FreqWord':'TX_F1_FreqWord','TX_F2_FreqWord':'TX_F2_FreqWord','RX_F1_FreqWord':'RX_F1_FreqWord','RX_F2_FreqWord':'RX_F2_FreqWord','LPF_Config_0':'LPF_Config_0','LPF_Config_1':'LPF_Config_1','Tx_Data_Width':'Tx_Data_Width','Rx_Data_Width':'Rx_Data_Width','PRBS_Control':'PRBS_Control','PRBS_Initial_State':'PRBS_Initial_State','PRBS_Polynomial':'PRBS_Polynomial','PRBS_Error_Mask':'PRBS_Error_Mask','PRBS_Bit_Count':'PRBS_Bit_Count','PRBS_Error_Count':'PRBS_Error_Count','LPF_Accum_F1':'LPF_Accum_F1','LPF_Accum_F2':'LPF_Accum_F2','axis_xfer_count':'axis_xfer_count','Rx_Sample_Discard':'Rx_Sample_Discard','LPF_Config_2':'LPF_Config_2','f1_nco_adjust':'f1_nco_adjust','f2_nco_adjust':'f2_nco_adjust','f1_error':'f1_error','f2_error':'f2_error','Tx_Sync_Ctrl':'Tx_Sync_Ctrl','Tx_Sync_Cnt':'Tx_Sync_Cnt','lowpass_ema_alpha1':'lowpass_ema_alpha1','lowpass_ema_alpha2':'lowpass_ema_alpha2','rx_power':'rx_power','tx_async_fifo_rd_wr_ptr':'tx_async_fifo_rd_wr_ptr','rx_async_fifo_rd_wr_ptr':'rx_async_fifo_rd_wr_ptr',
+        return {'Hash_ID_Low':'Hash_ID_Low','Hash_ID_High':'Hash_ID_High','MSK_Init':'MSK_Init','MSK_Control':'MSK_Control','MSK_Status':'MSK_Status','Fb_FreqWord':'Fb_FreqWord','TX_F1_FreqWord':'TX_F1_FreqWord','TX_F2_FreqWord':'TX_F2_FreqWord','RX_F1_FreqWord':'RX_F1_FreqWord','RX_F2_FreqWord':'RX_F2_FreqWord','LPF_Config_0':'LPF_Config_0','LPF_Config_1':'LPF_Config_1','Tx_Data_Width':'Tx_Data_Width','Rx_Data_Width':'Rx_Data_Width','PRBS_Control':'PRBS_Control','PRBS_Initial_State':'PRBS_Initial_State','PRBS_Polynomial':'PRBS_Polynomial','PRBS_Error_Mask':'PRBS_Error_Mask','Rx_Sample_Discard':'Rx_Sample_Discard','LPF_Config_2':'LPF_Config_2','Tx_Sync_Ctrl':'Tx_Sync_Ctrl','Tx_Sync_Cnt':'Tx_Sync_Cnt','lowpass_ema_alpha1':'lowpass_ema_alpha1','lowpass_ema_alpha2':'lowpass_ema_alpha2',
             }
 
     
@@ -9451,7 +6719,7 @@ class msk_top_regs_cls(AsyncAddressMap):
     
     
     
-    # nodes:38
+    # nodes:24
                 
     @overload
     def get_child_by_system_rdl_name(self, name: Literal["Hash_ID_Low"]) -> msk_top_regs_msk_hash_lo_cls: ...
@@ -9471,14 +6739,6 @@ class msk_top_regs_cls(AsyncAddressMap):
                 
     @overload
     def get_child_by_system_rdl_name(self, name: Literal["MSK_Status"]) -> msk_top_regs_msk_stat_0_cls: ...
-                
-                
-    @overload
-    def get_child_by_system_rdl_name(self, name: Literal["Tx_Bit_Count"]) -> msk_top_regs_msk_stat_1_cls: ...
-                
-                
-    @overload
-    def get_child_by_system_rdl_name(self, name: Literal["Tx_Enable_Count"]) -> msk_top_regs_msk_stat_2_cls: ...
                 
                 
     @overload
@@ -9534,47 +6794,11 @@ class msk_top_regs_cls(AsyncAddressMap):
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["PRBS_Bit_Count"]) -> msk_top_regs_stat_32_bits_cls: ...
-                
-                
-    @overload
-    def get_child_by_system_rdl_name(self, name: Literal["PRBS_Error_Count"]) -> msk_top_regs_stat_32_errs_cls: ...
-                
-                
-    @overload
-    def get_child_by_system_rdl_name(self, name: Literal["LPF_Accum_F1"]) -> msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls: ...
-                
-                
-    @overload
-    def get_child_by_system_rdl_name(self, name: Literal["LPF_Accum_F2"]) -> msk_top_regs_stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce_cls: ...
-                
-                
-    @overload
-    def get_child_by_system_rdl_name(self, name: Literal["axis_xfer_count"]) -> msk_top_regs_msk_stat_3_cls: ...
-                
-                
-    @overload
     def get_child_by_system_rdl_name(self, name: Literal["Rx_Sample_Discard"]) -> msk_top_regs_rx_sample_discard_cls: ...
                 
                 
     @overload
     def get_child_by_system_rdl_name(self, name: Literal["LPF_Config_2"]) -> msk_top_regs_lpf_config_2_cls: ...
-                
-                
-    @overload
-    def get_child_by_system_rdl_name(self, name: Literal["f1_nco_adjust"]) -> msk_top_regs_observation_data_data_0c017ef4_desc_64ff3689_name_d8ad3b25_cls: ...
-                
-                
-    @overload
-    def get_child_by_system_rdl_name(self, name: Literal["f2_nco_adjust"]) -> msk_top_regs_observation_data_data_0515efaa_desc_ebde6d39_name_2c154788_cls: ...
-                
-                
-    @overload
-    def get_child_by_system_rdl_name(self, name: Literal["f1_error"]) -> msk_top_regs_observation_data_data_25a21249_desc_417e1c96_name_3b640507_cls: ...
-                
-                
-    @overload
-    def get_child_by_system_rdl_name(self, name: Literal["f2_error"]) -> msk_top_regs_observation_data_data_272a00b6_desc_70869502_name_3de9a0d3_cls: ...
                 
                 
     @overload
@@ -9586,27 +6810,15 @@ class msk_top_regs_cls(AsyncAddressMap):
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["lowpass_ema_alpha1"]) -> msk_top_regs_lowpass_ema_alpha_0x0x1075e9f4_cls: ...
+    def get_child_by_system_rdl_name(self, name: Literal["lowpass_ema_alpha1"]) -> msk_top_regs_lowpass_ema_alpha_0x0x1062ef8f_cls: ...
                 
                 
     @overload
     def get_child_by_system_rdl_name(self, name: Literal["lowpass_ema_alpha2"]) -> msk_top_regs_lowpass_ema_alpha_cls: ...
                 
-                
-    @overload
-    def get_child_by_system_rdl_name(self, name: Literal["rx_power"]) -> msk_top_regs_rx_power_cls: ...
-                
-                
-    @overload
-    def get_child_by_system_rdl_name(self, name: Literal["tx_async_fifo_rd_wr_ptr"]) -> msk_top_regs_observation_data_data_cf6acbd7_name_aa4ec676_cls: ...
-                
-                
-    @overload
-    def get_child_by_system_rdl_name(self, name: Literal["rx_async_fifo_rd_wr_ptr"]) -> msk_top_regs_observation_data_data_cf6acbd7_name_8a90eed1_cls: ...
-                
 
     @overload
-    def get_child_by_system_rdl_name(self, name: str) -> Union[msk_top_regs_msk_hash_lo_cls, msk_top_regs_msk_hash_hi_cls, msk_top_regs_msk_init_cls, msk_top_regs_msk_ctrl_cls, msk_top_regs_msk_stat_0_cls, msk_top_regs_msk_stat_1_cls, msk_top_regs_msk_stat_2_cls, msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls, msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls, msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls, msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls, msk_top_regs_config_nco_fw_desc_43c0828f_name_bdc60ecf_cls, msk_top_regs_lpf_config_0_cls, msk_top_regs_lpf_config_1_cls, msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls, msk_top_regs_data_width_desc_6097df38_name_4609588b_cls, msk_top_regs_prbs_ctrl_cls, msk_top_regs_config_prbs_seed_cls, msk_top_regs_config_prbs_poly_cls, msk_top_regs_config_prbs_errmask_cls, msk_top_regs_stat_32_bits_cls, msk_top_regs_stat_32_errs_cls, msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls, msk_top_regs_stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce_cls, msk_top_regs_msk_stat_3_cls, msk_top_regs_rx_sample_discard_cls, msk_top_regs_lpf_config_2_cls, msk_top_regs_observation_data_data_0c017ef4_desc_64ff3689_name_d8ad3b25_cls, msk_top_regs_observation_data_data_0515efaa_desc_ebde6d39_name_2c154788_cls, msk_top_regs_observation_data_data_25a21249_desc_417e1c96_name_3b640507_cls, msk_top_regs_observation_data_data_272a00b6_desc_70869502_name_3de9a0d3_cls, msk_top_regs_tx_sync_ctrl_cls, msk_top_regs_tx_sync_cnt_cls, msk_top_regs_lowpass_ema_alpha_0x0x1075e9f4_cls, msk_top_regs_lowpass_ema_alpha_cls, msk_top_regs_rx_power_cls, msk_top_regs_observation_data_data_cf6acbd7_name_aa4ec676_cls, msk_top_regs_observation_data_data_cf6acbd7_name_8a90eed1_cls, ]: ...
+    def get_child_by_system_rdl_name(self, name: str) -> Union[msk_top_regs_msk_hash_lo_cls, msk_top_regs_msk_hash_hi_cls, msk_top_regs_msk_init_cls, msk_top_regs_msk_ctrl_cls, msk_top_regs_msk_stat_0_cls, msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls, msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls, msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls, msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls, msk_top_regs_config_nco_fw_desc_43c0828f_name_bdc60ecf_cls, msk_top_regs_lpf_config_0_cls, msk_top_regs_lpf_config_1_cls, msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls, msk_top_regs_data_width_desc_6097df38_name_4609588b_cls, msk_top_regs_prbs_ctrl_cls, msk_top_regs_config_prbs_seed_cls, msk_top_regs_config_prbs_poly_cls, msk_top_regs_config_prbs_errmask_cls, msk_top_regs_rx_sample_discard_cls, msk_top_regs_lpf_config_2_cls, msk_top_regs_tx_sync_ctrl_cls, msk_top_regs_tx_sync_cnt_cls, msk_top_regs_lowpass_ema_alpha_0x0x1062ef8f_cls, msk_top_regs_lowpass_ema_alpha_cls, ]: ...
 
     def get_child_by_system_rdl_name(self, name: Any) -> Any:
         return super().get_child_by_system_rdl_name(name)
@@ -9649,12 +6861,6 @@ class msk_top_regs_cls(AsyncAddressMap):
         yield self.MSK_Status
         
                     
-        yield self.Tx_Bit_Count
-        
-                    
-        yield self.Tx_Enable_Count
-        
-                    
         yield self.Fb_FreqWord
         
                     
@@ -9694,37 +6900,10 @@ class msk_top_regs_cls(AsyncAddressMap):
         yield self.PRBS_Error_Mask
         
                     
-        yield self.PRBS_Bit_Count
-        
-                    
-        yield self.PRBS_Error_Count
-        
-                    
-        yield self.LPF_Accum_F1
-        
-                    
-        yield self.LPF_Accum_F2
-        
-                    
-        yield self.axis_xfer_count
-        
-                    
         yield self.Rx_Sample_Discard
         
                     
         yield self.LPF_Config_2
-        
-                    
-        yield self.f1_nco_adjust
-        
-                    
-        yield self.f2_nco_adjust
-        
-                    
-        yield self.f1_error
-        
-                    
-        yield self.f2_error
         
                     
         yield self.Tx_Sync_Ctrl
@@ -9737,15 +6916,6 @@ class msk_top_regs_cls(AsyncAddressMap):
         
                     
         yield self.lowpass_ema_alpha2
-        
-                    
-        yield self.rx_power
-        
-                    
-        yield self.tx_async_fifo_rd_wr_ptr
-        
-                    
-        yield self.rx_async_fifo_rd_wr_ptr
         
 
         # Empty generator in case there are no children of this type
