@@ -200,7 +200,9 @@ BEGIN
                 -- FIX: Empty detection with safety margin for sync lag
                 -- Stop reading when within 3 bytes of synchronized write pointer
                 -- This accounts for the 2-cycle synchronization delay
-                IF unsigned(wr_ptr_bin_sync) <= unsigned(rd_ptr_bin) + 3 THEN
+                -- AI!!! 
+                --IF unsigned(wr_ptr_bin_sync) <= unsigned(rd_ptr_bin) + 3 THEN
+                IF unsigned(wr_ptr_bin_sync) = unsigned(rd_prt_bin) THEN
                     empty_int <= '1';
                 ELSE
                     empty_int <= '0';
