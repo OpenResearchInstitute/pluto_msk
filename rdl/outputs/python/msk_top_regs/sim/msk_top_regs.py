@@ -42,12 +42,12 @@ class msk_top_regs_simulator_cls(Simulator):
                                          fields=[FieldDefinition(high=0, low=0, msb=0, lsb=0, inst_name='demod_sync_lock'),FieldDefinition(high=1, low=1, msb=1, lsb=1, inst_name='tx_enable'),FieldDefinition(high=2, low=2, msb=2, lsb=2, inst_name='rx_enable'),FieldDefinition(high=3, low=3, msb=3, lsb=3, inst_name='tx_axis_valid'),
                                                 ]),
             20 : 
-    Register(width=32, full_inst_name='msk_top_regs.Tx_Bit_Count', readable=True, writable=False,
-                                         fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='tx_bit_counter'),
+    Register(width=32, full_inst_name='msk_top_regs.Tx_Bit_Count', readable=True, writable=True,
+                                         fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='data'),
                                                 ]),
             24 : 
-    Register(width=32, full_inst_name='msk_top_regs.Tx_Enable_Count', readable=True, writable=False,
-                                         fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='tx_ena_counter'),
+    Register(width=32, full_inst_name='msk_top_regs.Tx_Enable_Count', readable=True, writable=True,
+                                         fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='data'),
                                                 ]),
             28 : 
     Register(width=32, full_inst_name='msk_top_regs.Fb_FreqWord', readable=True, writable=True,
@@ -102,24 +102,24 @@ class msk_top_regs_simulator_cls(Simulator):
                                          fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='config_data'),
                                                 ]),
             80 : 
-    Register(width=32, full_inst_name='msk_top_regs.PRBS_Bit_Count', readable=True, writable=False,
-                                         fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='status_data'),
+    Register(width=32, full_inst_name='msk_top_regs.PRBS_Bit_Count', readable=True, writable=True,
+                                         fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='data'),
                                                 ]),
             84 : 
-    Register(width=32, full_inst_name='msk_top_regs.PRBS_Error_Count', readable=True, writable=False,
-                                         fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='status_data'),
+    Register(width=32, full_inst_name='msk_top_regs.PRBS_Error_Count', readable=True, writable=True,
+                                         fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='data'),
                                                 ]),
             88 : 
-    Register(width=32, full_inst_name='msk_top_regs.LPF_Accum_F1', readable=True, writable=False,
-                                         fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='status_data'),
+    Register(width=32, full_inst_name='msk_top_regs.LPF_Accum_F1', readable=True, writable=True,
+                                         fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='data'),
                                                 ]),
             92 : 
-    Register(width=32, full_inst_name='msk_top_regs.LPF_Accum_F2', readable=True, writable=False,
-                                         fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='status_data'),
+    Register(width=32, full_inst_name='msk_top_regs.LPF_Accum_F2', readable=True, writable=True,
+                                         fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='data'),
                                                 ]),
             96 : 
-    Register(width=32, full_inst_name='msk_top_regs.axis_xfer_count', readable=True, writable=False,
-                                         fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='xfer_count'),
+    Register(width=32, full_inst_name='msk_top_regs.axis_xfer_count', readable=True, writable=True,
+                                         fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='data'),
                                                 ]),
             100 : 
     Register(width=32, full_inst_name='msk_top_regs.Rx_Sample_Discard', readable=True, writable=True,
@@ -130,19 +130,19 @@ class msk_top_regs_simulator_cls(Simulator):
                                          fields=[FieldDefinition(high=23, low=0, msb=23, lsb=0, inst_name='p_gain'),FieldDefinition(high=31, low=24, msb=31, lsb=24, inst_name='p_shift'),
                                                 ]),
             108 : 
-    Register(width=32, full_inst_name='msk_top_regs.f1_nco_adjust', readable=True, writable=False,
+    Register(width=32, full_inst_name='msk_top_regs.f1_nco_adjust', readable=True, writable=True,
                                          fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='data'),
                                                 ]),
             112 : 
-    Register(width=32, full_inst_name='msk_top_regs.f2_nco_adjust', readable=True, writable=False,
+    Register(width=32, full_inst_name='msk_top_regs.f2_nco_adjust', readable=True, writable=True,
                                          fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='data'),
                                                 ]),
             116 : 
-    Register(width=32, full_inst_name='msk_top_regs.f1_error', readable=True, writable=False,
+    Register(width=32, full_inst_name='msk_top_regs.f1_error', readable=True, writable=True,
                                          fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='data'),
                                                 ]),
             120 : 
-    Register(width=32, full_inst_name='msk_top_regs.f2_error', readable=True, writable=False,
+    Register(width=32, full_inst_name='msk_top_regs.f2_error', readable=True, writable=True,
                                          fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='data'),
                                                 ]),
             124 : 
@@ -162,15 +162,15 @@ class msk_top_regs_simulator_cls(Simulator):
                                          fields=[FieldDefinition(high=17, low=0, msb=17, lsb=0, inst_name='alpha'),
                                                 ]),
             140 : 
-    Register(width=32, full_inst_name='msk_top_regs.rx_power', readable=True, writable=False,
-                                         fields=[FieldDefinition(high=22, low=0, msb=22, lsb=0, inst_name='rx_power'),
+    Register(width=32, full_inst_name='msk_top_regs.rx_power', readable=True, writable=True,
+                                         fields=[FieldDefinition(high=22, low=0, msb=22, lsb=0, inst_name='data'),
                                                 ]),
             144 : 
-    Register(width=32, full_inst_name='msk_top_regs.tx_async_fifo_rd_wr_ptr', readable=True, writable=False,
+    Register(width=32, full_inst_name='msk_top_regs.tx_async_fifo_rd_wr_ptr', readable=True, writable=True,
                                          fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='data'),
                                                 ]),
             148 : 
-    Register(width=32, full_inst_name='msk_top_regs.rx_async_fifo_rd_wr_ptr', readable=True, writable=False,
+    Register(width=32, full_inst_name='msk_top_regs.rx_async_fifo_rd_wr_ptr', readable=True, writable=True,
                                          fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='data'),
                                                 ]),
         }

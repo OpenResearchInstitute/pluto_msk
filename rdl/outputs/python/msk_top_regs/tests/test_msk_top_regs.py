@@ -212,12 +212,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.MSK_Status.tx_axis_valid'):
             self.assertEqual(self.dut.MSK_Status.tx_axis_valid.inst_name, 'tx_axis_valid') # type: ignore[union-attr]
             self.assertEqual(self.dut.MSK_Status.tx_axis_valid.full_inst_name, 'msk_top_regs.MSK_Status.tx_axis_valid')  # type: ignore[union-attr]
-        with self.subTest(msg='node: msk_top_regs.Tx_Bit_Count.tx_bit_counter'):
-            self.assertEqual(self.dut.Tx_Bit_Count.tx_bit_counter.inst_name, 'tx_bit_counter') # type: ignore[union-attr]
-            self.assertEqual(self.dut.Tx_Bit_Count.tx_bit_counter.full_inst_name, 'msk_top_regs.Tx_Bit_Count.tx_bit_counter')  # type: ignore[union-attr]
-        with self.subTest(msg='node: msk_top_regs.Tx_Enable_Count.tx_ena_counter'):
-            self.assertEqual(self.dut.Tx_Enable_Count.tx_ena_counter.inst_name, 'tx_ena_counter') # type: ignore[union-attr]
-            self.assertEqual(self.dut.Tx_Enable_Count.tx_ena_counter.full_inst_name, 'msk_top_regs.Tx_Enable_Count.tx_ena_counter')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.Tx_Bit_Count.data'):
+            self.assertEqual(self.dut.Tx_Bit_Count.data.inst_name, 'data') # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Bit_Count.data.full_inst_name, 'msk_top_regs.Tx_Bit_Count.data')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.Tx_Enable_Count.data'):
+            self.assertEqual(self.dut.Tx_Enable_Count.data.inst_name, 'data') # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Enable_Count.data.full_inst_name, 'msk_top_regs.Tx_Enable_Count.data')  # type: ignore[union-attr]
         with self.subTest(msg='node: msk_top_regs.Fb_FreqWord.config_data'):
             self.assertEqual(self.dut.Fb_FreqWord.config_data.inst_name, 'config_data') # type: ignore[union-attr]
             self.assertEqual(self.dut.Fb_FreqWord.config_data.full_inst_name, 'msk_top_regs.Fb_FreqWord.config_data')  # type: ignore[union-attr]
@@ -284,21 +284,21 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.PRBS_Error_Mask.config_data'):
             self.assertEqual(self.dut.PRBS_Error_Mask.config_data.inst_name, 'config_data') # type: ignore[union-attr]
             self.assertEqual(self.dut.PRBS_Error_Mask.config_data.full_inst_name, 'msk_top_regs.PRBS_Error_Mask.config_data')  # type: ignore[union-attr]
-        with self.subTest(msg='node: msk_top_regs.PRBS_Bit_Count.status_data'):
-            self.assertEqual(self.dut.PRBS_Bit_Count.status_data.inst_name, 'status_data') # type: ignore[union-attr]
-            self.assertEqual(self.dut.PRBS_Bit_Count.status_data.full_inst_name, 'msk_top_regs.PRBS_Bit_Count.status_data')  # type: ignore[union-attr]
-        with self.subTest(msg='node: msk_top_regs.PRBS_Error_Count.status_data'):
-            self.assertEqual(self.dut.PRBS_Error_Count.status_data.inst_name, 'status_data') # type: ignore[union-attr]
-            self.assertEqual(self.dut.PRBS_Error_Count.status_data.full_inst_name, 'msk_top_regs.PRBS_Error_Count.status_data')  # type: ignore[union-attr]
-        with self.subTest(msg='node: msk_top_regs.LPF_Accum_F1.status_data'):
-            self.assertEqual(self.dut.LPF_Accum_F1.status_data.inst_name, 'status_data') # type: ignore[union-attr]
-            self.assertEqual(self.dut.LPF_Accum_F1.status_data.full_inst_name, 'msk_top_regs.LPF_Accum_F1.status_data')  # type: ignore[union-attr]
-        with self.subTest(msg='node: msk_top_regs.LPF_Accum_F2.status_data'):
-            self.assertEqual(self.dut.LPF_Accum_F2.status_data.inst_name, 'status_data') # type: ignore[union-attr]
-            self.assertEqual(self.dut.LPF_Accum_F2.status_data.full_inst_name, 'msk_top_regs.LPF_Accum_F2.status_data')  # type: ignore[union-attr]
-        with self.subTest(msg='node: msk_top_regs.axis_xfer_count.xfer_count'):
-            self.assertEqual(self.dut.axis_xfer_count.xfer_count.inst_name, 'xfer_count') # type: ignore[union-attr]
-            self.assertEqual(self.dut.axis_xfer_count.xfer_count.full_inst_name, 'msk_top_regs.axis_xfer_count.xfer_count')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.PRBS_Bit_Count.data'):
+            self.assertEqual(self.dut.PRBS_Bit_Count.data.inst_name, 'data') # type: ignore[union-attr]
+            self.assertEqual(self.dut.PRBS_Bit_Count.data.full_inst_name, 'msk_top_regs.PRBS_Bit_Count.data')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.PRBS_Error_Count.data'):
+            self.assertEqual(self.dut.PRBS_Error_Count.data.inst_name, 'data') # type: ignore[union-attr]
+            self.assertEqual(self.dut.PRBS_Error_Count.data.full_inst_name, 'msk_top_regs.PRBS_Error_Count.data')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.LPF_Accum_F1.data'):
+            self.assertEqual(self.dut.LPF_Accum_F1.data.inst_name, 'data') # type: ignore[union-attr]
+            self.assertEqual(self.dut.LPF_Accum_F1.data.full_inst_name, 'msk_top_regs.LPF_Accum_F1.data')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.LPF_Accum_F2.data'):
+            self.assertEqual(self.dut.LPF_Accum_F2.data.inst_name, 'data') # type: ignore[union-attr]
+            self.assertEqual(self.dut.LPF_Accum_F2.data.full_inst_name, 'msk_top_regs.LPF_Accum_F2.data')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.axis_xfer_count.data'):
+            self.assertEqual(self.dut.axis_xfer_count.data.inst_name, 'data') # type: ignore[union-attr]
+            self.assertEqual(self.dut.axis_xfer_count.data.full_inst_name, 'msk_top_regs.axis_xfer_count.data')  # type: ignore[union-attr]
         with self.subTest(msg='node: msk_top_regs.Rx_Sample_Discard.rx_sample_discard'):
             self.assertEqual(self.dut.Rx_Sample_Discard.rx_sample_discard.inst_name, 'rx_sample_discard') # type: ignore[union-attr]
             self.assertEqual(self.dut.Rx_Sample_Discard.rx_sample_discard.full_inst_name, 'msk_top_regs.Rx_Sample_Discard.rx_sample_discard')  # type: ignore[union-attr]
@@ -344,9 +344,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.lowpass_ema_alpha2.alpha'):
             self.assertEqual(self.dut.lowpass_ema_alpha2.alpha.inst_name, 'alpha') # type: ignore[union-attr]
             self.assertEqual(self.dut.lowpass_ema_alpha2.alpha.full_inst_name, 'msk_top_regs.lowpass_ema_alpha2.alpha')  # type: ignore[union-attr]
-        with self.subTest(msg='node: msk_top_regs.rx_power.rx_power'):
-            self.assertEqual(self.dut.rx_power.rx_power.inst_name, 'rx_power') # type: ignore[union-attr]
-            self.assertEqual(self.dut.rx_power.rx_power.full_inst_name, 'msk_top_regs.rx_power.rx_power')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.rx_power.data'):
+            self.assertEqual(self.dut.rx_power.data.inst_name, 'data') # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_power.data.full_inst_name, 'msk_top_regs.rx_power.data')  # type: ignore[union-attr]
         with self.subTest(msg='node: msk_top_regs.tx_async_fifo_rd_wr_ptr.data'):
             self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.data.inst_name, 'data') # type: ignore[union-attr]
             self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.data.full_inst_name, 'msk_top_regs.tx_async_fifo_rd_wr_ptr.data')  # type: ignore[union-attr]
@@ -723,17 +723,17 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
             
 
-        with self.subTest(msg='node: msk_top_regs.Tx_Bit_Count.tx_bit_counter'):
+        with self.subTest(msg='node: msk_top_regs.Tx_Bit_Count.data'):
             
                 
-            self.assertEqual(self.dut.Tx_Bit_Count.tx_bit_counter.rdl_name, "Tx Bit Count") # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Bit_Count.data.rdl_name, "Tx Bit Count") # type: ignore[union-attr]
                 
             
 
-        with self.subTest(msg='node: msk_top_regs.Tx_Enable_Count.tx_ena_counter'):
+        with self.subTest(msg='node: msk_top_regs.Tx_Enable_Count.data'):
             
                 
-            self.assertEqual(self.dut.Tx_Enable_Count.tx_ena_counter.rdl_name, "Tx Enable Count") # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Enable_Count.data.rdl_name, "Tx Enable Count") # type: ignore[union-attr]
                 
             
 
@@ -891,38 +891,38 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
             
 
-        with self.subTest(msg='node: msk_top_regs.PRBS_Bit_Count.status_data'):
+        with self.subTest(msg='node: msk_top_regs.PRBS_Bit_Count.data'):
             
                 
-            self.assertEqual(self.dut.PRBS_Bit_Count.status_data.rdl_name, "PRBS Bits Received") # type: ignore[union-attr]
-                
-            
-
-        with self.subTest(msg='node: msk_top_regs.PRBS_Error_Count.status_data'):
-            
-                
-            self.assertEqual(self.dut.PRBS_Error_Count.status_data.rdl_name, "PRBS Bit Errors") # type: ignore[union-attr]
+            self.assertEqual(self.dut.PRBS_Bit_Count.data.rdl_name, "PRBS Bits Received") # type: ignore[union-attr]
                 
             
 
-        with self.subTest(msg='node: msk_top_regs.LPF_Accum_F1.status_data'):
+        with self.subTest(msg='node: msk_top_regs.PRBS_Error_Count.data'):
             
                 
-            self.assertEqual(self.dut.LPF_Accum_F1.status_data.rdl_name, "PI Controller Accumulator Value") # type: ignore[union-attr]
-                
-            
-
-        with self.subTest(msg='node: msk_top_regs.LPF_Accum_F2.status_data'):
-            
-                
-            self.assertEqual(self.dut.LPF_Accum_F2.status_data.rdl_name, "PI Controller Accumulator Value") # type: ignore[union-attr]
+            self.assertEqual(self.dut.PRBS_Error_Count.data.rdl_name, "PRBS Bit Errors") # type: ignore[union-attr]
                 
             
 
-        with self.subTest(msg='node: msk_top_regs.axis_xfer_count.xfer_count'):
+        with self.subTest(msg='node: msk_top_regs.LPF_Accum_F1.data'):
             
                 
-            self.assertEqual(self.dut.axis_xfer_count.xfer_count.rdl_name, "S_AXIS Transfers") # type: ignore[union-attr]
+            self.assertEqual(self.dut.LPF_Accum_F1.data.rdl_name, "PI Controller Accumulator Value") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.LPF_Accum_F2.data'):
+            
+                
+            self.assertEqual(self.dut.LPF_Accum_F2.data.rdl_name, "PI Controller Accumulator Value") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.axis_xfer_count.data'):
+            
+                
+            self.assertEqual(self.dut.axis_xfer_count.data.rdl_name, "S_AXIS Transfers") # type: ignore[union-attr]
                 
             
 
@@ -1031,10 +1031,10 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
             
 
-        with self.subTest(msg='node: msk_top_regs.rx_power.rx_power'):
+        with self.subTest(msg='node: msk_top_regs.rx_power.data'):
             
                 
-            self.assertEqual(self.dut.rx_power.rx_power.rdl_name, "Receive Power") # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_power.data.rdl_name, "Receive Power") # type: ignore[union-attr]
                 
             
 
@@ -1422,17 +1422,17 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
             
 
-        with self.subTest(msg='node: msk_top_regs.Tx_Bit_Count.tx_bit_counter'):
+        with self.subTest(msg='node: msk_top_regs.Tx_Bit_Count.data'):
             
                 
-            self.assertEqual(self.dut.Tx_Bit_Count.tx_bit_counter.rdl_desc, "Count of data requests made by modem") # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Bit_Count.data.rdl_desc, "Count of data requests made by modem") # type: ignore[union-attr]
                 
             
 
-        with self.subTest(msg='node: msk_top_regs.Tx_Enable_Count.tx_ena_counter'):
+        with self.subTest(msg='node: msk_top_regs.Tx_Enable_Count.data'):
             
                 
-            self.assertEqual(self.dut.Tx_Enable_Count.tx_ena_counter.rdl_desc, "Number of clocks on which Tx Enable is active") # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Enable_Count.data.rdl_desc, "Number of clocks on which Tx Enable is active") # type: ignore[union-attr]
                 
             
 
@@ -1590,38 +1590,38 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
             
 
-        with self.subTest(msg='node: msk_top_regs.PRBS_Bit_Count.status_data'):
+        with self.subTest(msg='node: msk_top_regs.PRBS_Bit_Count.data'):
             
                 
-            self.assertEqual(self.dut.PRBS_Bit_Count.status_data.rdl_desc, "Number of bits received by the PRBS monitor since last\nBER can be calculated as the ratio of received bits to errored-bits") # type: ignore[union-attr]
-                
-            
-
-        with self.subTest(msg='node: msk_top_regs.PRBS_Error_Count.status_data'):
-            
-                
-            self.assertEqual(self.dut.PRBS_Error_Count.status_data.rdl_desc, "Number of errored-bits received by the PRBS monitor since last sync\nBER can be calculated as the ratio of received bits to errored-bits") # type: ignore[union-attr]
+            self.assertEqual(self.dut.PRBS_Bit_Count.data.rdl_desc, "Number of bits received by the PRBS monitor since last\nBER can be calculated as the ratio of received bits to errored-bits") # type: ignore[union-attr]
                 
             
 
-        with self.subTest(msg='node: msk_top_regs.LPF_Accum_F1.status_data'):
+        with self.subTest(msg='node: msk_top_regs.PRBS_Error_Count.data'):
             
                 
-            self.assertEqual(self.dut.LPF_Accum_F1.status_data.rdl_desc, "PI Controller Accumulator Value") # type: ignore[union-attr]
-                
-            
-
-        with self.subTest(msg='node: msk_top_regs.LPF_Accum_F2.status_data'):
-            
-                
-            self.assertEqual(self.dut.LPF_Accum_F2.status_data.rdl_desc, "PI Controller Accumulator Value") # type: ignore[union-attr]
+            self.assertEqual(self.dut.PRBS_Error_Count.data.rdl_desc, "Number of errored-bits received by the PRBS monitor since last sync\nBER can be calculated as the ratio of received bits to errored-bits") # type: ignore[union-attr]
                 
             
 
-        with self.subTest(msg='node: msk_top_regs.axis_xfer_count.xfer_count'):
+        with self.subTest(msg='node: msk_top_regs.LPF_Accum_F1.data'):
             
                 
-            self.assertEqual(self.dut.axis_xfer_count.xfer_count.rdl_desc, "Number completed S_AXIS transfers") # type: ignore[union-attr]
+            self.assertEqual(self.dut.LPF_Accum_F1.data.rdl_desc, "PI Controller Accumulator Value") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.LPF_Accum_F2.data'):
+            
+                
+            self.assertEqual(self.dut.LPF_Accum_F2.data.rdl_desc, "PI Controller Accumulator Value") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.axis_xfer_count.data'):
+            
+                
+            self.assertEqual(self.dut.axis_xfer_count.data.rdl_desc, "Number completed S_AXIS transfers") # type: ignore[union-attr]
                 
             
 
@@ -1730,10 +1730,10 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
             
 
-        with self.subTest(msg='node: msk_top_regs.rx_power.rx_power'):
+        with self.subTest(msg='node: msk_top_regs.rx_power.data'):
             
                 
-            self.assertEqual(self.dut.rx_power.rx_power.rdl_desc, "Value that represent the RMS power of the incoming I;") # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_power.data.rdl_desc, "Value that represent the RMS power of the incoming I;") # type: ignore[union-attr]
                 
             
 
@@ -2278,9 +2278,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(fut.default,0)
                 
             self.assertEqual(fut.is_volatile,True)
-        with self.subTest(msg='field: msk_top_regs.Tx_Bit_Count.tx_bit_counter'):
-            # test properties of field: msk_top_regs.Tx_Bit_Count.tx_bit_counter
-            fut = self.dut.Tx_Bit_Count.tx_bit_counter # type: ignore[union-attr]
+        with self.subTest(msg='field: msk_top_regs.Tx_Bit_Count.data'):
+            # test properties of field: msk_top_regs.Tx_Bit_Count.data
+            fut = self.dut.Tx_Bit_Count.data # type: ignore[union-attr]
             if not isinstance(fut, Field):
                 raise TypeError('This test relies on node being of type Field')
             self.assertEqual(fut.lsb,0)
@@ -2291,12 +2291,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(fut.inverse_bitmask,0x0)
             self.assertEqual(fut.max_value,0xFFFFFFFF)
                 
-            self.assertEqual(fut.default,None)
+            self.assertEqual(fut.default,0)
                 
             self.assertEqual(fut.is_volatile,True)
-        with self.subTest(msg='field: msk_top_regs.Tx_Enable_Count.tx_ena_counter'):
-            # test properties of field: msk_top_regs.Tx_Enable_Count.tx_ena_counter
-            fut = self.dut.Tx_Enable_Count.tx_ena_counter # type: ignore[union-attr]
+        with self.subTest(msg='field: msk_top_regs.Tx_Enable_Count.data'):
+            # test properties of field: msk_top_regs.Tx_Enable_Count.data
+            fut = self.dut.Tx_Enable_Count.data # type: ignore[union-attr]
             if not isinstance(fut, Field):
                 raise TypeError('This test relies on node being of type Field')
             self.assertEqual(fut.lsb,0)
@@ -2662,9 +2662,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(fut.default,0)
                 
             self.assertEqual(fut.is_volatile,False)
-        with self.subTest(msg='field: msk_top_regs.PRBS_Bit_Count.status_data'):
-            # test properties of field: msk_top_regs.PRBS_Bit_Count.status_data
-            fut = self.dut.PRBS_Bit_Count.status_data # type: ignore[union-attr]
+        with self.subTest(msg='field: msk_top_regs.PRBS_Bit_Count.data'):
+            # test properties of field: msk_top_regs.PRBS_Bit_Count.data
+            fut = self.dut.PRBS_Bit_Count.data # type: ignore[union-attr]
             if not isinstance(fut, Field):
                 raise TypeError('This test relies on node being of type Field')
             self.assertEqual(fut.lsb,0)
@@ -2678,9 +2678,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(fut.default,0)
                 
             self.assertEqual(fut.is_volatile,True)
-        with self.subTest(msg='field: msk_top_regs.PRBS_Error_Count.status_data'):
-            # test properties of field: msk_top_regs.PRBS_Error_Count.status_data
-            fut = self.dut.PRBS_Error_Count.status_data # type: ignore[union-attr]
+        with self.subTest(msg='field: msk_top_regs.PRBS_Error_Count.data'):
+            # test properties of field: msk_top_regs.PRBS_Error_Count.data
+            fut = self.dut.PRBS_Error_Count.data # type: ignore[union-attr]
             if not isinstance(fut, Field):
                 raise TypeError('This test relies on node being of type Field')
             self.assertEqual(fut.lsb,0)
@@ -2694,9 +2694,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(fut.default,0)
                 
             self.assertEqual(fut.is_volatile,True)
-        with self.subTest(msg='field: msk_top_regs.LPF_Accum_F1.status_data'):
-            # test properties of field: msk_top_regs.LPF_Accum_F1.status_data
-            fut = self.dut.LPF_Accum_F1.status_data # type: ignore[union-attr]
+        with self.subTest(msg='field: msk_top_regs.LPF_Accum_F1.data'):
+            # test properties of field: msk_top_regs.LPF_Accum_F1.data
+            fut = self.dut.LPF_Accum_F1.data # type: ignore[union-attr]
             if not isinstance(fut, Field):
                 raise TypeError('This test relies on node being of type Field')
             self.assertEqual(fut.lsb,0)
@@ -2710,9 +2710,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(fut.default,0)
                 
             self.assertEqual(fut.is_volatile,True)
-        with self.subTest(msg='field: msk_top_regs.LPF_Accum_F2.status_data'):
-            # test properties of field: msk_top_regs.LPF_Accum_F2.status_data
-            fut = self.dut.LPF_Accum_F2.status_data # type: ignore[union-attr]
+        with self.subTest(msg='field: msk_top_regs.LPF_Accum_F2.data'):
+            # test properties of field: msk_top_regs.LPF_Accum_F2.data
+            fut = self.dut.LPF_Accum_F2.data # type: ignore[union-attr]
             if not isinstance(fut, Field):
                 raise TypeError('This test relies on node being of type Field')
             self.assertEqual(fut.lsb,0)
@@ -2726,9 +2726,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(fut.default,0)
                 
             self.assertEqual(fut.is_volatile,True)
-        with self.subTest(msg='field: msk_top_regs.axis_xfer_count.xfer_count'):
-            # test properties of field: msk_top_regs.axis_xfer_count.xfer_count
-            fut = self.dut.axis_xfer_count.xfer_count # type: ignore[union-attr]
+        with self.subTest(msg='field: msk_top_regs.axis_xfer_count.data'):
+            # test properties of field: msk_top_regs.axis_xfer_count.data
+            fut = self.dut.axis_xfer_count.data # type: ignore[union-attr]
             if not isinstance(fut, Field):
                 raise TypeError('This test relies on node being of type Field')
             self.assertEqual(fut.lsb,0)
@@ -2982,9 +2982,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(fut.default,0)
                 
             self.assertEqual(fut.is_volatile,False)
-        with self.subTest(msg='field: msk_top_regs.rx_power.rx_power'):
-            # test properties of field: msk_top_regs.rx_power.rx_power
-            fut = self.dut.rx_power.rx_power # type: ignore[union-attr]
+        with self.subTest(msg='field: msk_top_regs.rx_power.data'):
+            # test properties of field: msk_top_regs.rx_power.data
+            fut = self.dut.rx_power.data # type: ignore[union-attr]
             if not isinstance(fut, Field):
                 raise TypeError('This test relies on node being of type Field')
             self.assertEqual(fut.lsb,0)
@@ -3311,13 +3311,13 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             
             self.assertDictEqual(self.dut.MSK_Status.tx_axis_valid.udp,{})
             
-        with self.subTest(msg='register: msk_top_regs.Tx_Bit_Count.tx_bit_counter'):
+        with self.subTest(msg='register: msk_top_regs.Tx_Bit_Count.data'):
             
-            self.assertDictEqual(self.dut.Tx_Bit_Count.tx_bit_counter.udp,{})
+            self.assertDictEqual(self.dut.Tx_Bit_Count.data.udp,{})
             
-        with self.subTest(msg='register: msk_top_regs.Tx_Enable_Count.tx_ena_counter'):
+        with self.subTest(msg='register: msk_top_regs.Tx_Enable_Count.data'):
             
-            self.assertDictEqual(self.dut.Tx_Enable_Count.tx_ena_counter.udp,{})
+            self.assertDictEqual(self.dut.Tx_Enable_Count.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Fb_FreqWord.config_data'):
             
@@ -3407,25 +3407,25 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             
             self.assertDictEqual(self.dut.PRBS_Error_Mask.config_data.udp,{})
             
-        with self.subTest(msg='register: msk_top_regs.PRBS_Bit_Count.status_data'):
+        with self.subTest(msg='register: msk_top_regs.PRBS_Bit_Count.data'):
             
-            self.assertDictEqual(self.dut.PRBS_Bit_Count.status_data.udp,{})
+            self.assertDictEqual(self.dut.PRBS_Bit_Count.data.udp,{})
             
-        with self.subTest(msg='register: msk_top_regs.PRBS_Error_Count.status_data'):
+        with self.subTest(msg='register: msk_top_regs.PRBS_Error_Count.data'):
             
-            self.assertDictEqual(self.dut.PRBS_Error_Count.status_data.udp,{})
+            self.assertDictEqual(self.dut.PRBS_Error_Count.data.udp,{})
             
-        with self.subTest(msg='register: msk_top_regs.LPF_Accum_F1.status_data'):
+        with self.subTest(msg='register: msk_top_regs.LPF_Accum_F1.data'):
             
-            self.assertDictEqual(self.dut.LPF_Accum_F1.status_data.udp,{})
+            self.assertDictEqual(self.dut.LPF_Accum_F1.data.udp,{})
             
-        with self.subTest(msg='register: msk_top_regs.LPF_Accum_F2.status_data'):
+        with self.subTest(msg='register: msk_top_regs.LPF_Accum_F2.data'):
             
-            self.assertDictEqual(self.dut.LPF_Accum_F2.status_data.udp,{})
+            self.assertDictEqual(self.dut.LPF_Accum_F2.data.udp,{})
             
-        with self.subTest(msg='register: msk_top_regs.axis_xfer_count.xfer_count'):
+        with self.subTest(msg='register: msk_top_regs.axis_xfer_count.data'):
             
-            self.assertDictEqual(self.dut.axis_xfer_count.xfer_count.udp,{})
+            self.assertDictEqual(self.dut.axis_xfer_count.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Rx_Sample_Discard.rx_sample_discard'):
             
@@ -3487,9 +3487,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             
             self.assertDictEqual(self.dut.lowpass_ema_alpha2.alpha.udp,{})
             
-        with self.subTest(msg='register: msk_top_regs.rx_power.rx_power'):
+        with self.subTest(msg='register: msk_top_regs.rx_power.data'):
             
-            self.assertDictEqual(self.dut.rx_power.rx_power.udp,{})
+            self.assertDictEqual(self.dut.rx_power.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.tx_async_fifo_rd_wr_ptr.data'):
             
@@ -3916,9 +3916,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
 
                 
-                # test that a non-writable register has no write method and attempting one generates and error
-                with self.assertRaises(AttributeError):
-                    await rut.write(0) # type: ignore[attr-defined]
+                if not isinstance(rut, (RegAsyncWriteOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Writeable Async Type')
+                
+                # test the write with high value
+                await rut.write(0xFFFFFFFF)
+                write_callback_mock.assert_called_once_with(
+                                    addr=20,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0xFFFFFFFF)
+                write_callback_mock.reset_mock()
+
+                # test the write of a low value
+                await rut.write(0)
+                write_callback_mock.assert_called_once_with(
+                                    addr=20,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0)
+                write_callback_mock.reset_mock()
+
+                # test the write of a random
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                await rut.write(random_value)  # type: ignore[union-attr]
+                write_callback_mock.assert_called_once_with(
+                                    addr=20,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=random_value)
+                write_callback_mock.reset_mock()
+
+                # test writing a value beyond the register range is blocked with an exception being raised
+                with self.assertRaises(ValueError):
+                    await rut.write(-1)
+
+                with self.assertRaises(ValueError):
+                    await rut.write(0xFFFFFFFF+1)
 
                 # check the read has not been called in the write test
                 read_callback_mock.assert_not_called()
@@ -3974,9 +4008,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
 
                 
-                # test that a non-writable register has no write method and attempting one generates and error
-                with self.assertRaises(AttributeError):
-                    await rut.write(0) # type: ignore[attr-defined]
+                if not isinstance(rut, (RegAsyncWriteOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Writeable Async Type')
+                
+                # test the write with high value
+                await rut.write(0xFFFFFFFF)
+                write_callback_mock.assert_called_once_with(
+                                    addr=24,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0xFFFFFFFF)
+                write_callback_mock.reset_mock()
+
+                # test the write of a low value
+                await rut.write(0)
+                write_callback_mock.assert_called_once_with(
+                                    addr=24,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0)
+                write_callback_mock.reset_mock()
+
+                # test the write of a random
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                await rut.write(random_value)  # type: ignore[union-attr]
+                write_callback_mock.assert_called_once_with(
+                                    addr=24,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=random_value)
+                write_callback_mock.reset_mock()
+
+                # test writing a value beyond the register range is blocked with an exception being raised
+                with self.assertRaises(ValueError):
+                    await rut.write(-1)
+
+                with self.assertRaises(ValueError):
+                    await rut.write(0xFFFFFFFF+1)
 
                 # check the read has not been called in the write test
                 read_callback_mock.assert_not_called()
@@ -5228,9 +5296,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
 
                 
-                # test that a non-writable register has no write method and attempting one generates and error
-                with self.assertRaises(AttributeError):
-                    await rut.write(0) # type: ignore[attr-defined]
+                if not isinstance(rut, (RegAsyncWriteOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Writeable Async Type')
+                
+                # test the write with high value
+                await rut.write(0xFFFFFFFF)
+                write_callback_mock.assert_called_once_with(
+                                    addr=80,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0xFFFFFFFF)
+                write_callback_mock.reset_mock()
+
+                # test the write of a low value
+                await rut.write(0)
+                write_callback_mock.assert_called_once_with(
+                                    addr=80,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0)
+                write_callback_mock.reset_mock()
+
+                # test the write of a random
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                await rut.write(random_value)  # type: ignore[union-attr]
+                write_callback_mock.assert_called_once_with(
+                                    addr=80,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=random_value)
+                write_callback_mock.reset_mock()
+
+                # test writing a value beyond the register range is blocked with an exception being raised
+                with self.assertRaises(ValueError):
+                    await rut.write(-1)
+
+                with self.assertRaises(ValueError):
+                    await rut.write(0xFFFFFFFF+1)
 
                 # check the read has not been called in the write test
                 read_callback_mock.assert_not_called()
@@ -5286,9 +5388,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
 
                 
-                # test that a non-writable register has no write method and attempting one generates and error
-                with self.assertRaises(AttributeError):
-                    await rut.write(0) # type: ignore[attr-defined]
+                if not isinstance(rut, (RegAsyncWriteOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Writeable Async Type')
+                
+                # test the write with high value
+                await rut.write(0xFFFFFFFF)
+                write_callback_mock.assert_called_once_with(
+                                    addr=84,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0xFFFFFFFF)
+                write_callback_mock.reset_mock()
+
+                # test the write of a low value
+                await rut.write(0)
+                write_callback_mock.assert_called_once_with(
+                                    addr=84,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0)
+                write_callback_mock.reset_mock()
+
+                # test the write of a random
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                await rut.write(random_value)  # type: ignore[union-attr]
+                write_callback_mock.assert_called_once_with(
+                                    addr=84,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=random_value)
+                write_callback_mock.reset_mock()
+
+                # test writing a value beyond the register range is blocked with an exception being raised
+                with self.assertRaises(ValueError):
+                    await rut.write(-1)
+
+                with self.assertRaises(ValueError):
+                    await rut.write(0xFFFFFFFF+1)
 
                 # check the read has not been called in the write test
                 read_callback_mock.assert_not_called()
@@ -5344,9 +5480,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
 
                 
-                # test that a non-writable register has no write method and attempting one generates and error
-                with self.assertRaises(AttributeError):
-                    await rut.write(0) # type: ignore[attr-defined]
+                if not isinstance(rut, (RegAsyncWriteOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Writeable Async Type')
+                
+                # test the write with high value
+                await rut.write(0xFFFFFFFF)
+                write_callback_mock.assert_called_once_with(
+                                    addr=88,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0xFFFFFFFF)
+                write_callback_mock.reset_mock()
+
+                # test the write of a low value
+                await rut.write(0)
+                write_callback_mock.assert_called_once_with(
+                                    addr=88,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0)
+                write_callback_mock.reset_mock()
+
+                # test the write of a random
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                await rut.write(random_value)  # type: ignore[union-attr]
+                write_callback_mock.assert_called_once_with(
+                                    addr=88,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=random_value)
+                write_callback_mock.reset_mock()
+
+                # test writing a value beyond the register range is blocked with an exception being raised
+                with self.assertRaises(ValueError):
+                    await rut.write(-1)
+
+                with self.assertRaises(ValueError):
+                    await rut.write(0xFFFFFFFF+1)
 
                 # check the read has not been called in the write test
                 read_callback_mock.assert_not_called()
@@ -5402,9 +5572,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
 
                 
-                # test that a non-writable register has no write method and attempting one generates and error
-                with self.assertRaises(AttributeError):
-                    await rut.write(0) # type: ignore[attr-defined]
+                if not isinstance(rut, (RegAsyncWriteOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Writeable Async Type')
+                
+                # test the write with high value
+                await rut.write(0xFFFFFFFF)
+                write_callback_mock.assert_called_once_with(
+                                    addr=92,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0xFFFFFFFF)
+                write_callback_mock.reset_mock()
+
+                # test the write of a low value
+                await rut.write(0)
+                write_callback_mock.assert_called_once_with(
+                                    addr=92,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0)
+                write_callback_mock.reset_mock()
+
+                # test the write of a random
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                await rut.write(random_value)  # type: ignore[union-attr]
+                write_callback_mock.assert_called_once_with(
+                                    addr=92,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=random_value)
+                write_callback_mock.reset_mock()
+
+                # test writing a value beyond the register range is blocked with an exception being raised
+                with self.assertRaises(ValueError):
+                    await rut.write(-1)
+
+                with self.assertRaises(ValueError):
+                    await rut.write(0xFFFFFFFF+1)
 
                 # check the read has not been called in the write test
                 read_callback_mock.assert_not_called()
@@ -5460,9 +5664,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
 
                 
-                # test that a non-writable register has no write method and attempting one generates and error
-                with self.assertRaises(AttributeError):
-                    await rut.write(0) # type: ignore[attr-defined]
+                if not isinstance(rut, (RegAsyncWriteOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Writeable Async Type')
+                
+                # test the write with high value
+                await rut.write(0xFFFFFFFF)
+                write_callback_mock.assert_called_once_with(
+                                    addr=96,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0xFFFFFFFF)
+                write_callback_mock.reset_mock()
+
+                # test the write of a low value
+                await rut.write(0)
+                write_callback_mock.assert_called_once_with(
+                                    addr=96,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0)
+                write_callback_mock.reset_mock()
+
+                # test the write of a random
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                await rut.write(random_value)  # type: ignore[union-attr]
+                write_callback_mock.assert_called_once_with(
+                                    addr=96,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=random_value)
+                write_callback_mock.reset_mock()
+
+                # test writing a value beyond the register range is blocked with an exception being raised
+                with self.assertRaises(ValueError):
+                    await rut.write(-1)
+
+                with self.assertRaises(ValueError):
+                    await rut.write(0xFFFFFFFF+1)
 
                 # check the read has not been called in the write test
                 read_callback_mock.assert_not_called()
@@ -5702,9 +5940,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
 
                 
-                # test that a non-writable register has no write method and attempting one generates and error
-                with self.assertRaises(AttributeError):
-                    await rut.write(0) # type: ignore[attr-defined]
+                if not isinstance(rut, (RegAsyncWriteOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Writeable Async Type')
+                
+                # test the write with high value
+                await rut.write(0xFFFFFFFF)
+                write_callback_mock.assert_called_once_with(
+                                    addr=108,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0xFFFFFFFF)
+                write_callback_mock.reset_mock()
+
+                # test the write of a low value
+                await rut.write(0)
+                write_callback_mock.assert_called_once_with(
+                                    addr=108,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0)
+                write_callback_mock.reset_mock()
+
+                # test the write of a random
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                await rut.write(random_value)  # type: ignore[union-attr]
+                write_callback_mock.assert_called_once_with(
+                                    addr=108,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=random_value)
+                write_callback_mock.reset_mock()
+
+                # test writing a value beyond the register range is blocked with an exception being raised
+                with self.assertRaises(ValueError):
+                    await rut.write(-1)
+
+                with self.assertRaises(ValueError):
+                    await rut.write(0xFFFFFFFF+1)
 
                 # check the read has not been called in the write test
                 read_callback_mock.assert_not_called()
@@ -5760,9 +6032,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
 
                 
-                # test that a non-writable register has no write method and attempting one generates and error
-                with self.assertRaises(AttributeError):
-                    await rut.write(0) # type: ignore[attr-defined]
+                if not isinstance(rut, (RegAsyncWriteOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Writeable Async Type')
+                
+                # test the write with high value
+                await rut.write(0xFFFFFFFF)
+                write_callback_mock.assert_called_once_with(
+                                    addr=112,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0xFFFFFFFF)
+                write_callback_mock.reset_mock()
+
+                # test the write of a low value
+                await rut.write(0)
+                write_callback_mock.assert_called_once_with(
+                                    addr=112,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0)
+                write_callback_mock.reset_mock()
+
+                # test the write of a random
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                await rut.write(random_value)  # type: ignore[union-attr]
+                write_callback_mock.assert_called_once_with(
+                                    addr=112,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=random_value)
+                write_callback_mock.reset_mock()
+
+                # test writing a value beyond the register range is blocked with an exception being raised
+                with self.assertRaises(ValueError):
+                    await rut.write(-1)
+
+                with self.assertRaises(ValueError):
+                    await rut.write(0xFFFFFFFF+1)
 
                 # check the read has not been called in the write test
                 read_callback_mock.assert_not_called()
@@ -5818,9 +6124,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
 
                 
-                # test that a non-writable register has no write method and attempting one generates and error
-                with self.assertRaises(AttributeError):
-                    await rut.write(0) # type: ignore[attr-defined]
+                if not isinstance(rut, (RegAsyncWriteOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Writeable Async Type')
+                
+                # test the write with high value
+                await rut.write(0xFFFFFFFF)
+                write_callback_mock.assert_called_once_with(
+                                    addr=116,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0xFFFFFFFF)
+                write_callback_mock.reset_mock()
+
+                # test the write of a low value
+                await rut.write(0)
+                write_callback_mock.assert_called_once_with(
+                                    addr=116,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0)
+                write_callback_mock.reset_mock()
+
+                # test the write of a random
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                await rut.write(random_value)  # type: ignore[union-attr]
+                write_callback_mock.assert_called_once_with(
+                                    addr=116,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=random_value)
+                write_callback_mock.reset_mock()
+
+                # test writing a value beyond the register range is blocked with an exception being raised
+                with self.assertRaises(ValueError):
+                    await rut.write(-1)
+
+                with self.assertRaises(ValueError):
+                    await rut.write(0xFFFFFFFF+1)
 
                 # check the read has not been called in the write test
                 read_callback_mock.assert_not_called()
@@ -5876,9 +6216,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
 
                 
-                # test that a non-writable register has no write method and attempting one generates and error
-                with self.assertRaises(AttributeError):
-                    await rut.write(0) # type: ignore[attr-defined]
+                if not isinstance(rut, (RegAsyncWriteOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Writeable Async Type')
+                
+                # test the write with high value
+                await rut.write(0xFFFFFFFF)
+                write_callback_mock.assert_called_once_with(
+                                    addr=120,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0xFFFFFFFF)
+                write_callback_mock.reset_mock()
+
+                # test the write of a low value
+                await rut.write(0)
+                write_callback_mock.assert_called_once_with(
+                                    addr=120,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0)
+                write_callback_mock.reset_mock()
+
+                # test the write of a random
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                await rut.write(random_value)  # type: ignore[union-attr]
+                write_callback_mock.assert_called_once_with(
+                                    addr=120,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=random_value)
+                write_callback_mock.reset_mock()
+
+                # test writing a value beyond the register range is blocked with an exception being raised
+                with self.assertRaises(ValueError):
+                    await rut.write(-1)
+
+                with self.assertRaises(ValueError):
+                    await rut.write(0xFFFFFFFF+1)
 
                 # check the read has not been called in the write test
                 read_callback_mock.assert_not_called()
@@ -6302,9 +6676,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
 
                 
-                # test that a non-writable register has no write method and attempting one generates and error
-                with self.assertRaises(AttributeError):
-                    await rut.write(0) # type: ignore[attr-defined]
+                if not isinstance(rut, (RegAsyncWriteOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Writeable Async Type')
+                
+                # test the write with high value
+                await rut.write(0xFFFFFFFF)
+                write_callback_mock.assert_called_once_with(
+                                    addr=140,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0xFFFFFFFF)
+                write_callback_mock.reset_mock()
+
+                # test the write of a low value
+                await rut.write(0)
+                write_callback_mock.assert_called_once_with(
+                                    addr=140,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0)
+                write_callback_mock.reset_mock()
+
+                # test the write of a random
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                await rut.write(random_value)  # type: ignore[union-attr]
+                write_callback_mock.assert_called_once_with(
+                                    addr=140,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=random_value)
+                write_callback_mock.reset_mock()
+
+                # test writing a value beyond the register range is blocked with an exception being raised
+                with self.assertRaises(ValueError):
+                    await rut.write(-1)
+
+                with self.assertRaises(ValueError):
+                    await rut.write(0xFFFFFFFF+1)
 
                 # check the read has not been called in the write test
                 read_callback_mock.assert_not_called()
@@ -6360,9 +6768,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
 
                 
-                # test that a non-writable register has no write method and attempting one generates and error
-                with self.assertRaises(AttributeError):
-                    await rut.write(0) # type: ignore[attr-defined]
+                if not isinstance(rut, (RegAsyncWriteOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Writeable Async Type')
+                
+                # test the write with high value
+                await rut.write(0xFFFFFFFF)
+                write_callback_mock.assert_called_once_with(
+                                    addr=144,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0xFFFFFFFF)
+                write_callback_mock.reset_mock()
+
+                # test the write of a low value
+                await rut.write(0)
+                write_callback_mock.assert_called_once_with(
+                                    addr=144,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0)
+                write_callback_mock.reset_mock()
+
+                # test the write of a random
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                await rut.write(random_value)  # type: ignore[union-attr]
+                write_callback_mock.assert_called_once_with(
+                                    addr=144,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=random_value)
+                write_callback_mock.reset_mock()
+
+                # test writing a value beyond the register range is blocked with an exception being raised
+                with self.assertRaises(ValueError):
+                    await rut.write(-1)
+
+                with self.assertRaises(ValueError):
+                    await rut.write(0xFFFFFFFF+1)
 
                 # check the read has not been called in the write test
                 read_callback_mock.assert_not_called()
@@ -6418,9 +6860,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
 
                 
-                # test that a non-writable register has no write method and attempting one generates and error
-                with self.assertRaises(AttributeError):
-                    await rut.write(0) # type: ignore[attr-defined]
+                if not isinstance(rut, (RegAsyncWriteOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Writeable Async Type')
+                
+                # test the write with high value
+                await rut.write(0xFFFFFFFF)
+                write_callback_mock.assert_called_once_with(
+                                    addr=148,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0xFFFFFFFF)
+                write_callback_mock.reset_mock()
+
+                # test the write of a low value
+                await rut.write(0)
+                write_callback_mock.assert_called_once_with(
+                                    addr=148,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0)
+                write_callback_mock.reset_mock()
+
+                # test the write of a random
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                await rut.write(random_value)  # type: ignore[union-attr]
+                write_callback_mock.assert_called_once_with(
+                                    addr=148,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=random_value)
+                write_callback_mock.reset_mock()
+
+                # test writing a value beyond the register range is blocked with an exception being raised
+                with self.assertRaises(ValueError):
+                    await rut.write(-1)
+
+                with self.assertRaises(ValueError):
+                    await rut.write(0xFFFFFFFF+1)
 
                 # check the read has not been called in the write test
                 read_callback_mock.assert_not_called()
@@ -7394,9 +7870,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 write_callback_mock.assert_not_called()
 
         # test access operations (read and/or write) to field:
-        # msk_top_regs.Tx_Bit_Count.tx_bit_counter
-        with self.subTest(msg='field: msk_top_regs.Tx_Bit_Count.tx_bit_counter'):
-            fut = self.dut.Tx_Bit_Count.tx_bit_counter # type: ignore[union-attr]
+        # msk_top_regs.Tx_Bit_Count.data
+        with self.subTest(msg='field: msk_top_regs.Tx_Bit_Count.data'):
+            fut = self.dut.Tx_Bit_Count.data # type: ignore[union-attr]
             with patch(base_name + '.write_addr_space') as write_callback_mock,\
                 patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
 
@@ -7440,11 +7916,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # at the end of the read tests the write should not have been called
                 read_callback_mock.reset_mock()
                 write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0xFFFFFFFF + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0xFFFFFFFF, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.Tx_Bit_Count.data.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_not_called()
+                        write_callback_mock.assert_called_once_with(
+                                    addr=20,
+                                    width=32,
+                                    accesswidth=self.dut.Tx_Bit_Count.data.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0x0) | \
+                                         (0xFFFFFFFF & (field_value << 0)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0xFFFFFFFF + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
 
         # test access operations (read and/or write) to field:
-        # msk_top_regs.Tx_Enable_Count.tx_ena_counter
-        with self.subTest(msg='field: msk_top_regs.Tx_Enable_Count.tx_ena_counter'):
-            fut = self.dut.Tx_Enable_Count.tx_ena_counter # type: ignore[union-attr]
+        # msk_top_regs.Tx_Enable_Count.data
+        with self.subTest(msg='field: msk_top_regs.Tx_Enable_Count.data'):
+            fut = self.dut.Tx_Enable_Count.data # type: ignore[union-attr]
             with patch(base_name + '.write_addr_space') as write_callback_mock,\
                 patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
 
@@ -7488,6 +7996,38 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # at the end of the read tests the write should not have been called
                 read_callback_mock.reset_mock()
                 write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0xFFFFFFFF + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0xFFFFFFFF, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.Tx_Enable_Count.data.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_not_called()
+                        write_callback_mock.assert_called_once_with(
+                                    addr=24,
+                                    width=32,
+                                    accesswidth=self.dut.Tx_Enable_Count.data.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0x0) | \
+                                         (0xFFFFFFFF & (field_value << 0)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0xFFFFFFFF + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
 
         # test access operations (read and/or write) to field:
         # msk_top_regs.Fb_FreqWord.config_data
@@ -9189,9 +9729,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                     await fut.write(-1)
 
         # test access operations (read and/or write) to field:
-        # msk_top_regs.PRBS_Bit_Count.status_data
-        with self.subTest(msg='field: msk_top_regs.PRBS_Bit_Count.status_data'):
-            fut = self.dut.PRBS_Bit_Count.status_data # type: ignore[union-attr]
+        # msk_top_regs.PRBS_Bit_Count.data
+        with self.subTest(msg='field: msk_top_regs.PRBS_Bit_Count.data'):
+            fut = self.dut.PRBS_Bit_Count.data # type: ignore[union-attr]
             with patch(base_name + '.write_addr_space') as write_callback_mock,\
                 patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
 
@@ -9235,11 +9775,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # at the end of the read tests the write should not have been called
                 read_callback_mock.reset_mock()
                 write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0xFFFFFFFF + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0xFFFFFFFF, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.PRBS_Bit_Count.data.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_not_called()
+                        write_callback_mock.assert_called_once_with(
+                                    addr=80,
+                                    width=32,
+                                    accesswidth=self.dut.PRBS_Bit_Count.data.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0x0) | \
+                                         (0xFFFFFFFF & (field_value << 0)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0xFFFFFFFF + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
 
         # test access operations (read and/or write) to field:
-        # msk_top_regs.PRBS_Error_Count.status_data
-        with self.subTest(msg='field: msk_top_regs.PRBS_Error_Count.status_data'):
-            fut = self.dut.PRBS_Error_Count.status_data # type: ignore[union-attr]
+        # msk_top_regs.PRBS_Error_Count.data
+        with self.subTest(msg='field: msk_top_regs.PRBS_Error_Count.data'):
+            fut = self.dut.PRBS_Error_Count.data # type: ignore[union-attr]
             with patch(base_name + '.write_addr_space') as write_callback_mock,\
                 patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
 
@@ -9283,11 +9855,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # at the end of the read tests the write should not have been called
                 read_callback_mock.reset_mock()
                 write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0xFFFFFFFF + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0xFFFFFFFF, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.PRBS_Error_Count.data.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_not_called()
+                        write_callback_mock.assert_called_once_with(
+                                    addr=84,
+                                    width=32,
+                                    accesswidth=self.dut.PRBS_Error_Count.data.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0x0) | \
+                                         (0xFFFFFFFF & (field_value << 0)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0xFFFFFFFF + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
 
         # test access operations (read and/or write) to field:
-        # msk_top_regs.LPF_Accum_F1.status_data
-        with self.subTest(msg='field: msk_top_regs.LPF_Accum_F1.status_data'):
-            fut = self.dut.LPF_Accum_F1.status_data # type: ignore[union-attr]
+        # msk_top_regs.LPF_Accum_F1.data
+        with self.subTest(msg='field: msk_top_regs.LPF_Accum_F1.data'):
+            fut = self.dut.LPF_Accum_F1.data # type: ignore[union-attr]
             with patch(base_name + '.write_addr_space') as write_callback_mock,\
                 patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
 
@@ -9331,11 +9935,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # at the end of the read tests the write should not have been called
                 read_callback_mock.reset_mock()
                 write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0xFFFFFFFF + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0xFFFFFFFF, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.LPF_Accum_F1.data.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_not_called()
+                        write_callback_mock.assert_called_once_with(
+                                    addr=88,
+                                    width=32,
+                                    accesswidth=self.dut.LPF_Accum_F1.data.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0x0) | \
+                                         (0xFFFFFFFF & (field_value << 0)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0xFFFFFFFF + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
 
         # test access operations (read and/or write) to field:
-        # msk_top_regs.LPF_Accum_F2.status_data
-        with self.subTest(msg='field: msk_top_regs.LPF_Accum_F2.status_data'):
-            fut = self.dut.LPF_Accum_F2.status_data # type: ignore[union-attr]
+        # msk_top_regs.LPF_Accum_F2.data
+        with self.subTest(msg='field: msk_top_regs.LPF_Accum_F2.data'):
+            fut = self.dut.LPF_Accum_F2.data # type: ignore[union-attr]
             with patch(base_name + '.write_addr_space') as write_callback_mock,\
                 patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
 
@@ -9379,11 +10015,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # at the end of the read tests the write should not have been called
                 read_callback_mock.reset_mock()
                 write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0xFFFFFFFF + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0xFFFFFFFF, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.LPF_Accum_F2.data.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_not_called()
+                        write_callback_mock.assert_called_once_with(
+                                    addr=92,
+                                    width=32,
+                                    accesswidth=self.dut.LPF_Accum_F2.data.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0x0) | \
+                                         (0xFFFFFFFF & (field_value << 0)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0xFFFFFFFF + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
 
         # test access operations (read and/or write) to field:
-        # msk_top_regs.axis_xfer_count.xfer_count
-        with self.subTest(msg='field: msk_top_regs.axis_xfer_count.xfer_count'):
-            fut = self.dut.axis_xfer_count.xfer_count # type: ignore[union-attr]
+        # msk_top_regs.axis_xfer_count.data
+        with self.subTest(msg='field: msk_top_regs.axis_xfer_count.data'):
+            fut = self.dut.axis_xfer_count.data # type: ignore[union-attr]
             with patch(base_name + '.write_addr_space') as write_callback_mock,\
                 patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
 
@@ -9427,6 +10095,38 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # at the end of the read tests the write should not have been called
                 read_callback_mock.reset_mock()
                 write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0xFFFFFFFF + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0xFFFFFFFF, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.axis_xfer_count.data.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_not_called()
+                        write_callback_mock.assert_called_once_with(
+                                    addr=96,
+                                    width=32,
+                                    accesswidth=self.dut.axis_xfer_count.data.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0x0) | \
+                                         (0xFFFFFFFF & (field_value << 0)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0xFFFFFFFF + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
 
         # test access operations (read and/or write) to field:
         # msk_top_regs.Rx_Sample_Discard.rx_sample_discard
@@ -9811,6 +10511,38 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # at the end of the read tests the write should not have been called
                 read_callback_mock.reset_mock()
                 write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0xFFFFFFFF + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0xFFFFFFFF, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.f1_nco_adjust.data.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_not_called()
+                        write_callback_mock.assert_called_once_with(
+                                    addr=108,
+                                    width=32,
+                                    accesswidth=self.dut.f1_nco_adjust.data.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0x0) | \
+                                         (0xFFFFFFFF & (field_value << 0)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0xFFFFFFFF + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
 
         # test access operations (read and/or write) to field:
         # msk_top_regs.f2_nco_adjust.data
@@ -9859,6 +10591,38 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # at the end of the read tests the write should not have been called
                 read_callback_mock.reset_mock()
                 write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0xFFFFFFFF + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0xFFFFFFFF, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.f2_nco_adjust.data.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_not_called()
+                        write_callback_mock.assert_called_once_with(
+                                    addr=112,
+                                    width=32,
+                                    accesswidth=self.dut.f2_nco_adjust.data.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0x0) | \
+                                         (0xFFFFFFFF & (field_value << 0)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0xFFFFFFFF + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
 
         # test access operations (read and/or write) to field:
         # msk_top_regs.f1_error.data
@@ -9907,6 +10671,38 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # at the end of the read tests the write should not have been called
                 read_callback_mock.reset_mock()
                 write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0xFFFFFFFF + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0xFFFFFFFF, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.f1_error.data.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_not_called()
+                        write_callback_mock.assert_called_once_with(
+                                    addr=116,
+                                    width=32,
+                                    accesswidth=self.dut.f1_error.data.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0x0) | \
+                                         (0xFFFFFFFF & (field_value << 0)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0xFFFFFFFF + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
 
         # test access operations (read and/or write) to field:
         # msk_top_regs.f2_error.data
@@ -9955,6 +10751,38 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # at the end of the read tests the write should not have been called
                 read_callback_mock.reset_mock()
                 write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0xFFFFFFFF + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0xFFFFFFFF, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.f2_error.data.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_not_called()
+                        write_callback_mock.assert_called_once_with(
+                                    addr=120,
+                                    width=32,
+                                    accesswidth=self.dut.f2_error.data.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0x0) | \
+                                         (0xFFFFFFFF & (field_value << 0)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0xFFFFFFFF + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
 
         # test access operations (read and/or write) to field:
         # msk_top_regs.Tx_Sync_Ctrl.tx_sync_ena
@@ -10545,9 +11373,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                     await fut.write(-1)
 
         # test access operations (read and/or write) to field:
-        # msk_top_regs.rx_power.rx_power
-        with self.subTest(msg='field: msk_top_regs.rx_power.rx_power'):
-            fut = self.dut.rx_power.rx_power # type: ignore[union-attr]
+        # msk_top_regs.rx_power.data
+        with self.subTest(msg='field: msk_top_regs.rx_power.data'):
+            fut = self.dut.rx_power.data # type: ignore[union-attr]
             with patch(base_name + '.write_addr_space') as write_callback_mock,\
                 patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
 
@@ -10591,6 +11419,42 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # at the end of the read tests the write should not have been called
                 read_callback_mock.reset_mock()
                 write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0x7FFFFF + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0x7FFFFF, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.rx_power.data.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_called_once_with(
+                                    addr=140,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+                        
+                        write_callback_mock.assert_called_once_with(
+                                    addr=140,
+                                    width=32,
+                                    accesswidth=self.dut.rx_power.data.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0xFF800000) | \
+                                         (0x7FFFFF & (field_value << 0)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0x7FFFFF + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
 
         # test access operations (read and/or write) to field:
         # msk_top_regs.tx_async_fifo_rd_wr_ptr.data
@@ -10639,6 +11503,38 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # at the end of the read tests the write should not have been called
                 read_callback_mock.reset_mock()
                 write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0xFFFFFFFF + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0xFFFFFFFF, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.tx_async_fifo_rd_wr_ptr.data.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_not_called()
+                        write_callback_mock.assert_called_once_with(
+                                    addr=144,
+                                    width=32,
+                                    accesswidth=self.dut.tx_async_fifo_rd_wr_ptr.data.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0x0) | \
+                                         (0xFFFFFFFF & (field_value << 0)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0xFFFFFFFF + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
 
         # test access operations (read and/or write) to field:
         # msk_top_regs.rx_async_fifo_rd_wr_ptr.data
@@ -10687,6 +11583,38 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # at the end of the read tests the write should not have been called
                 read_callback_mock.reset_mock()
                 write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0xFFFFFFFF + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0xFFFFFFFF, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.rx_async_fifo_rd_wr_ptr.data.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_not_called()
+                        write_callback_mock.assert_called_once_with(
+                                    addr=148,
+                                    width=32,
+                                    accesswidth=self.dut.rx_async_fifo_rd_wr_ptr.data.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0x0) | \
+                                         (0xFFFFFFFF & (field_value << 0)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0xFFFFFFFF + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
 
     
 
@@ -10987,7 +11915,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # from the object with all the read back field
                 # values
                 reference_read_fields = { 
-                                          'tx_bit_counter' : await self.dut.Tx_Bit_Count.tx_bit_counter.read()
+                                          'data' : await self.dut.Tx_Bit_Count.data.read()
                                         }
 
                 read_callback_mock.reset_mock()
@@ -11019,7 +11947,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # from the object with all the read back field
                 # values
                 reference_read_fields = { 
-                                          'tx_ena_counter' : await self.dut.Tx_Enable_Count.tx_ena_counter.read()
+                                          'data' : await self.dut.Tx_Enable_Count.data.read()
                                         }
 
                 read_callback_mock.reset_mock()
@@ -11551,7 +12479,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # from the object with all the read back field
                 # values
                 reference_read_fields = { 
-                                          'status_data' : await self.dut.PRBS_Bit_Count.status_data.read()
+                                          'data' : await self.dut.PRBS_Bit_Count.data.read()
                                         }
 
                 read_callback_mock.reset_mock()
@@ -11583,7 +12511,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # from the object with all the read back field
                 # values
                 reference_read_fields = { 
-                                          'status_data' : await self.dut.PRBS_Error_Count.status_data.read()
+                                          'data' : await self.dut.PRBS_Error_Count.data.read()
                                         }
 
                 read_callback_mock.reset_mock()
@@ -11615,7 +12543,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # from the object with all the read back field
                 # values
                 reference_read_fields = { 
-                                          'status_data' : await self.dut.LPF_Accum_F1.status_data.read()
+                                          'data' : await self.dut.LPF_Accum_F1.data.read()
                                         }
 
                 read_callback_mock.reset_mock()
@@ -11647,7 +12575,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # from the object with all the read back field
                 # values
                 reference_read_fields = { 
-                                          'status_data' : await self.dut.LPF_Accum_F2.status_data.read()
+                                          'data' : await self.dut.LPF_Accum_F2.data.read()
                                         }
 
                 read_callback_mock.reset_mock()
@@ -11679,7 +12607,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # from the object with all the read back field
                 # values
                 reference_read_fields = { 
-                                          'xfer_count' : await self.dut.axis_xfer_count.xfer_count.read()
+                                          'data' : await self.dut.axis_xfer_count.data.read()
                                         }
 
                 read_callback_mock.reset_mock()
@@ -12091,7 +13019,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # from the object with all the read back field
                 # values
                 reference_read_fields = { 
-                                          'rx_power' : await self.dut.rx_power.rx_power.read()
+                                          'data' : await self.dut.rx_power.data.read()
                                         }
 
                 read_callback_mock.reset_mock()
@@ -12511,14 +13439,15 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # first read the fields using the "normal" method, then compare the result to reading
                 # via the context manager
                 reference_read_fields = { 
-                                          'tx_bit_counter' : await self.dut.Tx_Bit_Count.tx_bit_counter.read()  # type: ignore[union-attr]
+                                          'data' : await self.dut.Tx_Bit_Count.data.read()  # type: ignore[union-attr]
                                         }
                 read_callback_mock.reset_mock()
 
                 
-                async with self.dut.Tx_Bit_Count.single_read() as reg_context: # type: ignore[union-attr]
-                    self.assertEqual(reference_read_fields['tx_bit_counter'],
-                                      await reg_context.get_child_by_system_rdl_name('tx_bit_counter').read()
+                async with self.dut.Tx_Bit_Count.single_read_modify_write(skip_write=True) as reg_context: # type: ignore[union-attr]
+                
+                    self.assertEqual(reference_read_fields['data'],
+                                      await reg_context.get_child_by_system_rdl_name('data').read()
                                      )
                     pass
 
@@ -12547,14 +13476,15 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # first read the fields using the "normal" method, then compare the result to reading
                 # via the context manager
                 reference_read_fields = { 
-                                          'tx_ena_counter' : await self.dut.Tx_Enable_Count.tx_ena_counter.read()  # type: ignore[union-attr]
+                                          'data' : await self.dut.Tx_Enable_Count.data.read()  # type: ignore[union-attr]
                                         }
                 read_callback_mock.reset_mock()
 
                 
-                async with self.dut.Tx_Enable_Count.single_read() as reg_context: # type: ignore[union-attr]
-                    self.assertEqual(reference_read_fields['tx_ena_counter'],
-                                      await reg_context.get_child_by_system_rdl_name('tx_ena_counter').read()
+                async with self.dut.Tx_Enable_Count.single_read_modify_write(skip_write=True) as reg_context: # type: ignore[union-attr]
+                
+                    self.assertEqual(reference_read_fields['data'],
+                                      await reg_context.get_child_by_system_rdl_name('data').read()
                                      )
                     pass
 
@@ -13166,14 +14096,15 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # first read the fields using the "normal" method, then compare the result to reading
                 # via the context manager
                 reference_read_fields = { 
-                                          'status_data' : await self.dut.PRBS_Bit_Count.status_data.read()  # type: ignore[union-attr]
+                                          'data' : await self.dut.PRBS_Bit_Count.data.read()  # type: ignore[union-attr]
                                         }
                 read_callback_mock.reset_mock()
 
                 
-                async with self.dut.PRBS_Bit_Count.single_read() as reg_context: # type: ignore[union-attr]
-                    self.assertEqual(reference_read_fields['status_data'],
-                                      await reg_context.get_child_by_system_rdl_name('status_data').read()
+                async with self.dut.PRBS_Bit_Count.single_read_modify_write(skip_write=True) as reg_context: # type: ignore[union-attr]
+                
+                    self.assertEqual(reference_read_fields['data'],
+                                      await reg_context.get_child_by_system_rdl_name('data').read()
                                      )
                     pass
 
@@ -13202,14 +14133,15 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # first read the fields using the "normal" method, then compare the result to reading
                 # via the context manager
                 reference_read_fields = { 
-                                          'status_data' : await self.dut.PRBS_Error_Count.status_data.read()  # type: ignore[union-attr]
+                                          'data' : await self.dut.PRBS_Error_Count.data.read()  # type: ignore[union-attr]
                                         }
                 read_callback_mock.reset_mock()
 
                 
-                async with self.dut.PRBS_Error_Count.single_read() as reg_context: # type: ignore[union-attr]
-                    self.assertEqual(reference_read_fields['status_data'],
-                                      await reg_context.get_child_by_system_rdl_name('status_data').read()
+                async with self.dut.PRBS_Error_Count.single_read_modify_write(skip_write=True) as reg_context: # type: ignore[union-attr]
+                
+                    self.assertEqual(reference_read_fields['data'],
+                                      await reg_context.get_child_by_system_rdl_name('data').read()
                                      )
                     pass
 
@@ -13238,14 +14170,15 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # first read the fields using the "normal" method, then compare the result to reading
                 # via the context manager
                 reference_read_fields = { 
-                                          'status_data' : await self.dut.LPF_Accum_F1.status_data.read()  # type: ignore[union-attr]
+                                          'data' : await self.dut.LPF_Accum_F1.data.read()  # type: ignore[union-attr]
                                         }
                 read_callback_mock.reset_mock()
 
                 
-                async with self.dut.LPF_Accum_F1.single_read() as reg_context: # type: ignore[union-attr]
-                    self.assertEqual(reference_read_fields['status_data'],
-                                      await reg_context.get_child_by_system_rdl_name('status_data').read()
+                async with self.dut.LPF_Accum_F1.single_read_modify_write(skip_write=True) as reg_context: # type: ignore[union-attr]
+                
+                    self.assertEqual(reference_read_fields['data'],
+                                      await reg_context.get_child_by_system_rdl_name('data').read()
                                      )
                     pass
 
@@ -13274,14 +14207,15 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # first read the fields using the "normal" method, then compare the result to reading
                 # via the context manager
                 reference_read_fields = { 
-                                          'status_data' : await self.dut.LPF_Accum_F2.status_data.read()  # type: ignore[union-attr]
+                                          'data' : await self.dut.LPF_Accum_F2.data.read()  # type: ignore[union-attr]
                                         }
                 read_callback_mock.reset_mock()
 
                 
-                async with self.dut.LPF_Accum_F2.single_read() as reg_context: # type: ignore[union-attr]
-                    self.assertEqual(reference_read_fields['status_data'],
-                                      await reg_context.get_child_by_system_rdl_name('status_data').read()
+                async with self.dut.LPF_Accum_F2.single_read_modify_write(skip_write=True) as reg_context: # type: ignore[union-attr]
+                
+                    self.assertEqual(reference_read_fields['data'],
+                                      await reg_context.get_child_by_system_rdl_name('data').read()
                                      )
                     pass
 
@@ -13310,14 +14244,15 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # first read the fields using the "normal" method, then compare the result to reading
                 # via the context manager
                 reference_read_fields = { 
-                                          'xfer_count' : await self.dut.axis_xfer_count.xfer_count.read()  # type: ignore[union-attr]
+                                          'data' : await self.dut.axis_xfer_count.data.read()  # type: ignore[union-attr]
                                         }
                 read_callback_mock.reset_mock()
 
                 
-                async with self.dut.axis_xfer_count.single_read() as reg_context: # type: ignore[union-attr]
-                    self.assertEqual(reference_read_fields['xfer_count'],
-                                      await reg_context.get_child_by_system_rdl_name('xfer_count').read()
+                async with self.dut.axis_xfer_count.single_read_modify_write(skip_write=True) as reg_context: # type: ignore[union-attr]
+                
+                    self.assertEqual(reference_read_fields['data'],
+                                      await reg_context.get_child_by_system_rdl_name('data').read()
                                      )
                     pass
 
@@ -13455,7 +14390,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.reset_mock()
 
                 
-                async with self.dut.f1_nco_adjust.single_read() as reg_context: # type: ignore[union-attr]
+                async with self.dut.f1_nco_adjust.single_read_modify_write(skip_write=True) as reg_context: # type: ignore[union-attr]
+                
                     self.assertEqual(reference_read_fields['data'],
                                       await reg_context.get_child_by_system_rdl_name('data').read()
                                      )
@@ -13491,7 +14427,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.reset_mock()
 
                 
-                async with self.dut.f2_nco_adjust.single_read() as reg_context: # type: ignore[union-attr]
+                async with self.dut.f2_nco_adjust.single_read_modify_write(skip_write=True) as reg_context: # type: ignore[union-attr]
+                
                     self.assertEqual(reference_read_fields['data'],
                                       await reg_context.get_child_by_system_rdl_name('data').read()
                                      )
@@ -13527,7 +14464,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.reset_mock()
 
                 
-                async with self.dut.f1_error.single_read() as reg_context: # type: ignore[union-attr]
+                async with self.dut.f1_error.single_read_modify_write(skip_write=True) as reg_context: # type: ignore[union-attr]
+                
                     self.assertEqual(reference_read_fields['data'],
                                       await reg_context.get_child_by_system_rdl_name('data').read()
                                      )
@@ -13563,7 +14501,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.reset_mock()
 
                 
-                async with self.dut.f2_error.single_read() as reg_context: # type: ignore[union-attr]
+                async with self.dut.f2_error.single_read_modify_write(skip_write=True) as reg_context: # type: ignore[union-attr]
+                
                     self.assertEqual(reference_read_fields['data'],
                                       await reg_context.get_child_by_system_rdl_name('data').read()
                                      )
@@ -13787,14 +14726,15 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # first read the fields using the "normal" method, then compare the result to reading
                 # via the context manager
                 reference_read_fields = { 
-                                          'rx_power' : await self.dut.rx_power.rx_power.read()  # type: ignore[union-attr]
+                                          'data' : await self.dut.rx_power.data.read()  # type: ignore[union-attr]
                                         }
                 read_callback_mock.reset_mock()
 
                 
-                async with self.dut.rx_power.single_read() as reg_context: # type: ignore[union-attr]
-                    self.assertEqual(reference_read_fields['rx_power'],
-                                      await reg_context.get_child_by_system_rdl_name('rx_power').read()
+                async with self.dut.rx_power.single_read_modify_write(skip_write=True) as reg_context: # type: ignore[union-attr]
+                
+                    self.assertEqual(reference_read_fields['data'],
+                                      await reg_context.get_child_by_system_rdl_name('data').read()
                                      )
                     pass
 
@@ -13828,7 +14768,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.reset_mock()
 
                 
-                async with self.dut.tx_async_fifo_rd_wr_ptr.single_read() as reg_context: # type: ignore[union-attr]
+                async with self.dut.tx_async_fifo_rd_wr_ptr.single_read_modify_write(skip_write=True) as reg_context: # type: ignore[union-attr]
+                
                     self.assertEqual(reference_read_fields['data'],
                                       await reg_context.get_child_by_system_rdl_name('data').read()
                                      )
@@ -13864,7 +14805,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.reset_mock()
 
                 
-                async with self.dut.rx_async_fifo_rd_wr_ptr.single_read() as reg_context: # type: ignore[union-attr]
+                async with self.dut.rx_async_fifo_rd_wr_ptr.single_read_modify_write(skip_write=True) as reg_context: # type: ignore[union-attr]
+                
                     self.assertEqual(reference_read_fields['data'],
                                       await reg_context.get_child_by_system_rdl_name('data').read()
                                      )
@@ -13965,6 +14907,14 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                                    'clear_counts',
                                                    'diff_encoder_loopback'
                                                    ])
+        with self.subTest(msg='register: msk_top_regs.Tx_Bit_Count'):
+            await write_field_combinations(reg=self.dut.Tx_Bit_Count,
+                               writable_fields = [ 'data'
+                                                   ])
+        with self.subTest(msg='register: msk_top_regs.Tx_Enable_Count'):
+            await write_field_combinations(reg=self.dut.Tx_Enable_Count,
+                               writable_fields = [ 'data'
+                                                   ])
         with self.subTest(msg='register: msk_top_regs.Fb_FreqWord'):
             await write_field_combinations(reg=self.dut.Fb_FreqWord,
                                writable_fields = [ 'config_data'
@@ -14026,6 +14976,26 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             await write_field_combinations(reg=self.dut.PRBS_Error_Mask,
                                writable_fields = [ 'config_data'
                                                    ])
+        with self.subTest(msg='register: msk_top_regs.PRBS_Bit_Count'):
+            await write_field_combinations(reg=self.dut.PRBS_Bit_Count,
+                               writable_fields = [ 'data'
+                                                   ])
+        with self.subTest(msg='register: msk_top_regs.PRBS_Error_Count'):
+            await write_field_combinations(reg=self.dut.PRBS_Error_Count,
+                               writable_fields = [ 'data'
+                                                   ])
+        with self.subTest(msg='register: msk_top_regs.LPF_Accum_F1'):
+            await write_field_combinations(reg=self.dut.LPF_Accum_F1,
+                               writable_fields = [ 'data'
+                                                   ])
+        with self.subTest(msg='register: msk_top_regs.LPF_Accum_F2'):
+            await write_field_combinations(reg=self.dut.LPF_Accum_F2,
+                               writable_fields = [ 'data'
+                                                   ])
+        with self.subTest(msg='register: msk_top_regs.axis_xfer_count'):
+            await write_field_combinations(reg=self.dut.axis_xfer_count,
+                               writable_fields = [ 'data'
+                                                   ])
         with self.subTest(msg='register: msk_top_regs.Rx_Sample_Discard'):
             await write_field_combinations(reg=self.dut.Rx_Sample_Discard,
                                writable_fields = [ 'rx_sample_discard',
@@ -14035,6 +15005,22 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             await write_field_combinations(reg=self.dut.LPF_Config_2,
                                writable_fields = [ 'p_gain',
                                                    'p_shift'
+                                                   ])
+        with self.subTest(msg='register: msk_top_regs.f1_nco_adjust'):
+            await write_field_combinations(reg=self.dut.f1_nco_adjust,
+                               writable_fields = [ 'data'
+                                                   ])
+        with self.subTest(msg='register: msk_top_regs.f2_nco_adjust'):
+            await write_field_combinations(reg=self.dut.f2_nco_adjust,
+                               writable_fields = [ 'data'
+                                                   ])
+        with self.subTest(msg='register: msk_top_regs.f1_error'):
+            await write_field_combinations(reg=self.dut.f1_error,
+                               writable_fields = [ 'data'
+                                                   ])
+        with self.subTest(msg='register: msk_top_regs.f2_error'):
+            await write_field_combinations(reg=self.dut.f2_error,
+                               writable_fields = [ 'data'
                                                    ])
         with self.subTest(msg='register: msk_top_regs.Tx_Sync_Ctrl'):
             await write_field_combinations(reg=self.dut.Tx_Sync_Ctrl,
@@ -14054,6 +15040,18 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='register: msk_top_regs.lowpass_ema_alpha2'):
             await write_field_combinations(reg=self.dut.lowpass_ema_alpha2,
                                writable_fields = [ 'alpha'
+                                                   ])
+        with self.subTest(msg='register: msk_top_regs.rx_power'):
+            await write_field_combinations(reg=self.dut.rx_power,
+                               writable_fields = [ 'data'
+                                                   ])
+        with self.subTest(msg='register: msk_top_regs.tx_async_fifo_rd_wr_ptr'):
+            await write_field_combinations(reg=self.dut.tx_async_fifo_rd_wr_ptr,
+                               writable_fields = [ 'data'
+                                                   ])
+        with self.subTest(msg='register: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
+            await write_field_combinations(reg=self.dut.rx_async_fifo_rd_wr_ptr,
+                               writable_fields = [ 'data'
                                                    ])
 
     async def test_register_write_fields(self) -> None:
@@ -14122,6 +15120,20 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                                            'rx_invert',
                                                            'clear_counts',
                                                            'diff_encoder_loopback'
+                                                           ])
+            
+        with self.subTest(msg='register: msk_top_regs.Tx_Bit_Count'):
+            # test read_fields to register:
+            # msk_top_regs.Tx_Bit_Count
+            await write_field_combinations(reg=self.dut.Tx_Bit_Count,
+                                       writable_fields = [ 'data'
+                                                           ])
+            
+        with self.subTest(msg='register: msk_top_regs.Tx_Enable_Count'):
+            # test read_fields to register:
+            # msk_top_regs.Tx_Enable_Count
+            await write_field_combinations(reg=self.dut.Tx_Enable_Count,
+                                       writable_fields = [ 'data'
                                                            ])
             
         with self.subTest(msg='register: msk_top_regs.Fb_FreqWord'):
@@ -14224,6 +15236,41 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                        writable_fields = [ 'config_data'
                                                            ])
             
+        with self.subTest(msg='register: msk_top_regs.PRBS_Bit_Count'):
+            # test read_fields to register:
+            # msk_top_regs.PRBS_Bit_Count
+            await write_field_combinations(reg=self.dut.PRBS_Bit_Count,
+                                       writable_fields = [ 'data'
+                                                           ])
+            
+        with self.subTest(msg='register: msk_top_regs.PRBS_Error_Count'):
+            # test read_fields to register:
+            # msk_top_regs.PRBS_Error_Count
+            await write_field_combinations(reg=self.dut.PRBS_Error_Count,
+                                       writable_fields = [ 'data'
+                                                           ])
+            
+        with self.subTest(msg='register: msk_top_regs.LPF_Accum_F1'):
+            # test read_fields to register:
+            # msk_top_regs.LPF_Accum_F1
+            await write_field_combinations(reg=self.dut.LPF_Accum_F1,
+                                       writable_fields = [ 'data'
+                                                           ])
+            
+        with self.subTest(msg='register: msk_top_regs.LPF_Accum_F2'):
+            # test read_fields to register:
+            # msk_top_regs.LPF_Accum_F2
+            await write_field_combinations(reg=self.dut.LPF_Accum_F2,
+                                       writable_fields = [ 'data'
+                                                           ])
+            
+        with self.subTest(msg='register: msk_top_regs.axis_xfer_count'):
+            # test read_fields to register:
+            # msk_top_regs.axis_xfer_count
+            await write_field_combinations(reg=self.dut.axis_xfer_count,
+                                       writable_fields = [ 'data'
+                                                           ])
+            
         with self.subTest(msg='register: msk_top_regs.Rx_Sample_Discard'):
             # test read_fields to register:
             # msk_top_regs.Rx_Sample_Discard
@@ -14238,6 +15285,34 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             await write_field_combinations(reg=self.dut.LPF_Config_2,
                                        writable_fields = [ 'p_gain',
                                                            'p_shift'
+                                                           ])
+            
+        with self.subTest(msg='register: msk_top_regs.f1_nco_adjust'):
+            # test read_fields to register:
+            # msk_top_regs.f1_nco_adjust
+            await write_field_combinations(reg=self.dut.f1_nco_adjust,
+                                       writable_fields = [ 'data'
+                                                           ])
+            
+        with self.subTest(msg='register: msk_top_regs.f2_nco_adjust'):
+            # test read_fields to register:
+            # msk_top_regs.f2_nco_adjust
+            await write_field_combinations(reg=self.dut.f2_nco_adjust,
+                                       writable_fields = [ 'data'
+                                                           ])
+            
+        with self.subTest(msg='register: msk_top_regs.f1_error'):
+            # test read_fields to register:
+            # msk_top_regs.f1_error
+            await write_field_combinations(reg=self.dut.f1_error,
+                                       writable_fields = [ 'data'
+                                                           ])
+            
+        with self.subTest(msg='register: msk_top_regs.f2_error'):
+            # test read_fields to register:
+            # msk_top_regs.f2_error
+            await write_field_combinations(reg=self.dut.f2_error,
+                                       writable_fields = [ 'data'
                                                            ])
             
         with self.subTest(msg='register: msk_top_regs.Tx_Sync_Ctrl'):
@@ -14269,6 +15344,27 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             # msk_top_regs.lowpass_ema_alpha2
             await write_field_combinations(reg=self.dut.lowpass_ema_alpha2,
                                        writable_fields = [ 'alpha'
+                                                           ])
+            
+        with self.subTest(msg='register: msk_top_regs.rx_power'):
+            # test read_fields to register:
+            # msk_top_regs.rx_power
+            await write_field_combinations(reg=self.dut.rx_power,
+                                       writable_fields = [ 'data'
+                                                           ])
+            
+        with self.subTest(msg='register: msk_top_regs.tx_async_fifo_rd_wr_ptr'):
+            # test read_fields to register:
+            # msk_top_regs.tx_async_fifo_rd_wr_ptr
+            await write_field_combinations(reg=self.dut.tx_async_fifo_rd_wr_ptr,
+                                       writable_fields = [ 'data'
+                                                           ])
+            
+        with self.subTest(msg='register: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
+            # test read_fields to register:
+            # msk_top_regs.rx_async_fifo_rd_wr_ptr
+            await write_field_combinations(reg=self.dut.rx_async_fifo_rd_wr_ptr,
+                                       writable_fields = [ 'data'
                                                            ])
             
 
@@ -14542,16 +15638,16 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
                 self.dut.MSK_Status.tx_axis_valid.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
-        with self.subTest(msg='node: msk_top_regs.Tx_Bit_Count.tx_bit_counter'):
+        with self.subTest(msg='node: msk_top_regs.Tx_Bit_Count.data'):
             with self.assertRaises(AttributeError):
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
-                self.dut.Tx_Bit_Count.tx_bit_counter.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
-        with self.subTest(msg='node: msk_top_regs.Tx_Enable_Count.tx_ena_counter'):
+                self.dut.Tx_Bit_Count.data.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.Tx_Enable_Count.data'):
             with self.assertRaises(AttributeError):
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
-                self.dut.Tx_Enable_Count.tx_ena_counter.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+                self.dut.Tx_Enable_Count.data.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
         with self.subTest(msg='node: msk_top_regs.Fb_FreqWord.config_data'):
             with self.assertRaises(AttributeError):
                 # this line is trying to set an illegal value so by definition should fail the type
@@ -14662,31 +15758,31 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
                 self.dut.PRBS_Error_Mask.config_data.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
-        with self.subTest(msg='node: msk_top_regs.PRBS_Bit_Count.status_data'):
+        with self.subTest(msg='node: msk_top_regs.PRBS_Bit_Count.data'):
             with self.assertRaises(AttributeError):
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
-                self.dut.PRBS_Bit_Count.status_data.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
-        with self.subTest(msg='node: msk_top_regs.PRBS_Error_Count.status_data'):
+                self.dut.PRBS_Bit_Count.data.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.PRBS_Error_Count.data'):
             with self.assertRaises(AttributeError):
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
-                self.dut.PRBS_Error_Count.status_data.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
-        with self.subTest(msg='node: msk_top_regs.LPF_Accum_F1.status_data'):
+                self.dut.PRBS_Error_Count.data.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.LPF_Accum_F1.data'):
             with self.assertRaises(AttributeError):
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
-                self.dut.LPF_Accum_F1.status_data.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
-        with self.subTest(msg='node: msk_top_regs.LPF_Accum_F2.status_data'):
+                self.dut.LPF_Accum_F1.data.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.LPF_Accum_F2.data'):
             with self.assertRaises(AttributeError):
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
-                self.dut.LPF_Accum_F2.status_data.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
-        with self.subTest(msg='node: msk_top_regs.axis_xfer_count.xfer_count'):
+                self.dut.LPF_Accum_F2.data.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.axis_xfer_count.data'):
             with self.assertRaises(AttributeError):
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
-                self.dut.axis_xfer_count.xfer_count.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+                self.dut.axis_xfer_count.data.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
         with self.subTest(msg='node: msk_top_regs.Rx_Sample_Discard.rx_sample_discard'):
             with self.assertRaises(AttributeError):
                 # this line is trying to set an illegal value so by definition should fail the type
@@ -14762,11 +15858,11 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
                 self.dut.lowpass_ema_alpha2.alpha.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
-        with self.subTest(msg='node: msk_top_regs.rx_power.rx_power'):
+        with self.subTest(msg='node: msk_top_regs.rx_power.data'):
             with self.assertRaises(AttributeError):
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
-                self.dut.rx_power.rx_power.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+                self.dut.rx_power.data.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
         with self.subTest(msg='node: msk_top_regs.tx_async_fifo_rd_wr_ptr.data'):
             with self.assertRaises(AttributeError):
                 # this line is trying to set an illegal value so by definition should fail the type
@@ -14966,9 +16062,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                        
                                    
                                        
-                                   
+                                   self.dut.Tx_Bit_Count, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.Tx_Enable_Count, # type: ignore[union-attr,list-item] 
                                        
                                    self.dut.Fb_FreqWord, # type: ignore[union-attr,list-item] 
                                        
@@ -14996,27 +16092,27 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                        
                                    self.dut.PRBS_Error_Mask, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.PRBS_Bit_Count, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.PRBS_Error_Count, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.LPF_Accum_F1, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.LPF_Accum_F2, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.axis_xfer_count, # type: ignore[union-attr,list-item] 
                                        
                                    self.dut.Rx_Sample_Discard, # type: ignore[union-attr,list-item] 
                                        
                                    self.dut.LPF_Config_2, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.f1_nco_adjust, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.f2_nco_adjust, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.f1_error, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.f2_error, # type: ignore[union-attr,list-item] 
                                        
                                    self.dut.Tx_Sync_Ctrl, # type: ignore[union-attr,list-item] 
                                        
@@ -15026,11 +16122,11 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                        
                                    self.dut.lowpass_ema_alpha2, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.rx_power, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.tx_async_fifo_rd_wr_ptr, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.rx_async_fifo_rd_wr_ptr, # type: ignore[union-attr,list-item] 
                                        
                                     ]
         writable_regs = []
@@ -15049,9 +16145,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                        
                                    
                                        
-                                   
+                                   self.dut.Tx_Bit_Count, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.Tx_Enable_Count, # type: ignore[union-attr,list-item] 
                                        
                                    self.dut.Fb_FreqWord, # type: ignore[union-attr,list-item] 
                                        
@@ -15079,27 +16175,27 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                        
                                    self.dut.PRBS_Error_Mask, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.PRBS_Bit_Count, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.PRBS_Error_Count, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.LPF_Accum_F1, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.LPF_Accum_F2, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.axis_xfer_count, # type: ignore[union-attr,list-item] 
                                        
                                    self.dut.Rx_Sample_Discard, # type: ignore[union-attr,list-item] 
                                        
                                    self.dut.LPF_Config_2, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.f1_nco_adjust, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.f2_nco_adjust, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.f1_error, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.f2_error, # type: ignore[union-attr,list-item] 
                                        
                                    self.dut.Tx_Sync_Ctrl, # type: ignore[union-attr,list-item] 
                                        
@@ -15109,11 +16205,11 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                        
                                    self.dut.lowpass_ema_alpha2, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.rx_power, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.tx_async_fifo_rd_wr_ptr, # type: ignore[union-attr,list-item] 
                                        
-                                   
+                                   self.dut.rx_async_fifo_rd_wr_ptr, # type: ignore[union-attr,list-item] 
                                        
                                     ]
         writable_regs = []
@@ -15676,7 +16772,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                     
         with self.subTest(msg='register: msk_top_regs.Tx_Bit_Count'):
                 
-            expected_fields = [self.dut.Tx_Bit_Count.tx_bit_counter, # type: ignore[union-attr,list-item]
+            expected_fields = [self.dut.Tx_Bit_Count.data, # type: ignore[union-attr,list-item]
                                         
                                     
                                  
@@ -15686,11 +16782,17 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 fields.append(field)
             self.assertCountEqual(expected_fields, fields)
                 
-            # register should not have writable_fields attribute
-            self.assertFalse(hasattr(self.dut.Tx_Bit_Count, 'writable_fields')) # type: ignore[union-attr]
+            expected_writable_fields = [self.dut.Tx_Bit_Count.data, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            writable_fields = []
+            for writable_field in self.dut.Tx_Bit_Count.writable_fields:  # type: ignore[union-attr]
+                writable_fields.append(writable_field)
+            self.assertCountEqual(expected_writable_fields, writable_fields)
                     
                     
-            expected_readable_fields = [self.dut.Tx_Bit_Count.tx_bit_counter, # type: ignore[union-attr,list-item] 
+            expected_readable_fields = [self.dut.Tx_Bit_Count.data, # type: ignore[union-attr,list-item] 
                                             
                                          
                                          ]
@@ -15701,7 +16803,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                     
         with self.subTest(msg='register: msk_top_regs.Tx_Enable_Count'):
                 
-            expected_fields = [self.dut.Tx_Enable_Count.tx_ena_counter, # type: ignore[union-attr,list-item]
+            expected_fields = [self.dut.Tx_Enable_Count.data, # type: ignore[union-attr,list-item]
                                         
                                     
                                  
@@ -15711,11 +16813,17 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 fields.append(field)
             self.assertCountEqual(expected_fields, fields)
                 
-            # register should not have writable_fields attribute
-            self.assertFalse(hasattr(self.dut.Tx_Enable_Count, 'writable_fields')) # type: ignore[union-attr]
+            expected_writable_fields = [self.dut.Tx_Enable_Count.data, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            writable_fields = []
+            for writable_field in self.dut.Tx_Enable_Count.writable_fields:  # type: ignore[union-attr]
+                writable_fields.append(writable_field)
+            self.assertCountEqual(expected_writable_fields, writable_fields)
                     
                     
-            expected_readable_fields = [self.dut.Tx_Enable_Count.tx_ena_counter, # type: ignore[union-attr,list-item] 
+            expected_readable_fields = [self.dut.Tx_Enable_Count.data, # type: ignore[union-attr,list-item] 
                                             
                                          
                                          ]
@@ -16192,7 +17300,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                     
         with self.subTest(msg='register: msk_top_regs.PRBS_Bit_Count'):
                 
-            expected_fields = [self.dut.PRBS_Bit_Count.status_data, # type: ignore[union-attr,list-item]
+            expected_fields = [self.dut.PRBS_Bit_Count.data, # type: ignore[union-attr,list-item]
                                         
                                     
                                  
@@ -16202,11 +17310,17 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 fields.append(field)
             self.assertCountEqual(expected_fields, fields)
                 
-            # register should not have writable_fields attribute
-            self.assertFalse(hasattr(self.dut.PRBS_Bit_Count, 'writable_fields')) # type: ignore[union-attr]
+            expected_writable_fields = [self.dut.PRBS_Bit_Count.data, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            writable_fields = []
+            for writable_field in self.dut.PRBS_Bit_Count.writable_fields:  # type: ignore[union-attr]
+                writable_fields.append(writable_field)
+            self.assertCountEqual(expected_writable_fields, writable_fields)
                     
                     
-            expected_readable_fields = [self.dut.PRBS_Bit_Count.status_data, # type: ignore[union-attr,list-item] 
+            expected_readable_fields = [self.dut.PRBS_Bit_Count.data, # type: ignore[union-attr,list-item] 
                                             
                                          
                                          ]
@@ -16217,7 +17331,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                     
         with self.subTest(msg='register: msk_top_regs.PRBS_Error_Count'):
                 
-            expected_fields = [self.dut.PRBS_Error_Count.status_data, # type: ignore[union-attr,list-item]
+            expected_fields = [self.dut.PRBS_Error_Count.data, # type: ignore[union-attr,list-item]
                                         
                                     
                                  
@@ -16227,11 +17341,17 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 fields.append(field)
             self.assertCountEqual(expected_fields, fields)
                 
-            # register should not have writable_fields attribute
-            self.assertFalse(hasattr(self.dut.PRBS_Error_Count, 'writable_fields')) # type: ignore[union-attr]
+            expected_writable_fields = [self.dut.PRBS_Error_Count.data, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            writable_fields = []
+            for writable_field in self.dut.PRBS_Error_Count.writable_fields:  # type: ignore[union-attr]
+                writable_fields.append(writable_field)
+            self.assertCountEqual(expected_writable_fields, writable_fields)
                     
                     
-            expected_readable_fields = [self.dut.PRBS_Error_Count.status_data, # type: ignore[union-attr,list-item] 
+            expected_readable_fields = [self.dut.PRBS_Error_Count.data, # type: ignore[union-attr,list-item] 
                                             
                                          
                                          ]
@@ -16242,7 +17362,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                     
         with self.subTest(msg='register: msk_top_regs.LPF_Accum_F1'):
                 
-            expected_fields = [self.dut.LPF_Accum_F1.status_data, # type: ignore[union-attr,list-item]
+            expected_fields = [self.dut.LPF_Accum_F1.data, # type: ignore[union-attr,list-item]
                                         
                                     
                                  
@@ -16252,11 +17372,17 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 fields.append(field)
             self.assertCountEqual(expected_fields, fields)
                 
-            # register should not have writable_fields attribute
-            self.assertFalse(hasattr(self.dut.LPF_Accum_F1, 'writable_fields')) # type: ignore[union-attr]
+            expected_writable_fields = [self.dut.LPF_Accum_F1.data, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            writable_fields = []
+            for writable_field in self.dut.LPF_Accum_F1.writable_fields:  # type: ignore[union-attr]
+                writable_fields.append(writable_field)
+            self.assertCountEqual(expected_writable_fields, writable_fields)
                     
                     
-            expected_readable_fields = [self.dut.LPF_Accum_F1.status_data, # type: ignore[union-attr,list-item] 
+            expected_readable_fields = [self.dut.LPF_Accum_F1.data, # type: ignore[union-attr,list-item] 
                                             
                                          
                                          ]
@@ -16267,7 +17393,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                     
         with self.subTest(msg='register: msk_top_regs.LPF_Accum_F2'):
                 
-            expected_fields = [self.dut.LPF_Accum_F2.status_data, # type: ignore[union-attr,list-item]
+            expected_fields = [self.dut.LPF_Accum_F2.data, # type: ignore[union-attr,list-item]
                                         
                                     
                                  
@@ -16277,11 +17403,17 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 fields.append(field)
             self.assertCountEqual(expected_fields, fields)
                 
-            # register should not have writable_fields attribute
-            self.assertFalse(hasattr(self.dut.LPF_Accum_F2, 'writable_fields')) # type: ignore[union-attr]
+            expected_writable_fields = [self.dut.LPF_Accum_F2.data, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            writable_fields = []
+            for writable_field in self.dut.LPF_Accum_F2.writable_fields:  # type: ignore[union-attr]
+                writable_fields.append(writable_field)
+            self.assertCountEqual(expected_writable_fields, writable_fields)
                     
                     
-            expected_readable_fields = [self.dut.LPF_Accum_F2.status_data, # type: ignore[union-attr,list-item] 
+            expected_readable_fields = [self.dut.LPF_Accum_F2.data, # type: ignore[union-attr,list-item] 
                                             
                                          
                                          ]
@@ -16292,7 +17424,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                     
         with self.subTest(msg='register: msk_top_regs.axis_xfer_count'):
                 
-            expected_fields = [self.dut.axis_xfer_count.xfer_count, # type: ignore[union-attr,list-item]
+            expected_fields = [self.dut.axis_xfer_count.data, # type: ignore[union-attr,list-item]
                                         
                                     
                                  
@@ -16302,11 +17434,17 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 fields.append(field)
             self.assertCountEqual(expected_fields, fields)
                 
-            # register should not have writable_fields attribute
-            self.assertFalse(hasattr(self.dut.axis_xfer_count, 'writable_fields')) # type: ignore[union-attr]
+            expected_writable_fields = [self.dut.axis_xfer_count.data, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            writable_fields = []
+            for writable_field in self.dut.axis_xfer_count.writable_fields:  # type: ignore[union-attr]
+                writable_fields.append(writable_field)
+            self.assertCountEqual(expected_writable_fields, writable_fields)
                     
                     
-            expected_readable_fields = [self.dut.axis_xfer_count.xfer_count, # type: ignore[union-attr,list-item] 
+            expected_readable_fields = [self.dut.axis_xfer_count.data, # type: ignore[union-attr,list-item] 
                                             
                                          
                                          ]
@@ -16403,8 +17541,14 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 fields.append(field)
             self.assertCountEqual(expected_fields, fields)
                 
-            # register should not have writable_fields attribute
-            self.assertFalse(hasattr(self.dut.f1_nco_adjust, 'writable_fields')) # type: ignore[union-attr]
+            expected_writable_fields = [self.dut.f1_nco_adjust.data, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            writable_fields = []
+            for writable_field in self.dut.f1_nco_adjust.writable_fields:  # type: ignore[union-attr]
+                writable_fields.append(writable_field)
+            self.assertCountEqual(expected_writable_fields, writable_fields)
                     
                     
             expected_readable_fields = [self.dut.f1_nco_adjust.data, # type: ignore[union-attr,list-item] 
@@ -16428,8 +17572,14 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 fields.append(field)
             self.assertCountEqual(expected_fields, fields)
                 
-            # register should not have writable_fields attribute
-            self.assertFalse(hasattr(self.dut.f2_nco_adjust, 'writable_fields')) # type: ignore[union-attr]
+            expected_writable_fields = [self.dut.f2_nco_adjust.data, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            writable_fields = []
+            for writable_field in self.dut.f2_nco_adjust.writable_fields:  # type: ignore[union-attr]
+                writable_fields.append(writable_field)
+            self.assertCountEqual(expected_writable_fields, writable_fields)
                     
                     
             expected_readable_fields = [self.dut.f2_nco_adjust.data, # type: ignore[union-attr,list-item] 
@@ -16453,8 +17603,14 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 fields.append(field)
             self.assertCountEqual(expected_fields, fields)
                 
-            # register should not have writable_fields attribute
-            self.assertFalse(hasattr(self.dut.f1_error, 'writable_fields')) # type: ignore[union-attr]
+            expected_writable_fields = [self.dut.f1_error.data, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            writable_fields = []
+            for writable_field in self.dut.f1_error.writable_fields:  # type: ignore[union-attr]
+                writable_fields.append(writable_field)
+            self.assertCountEqual(expected_writable_fields, writable_fields)
                     
                     
             expected_readable_fields = [self.dut.f1_error.data, # type: ignore[union-attr,list-item] 
@@ -16478,8 +17634,14 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 fields.append(field)
             self.assertCountEqual(expected_fields, fields)
                 
-            # register should not have writable_fields attribute
-            self.assertFalse(hasattr(self.dut.f2_error, 'writable_fields')) # type: ignore[union-attr]
+            expected_writable_fields = [self.dut.f2_error.data, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            writable_fields = []
+            for writable_field in self.dut.f2_error.writable_fields:  # type: ignore[union-attr]
+                writable_fields.append(writable_field)
+            self.assertCountEqual(expected_writable_fields, writable_fields)
                     
                     
             expected_readable_fields = [self.dut.f2_error.data, # type: ignore[union-attr,list-item] 
@@ -16638,7 +17800,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                     
         with self.subTest(msg='register: msk_top_regs.rx_power'):
                 
-            expected_fields = [self.dut.rx_power.rx_power, # type: ignore[union-attr,list-item]
+            expected_fields = [self.dut.rx_power.data, # type: ignore[union-attr,list-item]
                                         
                                     
                                  
@@ -16648,11 +17810,17 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 fields.append(field)
             self.assertCountEqual(expected_fields, fields)
                 
-            # register should not have writable_fields attribute
-            self.assertFalse(hasattr(self.dut.rx_power, 'writable_fields')) # type: ignore[union-attr]
+            expected_writable_fields = [self.dut.rx_power.data, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            writable_fields = []
+            for writable_field in self.dut.rx_power.writable_fields:  # type: ignore[union-attr]
+                writable_fields.append(writable_field)
+            self.assertCountEqual(expected_writable_fields, writable_fields)
                     
                     
-            expected_readable_fields = [self.dut.rx_power.rx_power, # type: ignore[union-attr,list-item] 
+            expected_readable_fields = [self.dut.rx_power.data, # type: ignore[union-attr,list-item] 
                                             
                                          
                                          ]
@@ -16673,8 +17841,14 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 fields.append(field)
             self.assertCountEqual(expected_fields, fields)
                 
-            # register should not have writable_fields attribute
-            self.assertFalse(hasattr(self.dut.tx_async_fifo_rd_wr_ptr, 'writable_fields')) # type: ignore[union-attr]
+            expected_writable_fields = [self.dut.tx_async_fifo_rd_wr_ptr.data, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            writable_fields = []
+            for writable_field in self.dut.tx_async_fifo_rd_wr_ptr.writable_fields:  # type: ignore[union-attr]
+                writable_fields.append(writable_field)
+            self.assertCountEqual(expected_writable_fields, writable_fields)
                     
                     
             expected_readable_fields = [self.dut.tx_async_fifo_rd_wr_ptr.data, # type: ignore[union-attr,list-item] 
@@ -16698,8 +17872,14 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 fields.append(field)
             self.assertCountEqual(expected_fields, fields)
                 
-            # register should not have writable_fields attribute
-            self.assertFalse(hasattr(self.dut.rx_async_fifo_rd_wr_ptr, 'writable_fields')) # type: ignore[union-attr]
+            expected_writable_fields = [self.dut.rx_async_fifo_rd_wr_ptr.data, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            writable_fields = []
+            for writable_field in self.dut.rx_async_fifo_rd_wr_ptr.writable_fields:  # type: ignore[union-attr]
+                writable_fields.append(writable_field)
+            self.assertCountEqual(expected_writable_fields, writable_fields)
                     
                     
             expected_readable_fields = [self.dut.rx_async_fifo_rd_wr_ptr.data, # type: ignore[union-attr,list-item] 
@@ -16800,13 +17980,13 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         
         
         
-        self.assertEqual(self.dut.Tx_Bit_Count.get_child_by_system_rdl_name('tx_bit_counter').inst_name, 'tx_bit_counter')
+        self.assertEqual(self.dut.Tx_Bit_Count.get_child_by_system_rdl_name('data').inst_name, 'data')
         
         
         
         
         
-        self.assertEqual(self.dut.Tx_Enable_Count.get_child_by_system_rdl_name('tx_ena_counter').inst_name, 'tx_ena_counter')
+        self.assertEqual(self.dut.Tx_Enable_Count.get_child_by_system_rdl_name('data').inst_name, 'data')
         
         
         
@@ -16935,31 +18115,31 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         
         
         
-        self.assertEqual(self.dut.PRBS_Bit_Count.get_child_by_system_rdl_name('status_data').inst_name, 'status_data')
+        self.assertEqual(self.dut.PRBS_Bit_Count.get_child_by_system_rdl_name('data').inst_name, 'data')
         
         
         
         
         
-        self.assertEqual(self.dut.PRBS_Error_Count.get_child_by_system_rdl_name('status_data').inst_name, 'status_data')
+        self.assertEqual(self.dut.PRBS_Error_Count.get_child_by_system_rdl_name('data').inst_name, 'data')
         
         
         
         
         
-        self.assertEqual(self.dut.LPF_Accum_F1.get_child_by_system_rdl_name('status_data').inst_name, 'status_data')
+        self.assertEqual(self.dut.LPF_Accum_F1.get_child_by_system_rdl_name('data').inst_name, 'data')
         
         
         
         
         
-        self.assertEqual(self.dut.LPF_Accum_F2.get_child_by_system_rdl_name('status_data').inst_name, 'status_data')
+        self.assertEqual(self.dut.LPF_Accum_F2.get_child_by_system_rdl_name('data').inst_name, 'data')
         
         
         
         
         
-        self.assertEqual(self.dut.axis_xfer_count.get_child_by_system_rdl_name('xfer_count').inst_name, 'xfer_count')
+        self.assertEqual(self.dut.axis_xfer_count.get_child_by_system_rdl_name('data').inst_name, 'data')
         
         
         
@@ -17050,7 +18230,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         
         
         
-        self.assertEqual(self.dut.rx_power.get_child_by_system_rdl_name('rx_power').inst_name, 'rx_power')
+        self.assertEqual(self.dut.rx_power.get_child_by_system_rdl_name('data').inst_name, 'data')
         
         
         

@@ -265,6 +265,8 @@ class axi_bus:
     async def read(self, addr, width, accesswidth):
 
         await RisingEdge(self.aclk)
+        await RisingEdge(self.aclk)
+        await RisingEdge(self.aclk)
 
         self.arvalid.value = 1
         self.araddr.value = addr
@@ -826,16 +828,22 @@ async def msk_test_1(dut):
         sim_time_d = sim_time
         sim_time = get_sim_time("us")
 
+        await regs.f1_nco_adjust.write(0)
         data = await regs.f1_nco_adjust.read()
         print("F1 NCO Adjust: ", hex(data))
+        await regs.f2_nco_adjust.write(0)
         data = await regs.f2_nco_adjust.read()
         print("F2 NCO Adjust: ", hex(data))
+        await regs.f1_error.write(0)
         data = await regs.f1_error.read()
         print("F1 Error: ", hex(data))
+        await regs.f2_error.write(0)
         data = await regs.f2_error.read()
         print("F2 Error: ", hex(data))
+        await regs.tx_async_fifo_rd_wr_ptr.write(0)
         data = await regs.tx_async_fifo_rd_wr_ptr.read()
         print("Tx FIFO Pointers", hex(data))
+        await regs.rx_async_fifo_rd_wr_ptr.write(0)
         data = await regs.rx_async_fifo_rd_wr_ptr.read()
         print("Rx FIFO Pointers", hex(data))
         #data = await regs.read("msk_top_regs", "LPF_Accum_F1")

@@ -301,58 +301,58 @@ BEGIN
     hwif_in.MSK_Status.tx_axis_valid.next_q	<= tx_axis_valid;
 
     -- Status Request from AXI to MDM
-    utbc_r:  pulse_detect PORT MAP (clk, csr_init, hwif_out.Tx_Bit_Count.req, 				tx_bit_counter_req	);
-    utbe_r:  pulse_detect PORT MAP (clk, csr_init, hwif_out.Tx_Enable_Count.req,			tx_ena_counter_req	);
-    utatc_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.axis_xfer_count.req,			axis_xfer_count_req	);
-    utf1e_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.f1_error.req, 					f1_error_req		);
-    utf2e_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.f2_error.req, 					f2_error_req		);
-    utf1a_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.f1_nco_adjust.req, 				f1_nco_adjust_req	);
-    utf2a_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.f2_nco_adjust.req, 				f2_nco_adjust_req	);
-    utprb_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.PRBS_Bit_Count.req,				prbs_bits_req		);
-    utpre_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.PRBS_Error_Count.req,			prbs_errs_req		);
-    utlp1_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.LPF_Accum_F1.req, 				lpf_accum_f1_req	);
-    utlp2_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.LPF_Accum_F2.req, 				lpf_accum_f2_req	);
-    utpwr_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.rx_power.req, 					pd_power_req		);
+    utbc_r:  pulse_detect PORT MAP (clk, csr_init, hwif_out.Tx_Bit_Count.data.swmod, 			tx_bit_counter_req		);
+    utbe_r:  pulse_detect PORT MAP (clk, csr_init, hwif_out.Tx_Enable_Count.data.swmod,			tx_ena_counter_req		);
+    utatc_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.axis_xfer_count.data.swmod,			axis_xfer_count_req		);
+    utf1e_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.f1_error.data.swmod, 				f1_error_req			);
+    utf2e_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.f2_error.data.swmod, 				f2_error_req			);
+    utf1a_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.f1_nco_adjust.data.swmod, 			f1_nco_adjust_req		);
+    utf2a_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.f2_nco_adjust.data.swmod, 			f2_nco_adjust_req		);
+    utprb_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.PRBS_Bit_Count.data.swmod,			prbs_bits_req			);
+    utpre_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.PRBS_Error_Count.data.swmod,		prbs_errs_req			);
+    utlp1_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.LPF_Accum_F1.data.swmod, 			lpf_accum_f1_req		);
+    utlp2_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.LPF_Accum_F2.data.swmod, 			lpf_accum_f2_req		);
+    utpwr_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.rx_power.data.swmod, 				pd_power_req			);
 
     -- Status acknowledge from MDM to AXI
-    utbc_a : pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, tx_bit_counter_req,		hwif_in.Tx_Bit_Count.rd_ack		);
-    utbe_a : pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, tx_ena_counter_req,		hwif_in.Tx_Enable_Count.rd_ack 	);
-    utatc_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, axis_xfer_count_req,		hwif_in.axis_xfer_count.rd_ack  );
-    utf1e_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, f1_error_req,			hwif_in.f1_error.rd_ack 		);
-    utf2e_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, f2_error_req,			hwif_in.f2_error.rd_ack 		);
-    utf1a_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, f1_nco_adjust_req,		hwif_in.f1_nco_adjust.rd_ack	);
-    utf2a_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, f2_nco_adjust_req,		hwif_in.f2_nco_adjust.rd_ack	);
-    utprb_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, prbs_bits_req,			hwif_in.PRBS_Bit_Count.rd_ack	);
-    utpre_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, prbs_errs_req,			hwif_in.PRBS_Error_Count.rd_ack );
-    utlp1_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, lpf_accum_f1_req,		hwif_in.LPF_Accum_F1.rd_ack 	);
-    utlp2_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, lpf_accum_f2_req,		hwif_in.LPF_Accum_F2.rd_ack 	);
-    utpwr_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, pd_power_req,			hwif_in.rx_power.rd_ack			);
+    utbc_a : pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, tx_bit_counter_req,		hwif_in.Tx_Bit_Count.data.we		);
+    utbe_a : pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, tx_ena_counter_req,		hwif_in.Tx_Enable_Count.data.we 	);
+    utatc_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, axis_xfer_count_req,		hwif_in.axis_xfer_count.data.we  	);
+    utf1e_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, f1_error_req,			hwif_in.f1_error.data.we 			);
+    utf2e_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, f2_error_req,			hwif_in.f2_error.data.we 			);
+    utf1a_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, f1_nco_adjust_req,		hwif_in.f1_nco_adjust.data.we		);
+    utf2a_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, f2_nco_adjust_req,		hwif_in.f2_nco_adjust.data.we		);
+    utprb_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, prbs_bits_req,			hwif_in.PRBS_Bit_Count.data.we		);
+    utpre_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, prbs_errs_req,			hwif_in.PRBS_Error_Count.data.we 	);
+    utlp1_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, lpf_accum_f1_req,		hwif_in.LPF_Accum_F1.data.we 		);
+    utlp2_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, lpf_accum_f2_req,		hwif_in.LPF_Accum_F2.data.we 		);
+    utpwr_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, pd_power_req,			hwif_in.rx_power.data.we			);
 
     -- Status capture from MDM to AXI
-    utbc_c : data_capture PORT MAP (clk, csr_init, tx_bit_counter_req,	tx_bit_counter,		hwif_in.Tx_Bit_Count.rd_data	);
-    utbe_c : data_capture PORT MAP (clk, csr_init, tx_ena_counter_req,	tx_ena_counter, 	hwif_in.Tx_Enable_Count.rd_data );
-    utatc_c: data_capture PORT MAP (clk, csr_init, axis_xfer_count_req,	xfer_count, 		hwif_in.axis_xfer_count.rd_data );
-    utf1e_c: data_capture PORT MAP (clk, csr_init, f1_error_req,		f1_error, 			hwif_in.f1_error.rd_data 		);
-    utf2e_c: data_capture PORT MAP (clk, csr_init, f2_error_req,		f2_error, 			hwif_in.f2_error.rd_data 		);
-    utf1a_c: data_capture PORT MAP (clk, csr_init, f1_nco_adjust_req,	f1_nco_adjust, 		hwif_in.f1_nco_adjust.rd_data	);
-    utf2a_c: data_capture PORT MAP (clk, csr_init, f2_nco_adjust_req,	f2_nco_adjust, 		hwif_in.f2_nco_adjust.rd_data	);
-    utprb_c: data_capture PORT MAP (clk, csr_init, prbs_bits_req,		prbs_bits, 			hwif_in.PRBS_Bit_Count.rd_data	);
-    utpre_c: data_capture PORT MAP (clk, csr_init, prbs_errs_req,		prbs_errs, 			hwif_in.PRBS_Error_Count.rd_data);
-    utlp1_c: data_capture PORT MAP (clk, csr_init, lpf_accum_f1_req,	lpf_accum_f1, 		hwif_in.LPF_Accum_F1.rd_data 	);
-    utlp2_c: data_capture PORT MAP (clk, csr_init, lpf_accum_f2_req,	lpf_accum_f2, 		hwif_in.LPF_Accum_F2.rd_data 	);
-    utpwr_c: data_capture PORT MAP (clk, csr_init, pd_power_req, 		std_logic_vector(resize(unsigned(pd_power),32)),	
-    																						hwif_in.rx_power.rd_data);
+    utbc_c : data_capture PORT MAP (clk, csr_init, tx_bit_counter_req,		tx_bit_counter,		hwif_in.Tx_Bit_Count.data.next_q	);
+    utbe_c : data_capture PORT MAP (clk, csr_init, tx_ena_counter_req,		tx_ena_counter, 	hwif_in.Tx_Enable_Count.data.next_q );
+    utatc_c: data_capture PORT MAP (clk, csr_init, axis_xfer_count_req,		xfer_count, 		hwif_in.axis_xfer_count.data.next_q );
+    utf1e_c: data_capture PORT MAP (clk, csr_init, f1_error_req,			f1_error, 			hwif_in.f1_error.data.next_q		);
+    utf2e_c: data_capture PORT MAP (clk, csr_init, f2_error_req,			f2_error, 			hwif_in.f2_error.data.next_q 		);
+    utf1a_c: data_capture PORT MAP (clk, csr_init, f1_nco_adjust_req,		f1_nco_adjust, 		hwif_in.f1_nco_adjust.data.next_q	);
+    utf2a_c: data_capture PORT MAP (clk, csr_init, f2_nco_adjust_req,		f2_nco_adjust, 		hwif_in.f2_nco_adjust.data.next_q	);
+    utprb_c: data_capture PORT MAP (clk, csr_init, prbs_bits_req,			prbs_bits, 			hwif_in.PRBS_Bit_Count.data.next_q	);
+    utpre_c: data_capture PORT MAP (clk, csr_init, prbs_errs_req,			prbs_errs, 			hwif_in.PRBS_Error_Count.data.next_q);
+    utlp1_c: data_capture PORT MAP (clk, csr_init, lpf_accum_f1_req,		lpf_accum_f1, 		hwif_in.LPF_Accum_F1.data.next_q 	);
+    utlp2_c: data_capture PORT MAP (clk, csr_init, lpf_accum_f2_req,		lpf_accum_f2, 		hwif_in.LPF_Accum_F2.data.next_q 	);
+    utpwr_c: data_capture GENERIC MAP (23)
+    					  PORT MAP (clk, csr_init, pd_power_req, 			pd_power, 			hwif_in.rx_power.data.next_q		);
 
     -- FIFO status reads
-	rx_async_fifo_status_req 				<= hwif_out.rx_async_fifo_rd_wr_ptr.req;
-	hwif_in.rx_async_fifo_rd_wr_ptr.rd_ack	<= rx_async_fifo_status_ack;
-    hwif_in.rx_async_fifo_rd_wr_ptr.rd_data <= std_logic_vector(resize(unsigned(rx_async_fifo_wr_ptr), 16) &
-    															resize(unsigned(rx_async_fifo_rd_ptr), 16));
+	rx_async_fifo_status_req 					<= hwif_out.rx_async_fifo_rd_wr_ptr.data.swmod;
+	hwif_in.rx_async_fifo_rd_wr_ptr.data.we		<= rx_async_fifo_status_ack;
+    hwif_in.rx_async_fifo_rd_wr_ptr.data.next_q <= std_logic_vector(resize(unsigned(rx_async_fifo_wr_ptr), 16) &
+    																resize(unsigned(rx_async_fifo_rd_ptr), 16));
 
-	tx_async_fifo_status_req 				<= hwif_out.tx_async_fifo_rd_wr_ptr.req;
-	hwif_in.tx_async_fifo_rd_wr_ptr.rd_ack	<= tx_async_fifo_status_ack;
-    hwif_in.tx_async_fifo_rd_wr_ptr.rd_data <= std_logic_vector(resize(unsigned(tx_async_fifo_wr_ptr), 16) &
-    															resize(unsigned(tx_async_fifo_rd_ptr), 16));
+	tx_async_fifo_status_req 					<= hwif_out.tx_async_fifo_rd_wr_ptr.data.swmod;
+	hwif_in.tx_async_fifo_rd_wr_ptr.data.we		<= tx_async_fifo_status_ack;
+    hwif_in.tx_async_fifo_rd_wr_ptr.data.next_q <= std_logic_vector(resize(unsigned(tx_async_fifo_wr_ptr), 16) &
+    																resize(unsigned(tx_async_fifo_rd_ptr), 16));
 
     -- Control from AXI to MDM
     u01s: cdc_resync PORT MAP (clk, csr_init, hwif_out.MSK_Init.txrxinit.value, 		  		txrxinit			);

@@ -194,11 +194,11 @@ Don't override. Generated from: msk_top_regs
 
 <p>Modem status data</p>
 
-|Bits|  Identifier  | Access |Reset|    Name    |
-|----|--------------|--------|-----|------------|
-|31:0|tx_bit_counter|r, ruser|  —  |Tx Bit Count|
+|Bits|Identifier|Access|Reset|    Name    |
+|----|----------|------|-----|------------|
+|31:0|   data   |  rw  | 0x0 |Tx Bit Count|
 
-#### tx_bit_counter field
+#### data field
 
 <p>Count of data requests made by modem</p>
 
@@ -210,11 +210,11 @@ Don't override. Generated from: msk_top_regs
 
 <p>Modem status data</p>
 
-|Bits|  Identifier  | Access |Reset|      Name     |
-|----|--------------|--------|-----|---------------|
-|31:0|tx_ena_counter|r, ruser| 0x0 |Tx Enable Count|
+|Bits|Identifier|Access|Reset|      Name     |
+|----|----------|------|-----|---------------|
+|31:0|   data   |  rw  | 0x0 |Tx Enable Count|
 
-#### tx_ena_counter field
+#### data field
 
 <p>Number of clocks on which Tx Enable is active</p>
 
@@ -483,11 +483,11 @@ N &gt; 0 : Auto sync after N errors</p>
 
 <p>PRBS Bits Received</p>
 
-|Bits| Identifier|Access|Reset|       Name       |
-|----|-----------|------|-----|------------------|
-|31:0|status_data|   r  | 0x0 |PRBS Bits Received|
+|Bits|Identifier|Access|Reset|       Name       |
+|----|----------|------|-----|------------------|
+|31:0|   data   |  rw  | 0x0 |PRBS Bits Received|
 
-#### status_data field
+#### data field
 
 <p>Number of bits received by the PRBS monitor since last
 BER can be calculated as the ratio of received bits to errored-bits</p>
@@ -500,11 +500,11 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 <p>PRBS Bit Errors</p>
 
-|Bits| Identifier|Access|Reset|      Name     |
-|----|-----------|------|-----|---------------|
-|31:0|status_data|   r  | 0x0 |PRBS Bit Errors|
+|Bits|Identifier|Access|Reset|      Name     |
+|----|----------|------|-----|---------------|
+|31:0|   data   |  rw  | 0x0 |PRBS Bit Errors|
 
-#### status_data field
+#### data field
 
 <p>Number of errored-bits received by the PRBS monitor since last sync
 BER can be calculated as the ratio of received bits to errored-bits</p>
@@ -517,11 +517,11 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 <p>Value of the F1 PI Controller Accumulator</p>
 
-|Bits| Identifier|Access|Reset|              Name             |
-|----|-----------|------|-----|-------------------------------|
-|31:0|status_data|   r  | 0x0 |PI Controller Accumulator Value|
+|Bits|Identifier|Access|Reset|              Name             |
+|----|----------|------|-----|-------------------------------|
+|31:0|   data   |  rw  | 0x0 |PI Controller Accumulator Value|
 
-#### status_data field
+#### data field
 
 <p>PI Controller Accumulator Value</p>
 
@@ -533,11 +533,11 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 <p>Value of the F2 PI Controller Accumulator</p>
 
-|Bits| Identifier|Access|Reset|              Name             |
-|----|-----------|------|-----|-------------------------------|
-|31:0|status_data|   r  | 0x0 |PI Controller Accumulator Value|
+|Bits|Identifier|Access|Reset|              Name             |
+|----|----------|------|-----|-------------------------------|
+|31:0|   data   |  rw  | 0x0 |PI Controller Accumulator Value|
 
-#### status_data field
+#### data field
 
 <p>PI Controller Accumulator Value</p>
 
@@ -551,9 +551,9 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 |Bits|Identifier|Access|Reset|      Name      |
 |----|----------|------|-----|----------------|
-|31:0|xfer_count|   r  | 0x0 |S_AXIS Transfers|
+|31:0|   data   |  rw  | 0x0 |S_AXIS Transfers|
 
-#### xfer_count field
+#### data field
 
 <p>Number completed S_AXIS transfers</p>
 
@@ -607,9 +607,9 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 <p>Frequency offet applied to the F1 NCO</p>
 
-|Bits|Identifier| Access |Reset|          Name         |
-|----|----------|--------|-----|-----------------------|
-|31:0|   data   |r, ruser| 0x0 |F1 NCO Frequency Adjust|
+|Bits|Identifier|Access|Reset|          Name         |
+|----|----------|------|-----|-----------------------|
+|31:0|   data   |  rw  | 0x0 |F1 NCO Frequency Adjust|
 
 #### data field
 
@@ -623,9 +623,9 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 <p>Frequency offet applied to the F2 NCO</p>
 
-|Bits|Identifier| Access |Reset|          Name         |
-|----|----------|--------|-----|-----------------------|
-|31:0|   data   |r, ruser| 0x0 |F2 NCO Frequency Adjust|
+|Bits|Identifier|Access|Reset|          Name         |
+|----|----------|------|-----|-----------------------|
+|31:0|   data   |  rw  | 0x0 |F2 NCO Frequency Adjust|
 
 #### data field
 
@@ -639,9 +639,9 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 <p>Error value of the F1 Costas loop after each active bit period</p>
 
-|Bits|Identifier| Access |Reset|     Name     |
-|----|----------|--------|-----|--------------|
-|31:0|   data   |r, ruser| 0x0 |F1 Error Value|
+|Bits|Identifier|Access|Reset|     Name     |
+|----|----------|------|-----|--------------|
+|31:0|   data   |  rw  | 0x0 |F1 Error Value|
 
 #### data field
 
@@ -655,9 +655,9 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 <p>Error value of the F2 Costas loop after each active bit period</p>
 
-|Bits|Identifier| Access |Reset|     Name     |
-|----|----------|--------|-----|--------------|
-|31:0|   data   |r, ruser| 0x0 |F2 Error Value|
+|Bits|Identifier|Access|Reset|     Name     |
+|----|----------|------|-----|--------------|
+|31:0|   data   |  rw  | 0x0 |F2 Error Value|
 
 #### data field
 
@@ -762,9 +762,9 @@ signal should be sent after PTT is asserted.</p>
 
 |Bits|Identifier|Access|Reset|     Name    |
 |----|----------|------|-----|-------------|
-|22:0| rx_power |   r  | 0x0 |Receive Power|
+|22:0|   data   |  rw  | 0x0 |Receive Power|
 
-#### rx_power field
+#### data field
 
 <p>Value that represent the RMS power of the incoming I;</p>
 
@@ -774,9 +774,9 @@ signal should be sent after PTT is asserted.</p>
 - Base Offset: 0x90
 - Size: 0x4
 
-|Bits|Identifier| Access |Reset|Name|
-|----|----------|--------|-----|----|
-|31:0|   data   |r, ruser| 0x0 |  — |
+|Bits|Identifier|Access|Reset|Name|
+|----|----------|------|-----|----|
+|31:0|   data   |  rw  | 0x0 |  — |
 
 #### data field
 
@@ -789,9 +789,9 @@ Bits 15:00 -&gt; read pointer (12-bits)</p>
 - Base Offset: 0x94
 - Size: 0x4
 
-|Bits|Identifier| Access |Reset|Name|
-|----|----------|--------|-----|----|
-|31:0|   data   |r, ruser| 0x0 |  — |
+|Bits|Identifier|Access|Reset|Name|
+|----|----------|------|-----|----|
+|31:0|   data   |  rw  | 0x0 |  — |
 
 #### data field
 

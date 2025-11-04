@@ -279,6 +279,27 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
 
             
 
+            # register write checks
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.Tx_Bit_Count.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            # up to now the callback should not have been called
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.Tx_Bit_Count.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            register_write_callback.assert_called_once_with(value=random_value)
+            register_read_callback.assert_not_called()
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.Tx_Bit_Count.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            self.assertEqual(await self.dut.Tx_Bit_Count.read(), random_value)
+            
             
 
         # test access operations (read and/or write) to register:
@@ -313,6 +334,27 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
 
             
 
+            # register write checks
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.Tx_Enable_Count.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            # up to now the callback should not have been called
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.Tx_Enable_Count.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            register_write_callback.assert_called_once_with(value=random_value)
+            register_read_callback.assert_not_called()
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.Tx_Enable_Count.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            self.assertEqual(await self.dut.Tx_Enable_Count.read(), random_value)
+            
             
 
         # test access operations (read and/or write) to register:
@@ -1062,6 +1104,27 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
 
             
 
+            # register write checks
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.PRBS_Bit_Count.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            # up to now the callback should not have been called
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.PRBS_Bit_Count.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            register_write_callback.assert_called_once_with(value=random_value)
+            register_read_callback.assert_not_called()
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.PRBS_Bit_Count.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            self.assertEqual(await self.dut.PRBS_Bit_Count.read(), random_value)
+            
             
 
         # test access operations (read and/or write) to register:
@@ -1096,6 +1159,27 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
 
             
 
+            # register write checks
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.PRBS_Error_Count.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            # up to now the callback should not have been called
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.PRBS_Error_Count.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            register_write_callback.assert_called_once_with(value=random_value)
+            register_read_callback.assert_not_called()
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.PRBS_Error_Count.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            self.assertEqual(await self.dut.PRBS_Error_Count.read(), random_value)
+            
             
 
         # test access operations (read and/or write) to register:
@@ -1130,6 +1214,27 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
 
             
 
+            # register write checks
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.LPF_Accum_F1.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            # up to now the callback should not have been called
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.LPF_Accum_F1.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            register_write_callback.assert_called_once_with(value=random_value)
+            register_read_callback.assert_not_called()
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.LPF_Accum_F1.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            self.assertEqual(await self.dut.LPF_Accum_F1.read(), random_value)
+            
             
 
         # test access operations (read and/or write) to register:
@@ -1164,6 +1269,27 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
 
             
 
+            # register write checks
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.LPF_Accum_F2.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            # up to now the callback should not have been called
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.LPF_Accum_F2.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            register_write_callback.assert_called_once_with(value=random_value)
+            register_read_callback.assert_not_called()
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.LPF_Accum_F2.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            self.assertEqual(await self.dut.LPF_Accum_F2.read(), random_value)
+            
             
 
         # test access operations (read and/or write) to register:
@@ -1198,6 +1324,27 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
 
             
 
+            # register write checks
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.axis_xfer_count.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            # up to now the callback should not have been called
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.axis_xfer_count.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            register_write_callback.assert_called_once_with(value=random_value)
+            register_read_callback.assert_not_called()
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.axis_xfer_count.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            self.assertEqual(await self.dut.axis_xfer_count.read(), random_value)
+            
             
 
         # test access operations (read and/or write) to register:
@@ -1342,6 +1489,27 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
 
             
 
+            # register write checks
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.f1_nco_adjust.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            # up to now the callback should not have been called
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.f1_nco_adjust.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            register_write_callback.assert_called_once_with(value=random_value)
+            register_read_callback.assert_not_called()
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.f1_nco_adjust.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            self.assertEqual(await self.dut.f1_nco_adjust.read(), random_value)
+            
             
 
         # test access operations (read and/or write) to register:
@@ -1376,6 +1544,27 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
 
             
 
+            # register write checks
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.f2_nco_adjust.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            # up to now the callback should not have been called
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.f2_nco_adjust.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            register_write_callback.assert_called_once_with(value=random_value)
+            register_read_callback.assert_not_called()
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.f2_nco_adjust.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            self.assertEqual(await self.dut.f2_nco_adjust.read(), random_value)
+            
             
 
         # test access operations (read and/or write) to register:
@@ -1410,6 +1599,27 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
 
             
 
+            # register write checks
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.f1_error.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            # up to now the callback should not have been called
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.f1_error.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            register_write_callback.assert_called_once_with(value=random_value)
+            register_read_callback.assert_not_called()
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.f1_error.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            self.assertEqual(await self.dut.f1_error.read(), random_value)
+            
             
 
         # test access operations (read and/or write) to register:
@@ -1444,6 +1654,27 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
 
             
 
+            # register write checks
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.f2_error.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            # up to now the callback should not have been called
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.f2_error.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            register_write_callback.assert_called_once_with(value=random_value)
+            register_read_callback.assert_not_called()
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.f2_error.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            self.assertEqual(await self.dut.f2_error.read(), random_value)
+            
             
 
         # test access operations (read and/or write) to register:
@@ -1698,6 +1929,27 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
 
             
 
+            # register write checks
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.rx_power.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            # up to now the callback should not have been called
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.rx_power.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            register_write_callback.assert_called_once_with(value=random_value)
+            register_read_callback.assert_not_called()
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.rx_power.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            self.assertEqual(await self.dut.rx_power.read(), random_value)
+            
             
 
         # test access operations (read and/or write) to register:
@@ -1732,6 +1984,27 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
 
             
 
+            # register write checks
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.tx_async_fifo_rd_wr_ptr.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            # up to now the callback should not have been called
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.tx_async_fifo_rd_wr_ptr.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            register_write_callback.assert_called_once_with(value=random_value)
+            register_read_callback.assert_not_called()
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.tx_async_fifo_rd_wr_ptr.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            self.assertEqual(await self.dut.tx_async_fifo_rd_wr_ptr.read(), random_value)
+            
             
 
         # test access operations (read and/or write) to register:
@@ -1766,6 +2039,27 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
 
             
 
+            # register write checks
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.rx_async_fifo_rd_wr_ptr.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            # up to now the callback should not have been called
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.rx_async_fifo_rd_wr_ptr.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            register_write_callback.assert_called_once_with(value=random_value)
+            register_read_callback.assert_not_called()
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.rx_async_fifo_rd_wr_ptr.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            self.assertEqual(await self.dut.rx_async_fifo_rd_wr_ptr.read(), random_value)
+            
             
 
         
@@ -3148,11 +3442,11 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
             
 
         # test access operations (read and/or write) to register:
-        # msk_top_regs.Tx_Bit_Count.tx_bit_counter
-        with self.subTest(msg='field: msk_top_regs.Tx_Bit_Count.tx_bit_counter'):
+        # msk_top_regs.Tx_Bit_Count.data
+        with self.subTest(msg='field: msk_top_regs.Tx_Bit_Count.data'):
             sim_register = self.sim.register_by_full_name('msk_top_regs.Tx_Bit_Count')
             self.assertIsInstance(sim_register, (Register,MemoryRegister))
-            sim_field = self.sim.field_by_full_name('msk_top_regs.Tx_Bit_Count.tx_bit_counter')
+            sim_field = self.sim.field_by_full_name('msk_top_regs.Tx_Bit_Count.data')
             self.assertIsInstance(sim_field, Field)
             register_read_callback = Mock()
             register_write_callback = Mock()
@@ -3166,14 +3460,14 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
                 
             
             sim_register.value = random_value
-            self.assertEqual(await self.dut.Tx_Bit_Count.tx_bit_counter.read(), random_field_value)
+            self.assertEqual(await self.dut.Tx_Bit_Count.data.read(), random_field_value)
             # update the field value via the backdoor in the simulator
             previous_register_value = random_value
             random_field_value = random.randrange(0, 0xFFFFFFFF+1)
             sim_field.value = random_field_value
             self.assertEqual(sim_register.value, (previous_register_value & 0x0) | (random_field_value << 0))
             
-            self.assertEqual(await self.dut.Tx_Bit_Count.tx_bit_counter.read(), random_field_value)
+            self.assertEqual(await self.dut.Tx_Bit_Count.data.read(), random_field_value)
             # hook up the call backs to check they work correctly
             random_value = random.randrange(0, 0xFFFFFFFF+1)
             random_field_value = (random_value & 0xFFFFFFFF) >> 0
@@ -3184,7 +3478,7 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
             sim_register.write_callback = register_write_callback
             sim_field.read_callback = field_read_callback
             sim_field.write_callback = field_write_callback
-            self.assertEqual(await self.dut.Tx_Bit_Count.tx_bit_counter.read(), random_field_value)
+            self.assertEqual(await self.dut.Tx_Bit_Count.data.read(), random_field_value)
             register_write_callback.assert_not_called()
             register_read_callback.assert_called_once_with(value=random_value)
             field_write_callback.assert_not_called()
@@ -3204,21 +3498,68 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
                 
             
             sim_register.value = random_value
-            self.assertEqual(await self.dut.Tx_Bit_Count.tx_bit_counter.read(), random_field_value)
+            self.assertEqual(await self.dut.Tx_Bit_Count.data.read(), random_field_value)
             register_write_callback.assert_not_called()
             register_read_callback.assert_not_called()
             field_write_callback.assert_not_called()
             field_read_callback.assert_not_called()
             
 
+            # register write checks
+            # update the register value via the backdoor in the simulator, then perform a field
+            # write and make sure it is updated
+            inital_reg_random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = inital_reg_random_value
+            
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.Tx_Bit_Count.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # hook up the call backs
+            sim_register.read_callback = None
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = None
+            sim_field.write_callback = field_write_callback
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.Tx_Bit_Count.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            register_write_callback.assert_called_once_with(value=(reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            field_write_callback.assert_called_once_with(value=random_field_value)
+            
+            register_read_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.write_callback = None
+            sim_field.write_callback = None
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.Tx_Bit_Count.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
             
 
         # test access operations (read and/or write) to register:
-        # msk_top_regs.Tx_Enable_Count.tx_ena_counter
-        with self.subTest(msg='field: msk_top_regs.Tx_Enable_Count.tx_ena_counter'):
+        # msk_top_regs.Tx_Enable_Count.data
+        with self.subTest(msg='field: msk_top_regs.Tx_Enable_Count.data'):
             sim_register = self.sim.register_by_full_name('msk_top_regs.Tx_Enable_Count')
             self.assertIsInstance(sim_register, (Register,MemoryRegister))
-            sim_field = self.sim.field_by_full_name('msk_top_regs.Tx_Enable_Count.tx_ena_counter')
+            sim_field = self.sim.field_by_full_name('msk_top_regs.Tx_Enable_Count.data')
             self.assertIsInstance(sim_field, Field)
             register_read_callback = Mock()
             register_write_callback = Mock()
@@ -3232,14 +3573,14 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
                 
             
             sim_register.value = random_value
-            self.assertEqual(await self.dut.Tx_Enable_Count.tx_ena_counter.read(), random_field_value)
+            self.assertEqual(await self.dut.Tx_Enable_Count.data.read(), random_field_value)
             # update the field value via the backdoor in the simulator
             previous_register_value = random_value
             random_field_value = random.randrange(0, 0xFFFFFFFF+1)
             sim_field.value = random_field_value
             self.assertEqual(sim_register.value, (previous_register_value & 0x0) | (random_field_value << 0))
             
-            self.assertEqual(await self.dut.Tx_Enable_Count.tx_ena_counter.read(), random_field_value)
+            self.assertEqual(await self.dut.Tx_Enable_Count.data.read(), random_field_value)
             # hook up the call backs to check they work correctly
             random_value = random.randrange(0, 0xFFFFFFFF+1)
             random_field_value = (random_value & 0xFFFFFFFF) >> 0
@@ -3250,7 +3591,7 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
             sim_register.write_callback = register_write_callback
             sim_field.read_callback = field_read_callback
             sim_field.write_callback = field_write_callback
-            self.assertEqual(await self.dut.Tx_Enable_Count.tx_ena_counter.read(), random_field_value)
+            self.assertEqual(await self.dut.Tx_Enable_Count.data.read(), random_field_value)
             register_write_callback.assert_not_called()
             register_read_callback.assert_called_once_with(value=random_value)
             field_write_callback.assert_not_called()
@@ -3270,13 +3611,60 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
                 
             
             sim_register.value = random_value
-            self.assertEqual(await self.dut.Tx_Enable_Count.tx_ena_counter.read(), random_field_value)
+            self.assertEqual(await self.dut.Tx_Enable_Count.data.read(), random_field_value)
             register_write_callback.assert_not_called()
             register_read_callback.assert_not_called()
             field_write_callback.assert_not_called()
             field_read_callback.assert_not_called()
             
 
+            # register write checks
+            # update the register value via the backdoor in the simulator, then perform a field
+            # write and make sure it is updated
+            inital_reg_random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = inital_reg_random_value
+            
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.Tx_Enable_Count.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # hook up the call backs
+            sim_register.read_callback = None
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = None
+            sim_field.write_callback = field_write_callback
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.Tx_Enable_Count.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            register_write_callback.assert_called_once_with(value=(reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            field_write_callback.assert_called_once_with(value=random_field_value)
+            
+            register_read_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.write_callback = None
+            sim_field.write_callback = None
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.Tx_Enable_Count.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
             
 
         # test access operations (read and/or write) to register:
@@ -5634,11 +6022,11 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
             
 
         # test access operations (read and/or write) to register:
-        # msk_top_regs.PRBS_Bit_Count.status_data
-        with self.subTest(msg='field: msk_top_regs.PRBS_Bit_Count.status_data'):
+        # msk_top_regs.PRBS_Bit_Count.data
+        with self.subTest(msg='field: msk_top_regs.PRBS_Bit_Count.data'):
             sim_register = self.sim.register_by_full_name('msk_top_regs.PRBS_Bit_Count')
             self.assertIsInstance(sim_register, (Register,MemoryRegister))
-            sim_field = self.sim.field_by_full_name('msk_top_regs.PRBS_Bit_Count.status_data')
+            sim_field = self.sim.field_by_full_name('msk_top_regs.PRBS_Bit_Count.data')
             self.assertIsInstance(sim_field, Field)
             register_read_callback = Mock()
             register_write_callback = Mock()
@@ -5652,14 +6040,14 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
                 
             
             sim_register.value = random_value
-            self.assertEqual(await self.dut.PRBS_Bit_Count.status_data.read(), random_field_value)
+            self.assertEqual(await self.dut.PRBS_Bit_Count.data.read(), random_field_value)
             # update the field value via the backdoor in the simulator
             previous_register_value = random_value
             random_field_value = random.randrange(0, 0xFFFFFFFF+1)
             sim_field.value = random_field_value
             self.assertEqual(sim_register.value, (previous_register_value & 0x0) | (random_field_value << 0))
             
-            self.assertEqual(await self.dut.PRBS_Bit_Count.status_data.read(), random_field_value)
+            self.assertEqual(await self.dut.PRBS_Bit_Count.data.read(), random_field_value)
             # hook up the call backs to check they work correctly
             random_value = random.randrange(0, 0xFFFFFFFF+1)
             random_field_value = (random_value & 0xFFFFFFFF) >> 0
@@ -5670,7 +6058,7 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
             sim_register.write_callback = register_write_callback
             sim_field.read_callback = field_read_callback
             sim_field.write_callback = field_write_callback
-            self.assertEqual(await self.dut.PRBS_Bit_Count.status_data.read(), random_field_value)
+            self.assertEqual(await self.dut.PRBS_Bit_Count.data.read(), random_field_value)
             register_write_callback.assert_not_called()
             register_read_callback.assert_called_once_with(value=random_value)
             field_write_callback.assert_not_called()
@@ -5690,21 +6078,68 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
                 
             
             sim_register.value = random_value
-            self.assertEqual(await self.dut.PRBS_Bit_Count.status_data.read(), random_field_value)
+            self.assertEqual(await self.dut.PRBS_Bit_Count.data.read(), random_field_value)
             register_write_callback.assert_not_called()
             register_read_callback.assert_not_called()
             field_write_callback.assert_not_called()
             field_read_callback.assert_not_called()
             
 
+            # register write checks
+            # update the register value via the backdoor in the simulator, then perform a field
+            # write and make sure it is updated
+            inital_reg_random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = inital_reg_random_value
+            
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.PRBS_Bit_Count.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # hook up the call backs
+            sim_register.read_callback = None
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = None
+            sim_field.write_callback = field_write_callback
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.PRBS_Bit_Count.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            register_write_callback.assert_called_once_with(value=(reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            field_write_callback.assert_called_once_with(value=random_field_value)
+            
+            register_read_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.write_callback = None
+            sim_field.write_callback = None
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.PRBS_Bit_Count.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
             
 
         # test access operations (read and/or write) to register:
-        # msk_top_regs.PRBS_Error_Count.status_data
-        with self.subTest(msg='field: msk_top_regs.PRBS_Error_Count.status_data'):
+        # msk_top_regs.PRBS_Error_Count.data
+        with self.subTest(msg='field: msk_top_regs.PRBS_Error_Count.data'):
             sim_register = self.sim.register_by_full_name('msk_top_regs.PRBS_Error_Count')
             self.assertIsInstance(sim_register, (Register,MemoryRegister))
-            sim_field = self.sim.field_by_full_name('msk_top_regs.PRBS_Error_Count.status_data')
+            sim_field = self.sim.field_by_full_name('msk_top_regs.PRBS_Error_Count.data')
             self.assertIsInstance(sim_field, Field)
             register_read_callback = Mock()
             register_write_callback = Mock()
@@ -5718,14 +6153,14 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
                 
             
             sim_register.value = random_value
-            self.assertEqual(await self.dut.PRBS_Error_Count.status_data.read(), random_field_value)
+            self.assertEqual(await self.dut.PRBS_Error_Count.data.read(), random_field_value)
             # update the field value via the backdoor in the simulator
             previous_register_value = random_value
             random_field_value = random.randrange(0, 0xFFFFFFFF+1)
             sim_field.value = random_field_value
             self.assertEqual(sim_register.value, (previous_register_value & 0x0) | (random_field_value << 0))
             
-            self.assertEqual(await self.dut.PRBS_Error_Count.status_data.read(), random_field_value)
+            self.assertEqual(await self.dut.PRBS_Error_Count.data.read(), random_field_value)
             # hook up the call backs to check they work correctly
             random_value = random.randrange(0, 0xFFFFFFFF+1)
             random_field_value = (random_value & 0xFFFFFFFF) >> 0
@@ -5736,7 +6171,7 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
             sim_register.write_callback = register_write_callback
             sim_field.read_callback = field_read_callback
             sim_field.write_callback = field_write_callback
-            self.assertEqual(await self.dut.PRBS_Error_Count.status_data.read(), random_field_value)
+            self.assertEqual(await self.dut.PRBS_Error_Count.data.read(), random_field_value)
             register_write_callback.assert_not_called()
             register_read_callback.assert_called_once_with(value=random_value)
             field_write_callback.assert_not_called()
@@ -5756,21 +6191,68 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
                 
             
             sim_register.value = random_value
-            self.assertEqual(await self.dut.PRBS_Error_Count.status_data.read(), random_field_value)
+            self.assertEqual(await self.dut.PRBS_Error_Count.data.read(), random_field_value)
             register_write_callback.assert_not_called()
             register_read_callback.assert_not_called()
             field_write_callback.assert_not_called()
             field_read_callback.assert_not_called()
             
 
+            # register write checks
+            # update the register value via the backdoor in the simulator, then perform a field
+            # write and make sure it is updated
+            inital_reg_random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = inital_reg_random_value
+            
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.PRBS_Error_Count.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # hook up the call backs
+            sim_register.read_callback = None
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = None
+            sim_field.write_callback = field_write_callback
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.PRBS_Error_Count.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            register_write_callback.assert_called_once_with(value=(reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            field_write_callback.assert_called_once_with(value=random_field_value)
+            
+            register_read_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.write_callback = None
+            sim_field.write_callback = None
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.PRBS_Error_Count.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
             
 
         # test access operations (read and/or write) to register:
-        # msk_top_regs.LPF_Accum_F1.status_data
-        with self.subTest(msg='field: msk_top_regs.LPF_Accum_F1.status_data'):
+        # msk_top_regs.LPF_Accum_F1.data
+        with self.subTest(msg='field: msk_top_regs.LPF_Accum_F1.data'):
             sim_register = self.sim.register_by_full_name('msk_top_regs.LPF_Accum_F1')
             self.assertIsInstance(sim_register, (Register,MemoryRegister))
-            sim_field = self.sim.field_by_full_name('msk_top_regs.LPF_Accum_F1.status_data')
+            sim_field = self.sim.field_by_full_name('msk_top_regs.LPF_Accum_F1.data')
             self.assertIsInstance(sim_field, Field)
             register_read_callback = Mock()
             register_write_callback = Mock()
@@ -5784,14 +6266,14 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
                 
             
             sim_register.value = random_value
-            self.assertEqual(await self.dut.LPF_Accum_F1.status_data.read(), random_field_value)
+            self.assertEqual(await self.dut.LPF_Accum_F1.data.read(), random_field_value)
             # update the field value via the backdoor in the simulator
             previous_register_value = random_value
             random_field_value = random.randrange(0, 0xFFFFFFFF+1)
             sim_field.value = random_field_value
             self.assertEqual(sim_register.value, (previous_register_value & 0x0) | (random_field_value << 0))
             
-            self.assertEqual(await self.dut.LPF_Accum_F1.status_data.read(), random_field_value)
+            self.assertEqual(await self.dut.LPF_Accum_F1.data.read(), random_field_value)
             # hook up the call backs to check they work correctly
             random_value = random.randrange(0, 0xFFFFFFFF+1)
             random_field_value = (random_value & 0xFFFFFFFF) >> 0
@@ -5802,7 +6284,7 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
             sim_register.write_callback = register_write_callback
             sim_field.read_callback = field_read_callback
             sim_field.write_callback = field_write_callback
-            self.assertEqual(await self.dut.LPF_Accum_F1.status_data.read(), random_field_value)
+            self.assertEqual(await self.dut.LPF_Accum_F1.data.read(), random_field_value)
             register_write_callback.assert_not_called()
             register_read_callback.assert_called_once_with(value=random_value)
             field_write_callback.assert_not_called()
@@ -5822,21 +6304,68 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
                 
             
             sim_register.value = random_value
-            self.assertEqual(await self.dut.LPF_Accum_F1.status_data.read(), random_field_value)
+            self.assertEqual(await self.dut.LPF_Accum_F1.data.read(), random_field_value)
             register_write_callback.assert_not_called()
             register_read_callback.assert_not_called()
             field_write_callback.assert_not_called()
             field_read_callback.assert_not_called()
             
 
+            # register write checks
+            # update the register value via the backdoor in the simulator, then perform a field
+            # write and make sure it is updated
+            inital_reg_random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = inital_reg_random_value
+            
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.LPF_Accum_F1.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # hook up the call backs
+            sim_register.read_callback = None
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = None
+            sim_field.write_callback = field_write_callback
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.LPF_Accum_F1.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            register_write_callback.assert_called_once_with(value=(reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            field_write_callback.assert_called_once_with(value=random_field_value)
+            
+            register_read_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.write_callback = None
+            sim_field.write_callback = None
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.LPF_Accum_F1.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
             
 
         # test access operations (read and/or write) to register:
-        # msk_top_regs.LPF_Accum_F2.status_data
-        with self.subTest(msg='field: msk_top_regs.LPF_Accum_F2.status_data'):
+        # msk_top_regs.LPF_Accum_F2.data
+        with self.subTest(msg='field: msk_top_regs.LPF_Accum_F2.data'):
             sim_register = self.sim.register_by_full_name('msk_top_regs.LPF_Accum_F2')
             self.assertIsInstance(sim_register, (Register,MemoryRegister))
-            sim_field = self.sim.field_by_full_name('msk_top_regs.LPF_Accum_F2.status_data')
+            sim_field = self.sim.field_by_full_name('msk_top_regs.LPF_Accum_F2.data')
             self.assertIsInstance(sim_field, Field)
             register_read_callback = Mock()
             register_write_callback = Mock()
@@ -5850,14 +6379,14 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
                 
             
             sim_register.value = random_value
-            self.assertEqual(await self.dut.LPF_Accum_F2.status_data.read(), random_field_value)
+            self.assertEqual(await self.dut.LPF_Accum_F2.data.read(), random_field_value)
             # update the field value via the backdoor in the simulator
             previous_register_value = random_value
             random_field_value = random.randrange(0, 0xFFFFFFFF+1)
             sim_field.value = random_field_value
             self.assertEqual(sim_register.value, (previous_register_value & 0x0) | (random_field_value << 0))
             
-            self.assertEqual(await self.dut.LPF_Accum_F2.status_data.read(), random_field_value)
+            self.assertEqual(await self.dut.LPF_Accum_F2.data.read(), random_field_value)
             # hook up the call backs to check they work correctly
             random_value = random.randrange(0, 0xFFFFFFFF+1)
             random_field_value = (random_value & 0xFFFFFFFF) >> 0
@@ -5868,7 +6397,7 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
             sim_register.write_callback = register_write_callback
             sim_field.read_callback = field_read_callback
             sim_field.write_callback = field_write_callback
-            self.assertEqual(await self.dut.LPF_Accum_F2.status_data.read(), random_field_value)
+            self.assertEqual(await self.dut.LPF_Accum_F2.data.read(), random_field_value)
             register_write_callback.assert_not_called()
             register_read_callback.assert_called_once_with(value=random_value)
             field_write_callback.assert_not_called()
@@ -5888,21 +6417,68 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
                 
             
             sim_register.value = random_value
-            self.assertEqual(await self.dut.LPF_Accum_F2.status_data.read(), random_field_value)
+            self.assertEqual(await self.dut.LPF_Accum_F2.data.read(), random_field_value)
             register_write_callback.assert_not_called()
             register_read_callback.assert_not_called()
             field_write_callback.assert_not_called()
             field_read_callback.assert_not_called()
             
 
+            # register write checks
+            # update the register value via the backdoor in the simulator, then perform a field
+            # write and make sure it is updated
+            inital_reg_random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = inital_reg_random_value
+            
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.LPF_Accum_F2.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # hook up the call backs
+            sim_register.read_callback = None
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = None
+            sim_field.write_callback = field_write_callback
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.LPF_Accum_F2.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            register_write_callback.assert_called_once_with(value=(reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            field_write_callback.assert_called_once_with(value=random_field_value)
+            
+            register_read_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.write_callback = None
+            sim_field.write_callback = None
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.LPF_Accum_F2.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
             
 
         # test access operations (read and/or write) to register:
-        # msk_top_regs.axis_xfer_count.xfer_count
-        with self.subTest(msg='field: msk_top_regs.axis_xfer_count.xfer_count'):
+        # msk_top_regs.axis_xfer_count.data
+        with self.subTest(msg='field: msk_top_regs.axis_xfer_count.data'):
             sim_register = self.sim.register_by_full_name('msk_top_regs.axis_xfer_count')
             self.assertIsInstance(sim_register, (Register,MemoryRegister))
-            sim_field = self.sim.field_by_full_name('msk_top_regs.axis_xfer_count.xfer_count')
+            sim_field = self.sim.field_by_full_name('msk_top_regs.axis_xfer_count.data')
             self.assertIsInstance(sim_field, Field)
             register_read_callback = Mock()
             register_write_callback = Mock()
@@ -5916,14 +6492,14 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
                 
             
             sim_register.value = random_value
-            self.assertEqual(await self.dut.axis_xfer_count.xfer_count.read(), random_field_value)
+            self.assertEqual(await self.dut.axis_xfer_count.data.read(), random_field_value)
             # update the field value via the backdoor in the simulator
             previous_register_value = random_value
             random_field_value = random.randrange(0, 0xFFFFFFFF+1)
             sim_field.value = random_field_value
             self.assertEqual(sim_register.value, (previous_register_value & 0x0) | (random_field_value << 0))
             
-            self.assertEqual(await self.dut.axis_xfer_count.xfer_count.read(), random_field_value)
+            self.assertEqual(await self.dut.axis_xfer_count.data.read(), random_field_value)
             # hook up the call backs to check they work correctly
             random_value = random.randrange(0, 0xFFFFFFFF+1)
             random_field_value = (random_value & 0xFFFFFFFF) >> 0
@@ -5934,7 +6510,7 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
             sim_register.write_callback = register_write_callback
             sim_field.read_callback = field_read_callback
             sim_field.write_callback = field_write_callback
-            self.assertEqual(await self.dut.axis_xfer_count.xfer_count.read(), random_field_value)
+            self.assertEqual(await self.dut.axis_xfer_count.data.read(), random_field_value)
             register_write_callback.assert_not_called()
             register_read_callback.assert_called_once_with(value=random_value)
             field_write_callback.assert_not_called()
@@ -5954,13 +6530,60 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
                 
             
             sim_register.value = random_value
-            self.assertEqual(await self.dut.axis_xfer_count.xfer_count.read(), random_field_value)
+            self.assertEqual(await self.dut.axis_xfer_count.data.read(), random_field_value)
             register_write_callback.assert_not_called()
             register_read_callback.assert_not_called()
             field_write_callback.assert_not_called()
             field_read_callback.assert_not_called()
             
 
+            # register write checks
+            # update the register value via the backdoor in the simulator, then perform a field
+            # write and make sure it is updated
+            inital_reg_random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = inital_reg_random_value
+            
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.axis_xfer_count.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # hook up the call backs
+            sim_register.read_callback = None
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = None
+            sim_field.write_callback = field_write_callback
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.axis_xfer_count.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            register_write_callback.assert_called_once_with(value=(reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            field_write_callback.assert_called_once_with(value=random_field_value)
+            
+            register_read_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.write_callback = None
+            sim_field.write_callback = None
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.axis_xfer_count.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
             
 
         # test access operations (read and/or write) to register:
@@ -6479,6 +7102,53 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
             field_read_callback.assert_not_called()
             
 
+            # register write checks
+            # update the register value via the backdoor in the simulator, then perform a field
+            # write and make sure it is updated
+            inital_reg_random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = inital_reg_random_value
+            
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.f1_nco_adjust.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # hook up the call backs
+            sim_register.read_callback = None
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = None
+            sim_field.write_callback = field_write_callback
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.f1_nco_adjust.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            register_write_callback.assert_called_once_with(value=(reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            field_write_callback.assert_called_once_with(value=random_field_value)
+            
+            register_read_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.write_callback = None
+            sim_field.write_callback = None
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.f1_nco_adjust.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
             
 
         # test access operations (read and/or write) to register:
@@ -6545,6 +7215,53 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
             field_read_callback.assert_not_called()
             
 
+            # register write checks
+            # update the register value via the backdoor in the simulator, then perform a field
+            # write and make sure it is updated
+            inital_reg_random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = inital_reg_random_value
+            
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.f2_nco_adjust.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # hook up the call backs
+            sim_register.read_callback = None
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = None
+            sim_field.write_callback = field_write_callback
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.f2_nco_adjust.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            register_write_callback.assert_called_once_with(value=(reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            field_write_callback.assert_called_once_with(value=random_field_value)
+            
+            register_read_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.write_callback = None
+            sim_field.write_callback = None
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.f2_nco_adjust.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
             
 
         # test access operations (read and/or write) to register:
@@ -6611,6 +7328,53 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
             field_read_callback.assert_not_called()
             
 
+            # register write checks
+            # update the register value via the backdoor in the simulator, then perform a field
+            # write and make sure it is updated
+            inital_reg_random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = inital_reg_random_value
+            
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.f1_error.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # hook up the call backs
+            sim_register.read_callback = None
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = None
+            sim_field.write_callback = field_write_callback
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.f1_error.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            register_write_callback.assert_called_once_with(value=(reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            field_write_callback.assert_called_once_with(value=random_field_value)
+            
+            register_read_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.write_callback = None
+            sim_field.write_callback = None
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.f1_error.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
             
 
         # test access operations (read and/or write) to register:
@@ -6677,6 +7441,53 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
             field_read_callback.assert_not_called()
             
 
+            # register write checks
+            # update the register value via the backdoor in the simulator, then perform a field
+            # write and make sure it is updated
+            inital_reg_random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = inital_reg_random_value
+            
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.f2_error.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # hook up the call backs
+            sim_register.read_callback = None
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = None
+            sim_field.write_callback = field_write_callback
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.f2_error.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            register_write_callback.assert_called_once_with(value=(reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            field_write_callback.assert_called_once_with(value=random_field_value)
+            
+            register_read_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.write_callback = None
+            sim_field.write_callback = None
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.f2_error.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
             
 
         # test access operations (read and/or write) to register:
@@ -7495,11 +8306,11 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
             
 
         # test access operations (read and/or write) to register:
-        # msk_top_regs.rx_power.rx_power
-        with self.subTest(msg='field: msk_top_regs.rx_power.rx_power'):
+        # msk_top_regs.rx_power.data
+        with self.subTest(msg='field: msk_top_regs.rx_power.data'):
             sim_register = self.sim.register_by_full_name('msk_top_regs.rx_power')
             self.assertIsInstance(sim_register, (Register,MemoryRegister))
-            sim_field = self.sim.field_by_full_name('msk_top_regs.rx_power.rx_power')
+            sim_field = self.sim.field_by_full_name('msk_top_regs.rx_power.data')
             self.assertIsInstance(sim_field, Field)
             register_read_callback = Mock()
             register_write_callback = Mock()
@@ -7513,14 +8324,14 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
                 
             
             sim_register.value = random_value
-            self.assertEqual(await self.dut.rx_power.rx_power.read(), random_field_value)
+            self.assertEqual(await self.dut.rx_power.data.read(), random_field_value)
             # update the field value via the backdoor in the simulator
             previous_register_value = random_value
             random_field_value = random.randrange(0, 0x7FFFFF+1)
             sim_field.value = random_field_value
             self.assertEqual(sim_register.value, (previous_register_value & 0xFF800000) | (random_field_value << 0))
             
-            self.assertEqual(await self.dut.rx_power.rx_power.read(), random_field_value)
+            self.assertEqual(await self.dut.rx_power.data.read(), random_field_value)
             # hook up the call backs to check they work correctly
             random_value = random.randrange(0, 0xFFFFFFFF+1)
             random_field_value = (random_value & 0x7FFFFF) >> 0
@@ -7531,7 +8342,7 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
             sim_register.write_callback = register_write_callback
             sim_field.read_callback = field_read_callback
             sim_field.write_callback = field_write_callback
-            self.assertEqual(await self.dut.rx_power.rx_power.read(), random_field_value)
+            self.assertEqual(await self.dut.rx_power.data.read(), random_field_value)
             register_write_callback.assert_not_called()
             register_read_callback.assert_called_once_with(value=random_value)
             field_write_callback.assert_not_called()
@@ -7551,13 +8362,60 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
                 
             
             sim_register.value = random_value
-            self.assertEqual(await self.dut.rx_power.rx_power.read(), random_field_value)
+            self.assertEqual(await self.dut.rx_power.data.read(), random_field_value)
             register_write_callback.assert_not_called()
             register_read_callback.assert_not_called()
             field_write_callback.assert_not_called()
             field_read_callback.assert_not_called()
             
 
+            # register write checks
+            # update the register value via the backdoor in the simulator, then perform a field
+            # write and make sure it is updated
+            inital_reg_random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = inital_reg_random_value
+            
+            random_field_value = random.randrange(0, 0x7FFFFF+1)
+            
+            await self.dut.rx_power.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0xFF800000) | (0x7FFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # hook up the call backs
+            sim_register.read_callback = None
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = None
+            sim_field.write_callback = field_write_callback
+            random_field_value = random.randrange(0, 0x7FFFFF+1)
+            
+            await self.dut.rx_power.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0xFF800000) | (0x7FFFFF & (random_field_value << 0)))
+            register_write_callback.assert_called_once_with(value=(reg_random_value & 0xFF800000) | (0x7FFFFF & (random_field_value << 0)))
+            field_write_callback.assert_called_once_with(value=random_field_value)
+            
+            register_read_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.write_callback = None
+            sim_field.write_callback = None
+            random_field_value = random.randrange(0, 0x7FFFFF+1)
+            
+            await self.dut.rx_power.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0xFF800000) | (0x7FFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
             
 
         # test access operations (read and/or write) to register:
@@ -7624,6 +8482,53 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
             field_read_callback.assert_not_called()
             
 
+            # register write checks
+            # update the register value via the backdoor in the simulator, then perform a field
+            # write and make sure it is updated
+            inital_reg_random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = inital_reg_random_value
+            
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.tx_async_fifo_rd_wr_ptr.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # hook up the call backs
+            sim_register.read_callback = None
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = None
+            sim_field.write_callback = field_write_callback
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.tx_async_fifo_rd_wr_ptr.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            register_write_callback.assert_called_once_with(value=(reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            field_write_callback.assert_called_once_with(value=random_field_value)
+            
+            register_read_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.write_callback = None
+            sim_field.write_callback = None
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.tx_async_fifo_rd_wr_ptr.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
             
 
         # test access operations (read and/or write) to register:
@@ -7690,6 +8595,53 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
             field_read_callback.assert_not_called()
             
 
+            # register write checks
+            # update the register value via the backdoor in the simulator, then perform a field
+            # write and make sure it is updated
+            inital_reg_random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = inital_reg_random_value
+            
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.rx_async_fifo_rd_wr_ptr.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # hook up the call backs
+            sim_register.read_callback = None
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = None
+            sim_field.write_callback = field_write_callback
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.rx_async_fifo_rd_wr_ptr.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            register_write_callback.assert_called_once_with(value=(reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            field_write_callback.assert_called_once_with(value=random_field_value)
+            
+            register_read_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.write_callback = None
+            sim_field.write_callback = None
+            random_field_value = random.randrange(0, 0xFFFFFFFF+1)
+            
+            await self.dut.rx_async_fifo_rd_wr_ptr.data.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
             
 
         

@@ -180,10 +180,11 @@ addrmap msk_top_regs {
         field { 
             name = "Tx Bit Count";
             desc = "Count of data requests made by modem";
-            sw = r; 
+            sw = rw; 
             hw = w; 
-            onread = ruser;
-        } tx_bit_counter[31:0];
+            we = true;
+            swmod = true;
+        } data[31:0] = 0;
     };
 
     reg msk_stat_2 {
@@ -193,10 +194,11 @@ addrmap msk_top_regs {
         field { 
             desc = "Number of clocks on which Tx Enable is active";
             name = "Tx Enable Count";
-            sw = r; 
+            sw = rw; 
             hw = w; 
-            onread = ruser;
-        } tx_ena_counter[31:0] = 0;
+            we = true;
+            swmod = true;
+        } data[31:0] = 0;
     };
 
     reg config_nco_fw {
@@ -362,9 +364,11 @@ addrmap msk_top_regs {
             name = "PRBS Bits Received";
             desc = "Number of bits received by the PRBS monitor since last
                     BER can be calculated as the ratio of received bits to errored-bits";
-            sw = r; 
+            sw = rw; 
             hw = w; 
-        } status_data[31:0] = 0;
+            we = true;
+            swmod = true;
+        } data[31:0] = 0;
     };
 
     reg stat_32_errs {
@@ -375,9 +379,11 @@ addrmap msk_top_regs {
             name = "PRBS Bit Errors";
             desc = "Number of errored-bits received by the PRBS monitor since last sync
                     BER can be calculated as the ratio of received bits to errored-bits";
-            sw = r; 
+            sw = rw; 
             hw = w; 
-        } status_data[31:0] = 0;
+            we = true;
+            swmod = true;
+        } data[31:0] = 0;
     };
 
     reg stat_32_lpf_acc {
@@ -385,9 +391,11 @@ addrmap msk_top_regs {
         field { 
             name = "PI Controller Accumulator Value";
             desc = "PI Controller Accumulator Value";
-            sw = r; 
+            sw = rw; 
             hw = w; 
-        } status_data[31:0] = 0;
+            we = true;
+            swmod = true;
+        } data[31:0] = 0;
     };
 
     reg msk_stat_3 {
@@ -397,9 +405,11 @@ addrmap msk_top_regs {
         field { 
             desc = "Number completed S_AXIS transfers";
             name = "S_AXIS Transfers";
-            sw = r; 
+            sw = rw; 
             hw = w; 
-        } xfer_count[31:0] = 0;
+            we = true;
+            swmod = true;
+        } data[31:0] = 0;
     };
 
     reg tx_sync_ctrl {
@@ -463,16 +473,19 @@ addrmap msk_top_regs {
         field { 
             name = "Receive Power";
             desc = "Value that represent the RMS power of the incoming I;";
-            sw = r; 
+            sw = rw; 
             hw = w; 
-        } rx_power[22:0] = 0;
+            we = true;
+            swmod = true;
+        } data[22:0] = 0;
     };
 
     field data32 {
         fieldwidth = 32;
-        sw = r;
-        hw = w;
-        onread = ruser;
+            sw = rw; 
+            hw = w; 
+            we = true;
+            swmod = true;
     };
 
     reg observation_data {
@@ -481,82 +494,82 @@ addrmap msk_top_regs {
     };
 
 
-                msk_hash_lo         Hash_ID_Low;
-                msk_hash_hi         Hash_ID_High;
-                msk_init            MSK_Init;
-                msk_ctrl            MSK_Control;
-                msk_stat_0          MSK_Status;
-    external    msk_stat_1          Tx_Bit_Count;
-    external    msk_stat_2          Tx_Enable_Count;
-                config_nco_fw       Fb_FreqWord;
-                                    Fb_FreqWord->desc = "Set Modem Data Rate";
-                                    Fb_FreqWord->name = "Bitrate NCO Frequency Control Word";
-                config_nco_fw       TX_F1_FreqWord;
-                                    TX_F1_FreqWord->desc = "Set Modulator F1 Frequency";
-                                    TX_F1_FreqWord->name = "Tx F1 NCO Frequency Control Word";
-                config_nco_fw       TX_F2_FreqWord;
-                                    TX_F2_FreqWord->desc = "Set Modulator F2 Frequency";
-                                    TX_F2_FreqWord->name = "Tx F2 NCO Frequency Control Word";
-                config_nco_fw       RX_F1_FreqWord;
-                                    RX_F1_FreqWord->desc = "Set Demodulator F1 Frequency";
-                                    RX_F1_FreqWord->name = "Rx F1 NCO Frequency Control Word";
-                config_nco_fw       RX_F2_FreqWord;
-                                    RX_F2_FreqWord->desc = "Set Demodulator F2 Frequency";
-                                    RX_F2_FreqWord->name = "Rx F2 NCO Frequency Control Word";
-                lpf_config_0        LPF_Config_0;
-                lpf_config_1        LPF_Config_1;
-                data_width          Tx_Data_Width;
-                                    Tx_Data_Width->desc = "Set the parallel data width of the parallel-to-serial converter";
-                                    Tx_Data_Width->name = "Modem Tx Input Data Width";
-                data_width          Rx_Data_Width;
-                                    Rx_Data_Width->desc = "Set the parallel data width of the serial-to-parallel converter";
-                                    Rx_Data_Width->name = "Modem Rx Output Data Width";
-                prbs_ctrl           PRBS_Control;
-                config_prbs_seed    PRBS_Initial_State;
-                config_prbs_poly    PRBS_Polynomial;
-                config_prbs_errmask PRBS_Error_Mask;
-    external    stat_32_bits        PRBS_Bit_Count;
-    external    stat_32_errs        PRBS_Error_Count;
-    external    stat_32_lpf_acc     LPF_Accum_F1;
-                                    LPF_Accum_F1->name = "F1 PI Controller Accumulator";
-                                    LPF_Accum_F1->desc = "Value of the F1 PI Controller Accumulator";
-    external    stat_32_lpf_acc     LPF_Accum_F2;
-                                    LPF_Accum_F2->name = "F2 PI Controller Accumulator";
-                                    LPF_Accum_F2->desc = "Value of the F2 PI Controller Accumulator";
-    external    msk_stat_3          axis_xfer_count;
-                rx_sample_discard   Rx_Sample_Discard;
-                lpf_config_2        LPF_Config_2;
-    external    observation_data    f1_nco_adjust;
-                                    f1_nco_adjust->name = "F1 NCO Frequency Adjust";
-                                    f1_nco_adjust->desc = "Frequency offet applied to the F1 NCO";
-                                    f1_nco_adjust.data->name = "F1 NCO Frequency Adjust";
-                                    f1_nco_adjust.data->desc = "Frequency offet applied to the F1 NCO";
-    external    observation_data    f2_nco_adjust;
-                                    f2_nco_adjust->name = "F2 NCO Frequency Adjust";
-                                    f2_nco_adjust->desc = "Frequency offet applied to the F2 NCO";
-                                    f2_nco_adjust.data->name = "F2 NCO Frequency Adjust";
-                                    f2_nco_adjust.data->desc = "Frequency offet applied to the F2 NCO";
-    external    observation_data    f1_error;
-                                    f1_error->name = "F1 Error Value";
-                                    f1_error->desc = "Error value of the F1 Costas loop after each active bit period";
-                                    f1_error.data->name = "F1 Error Value";
-                                    f1_error.data->desc = "Error value of the F1 Costas loop after each active bit period";
-    external    observation_data    f2_error;
-                                    f2_error->name = "F2 Error Value";
-                                    f2_error->desc = "Error value of the F2 Costas loop after each active bit period";
-                                    f2_error.data->name = "F2 Error Value";
-                                    f2_error.data->desc = "Error value of the F2 Costas loop after each active bit period";
-                tx_sync_ctrl        Tx_Sync_Ctrl;
-                tx_sync_cnt         Tx_Sync_Cnt;
-                lowpass_ema_alpha   lowpass_ema_alpha1;
-                lowpass_ema_alpha   lowpass_ema_alpha2;
-    external    rx_power            rx_power;
-    external    observation_data    tx_async_fifo_rd_wr_ptr;
-                                    tx_async_fifo_rd_wr_ptr->name = "Tx async FIFO read and write pointers";
-                                    tx_async_fifo_rd_wr_ptr.data->desc = "Bits 31:16 -> write pointer (12-bits)
-                                                                          Bits 15:00 -> read pointer (12-bits)";
-    external    observation_data    rx_async_fifo_rd_wr_ptr;
-                                    rx_async_fifo_rd_wr_ptr->name = "Rx async FIFO read and write pointers";
-                                    rx_async_fifo_rd_wr_ptr.data->desc = "Bits 31:16 -> write pointer (12-bits)
-                                                                          Bits 15:00 -> read pointer (12-bits)";
+    msk_hash_lo         Hash_ID_Low;
+    msk_hash_hi         Hash_ID_High;
+    msk_init            MSK_Init;
+    msk_ctrl            MSK_Control;
+    msk_stat_0          MSK_Status;
+    msk_stat_1          Tx_Bit_Count;
+    msk_stat_2          Tx_Enable_Count;
+    config_nco_fw       Fb_FreqWord;
+                        Fb_FreqWord->desc = "Set Modem Data Rate";
+                        Fb_FreqWord->name = "Bitrate NCO Frequency Control Word";
+    config_nco_fw       TX_F1_FreqWord;
+                        TX_F1_FreqWord->desc = "Set Modulator F1 Frequency";
+                        TX_F1_FreqWord->name = "Tx F1 NCO Frequency Control Word";
+    config_nco_fw       TX_F2_FreqWord;
+                        TX_F2_FreqWord->desc = "Set Modulator F2 Frequency";
+                        TX_F2_FreqWord->name = "Tx F2 NCO Frequency Control Word";
+    config_nco_fw       RX_F1_FreqWord;
+                        RX_F1_FreqWord->desc = "Set Demodulator F1 Frequency";
+                        RX_F1_FreqWord->name = "Rx F1 NCO Frequency Control Word";
+    config_nco_fw       RX_F2_FreqWord;
+                        RX_F2_FreqWord->desc = "Set Demodulator F2 Frequency";
+                        RX_F2_FreqWord->name = "Rx F2 NCO Frequency Control Word";
+    lpf_config_0        LPF_Config_0;
+    lpf_config_1        LPF_Config_1;
+    data_width          Tx_Data_Width;
+                        Tx_Data_Width->desc = "Set the parallel data width of the parallel-to-serial converter";
+                        Tx_Data_Width->name = "Modem Tx Input Data Width";
+    data_width          Rx_Data_Width;
+                        Rx_Data_Width->desc = "Set the parallel data width of the serial-to-parallel converter";
+                        Rx_Data_Width->name = "Modem Rx Output Data Width";
+    prbs_ctrl           PRBS_Control;
+    config_prbs_seed    PRBS_Initial_State;
+    config_prbs_poly    PRBS_Polynomial;
+    config_prbs_errmask PRBS_Error_Mask;
+    stat_32_bits        PRBS_Bit_Count;
+    stat_32_errs        PRBS_Error_Count;
+    stat_32_lpf_acc     LPF_Accum_F1;
+                        LPF_Accum_F1->name = "F1 PI Controller Accumulator";
+                        LPF_Accum_F1->desc = "Value of the F1 PI Controller Accumulator";
+    stat_32_lpf_acc     LPF_Accum_F2;
+                        LPF_Accum_F2->name = "F2 PI Controller Accumulator";
+                        LPF_Accum_F2->desc = "Value of the F2 PI Controller Accumulator";
+    msk_stat_3          axis_xfer_count;
+    rx_sample_discard   Rx_Sample_Discard;
+    lpf_config_2        LPF_Config_2;
+    observation_data    f1_nco_adjust;
+                        f1_nco_adjust->name = "F1 NCO Frequency Adjust";
+                        f1_nco_adjust->desc = "Frequency offet applied to the F1 NCO";
+                        f1_nco_adjust.data->name = "F1 NCO Frequency Adjust";
+                        f1_nco_adjust.data->desc = "Frequency offet applied to the F1 NCO";
+    observation_data    f2_nco_adjust;
+                        f2_nco_adjust->name = "F2 NCO Frequency Adjust";
+                        f2_nco_adjust->desc = "Frequency offet applied to the F2 NCO";
+                        f2_nco_adjust.data->name = "F2 NCO Frequency Adjust";
+                        f2_nco_adjust.data->desc = "Frequency offet applied to the F2 NCO";
+    observation_data    f1_error;
+                        f1_error->name = "F1 Error Value";
+                        f1_error->desc = "Error value of the F1 Costas loop after each active bit period";
+                        f1_error.data->name = "F1 Error Value";
+                        f1_error.data->desc = "Error value of the F1 Costas loop after each active bit period";
+    observation_data    f2_error;
+                        f2_error->name = "F2 Error Value";
+                        f2_error->desc = "Error value of the F2 Costas loop after each active bit period";
+                        f2_error.data->name = "F2 Error Value";
+                        f2_error.data->desc = "Error value of the F2 Costas loop after each active bit period";
+    tx_sync_ctrl        Tx_Sync_Ctrl;
+    tx_sync_cnt         Tx_Sync_Cnt;
+    lowpass_ema_alpha   lowpass_ema_alpha1;
+    lowpass_ema_alpha   lowpass_ema_alpha2;
+    rx_power            rx_power;
+    observation_data    tx_async_fifo_rd_wr_ptr;
+                        tx_async_fifo_rd_wr_ptr->name = "Tx async FIFO read and write pointers";
+                        tx_async_fifo_rd_wr_ptr.data->desc = "Bits 31:16 -> write pointer (12-bits)
+                                                              Bits 15:00 -> read pointer (12-bits)";
+    observation_data    rx_async_fifo_rd_wr_ptr;
+                        rx_async_fifo_rd_wr_ptr->name = "Rx async FIFO read and write pointers";
+                        rx_async_fifo_rd_wr_ptr.data->desc = "Bits 31:16 -> write pointer (12-bits)
+                                                              Bits 15:00 -> read pointer (12-bits)";
 };
