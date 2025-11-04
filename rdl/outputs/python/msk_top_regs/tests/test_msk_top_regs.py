@@ -957,28 +957,28 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.f1_nco_adjust.data'):
             
                 
-            self.assertEqual(self.dut.f1_nco_adjust.data.rdl_name, "F1 NCO Frequency Adjust") # type: ignore[union-attr]
+            self.assertIsNone(self.dut.f1_nco_adjust.data.rdl_name)  # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.f2_nco_adjust.data'):
             
                 
-            self.assertEqual(self.dut.f2_nco_adjust.data.rdl_name, "F2 NCO Frequency Adjust") # type: ignore[union-attr]
+            self.assertIsNone(self.dut.f2_nco_adjust.data.rdl_name)  # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.f1_error.data'):
             
                 
-            self.assertEqual(self.dut.f1_error.data.rdl_name, "F1 Error Value") # type: ignore[union-attr]
+            self.assertIsNone(self.dut.f1_error.data.rdl_name)  # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.f2_error.data'):
             
                 
-            self.assertEqual(self.dut.f2_error.data.rdl_name, "F2 Error Value") # type: ignore[union-attr]
+            self.assertIsNone(self.dut.f2_error.data.rdl_name)  # type: ignore[union-attr]
                 
             
 
@@ -1250,28 +1250,28 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.f1_nco_adjust'):
             
                 
-            self.assertEqual(self.dut.f1_nco_adjust.rdl_desc, "Frequency offet applied to the F1 NCO") # type: ignore[union-attr]
+            self.assertIsNone(self.dut.f1_nco_adjust.rdl_desc)  # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.f2_nco_adjust'):
             
                 
-            self.assertEqual(self.dut.f2_nco_adjust.rdl_desc, "Frequency offet applied to the F2 NCO") # type: ignore[union-attr]
+            self.assertIsNone(self.dut.f2_nco_adjust.rdl_desc)  # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.f1_error'):
             
                 
-            self.assertEqual(self.dut.f1_error.rdl_desc, "Error value of the F1 Costas loop after each active bit period") # type: ignore[union-attr]
+            self.assertIsNone(self.dut.f1_error.rdl_desc)  # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.f2_error'):
             
                 
-            self.assertEqual(self.dut.f2_error.rdl_desc, "Error value of the F2 Costas loop after each active bit period") # type: ignore[union-attr]
+            self.assertIsNone(self.dut.f2_error.rdl_desc)  # type: ignore[union-attr]
                 
             
 
@@ -1341,21 +1341,21 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.MSK_Init.txrxinit'):
             
                 
-            self.assertEqual(self.dut.MSK_Init.txrxinit.rdl_desc, "0 -\u003e Normal modem operation \n1 -\u003e Initialize Tx and Rx") # type: ignore[union-attr]
+            self.assertEqual(self.dut.MSK_Init.txrxinit.rdl_desc, "0 -\u003e Normal modem operation \n\n1 -\u003e Initialize Tx and Rx") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.MSK_Init.txinit'):
             
                 
-            self.assertEqual(self.dut.MSK_Init.txinit.rdl_desc, "0 -\u003e Normal Tx operation \n1 -\u003e Initialize Tx") # type: ignore[union-attr]
+            self.assertEqual(self.dut.MSK_Init.txinit.rdl_desc, "0 -\u003e Normal Tx operation\n\n1 -\u003e Initialize Tx") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.MSK_Init.rxinit'):
             
                 
-            self.assertEqual(self.dut.MSK_Init.rxinit.rdl_desc, "0 -\u003e Normal Rx operation \n1 -\u003e Initialize Rx") # type: ignore[union-attr]
+            self.assertEqual(self.dut.MSK_Init.rxinit.rdl_desc, "0 -\u003e Normal Rx operation   \n\n1 -\u003e Initialize Rx") # type: ignore[union-attr]
                 
             
 
@@ -1369,7 +1369,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.MSK_Control.loopback_ena'):
             
                 
-            self.assertEqual(self.dut.MSK_Control.loopback_ena.rdl_desc, "0 -\u003e Modem loopback disabled\n1 -\u003e Modem loopback enabled") # type: ignore[union-attr]
+            self.assertEqual(self.dut.MSK_Control.loopback_ena.rdl_desc, "0 -\u003e Modem loopback disabled\n\n1 -\u003e Modem loopback enabled") # type: ignore[union-attr]
                 
             
 
@@ -1390,7 +1390,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.MSK_Control.diff_encoder_loopback'):
             
                 
-            self.assertEqual(self.dut.MSK_Control.diff_encoder_loopback.rdl_desc, "0 -\u003e Differential Encoder -\u003e Decoder loopback disabled\n1 -\u003e Differential Encoder -\u003e Decoder loopback enabled") # type: ignore[union-attr]
+            self.assertEqual(self.dut.MSK_Control.diff_encoder_loopback.rdl_desc, "0 -\u003e Differential Encoder -\u003e Decoder loopback disabled\n\n1 -\u003e Differential Encoder -\u003e Decoder loopback enabled") # type: ignore[union-attr]
                 
             
 
@@ -1404,35 +1404,35 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.MSK_Status.tx_enable'):
             
                 
-            self.assertEqual(self.dut.MSK_Status.tx_enable.rdl_desc, "1 -\u003e Data to DAC Enabled\n0 -\u003e Data to DAC Disabled") # type: ignore[union-attr]
+            self.assertEqual(self.dut.MSK_Status.tx_enable.rdl_desc, "1 -\u003e Data to DAC Enabled\n\n0 -\u003e Data to DAC Disabled") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.MSK_Status.rx_enable'):
             
                 
-            self.assertEqual(self.dut.MSK_Status.rx_enable.rdl_desc, "1 -\u003e Data from ADC Enabled\n0 -\u003e Data from ADC Disabled") # type: ignore[union-attr]
+            self.assertEqual(self.dut.MSK_Status.rx_enable.rdl_desc, "1 -\u003e Data from ADC Enabled\n\n0 -\u003e Data from ADC Disabled") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.MSK_Status.tx_axis_valid'):
             
                 
-            self.assertEqual(self.dut.MSK_Status.tx_axis_valid.rdl_desc, "1 -\u003e S_AXIS_VALID Enabled\n0 -\u003e S_AXIS_VALID Disabled") # type: ignore[union-attr]
+            self.assertEqual(self.dut.MSK_Status.tx_axis_valid.rdl_desc, "1 -\u003e S_AXIS_VALID Enabled\n\n0 -\u003e S_AXIS_VALID Disabled") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.Tx_Bit_Count.data'):
             
                 
-            self.assertEqual(self.dut.Tx_Bit_Count.data.rdl_desc, "Count of data requests made by modem") # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Bit_Count.data.rdl_desc, "Count of data requests made by modem\n\nThis register is write-to-capture.\n\nTo read data the following steps are required:\n\n1 - Write any value to this register to capture read data\n\n2 - Read the register") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.Tx_Enable_Count.data'):
             
                 
-            self.assertEqual(self.dut.Tx_Enable_Count.data.rdl_desc, "Number of clocks on which Tx Enable is active") # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Enable_Count.data.rdl_desc, "Number of clocks on which Tx Enable is active\n\nThis register is write-to-capture.\n\nTo read data the following steps are required:\n\n1 - Write any value to this register to capture read data\n\n2 - Read the register") # type: ignore[union-attr]
                 
             
 
@@ -1474,14 +1474,14 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.LPF_Config_0.lpf_freeze'):
             
                 
-            self.assertEqual(self.dut.LPF_Config_0.lpf_freeze.rdl_desc, "0 -\u003e Normal operation\n1 -\u003e Freeze current value") # type: ignore[union-attr]
+            self.assertEqual(self.dut.LPF_Config_0.lpf_freeze.rdl_desc, "0 -\u003e Normal operation\n\n1 -\u003e Freeze current value") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.LPF_Config_0.lpf_zero'):
             
                 
-            self.assertEqual(self.dut.LPF_Config_0.lpf_zero.rdl_desc, "0 -\u003e Normal operation\n1 -\u003e Zero and hold accumulator") # type: ignore[union-attr]
+            self.assertEqual(self.dut.LPF_Config_0.lpf_zero.rdl_desc, "0 -\u003e Normal operation\n\n1 -\u003e Zero and hold accumulator") # type: ignore[union-attr]
                 
             
 
@@ -1537,21 +1537,21 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.PRBS_Control.prbs_error_insert'):
             
                 
-            self.assertEqual(self.dut.PRBS_Control.prbs_error_insert.rdl_desc, "0 -\u003e 1 :  Insert bit error in Tx data (both Normal and PRBS)\n1 -\u003e 0 : Insert bit error in Tx data (both Normal and PRBS)") # type: ignore[union-attr]
+            self.assertEqual(self.dut.PRBS_Control.prbs_error_insert.rdl_desc, "0 -\u003e 1 :  Insert bit error in Tx data (both Normal and PRBS)\n\n1 -\u003e 0 : Insert bit error in Tx data (both Normal and PRBS)") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.PRBS_Control.prbs_clear'):
             
                 
-            self.assertEqual(self.dut.PRBS_Control.prbs_clear.rdl_desc, "0 -\u003e 1 : Clear PRBS Counters\n1 -\u003e 0 : Clear PRBS Counters") # type: ignore[union-attr]
+            self.assertEqual(self.dut.PRBS_Control.prbs_clear.rdl_desc, "0 -\u003e 1 : Clear PRBS Counters\n\n1 -\u003e 0 : Clear PRBS Counters") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.PRBS_Control.prbs_manual_sync'):
             
                 
-            self.assertEqual(self.dut.PRBS_Control.prbs_manual_sync.rdl_desc, "0 -\u003e 1 : Synchronize PRBS monitor\n1 -\u003e 0 : Synchronize PRBS monitor") # type: ignore[union-attr]
+            self.assertEqual(self.dut.PRBS_Control.prbs_manual_sync.rdl_desc, "0 -\u003e 1 : Synchronize PRBS monitor\n\n1 -\u003e 0 : Synchronize PRBS monitor") # type: ignore[union-attr]
                 
             
 
@@ -1565,7 +1565,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.PRBS_Control.prbs_sync_threshold'):
             
                 
-            self.assertEqual(self.dut.PRBS_Control.prbs_sync_threshold.rdl_desc, "0 : Auto Sync Disabled\nN \u003e 0 : Auto sync after N errors") # type: ignore[union-attr]
+            self.assertEqual(self.dut.PRBS_Control.prbs_sync_threshold.rdl_desc, "0 : Auto Sync Disabled\n\nN \u003e 0 : Auto sync after N errors") # type: ignore[union-attr]
                 
             
 
@@ -1593,35 +1593,35 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.PRBS_Bit_Count.data'):
             
                 
-            self.assertEqual(self.dut.PRBS_Bit_Count.data.rdl_desc, "Number of bits received by the PRBS monitor since last\nBER can be calculated as the ratio of received bits to errored-bits") # type: ignore[union-attr]
+            self.assertEqual(self.dut.PRBS_Bit_Count.data.rdl_desc, "Number of bits received by the PRBS monitor since last\nBER can be calculated as the ratio of received bits to errored-bits\n\nThis register is write-to-capture.\n\nTo read data the following steps are required:\n\n1 - Write any value to this register to capture read data\n\n2 - Read the register") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.PRBS_Error_Count.data'):
             
                 
-            self.assertEqual(self.dut.PRBS_Error_Count.data.rdl_desc, "Number of errored-bits received by the PRBS monitor since last sync\nBER can be calculated as the ratio of received bits to errored-bits") # type: ignore[union-attr]
+            self.assertEqual(self.dut.PRBS_Error_Count.data.rdl_desc, "Number of errored-bits received by the PRBS monitor since last sync\nBER can be calculated as the ratio of received bits to errored-bits\n\nThis register is write-to-capture.\n\nTo read data the following steps are required:\n\n1 - Write any value to this register to capture read data\n\n2 - Read the register") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.LPF_Accum_F1.data'):
             
                 
-            self.assertEqual(self.dut.LPF_Accum_F1.data.rdl_desc, "PI Controller Accumulator Value") # type: ignore[union-attr]
+            self.assertEqual(self.dut.LPF_Accum_F1.data.rdl_desc, "PI Controller Accumulator Value\n\nThis register is write-to-capture.\n\nTo read data the following steps are required:\n\n1 - Write any value to this register to capture read data\n\n2 - Read the register") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.LPF_Accum_F2.data'):
             
                 
-            self.assertEqual(self.dut.LPF_Accum_F2.data.rdl_desc, "PI Controller Accumulator Value") # type: ignore[union-attr]
+            self.assertEqual(self.dut.LPF_Accum_F2.data.rdl_desc, "PI Controller Accumulator Value\n\nThis register is write-to-capture.\n\nTo read data the following steps are required:\n\n1 - Write any value to this register to capture read data\n\n2 - Read the register") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.axis_xfer_count.data'):
             
                 
-            self.assertEqual(self.dut.axis_xfer_count.data.rdl_desc, "Number completed S_AXIS transfers") # type: ignore[union-attr]
+            self.assertEqual(self.dut.axis_xfer_count.data.rdl_desc, "Number completed S_AXIS transfers\n\nThis register is write-to-capture.\n\nTo read data the following steps are required:\n\n1 - Write any value to this register to capture read data\n\n2 - Read the register") # type: ignore[union-attr]
                 
             
 
@@ -1656,63 +1656,63 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.f1_nco_adjust.data'):
             
                 
-            self.assertEqual(self.dut.f1_nco_adjust.data.rdl_desc, "Frequency offet applied to the F1 NCO") # type: ignore[union-attr]
+            self.assertEqual(self.dut.f1_nco_adjust.data.rdl_desc, "Frequency offet applied to the F1 NCO\n\nThis register is write-to-capture.\n\nTo read data the following steps are required:\n\n1 - Write any value to this register to capture read data\n\n2 - Read the register") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.f2_nco_adjust.data'):
             
                 
-            self.assertEqual(self.dut.f2_nco_adjust.data.rdl_desc, "Frequency offet applied to the F2 NCO") # type: ignore[union-attr]
+            self.assertEqual(self.dut.f2_nco_adjust.data.rdl_desc, "Frequency offet applied to the F2 NCO\n\nThis register is write-to-capture.\n\nTo read data the following steps are required:\n\n1 - Write any value to this register to capture read data\n\n2 - Read the register") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.f1_error.data'):
             
                 
-            self.assertEqual(self.dut.f1_error.data.rdl_desc, "Error value of the F1 Costas loop after each active bit period") # type: ignore[union-attr]
+            self.assertEqual(self.dut.f1_error.data.rdl_desc, "Error value of the F1 Costas loop after each active bit period\n\nThis register is write-to-capture.\n\nTo read data the following steps are required:\n\n1 - Write any value to this register to capture read data\n\n2 - Read the register") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.f2_error.data'):
             
                 
-            self.assertEqual(self.dut.f2_error.data.rdl_desc, "Error value of the F2 Costas loop after each active bit period") # type: ignore[union-attr]
+            self.assertEqual(self.dut.f2_error.data.rdl_desc, "Error value of the F2 Costas loop after each active bit period\n\nThis register is write-to-capture.\n\nTo read data the following steps are required:\n\n1 - Write any value to this register to capture read data\n\n2 - Read the register") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.Tx_Sync_Ctrl.tx_sync_ena'):
             
                 
-            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_ena.rdl_desc, "0 -\u003e Disable sync transmission\n1 -\u003e Enable sync transmission when PTT is asserted") # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_ena.rdl_desc, "0 -\u003e Disable sync transmission\n\n1 -\u003e Enable sync transmission when PTT is asserted") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.Tx_Sync_Ctrl.tx_sync_force'):
             
                 
-            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_force.rdl_desc, "0 : Normal operation)\n1 : Transmit synchronization pattern)") # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_force.rdl_desc, "0 : Normal operation\n\n1 : Transmit synchronization pattern") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f1'):
             
                 
-            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_f1.rdl_desc, "Enables/Disables transmission of F1 tone for receiver synchronization\n0 : F1 tone transmission disabled\n1 : F1 tone transmission enabled\nBoth F1 and F2 can be enabled at the same time") # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_f1.rdl_desc, "Enables/Disables transmission of F1 tone for receiver synchronization\n0 : F1 tone transmission disabled\n\n1 : F1 tone transmission enabled\n\nBoth F1 and F2 can be enabled at the same time") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f2'):
             
                 
-            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_f2.rdl_desc, "Enables/Disables transmission of F2 tone for receiver synchronization\n0 : F2 tone transmission disabled\n1 : F2 tone transmission enabled\nBoth F1 and F2 can be enabled at the same time") # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_f2.rdl_desc, "Enables/Disables transmission of F2 tone for receiver synchronization\n0 : F2 tone transmission disabled\n\n1 : F2 tone transmission enabled\n\nBoth F1 and F2 can be enabled at the same time") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.Tx_Sync_Cnt.tx_sync_cnt'):
             
                 
-            self.assertEqual(self.dut.Tx_Sync_Cnt.tx_sync_cnt.rdl_desc, "Value from 0x00_0000 to 0xFF_FFFF. \nThis value represents the number bit-times the synchronization \nsignal should be sent after PTT is asserted.") # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Sync_Cnt.tx_sync_cnt.rdl_desc, "Value from 0x00_0000 to 0xFF_FFFF. \n\nThis value represents the number bit-times the synchronization \n\nsignal should be sent after PTT is asserted.") # type: ignore[union-attr]
                 
             
 
@@ -1733,21 +1733,21 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.rx_power.data'):
             
                 
-            self.assertEqual(self.dut.rx_power.data.rdl_desc, "Value that represent the RMS power of the incoming I;") # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_power.data.rdl_desc, "Value that represent the RMS power of the incoming I\n\nThis register is write-to-capture.\n\nTo read data the following steps are required:\n\n1 - Write any value to this register to capture read data\n\n2 - Read the register") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.tx_async_fifo_rd_wr_ptr.data'):
             
                 
-            self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.data.rdl_desc, "Bits 31:16 -\u003e write pointer (12-bits)\nBits 15:00 -\u003e read pointer (12-bits)") # type: ignore[union-attr]
+            self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.data.rdl_desc, "Read and Write Pointers\n\nBits 31:16 - write pointer (12-bits)\n\nBits 15:00 - read pointer (12-bits)\n\nThis register is write-to-capture.\n\nTo read data the following steps are required:\n\n1 - Write any value to this register to capture read data\n\n2 - Read the register") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.rx_async_fifo_rd_wr_ptr.data'):
             
                 
-            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.data.rdl_desc, "Bits 31:16 -\u003e write pointer (12-bits)\nBits 15:00 -\u003e read pointer (12-bits)") # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.data.rdl_desc, "Read and Write Pointers\n\nBits 31:16 - write pointer (12-bits)\n\nBits 15:00 - read pointer (12-bits)\n\nThis register is write-to-capture.\n\nTo read data the following steps are required:\n\n1 - Write any value to this register to capture read data\n\n2 - Read the register") # type: ignore[union-attr]
                 
             
 

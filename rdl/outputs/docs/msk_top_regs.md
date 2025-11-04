@@ -99,18 +99,18 @@ Don't override. Generated from: msk_top_regs
 
 #### txrxinit field
 
-<p>0 -&gt; Normal modem operation 
-1 -&gt; Initialize Tx and Rx</p>
+<p>0 -&gt; Normal modem operation </p>
+<p>1 -&gt; Initialize Tx and Rx</p>
 
 #### txinit field
 
-<p>0 -&gt; Normal Tx operation 
-1 -&gt; Initialize Tx</p>
+<p>0 -&gt; Normal Tx operation</p>
+<p>1 -&gt; Initialize Tx</p>
 
 #### rxinit field
 
-<p>0 -&gt; Normal Rx operation 
-1 -&gt; Initialize Rx</p>
+<p>0 -&gt; Normal Rx operation   </p>
+<p>1 -&gt; Initialize Rx</p>
 
 ### MSK_Control register
 
@@ -135,8 +135,8 @@ Don't override. Generated from: msk_top_regs
 
 #### loopback_ena field
 
-<p>0 -&gt; Modem loopback disabled
-1 -&gt; Modem loopback enabled</p>
+<p>0 -&gt; Modem loopback disabled</p>
+<p>1 -&gt; Modem loopback enabled</p>
 
 #### rx_invert field
 
@@ -149,8 +149,8 @@ Don't override. Generated from: msk_top_regs
 
 #### diff_encoder_loopback field
 
-<p>0 -&gt; Differential Encoder -&gt; Decoder loopback disabled
-1 -&gt; Differential Encoder -&gt; Decoder loopback enabled</p>
+<p>0 -&gt; Differential Encoder -&gt; Decoder loopback disabled</p>
+<p>1 -&gt; Differential Encoder -&gt; Decoder loopback enabled</p>
 
 ### MSK_Status register
 
@@ -173,18 +173,18 @@ Don't override. Generated from: msk_top_regs
 
 #### tx_enable field
 
-<p>1 -&gt; Data to DAC Enabled
-0 -&gt; Data to DAC Disabled</p>
+<p>1 -&gt; Data to DAC Enabled</p>
+<p>0 -&gt; Data to DAC Disabled</p>
 
 #### rx_enable field
 
-<p>1 -&gt; Data from ADC Enabled
-0 -&gt; Data from ADC Disabled</p>
+<p>1 -&gt; Data from ADC Enabled</p>
+<p>0 -&gt; Data from ADC Disabled</p>
 
 #### tx_axis_valid field
 
-<p>1 -&gt; S_AXIS_VALID Enabled
-0 -&gt; S_AXIS_VALID Disabled</p>
+<p>1 -&gt; S_AXIS_VALID Enabled</p>
+<p>0 -&gt; S_AXIS_VALID Disabled</p>
 
 ### Tx_Bit_Count register
 
@@ -201,6 +201,10 @@ Don't override. Generated from: msk_top_regs
 #### data field
 
 <p>Count of data requests made by modem</p>
+<p>This register is write-to-capture.</p>
+<p>To read data the following steps are required:</p>
+<p>1 - Write any value to this register to capture read data</p>
+<p>2 - Read the register</p>
 
 ### Tx_Enable_Count register
 
@@ -217,6 +221,10 @@ Don't override. Generated from: msk_top_regs
 #### data field
 
 <p>Number of clocks on which Tx Enable is active</p>
+<p>This register is write-to-capture.</p>
+<p>To read data the following steps are required:</p>
+<p>1 - Write any value to this register to capture read data</p>
+<p>2 - Read the register</p>
 
 ### Fb_FreqWord register
 
@@ -320,13 +328,13 @@ where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
 
 #### lpf_freeze field
 
-<p>0 -&gt; Normal operation
-1 -&gt; Freeze current value</p>
+<p>0 -&gt; Normal operation</p>
+<p>1 -&gt; Freeze current value</p>
 
 #### lpf_zero field
 
-<p>0 -&gt; Normal operation
-1 -&gt; Zero and hold accumulator</p>
+<p>0 -&gt; Normal operation</p>
+<p>1 -&gt; Zero and hold accumulator</p>
 
 #### lpf_alpha field
 
@@ -409,23 +417,23 @@ where Fn is the desired NCO frequency, and Fs is the NCO sample rate</p>
 
 #### prbs_error_insert field
 
-<p>0 -&gt; 1 :  Insert bit error in Tx data (both Normal and PRBS)
-1 -&gt; 0 : Insert bit error in Tx data (both Normal and PRBS)</p>
+<p>0 -&gt; 1 :  Insert bit error in Tx data (both Normal and PRBS)</p>
+<p>1 -&gt; 0 : Insert bit error in Tx data (both Normal and PRBS)</p>
 
 #### prbs_clear field
 
-<p>0 -&gt; 1 : Clear PRBS Counters
-1 -&gt; 0 : Clear PRBS Counters</p>
+<p>0 -&gt; 1 : Clear PRBS Counters</p>
+<p>1 -&gt; 0 : Clear PRBS Counters</p>
 
 #### prbs_manual_sync field
 
-<p>0 -&gt; 1 : Synchronize PRBS monitor
-1 -&gt; 0 : Synchronize PRBS monitor</p>
+<p>0 -&gt; 1 : Synchronize PRBS monitor</p>
+<p>1 -&gt; 0 : Synchronize PRBS monitor</p>
 
 #### prbs_sync_threshold field
 
-<p>0 : Auto Sync Disabled
-N &gt; 0 : Auto sync after N errors</p>
+<p>0 : Auto Sync Disabled</p>
+<p>N &gt; 0 : Auto sync after N errors</p>
 
 ### PRBS_Initial_State register
 
@@ -491,6 +499,10 @@ N &gt; 0 : Auto sync after N errors</p>
 
 <p>Number of bits received by the PRBS monitor since last
 BER can be calculated as the ratio of received bits to errored-bits</p>
+<p>This register is write-to-capture.</p>
+<p>To read data the following steps are required:</p>
+<p>1 - Write any value to this register to capture read data</p>
+<p>2 - Read the register</p>
 
 ### PRBS_Error_Count register
 
@@ -508,6 +520,10 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 <p>Number of errored-bits received by the PRBS monitor since last sync
 BER can be calculated as the ratio of received bits to errored-bits</p>
+<p>This register is write-to-capture.</p>
+<p>To read data the following steps are required:</p>
+<p>1 - Write any value to this register to capture read data</p>
+<p>2 - Read the register</p>
 
 ### LPF_Accum_F1 register
 
@@ -524,6 +540,10 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 #### data field
 
 <p>PI Controller Accumulator Value</p>
+<p>This register is write-to-capture.</p>
+<p>To read data the following steps are required:</p>
+<p>1 - Write any value to this register to capture read data</p>
+<p>2 - Read the register</p>
 
 ### LPF_Accum_F2 register
 
@@ -540,6 +560,10 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 #### data field
 
 <p>PI Controller Accumulator Value</p>
+<p>This register is write-to-capture.</p>
+<p>To read data the following steps are required:</p>
+<p>1 - Write any value to this register to capture read data</p>
+<p>2 - Read the register</p>
 
 ### axis_xfer_count register
 
@@ -556,6 +580,10 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 #### data field
 
 <p>Number completed S_AXIS transfers</p>
+<p>This register is write-to-capture.</p>
+<p>To read data the following steps are required:</p>
+<p>1 - Write any value to this register to capture read data</p>
+<p>2 - Read the register</p>
 
 ### Rx_Sample_Discard register
 
@@ -605,15 +633,17 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 - Base Offset: 0x6C
 - Size: 0x4
 
-<p>Frequency offet applied to the F1 NCO</p>
-
-|Bits|Identifier|Access|Reset|          Name         |
-|----|----------|------|-----|-----------------------|
-|31:0|   data   |  rw  | 0x0 |F1 NCO Frequency Adjust|
+|Bits|Identifier|Access|Reset|Name|
+|----|----------|------|-----|----|
+|31:0|   data   |  rw  | 0x0 |  — |
 
 #### data field
 
 <p>Frequency offet applied to the F1 NCO</p>
+<p>This register is write-to-capture.</p>
+<p>To read data the following steps are required:</p>
+<p>1 - Write any value to this register to capture read data</p>
+<p>2 - Read the register</p>
 
 ### f2_nco_adjust register
 
@@ -621,15 +651,17 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 - Base Offset: 0x70
 - Size: 0x4
 
-<p>Frequency offet applied to the F2 NCO</p>
-
-|Bits|Identifier|Access|Reset|          Name         |
-|----|----------|------|-----|-----------------------|
-|31:0|   data   |  rw  | 0x0 |F2 NCO Frequency Adjust|
+|Bits|Identifier|Access|Reset|Name|
+|----|----------|------|-----|----|
+|31:0|   data   |  rw  | 0x0 |  — |
 
 #### data field
 
 <p>Frequency offet applied to the F2 NCO</p>
+<p>This register is write-to-capture.</p>
+<p>To read data the following steps are required:</p>
+<p>1 - Write any value to this register to capture read data</p>
+<p>2 - Read the register</p>
 
 ### f1_error register
 
@@ -637,15 +669,17 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 - Base Offset: 0x74
 - Size: 0x4
 
-<p>Error value of the F1 Costas loop after each active bit period</p>
-
-|Bits|Identifier|Access|Reset|     Name     |
-|----|----------|------|-----|--------------|
-|31:0|   data   |  rw  | 0x0 |F1 Error Value|
+|Bits|Identifier|Access|Reset|Name|
+|----|----------|------|-----|----|
+|31:0|   data   |  rw  | 0x0 |  — |
 
 #### data field
 
 <p>Error value of the F1 Costas loop after each active bit period</p>
+<p>This register is write-to-capture.</p>
+<p>To read data the following steps are required:</p>
+<p>1 - Write any value to this register to capture read data</p>
+<p>2 - Read the register</p>
 
 ### f2_error register
 
@@ -653,15 +687,17 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 - Base Offset: 0x78
 - Size: 0x4
 
-<p>Error value of the F2 Costas loop after each active bit period</p>
-
-|Bits|Identifier|Access|Reset|     Name     |
-|----|----------|------|-----|--------------|
-|31:0|   data   |  rw  | 0x0 |F2 Error Value|
+|Bits|Identifier|Access|Reset|Name|
+|----|----------|------|-----|----|
+|31:0|   data   |  rw  | 0x0 |  — |
 
 #### data field
 
 <p>Error value of the F2 Costas loop after each active bit period</p>
+<p>This register is write-to-capture.</p>
+<p>To read data the following steps are required:</p>
+<p>1 - Write any value to this register to capture read data</p>
+<p>2 - Read the register</p>
 
 ### Tx_Sync_Ctrl register
 
@@ -680,27 +716,27 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 #### tx_sync_ena field
 
-<p>0 -&gt; Disable sync transmission
-1 -&gt; Enable sync transmission when PTT is asserted</p>
+<p>0 -&gt; Disable sync transmission</p>
+<p>1 -&gt; Enable sync transmission when PTT is asserted</p>
 
 #### tx_sync_force field
 
-<p>0 : Normal operation)
-1 : Transmit synchronization pattern)</p>
+<p>0 : Normal operation</p>
+<p>1 : Transmit synchronization pattern</p>
 
 #### tx_sync_f1 field
 
 <p>Enables/Disables transmission of F1 tone for receiver synchronization
-0 : F1 tone transmission disabled
-1 : F1 tone transmission enabled
-Both F1 and F2 can be enabled at the same time</p>
+0 : F1 tone transmission disabled</p>
+<p>1 : F1 tone transmission enabled</p>
+<p>Both F1 and F2 can be enabled at the same time</p>
 
 #### tx_sync_f2 field
 
 <p>Enables/Disables transmission of F2 tone for receiver synchronization
-0 : F2 tone transmission disabled
-1 : F2 tone transmission enabled
-Both F1 and F2 can be enabled at the same time</p>
+0 : F2 tone transmission disabled</p>
+<p>1 : F2 tone transmission enabled</p>
+<p>Both F1 and F2 can be enabled at the same time</p>
 
 ### Tx_Sync_Cnt register
 
@@ -716,9 +752,9 @@ Both F1 and F2 can be enabled at the same time</p>
 
 #### tx_sync_cnt field
 
-<p>Value from 0x00_0000 to 0xFF_FFFF. 
-This value represents the number bit-times the synchronization 
-signal should be sent after PTT is asserted.</p>
+<p>Value from 0x00_0000 to 0xFF_FFFF. </p>
+<p>This value represents the number bit-times the synchronization </p>
+<p>signal should be sent after PTT is asserted.</p>
 
 ### lowpass_ema_alpha1 register
 
@@ -766,7 +802,11 @@ signal should be sent after PTT is asserted.</p>
 
 #### data field
 
-<p>Value that represent the RMS power of the incoming I;</p>
+<p>Value that represent the RMS power of the incoming I</p>
+<p>This register is write-to-capture.</p>
+<p>To read data the following steps are required:</p>
+<p>1 - Write any value to this register to capture read data</p>
+<p>2 - Read the register</p>
 
 ### tx_async_fifo_rd_wr_ptr register
 
@@ -780,8 +820,13 @@ signal should be sent after PTT is asserted.</p>
 
 #### data field
 
-<p>Bits 31:16 -&gt; write pointer (12-bits)
-Bits 15:00 -&gt; read pointer (12-bits)</p>
+<p>Read and Write Pointers</p>
+<p>Bits 31:16 - write pointer (12-bits)</p>
+<p>Bits 15:00 - read pointer (12-bits)</p>
+<p>This register is write-to-capture.</p>
+<p>To read data the following steps are required:</p>
+<p>1 - Write any value to this register to capture read data</p>
+<p>2 - Read the register</p>
 
 ### rx_async_fifo_rd_wr_ptr register
 
@@ -795,5 +840,10 @@ Bits 15:00 -&gt; read pointer (12-bits)</p>
 
 #### data field
 
-<p>Bits 31:16 -&gt; write pointer (12-bits)
-Bits 15:00 -&gt; read pointer (12-bits)</p>
+<p>Read and Write Pointers</p>
+<p>Bits 31:16 - write pointer (12-bits)</p>
+<p>Bits 15:00 - read pointer (12-bits)</p>
+<p>This register is write-to-capture.</p>
+<p>To read data the following steps are required:</p>
+<p>1 - Write any value to this register to capture read data</p>
+<p>2 - Read the register</p>
