@@ -63,7 +63,7 @@ BEGIN
                 shift_reg <= (OTHERS => '0');
                 frame_complete <= '0';
                 last_byte <= '0';
-                ready_int <= '0';
+                ready_int <= '1'; --changed from 0 to 1
                 
             ELSE
                 frame_complete <= '0';
@@ -71,13 +71,12 @@ BEGIN
                 CASE state IS
                     
                     WHEN IDLE =>
-                        tx_data_int <= '0';
+                        --tx_data_int <= '0'; --AI!!! caused spurious extra byte in first frame
                         bit_counter <= 0;
-                        ready_int <= '1';
+                        ready_int <= '0'; -- AI!!! don't take data in IDLE 
                         
                         IF s_axis_tvalid = '1' THEN
                             state <= SENDING_SYNC;
-                            ready_int <= '0';
                             bit_counter <= 23;  -- Start from MSB (bit 23)
                             -- Pre-load first sync bit (MSB) for immediate output
                             tx_data_int <= SYNC_WORD(23);

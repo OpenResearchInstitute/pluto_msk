@@ -205,6 +205,7 @@ BEGIN
                                 frame_byte_count <= 0;
                                 bit_count <= (OTHERS => '0');
                                 sync_bit_count <= (OTHERS => '0');
+                                frame_start_ptr <= wr_ptr;  -- AI!!! ADD THIS LINE!
                                 state <= LOCKED;
                                 
                                 -- Track consecutive good detections
@@ -225,7 +226,7 @@ BEGIN
                     WHEN LOCKED =>
                         IF rx_bit_valid = '1' THEN
                             bit_count <= bit_count + 1;
-                            sync_bit_count <= sync_bit_count + 1;
+                            --sync_bit_count <= sync_bit_count + 1; --AI!!! only increment in VERIFYING_SYNC
                             
                             IF bit_count = 7 THEN
                                 -- Byte complete (MSB-first assembly)
@@ -256,13 +257,12 @@ BEGIN
                                         errors_count <= errors_count + 1;
                                     END IF;
                                     
-                                    frame_start_ptr <= wr_ptr;
                                     frame_byte_count <= 0;
                                     
                                     -- Now expect next sync word
                                     state <= VERIFYING_SYNC;
                                     sync_bit_count <= (OTHERS => '0');
-                                    sync_shift_bits <= (OTHERS => '0');  -- AI!!!
+                                    --sync_bit_count <= (OTHERS => '0'); --AI!!! run continuously without resets
                                 END IF;
                             END IF;
                         END IF;
@@ -312,6 +312,7 @@ BEGIN
                                     -- Continue with next frame
                                     state <= LOCKED;
                                     bit_count <= (OTHERS => '0');
+                                    frame_start_ptr <= wr_ptr;  -- AI!!! ADD THIS LINE!
                                     
                                 ELSE
                                     -- Missed expected sync!
