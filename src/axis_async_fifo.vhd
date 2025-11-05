@@ -196,7 +196,11 @@ BEGIN
                     m_axis_tlast <= ram_last(to_integer(unsigned(rd_ptr_bin(ADDR_WIDTH-1 DOWNTO 0))));
                     tvalid_int <= '1';
                 ELSE
+                    -- When empty, deassert tvalid and clear tlast
+                    -- (tdata is don't care per AXI-Stream spec, but we clear it for cleanliness)
                     tvalid_int <= '0';
+                    m_axis_tlast <= '0';
+                    m_axis_tdata <= (OTHERS => '0');
                 END IF;
                 
                 -- AXIS read handshake - advance pointer only when:
