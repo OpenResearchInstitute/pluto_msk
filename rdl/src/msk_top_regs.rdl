@@ -688,15 +688,16 @@ addrmap msk_top_regs {
                         rx_async_fifo_rd_wr_ptr->name = "Rx async FIFO read and write pointers";
                         rx_async_fifo_rd_wr_ptr.data->desc = "Read and Write Pointers
 
+                                                              [code]
                                                               Bits 31:16 - write pointer (12-bits)
-
+                                                              
                                                               Bits 15:00 - read pointer (12-bits)
+                                                              [/code]
 
-                                                              This register is write-to-capture.
+                                                              This register is write-to-capture. To read data the following steps are required:
+                                                              [list]
+                                                              [*] Write any value to this register to capture read data[br]
+                                                              [*] Read the register
+                                                              [/list]";
 
-                                                              To read data the following steps are required:
-
-                                                              1 - Write any value to this register to capture read data
-
-                                                              2 - Read the register";
 };

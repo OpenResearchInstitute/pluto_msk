@@ -151,8 +151,13 @@ package msk_top_regs_pkg is
         data : \msk_top_regs.data32_desc_52ad9f96_in_t\;
     end record;
 
-    type \msk_top_regs.observation_data_data_dbd8270c_name_8a90eed1_in_t\ is record
-        data : \msk_top_regs.data32_desc_52ad9f96_in_t\;
+    type \msk_top_regs.data32_desc_d7a81b16_in_t\ is record
+        next_q : std_logic_vector(31 downto 0);
+        we : std_logic;
+    end record;
+
+    type \msk_top_regs.observation_data_data_91b9abca_name_8a90eed1_in_t\ is record
+        data : \msk_top_regs.data32_desc_d7a81b16_in_t\;
     end record;
 
     type msk_top_regs_in_t is record
@@ -170,7 +175,7 @@ package msk_top_regs_pkg is
         f2_error : \msk_top_regs.observation_data_data_0a9850a4_name_3de9a0d3_in_t\;
         rx_power : \msk_top_regs.rx_power_in_t\;
         tx_async_fifo_rd_wr_ptr : \msk_top_regs.observation_data_data_dbd8270c_name_aa4ec676_in_t\;
-        rx_async_fifo_rd_wr_ptr : \msk_top_regs.observation_data_data_dbd8270c_name_8a90eed1_in_t\;
+        rx_async_fifo_rd_wr_ptr : \msk_top_regs.observation_data_data_91b9abca_name_8a90eed1_in_t\;
     end record;
 
     type \msk_top_regs.msk_init.txrxinit_out_t\ is record
@@ -537,8 +542,12 @@ package msk_top_regs_pkg is
         data : \msk_top_regs.data32_desc_52ad9f96_out_t\;
     end record;
 
-    type \msk_top_regs.observation_data_data_dbd8270c_name_8a90eed1_out_t\ is record
-        data : \msk_top_regs.data32_desc_52ad9f96_out_t\;
+    type \msk_top_regs.data32_desc_d7a81b16_out_t\ is record
+        swmod : std_logic;
+    end record;
+
+    type \msk_top_regs.observation_data_data_91b9abca_name_8a90eed1_out_t\ is record
+        data : \msk_top_regs.data32_desc_d7a81b16_out_t\;
     end record;
 
     type msk_top_regs_out_t is record
@@ -576,6 +585,6 @@ package msk_top_regs_pkg is
         lowpass_ema_alpha2 : \msk_top_regs.lowpass_ema_alpha_out_t\;
         rx_power : \msk_top_regs.rx_power_out_t\;
         tx_async_fifo_rd_wr_ptr : \msk_top_regs.observation_data_data_dbd8270c_name_aa4ec676_out_t\;
-        rx_async_fifo_rd_wr_ptr : \msk_top_regs.observation_data_data_dbd8270c_name_8a90eed1_out_t\;
+        rx_async_fifo_rd_wr_ptr : \msk_top_regs.observation_data_data_91b9abca_name_8a90eed1_out_t\;
     end record;
 end package;

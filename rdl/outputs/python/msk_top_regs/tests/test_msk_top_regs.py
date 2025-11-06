@@ -1747,7 +1747,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.rx_async_fifo_rd_wr_ptr.data'):
             
                 
-            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.data.rdl_desc, "Read and Write Pointers\n\nBits 31:16 - write pointer (12-bits)\n\nBits 15:00 - read pointer (12-bits)\n\nThis register is write-to-capture.\n\nTo read data the following steps are required:\n\n1 - Write any value to this register to capture read data\n\n2 - Read the register") # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.data.rdl_desc, "Read and Write Pointers\n\n[code]\nBits 31:16 - write pointer (12-bits)\n\nBits 15:00 - read pointer (12-bits)\n[/code]\n\nThis register is write-to-capture. To read data the following steps are required:\n[list]\n[*] Write any value to this register to capture read data[br]\n[*] Read the register\n[/list]") # type: ignore[union-attr]
                 
             
 

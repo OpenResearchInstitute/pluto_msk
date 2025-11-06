@@ -841,9 +841,11 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 #### data field
 
 <p>Read and Write Pointers</p>
-<p>Bits 31:16 - write pointer (12-bits)</p>
-<p>Bits 15:00 - read pointer (12-bits)</p>
-<p>This register is write-to-capture.</p>
-<p>To read data the following steps are required:</p>
-<p>1 - Write any value to this register to capture read data</p>
-<p>2 - Read the register</p>
+<p><code>
+Bits 31:16 - write pointer (12-bits)</p>
+<p>Bits 15:00 - read pointer (12-bits)</code></p>
+<p>This register is write-to-capture. To read data the following steps are required:</p>
+<ul>
+<li> Write any value to this register to capture read data<br>
+</li><li> Read the register
+</li></ul>
