@@ -186,6 +186,11 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL rx_frame_sync_locked       : std_logic;
 	SIGNAL rx_frames_count      : std_logic_vector(31 DOWNTO 0);
 	SIGNAL rx_frame_sync_errors       : std_logic_vector(31 DOWNTO 0);
+	
+	-- Flywheel debug signals (internal only, not exposed to top-level ports)
+	SIGNAL rx_debug_state           : std_logic_vector(2 DOWNTO 0);
+	SIGNAL rx_debug_missed_syncs    : std_logic_vector(3 DOWNTO 0);
+	SIGNAL rx_debug_consecutive_good: std_logic_vector(3 DOWNTO 0);
 
 	SIGNAL rx_bit   		: std_logic;
 	SIGNAL rx_bit_corr 		: std_logic;
@@ -451,15 +456,16 @@ BEGIN
     
     ------------------------------------------------------------------------------
     -- RX Stage 2: Frame Sync Detector (MSB-FIRST VERSION)
-    -- MODIFIED: Sync word changed from 0xE25F35 to 0xE25F35 (matches TX now!)
     ------------------------------------------------------------------------------
     u_rx_frame_sync : ENTITY work.frame_sync_detector
         GENERIC MAP (
-            SYNC_WORD      => x"E25F35",  -- MSB-first sync word (same as TX!)
-            PAYLOAD_BYTES  => 268,
-            SYNC_THRESHOLD => 3,
-            BUFFER_DEPTH   => 11,         -- 2048 bytes
-            LOCK_FRAMES    => 3
+            SYNC_WORD           => x"02B8DB",  -- MSB-first sync word (same as TX!)
+            PAYLOAD_BYTES       => 268,
+            HUNTING_THRESHOLD   => 3,          -- Strict threshold when searching
+            LOCKED_THRESHOLD    => 5,          -- Relaxed threshold when locked
+            FLYWHEEL_TOLERANCE  => 2,          -- Tolerate 2 missed syncs
+            LOCK_FRAMES         => 3,          -- Need 3 consecutive good frames
+            BUFFER_DEPTH        => 11          -- 2048 bytes
         )
         PORT MAP (
             clk             => clk,
@@ -472,11 +478,18 @@ BEGIN
             m_axis_tvalid   => sync_det_tvalid,
             m_axis_tready   => sync_det_tready,
             m_axis_tlast    => sync_det_tlast,
-	    frame_sync_locked => rx_frame_sync_locked,            
-            frames_received => rx_frames_count,
-            frame_sync_errors     => rx_frame_sync_errors,
-            buffer_overflow => rx_fifo_overflow
-        );
+
+            -- Frame synchronization signals
+	    frame_sync_locked       => rx_frame_sync_locked,            
+            frames_received         => rx_frames_count,
+            frame_sync_errors       => rx_frame_sync_errors,
+            buffer_overflow         => rx_fifo_overflow,
+            
+            -- Debug signals (internal only)
+            debug_state             => rx_debug_state,
+            debug_missed_syncs      => rx_debug_missed_syncs,
+            debug_consecutive_good  => rx_debug_consecutive_good
+       );
     
     ------------------------------------------------------------------------------
     -- RX Stage 3: Async FIFO (Clock Domain Crossing)

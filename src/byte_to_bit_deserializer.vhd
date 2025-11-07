@@ -32,12 +32,12 @@ END ENTITY byte_to_bit_deserializer;
 
 ARCHITECTURE rtl OF byte_to_bit_deserializer IS
 
-    -- Sync word: 0xE25F35 sent MSB-first
+    -- Sync word: 0x02B8DB sent MSB-first
     -- This is the SAME pattern the receiver expects (no bit reversal!)
     -- Bit 23 (leftmost) is sent first
-    CONSTANT SYNC_WORD : std_logic_vector(23 DOWNTO 0) := "111000100101111100110101";
-    --                                                       E  2   5  F   3  5
-    -- E2 = 11100010, 5F = 01011111, 35 = 00110101
+    CONSTANT SYNC_WORD : std_logic_vector(23 DOWNTO 0) := "000000101011100011011011";
+    --                                                        0   2   B   8   D   B
+    -- 02 00000010  B8 10111000  DB 11011011 
 
     SIGNAL shift_reg         : std_logic_vector(7 DOWNTO 0);
     SIGNAL bit_counter       : integer range 0 to 31;
@@ -63,7 +63,7 @@ BEGIN
                 shift_reg <= (OTHERS => '0');
                 frame_complete <= '0';
                 last_byte <= '0';
-                ready_int <= '0';
+                ready_int <= '1'; --changed from 0 to 1
                 
             ELSE
                 frame_complete <= '0';
@@ -71,13 +71,12 @@ BEGIN
                 CASE state IS
                     
                     WHEN IDLE =>
-                        tx_data_int <= '0';
+                        --tx_data_int <= '0'; --AI!!! caused spurious extra byte in first frame
                         bit_counter <= 0;
-                        ready_int <= '1';
+                        ready_int <= '0'; -- AI!!! don't take data in IDLE 
                         
                         IF s_axis_tvalid = '1' THEN
                             state <= SENDING_SYNC;
-                            ready_int <= '0';
                             bit_counter <= 23;  -- Start from MSB (bit 23)
                             -- Pre-load first sync bit (MSB) for immediate output
                             tx_data_int <= SYNC_WORD(23);
