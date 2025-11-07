@@ -192,6 +192,7 @@ BEGIN
     read_proc: PROCESS(rd_aclk)
         VARIABLE rd_ptr_bin_next : std_logic_vector(ADDR_WIDTH DOWNTO 0);
         VARIABLE wr_ptr_bin_sync : std_logic_vector(ADDR_WIDTH DOWNTO 0);
+        VARIABLE empty_next : std_logic;
     BEGIN
         IF rising_edge(rd_aclk) THEN
             IF rd_aresetn = '0' THEN
@@ -209,29 +210,44 @@ BEGIN
                 wr_ptr_gray_sync2 <= wr_ptr_gray_sync1;
                 wr_ptr_bin_sync := gray_to_bin(wr_ptr_gray_sync2);
                 
-                -- AXIS read handshake
-                IF tvalid_int = '1' AND m_axis_tready = '1' THEN
-                    rd_ptr_bin_next := std_logic_vector(unsigned(rd_ptr_bin) + 1);
-                    rd_ptr_bin <= rd_ptr_bin_next;
-                    rd_ptr_gray <= bin_to_gray(rd_ptr_bin_next);
+                -- Calculate next empty status based on CURRENT pointers
+                IF wr_ptr_bin_sync = rd_ptr_bin THEN
+                    empty_next := '1';
+                ELSE
+                    empty_next := '0';
                 END IF;
                 
                 -- Present data when not empty
-                IF empty_int = '0' THEN
+                -- This sets up tdata, tlast, and tvalid for the CURRENT cycle
+                IF empty_next = '0' THEN
                     m_axis_tdata <= ram_data(to_integer(unsigned(rd_ptr_bin(ADDR_WIDTH-1 DOWNTO 0))));
                     m_axis_tlast <= ram_last(to_integer(unsigned(rd_ptr_bin(ADDR_WIDTH-1 DOWNTO 0))));
                     tvalid_int <= '1';
                 ELSE
+                    -- When empty, deassert tvalid and clear tlast
+                    -- (tdata is don't care per AXI-Stream spec, but we clear it for cleanliness)
                     tvalid_int <= '0';
+                    m_axis_tlast <= '0';
+                    m_axis_tdata <= (OTHERS => '0');
                 END IF;
                 
-                -- FIX: Empty detection with safety margin for sync lag
-                -- Stop reading when within 3 bytes of synchronized write pointer
-                -- This accounts for the 2-cycle synchronization delay
-                IF unsigned(wr_ptr_bin_sync) <= unsigned(rd_ptr_bin) + 3 THEN
-                    empty_int <= '1';
+                -- AXIS read handshake - advance pointer only when:
+                -- 1. We're presenting valid data (empty_next = '0')
+                -- 2. Downstream is ready (m_axis_tready = '1')
+                IF empty_next = '0' AND m_axis_tready = '1' THEN
+                    rd_ptr_bin_next := std_logic_vector(unsigned(rd_ptr_bin) + 1);
+                    rd_ptr_bin <= rd_ptr_bin_next;
+                    rd_ptr_gray <= bin_to_gray(rd_ptr_bin_next);
+                    
+                    -- Update empty status based on where we'll be AFTER this read
+                    IF wr_ptr_bin_sync = rd_ptr_bin_next THEN
+                        empty_int <= '1';
+                    ELSE
+                        empty_int <= '0';
+                    END IF;
                 ELSE
-                    empty_int <= '0';
+                    -- No advancement
+                    empty_int <= empty_next;
                 END IF;
                 
                 -- Programmable empty
