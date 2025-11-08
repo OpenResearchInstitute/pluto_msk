@@ -329,12 +329,6 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.Tx_Sync_Ctrl.tx_sync_force'):
             self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_force.inst_name, 'tx_sync_force') # type: ignore[union-attr]
             self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_force.full_inst_name, 'msk_top_regs.Tx_Sync_Ctrl.tx_sync_force')  # type: ignore[union-attr]
-        with self.subTest(msg='node: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f1'):
-            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_f1.inst_name, 'tx_sync_f1') # type: ignore[union-attr]
-            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_f1.full_inst_name, 'msk_top_regs.Tx_Sync_Ctrl.tx_sync_f1')  # type: ignore[union-attr]
-        with self.subTest(msg='node: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f2'):
-            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_f2.inst_name, 'tx_sync_f2') # type: ignore[union-attr]
-            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_f2.full_inst_name, 'msk_top_regs.Tx_Sync_Ctrl.tx_sync_f2')  # type: ignore[union-attr]
         with self.subTest(msg='node: msk_top_regs.Tx_Sync_Cnt.tx_sync_cnt'):
             self.assertEqual(self.dut.Tx_Sync_Cnt.tx_sync_cnt.inst_name, 'tx_sync_cnt') # type: ignore[union-attr]
             self.assertEqual(self.dut.Tx_Sync_Cnt.tx_sync_cnt.full_inst_name, 'msk_top_regs.Tx_Sync_Cnt.tx_sync_cnt')  # type: ignore[union-attr]
@@ -996,20 +990,6 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
             
 
-        with self.subTest(msg='node: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f1'):
-            
-                
-            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_f1.rdl_name, "Tx F1 Sync Enable") # type: ignore[union-attr]
-                
-            
-
-        with self.subTest(msg='node: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f2'):
-            
-                
-            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_f2.rdl_name, "Tx F2 Sync Enable") # type: ignore[union-attr]
-                
-            
-
         with self.subTest(msg='node: msk_top_regs.Tx_Sync_Cnt.tx_sync_cnt'):
             
                 
@@ -1250,28 +1230,28 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.f1_nco_adjust'):
             
                 
-            self.assertIsNone(self.dut.f1_nco_adjust.rdl_desc)  # type: ignore[union-attr]
+            self.assertEqual(self.dut.f1_nco_adjust.rdl_desc, "Status Register") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.f2_nco_adjust'):
             
                 
-            self.assertIsNone(self.dut.f2_nco_adjust.rdl_desc)  # type: ignore[union-attr]
+            self.assertEqual(self.dut.f2_nco_adjust.rdl_desc, "Status Register") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.f1_error'):
             
                 
-            self.assertIsNone(self.dut.f1_error.rdl_desc)  # type: ignore[union-attr]
+            self.assertEqual(self.dut.f1_error.rdl_desc, "Status Register") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.f2_error'):
             
                 
-            self.assertIsNone(self.dut.f2_error.rdl_desc)  # type: ignore[union-attr]
+            self.assertEqual(self.dut.f2_error.rdl_desc, "Status Register") # type: ignore[union-attr]
                 
             
 
@@ -1306,21 +1286,21 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.rx_power'):
             
                 
-            self.assertEqual(self.dut.rx_power.rdl_desc, "Receive power computed from I/Q ssamples") # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_power.rdl_desc, "Receive power computed from I/Q samples") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.tx_async_fifo_rd_wr_ptr'):
             
                 
-            self.assertIsNone(self.dut.tx_async_fifo_rd_wr_ptr.rdl_desc)  # type: ignore[union-attr]
+            self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.rdl_desc, "Tx async FIFO read and write pointers") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
             
                 
-            self.assertIsNone(self.dut.rx_async_fifo_rd_wr_ptr.rdl_desc)  # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.rdl_desc, "Rx async FIFO read and write pointers") # type: ignore[union-attr]
                 
             
 
@@ -1684,35 +1664,21 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.Tx_Sync_Ctrl.tx_sync_ena'):
             
                 
-            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_ena.rdl_desc, "0 -\u003e Disable sync transmission\n\n1 -\u003e Enable sync transmission when PTT is asserted") # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_ena.rdl_desc, "0 : Disable sync transmission\n\n1 : Enable sync transmission when PTT is asserted") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.Tx_Sync_Ctrl.tx_sync_force'):
             
                 
-            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_force.rdl_desc, "0 : Normal operation\n\n1 : Transmit synchronization pattern") # type: ignore[union-attr]
-                
-            
-
-        with self.subTest(msg='node: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f1'):
-            
-                
-            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_f1.rdl_desc, "Enables/Disables transmission of F1 tone for receiver synchronization\n0 : F1 tone transmission disabled\n\n1 : F1 tone transmission enabled\n\nBoth F1 and F2 can be enabled at the same time") # type: ignore[union-attr]
-                
-            
-
-        with self.subTest(msg='node: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f2'):
-            
-                
-            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_f2.rdl_desc, "Enables/Disables transmission of F2 tone for receiver synchronization\n0 : F2 tone transmission disabled\n\n1 : F2 tone transmission enabled\n\nBoth F1 and F2 can be enabled at the same time") # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Sync_Ctrl.tx_sync_force.rdl_desc, "0 : Normal operation\n\n1 : Continuously transmit synchronization pattern") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.Tx_Sync_Cnt.tx_sync_cnt'):
             
                 
-            self.assertEqual(self.dut.Tx_Sync_Cnt.tx_sync_cnt.rdl_desc, "Value from 0x00_0000 to 0xFF_FFFF. \n\nThis value represents the number bit-times the synchronization \n\nsignal should be sent after PTT is asserted.") # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Sync_Cnt.tx_sync_cnt.rdl_desc, "Value from 0x00_0000 to 0xFF_FFFF. \n\nThis value represents the number bit-times the synchronization signal should be sent after PTT is asserted.") # type: ignore[union-attr]
                 
             
 
@@ -1733,21 +1699,21 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.rx_power.data'):
             
                 
-            self.assertEqual(self.dut.rx_power.data.rdl_desc, "Value that represent the RMS power of the incoming I\n\nThis register is write-to-capture.\n\nTo read data the following steps are required:\n\n1 - Write any value to this register to capture read data\n\n2 - Read the register") # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_power.data.rdl_desc, "Value that represent the RMS power of the incoming signal (I-channel)\n\nThis register is write-to-capture. To read data the following steps are required:\n[list=1]\n[*] Write any value to this register to capture read data\n[*] Read the register\n[/list]") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.tx_async_fifo_rd_wr_ptr.data'):
             
                 
-            self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.data.rdl_desc, "Read and Write Pointers\n\nBits 31:16 - write pointer (12-bits)\n\nBits 15:00 - read pointer (12-bits)\n\nThis register is write-to-capture.\n\nTo read data the following steps are required:\n\n1 - Write any value to this register to capture read data\n\n2 - Read the register") # type: ignore[union-attr]
+            self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.data.rdl_desc, "Read and Write Pointers\n\n[code]\nBits 31:16 - write pointer (12-bits)\nBits 15:00 - read pointer (12-bits)\n[/code]\n\nThis register is write-to-capture. To read data the following steps are required:\n[list=1]\n[*] Write any value to this register to capture read data\n[*] Read the register\n[/list]") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.rx_async_fifo_rd_wr_ptr.data'):
             
                 
-            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.data.rdl_desc, "Read and Write Pointers\n\n[code]\nBits 31:16 - write pointer (12-bits)\n\nBits 15:00 - read pointer (12-bits)\n[/code]\n\nThis register is write-to-capture. To read data the following steps are required:\n[list]\n[*] Write any value to this register to capture read data[br]\n[*] Read the register\n[/list]") # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.data.rdl_desc, "Read and Write Pointers\n\n[code]\nBits 31:16 - write pointer (12-bits)\nBits 15:00 - read pointer (12-bits)\n[/code]\n\nThis register is write-to-capture. To read data the following steps are required:\n[list=1]\n[*] Write any value to this register to capture read data\n[*] Read the register\n[/list]") # type: ignore[union-attr]
                 
             
 
@@ -2902,38 +2868,6 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(fut.default,0)
                 
             self.assertEqual(fut.is_volatile,False)
-        with self.subTest(msg='field: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f1'):
-            # test properties of field: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f1
-            fut = self.dut.Tx_Sync_Ctrl.tx_sync_f1 # type: ignore[union-attr]
-            if not isinstance(fut, Field):
-                raise TypeError('This test relies on node being of type Field')
-            self.assertEqual(fut.lsb,2)
-            self.assertEqual(fut.msb,2)
-            self.assertEqual(fut.low,2)
-            self.assertEqual(fut.high,2)
-            self.assertEqual(fut.bitmask,0x4)
-            self.assertEqual(fut.inverse_bitmask,0xFFFFFFFB)
-            self.assertEqual(fut.max_value,0x1)
-                
-            self.assertEqual(fut.default,0)
-                
-            self.assertEqual(fut.is_volatile,False)
-        with self.subTest(msg='field: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f2'):
-            # test properties of field: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f2
-            fut = self.dut.Tx_Sync_Ctrl.tx_sync_f2 # type: ignore[union-attr]
-            if not isinstance(fut, Field):
-                raise TypeError('This test relies on node being of type Field')
-            self.assertEqual(fut.lsb,3)
-            self.assertEqual(fut.msb,3)
-            self.assertEqual(fut.low,3)
-            self.assertEqual(fut.high,3)
-            self.assertEqual(fut.bitmask,0x8)
-            self.assertEqual(fut.inverse_bitmask,0xFFFFFFF7)
-            self.assertEqual(fut.max_value,0x1)
-                
-            self.assertEqual(fut.default,0)
-                
-            self.assertEqual(fut.is_volatile,False)
         with self.subTest(msg='field: msk_top_regs.Tx_Sync_Cnt.tx_sync_cnt'):
             # test properties of field: msk_top_regs.Tx_Sync_Cnt.tx_sync_cnt
             fut = self.dut.Tx_Sync_Cnt.tx_sync_cnt # type: ignore[union-attr]
@@ -3036,8 +2970,6 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         """
         Check that enumeration has the name and desc meta data from the systemRDL
         """
-        
-        
         
         
         
@@ -3466,14 +3398,6 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='register: msk_top_regs.Tx_Sync_Ctrl.tx_sync_force'):
             
             self.assertDictEqual(self.dut.Tx_Sync_Ctrl.tx_sync_force.udp,{})
-            
-        with self.subTest(msg='register: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f1'):
-            
-            self.assertDictEqual(self.dut.Tx_Sync_Ctrl.tx_sync_f1.udp,{})
-            
-        with self.subTest(msg='register: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f2'):
-            
-            self.assertDictEqual(self.dut.Tx_Sync_Ctrl.tx_sync_f2.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Sync_Cnt.tx_sync_cnt'):
             
@@ -10953,174 +10877,6 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                     await fut.write(-1)
 
         # test access operations (read and/or write) to field:
-        # msk_top_regs.Tx_Sync_Ctrl.tx_sync_f1
-        with self.subTest(msg='field: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f1'):
-            fut = self.dut.Tx_Sync_Ctrl.tx_sync_f1 # type: ignore[union-attr]
-            with patch(base_name + '.write_addr_space') as write_callback_mock,\
-                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
-
-                
-                
-                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
-                    raise TypeError('Test can not proceed as the fut is not a readable async field')
-                
-
-                # read back - zero, this is achieved by setting the register to inverse bitmask
-                read_callback_mock.return_value = 0xFFFFFFFB
-                self.assertEqual(await fut.read(),
-                                 0)
-                read_callback_mock.assert_called_once_with(
-                                    addr=124,
-                                    width=32,
-                                    accesswidth=fut.parent_register.accesswidth)
-
-                # read back - max_value, this is achieved by setting the register to bitmask
-                read_callback_mock.reset_mock()
-                read_callback_mock.return_value = 0x4
-                self.assertEqual(await fut.read(),
-                                 0x1)
-                read_callback_mock.assert_called_once_with(
-                                    addr=124,
-                                    width=32,
-                                    accesswidth=fut.parent_register.accesswidth)
-
-                # read back - random value
-                read_callback_mock.reset_mock()
-                random_value = random.randrange(0, 0xFFFFFFFF+1)
-                read_callback_mock.return_value = random_value
-                random_field_value = (random_value & 0x4) >> 2
-                self.assertEqual(await fut.read(),
-                                 random_field_value)
-                read_callback_mock.assert_called_once_with(
-                                    addr=124,
-                                    width=32,
-                                    accesswidth=fut.parent_register.accesswidth)
-
-                # at the end of the read tests the write should not have been called
-                read_callback_mock.reset_mock()
-                write_callback_mock.assert_not_called()
-                # check the write
-                
-                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
-                    raise TypeError('Test can not proceed as the fut is not a writable async field')
-                
-
-                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
-                random_field_value = random.randrange(0, 0x1 + 1)
-                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
-                    for field_value in [0, 0x1, random_field_value]:
-                        read_callback_mock.reset_mock()
-                        write_callback_mock.reset_mock()
-                        read_callback_mock.return_value = reg_base_value
-
-                        await self.dut.Tx_Sync_Ctrl.tx_sync_f1.write(field_value) # type: ignore[union-attr]
-
-                        
-                        read_callback_mock.assert_called_once_with(
-                                    addr=124,
-                                    width=32,
-                                    accesswidth=fut.parent_register.accesswidth)
-                        
-                        write_callback_mock.assert_called_once_with(
-                                    addr=124,
-                                    width=32,
-                                    accesswidth=self.dut.Tx_Sync_Ctrl.tx_sync_f1.parent_register.accesswidth, # type: ignore[union-attr]
-                                    data=(reg_base_value & 0xFFFFFFFB) | \
-                                         (0x4 & (field_value << 2)))
-                        
-
-                # check invalid write values bounce
-                with self.assertRaises(ValueError):
-                    await fut.write(0x1 + 1)
-
-                with self.assertRaises(ValueError):
-                    await fut.write(-1)
-
-        # test access operations (read and/or write) to field:
-        # msk_top_regs.Tx_Sync_Ctrl.tx_sync_f2
-        with self.subTest(msg='field: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f2'):
-            fut = self.dut.Tx_Sync_Ctrl.tx_sync_f2 # type: ignore[union-attr]
-            with patch(base_name + '.write_addr_space') as write_callback_mock,\
-                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
-
-                
-                
-                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
-                    raise TypeError('Test can not proceed as the fut is not a readable async field')
-                
-
-                # read back - zero, this is achieved by setting the register to inverse bitmask
-                read_callback_mock.return_value = 0xFFFFFFF7
-                self.assertEqual(await fut.read(),
-                                 0)
-                read_callback_mock.assert_called_once_with(
-                                    addr=124,
-                                    width=32,
-                                    accesswidth=fut.parent_register.accesswidth)
-
-                # read back - max_value, this is achieved by setting the register to bitmask
-                read_callback_mock.reset_mock()
-                read_callback_mock.return_value = 0x8
-                self.assertEqual(await fut.read(),
-                                 0x1)
-                read_callback_mock.assert_called_once_with(
-                                    addr=124,
-                                    width=32,
-                                    accesswidth=fut.parent_register.accesswidth)
-
-                # read back - random value
-                read_callback_mock.reset_mock()
-                random_value = random.randrange(0, 0xFFFFFFFF+1)
-                read_callback_mock.return_value = random_value
-                random_field_value = (random_value & 0x8) >> 3
-                self.assertEqual(await fut.read(),
-                                 random_field_value)
-                read_callback_mock.assert_called_once_with(
-                                    addr=124,
-                                    width=32,
-                                    accesswidth=fut.parent_register.accesswidth)
-
-                # at the end of the read tests the write should not have been called
-                read_callback_mock.reset_mock()
-                write_callback_mock.assert_not_called()
-                # check the write
-                
-                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
-                    raise TypeError('Test can not proceed as the fut is not a writable async field')
-                
-
-                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
-                random_field_value = random.randrange(0, 0x1 + 1)
-                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
-                    for field_value in [0, 0x1, random_field_value]:
-                        read_callback_mock.reset_mock()
-                        write_callback_mock.reset_mock()
-                        read_callback_mock.return_value = reg_base_value
-
-                        await self.dut.Tx_Sync_Ctrl.tx_sync_f2.write(field_value) # type: ignore[union-attr]
-
-                        
-                        read_callback_mock.assert_called_once_with(
-                                    addr=124,
-                                    width=32,
-                                    accesswidth=fut.parent_register.accesswidth)
-                        
-                        write_callback_mock.assert_called_once_with(
-                                    addr=124,
-                                    width=32,
-                                    accesswidth=self.dut.Tx_Sync_Ctrl.tx_sync_f2.parent_register.accesswidth, # type: ignore[union-attr]
-                                    data=(reg_base_value & 0xFFFFFFF7) | \
-                                         (0x8 & (field_value << 3)))
-                        
-
-                # check invalid write values bounce
-                with self.assertRaises(ValueError):
-                    await fut.write(0x1 + 1)
-
-                with self.assertRaises(ValueError):
-                    await fut.write(-1)
-
-        # test access operations (read and/or write) to field:
         # msk_top_regs.Tx_Sync_Cnt.tx_sync_cnt
         with self.subTest(msg='field: msk_top_regs.Tx_Sync_Cnt.tx_sync_cnt'):
             fut = self.dut.Tx_Sync_Cnt.tx_sync_cnt # type: ignore[union-attr]
@@ -12860,28 +12616,6 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                     
                 
             
-                
-                    
-                        
-            rand_field_value = random.randrange(0, 0x1 + 1)
-                        
-                        
-            rand_reg_value = (rand_reg_value & 0xFFFFFFFB) | (rand_field_value << 2)
-                        
-                    
-                
-            
-                
-                    
-                        
-            rand_field_value = random.randrange(0, 0x1 + 1)
-                        
-                        
-            rand_reg_value = (rand_reg_value & 0xFFFFFFF7) | (rand_field_value << 3)
-                        
-                    
-                
-            
             with patch(base_name + '.write_addr_space') as write_callback_mock, \
                  patch(base_name + '.read_addr_space', return_value=rand_reg_value) as read_callback_mock:
                 # the read_fields method gets a dictionary back
@@ -12889,9 +12623,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # values
                 reference_read_fields = { 
                                           'tx_sync_ena' : await self.dut.Tx_Sync_Ctrl.tx_sync_ena.read(),
-                                          'tx_sync_force' : await self.dut.Tx_Sync_Ctrl.tx_sync_force.read(),
-                                          'tx_sync_f1' : await self.dut.Tx_Sync_Ctrl.tx_sync_f1.read(),
-                                          'tx_sync_f2' : await self.dut.Tx_Sync_Ctrl.tx_sync_f2.read()
+                                          'tx_sync_force' : await self.dut.Tx_Sync_Ctrl.tx_sync_force.read()
                                         }
 
                 read_callback_mock.reset_mock()
@@ -14538,28 +14270,6 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                     
                 
             
-                
-                    
-                        
-            rand_field_value = random.randrange(0, 0x1 + 1)
-                        
-                        
-            rand_reg_value = (rand_reg_value & 0xFFFFFFFB) | (rand_field_value << 2)
-                        
-                    
-                
-            
-                
-                    
-                        
-            rand_field_value = random.randrange(0, 0x1 + 1)
-                        
-                        
-            rand_reg_value = (rand_reg_value & 0xFFFFFFF7) | (rand_field_value << 3)
-                        
-                    
-                
-            
             with patch(base_name + '.write_addr_space') as write_callback_mock, \
                  patch(base_name + '.read_addr_space', return_value=rand_reg_value) as read_callback_mock:
 
@@ -14567,9 +14277,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # via the context manager
                 reference_read_fields = { 
                                           'tx_sync_ena' : await self.dut.Tx_Sync_Ctrl.tx_sync_ena.read(),  # type: ignore[union-attr]
-                                          'tx_sync_force' : await self.dut.Tx_Sync_Ctrl.tx_sync_force.read(),  # type: ignore[union-attr]
-                                          'tx_sync_f1' : await self.dut.Tx_Sync_Ctrl.tx_sync_f1.read(),  # type: ignore[union-attr]
-                                          'tx_sync_f2' : await self.dut.Tx_Sync_Ctrl.tx_sync_f2.read()  # type: ignore[union-attr]
+                                          'tx_sync_force' : await self.dut.Tx_Sync_Ctrl.tx_sync_force.read()  # type: ignore[union-attr]
                                         }
                 read_callback_mock.reset_mock()
 
@@ -14581,12 +14289,6 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                      )
                     self.assertEqual(reference_read_fields['tx_sync_force'],
                                       await reg_context.get_child_by_system_rdl_name('tx_sync_force').read()
-                                     )
-                    self.assertEqual(reference_read_fields['tx_sync_f1'],
-                                      await reg_context.get_child_by_system_rdl_name('tx_sync_f1').read()
-                                     )
-                    self.assertEqual(reference_read_fields['tx_sync_f2'],
-                                      await reg_context.get_child_by_system_rdl_name('tx_sync_f2').read()
                                      )
                     pass
 
@@ -15025,9 +14727,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='register: msk_top_regs.Tx_Sync_Ctrl'):
             await write_field_combinations(reg=self.dut.Tx_Sync_Ctrl,
                                writable_fields = [ 'tx_sync_ena',
-                                                   'tx_sync_force',
-                                                   'tx_sync_f1',
-                                                   'tx_sync_f2'
+                                                   'tx_sync_force'
                                                    ])
         with self.subTest(msg='register: msk_top_regs.Tx_Sync_Cnt'):
             await write_field_combinations(reg=self.dut.Tx_Sync_Cnt,
@@ -15320,9 +15020,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             # msk_top_regs.Tx_Sync_Ctrl
             await write_field_combinations(reg=self.dut.Tx_Sync_Ctrl,
                                        writable_fields = [ 'tx_sync_ena',
-                                                           'tx_sync_force',
-                                                           'tx_sync_f1',
-                                                           'tx_sync_f2'
+                                                           'tx_sync_force'
                                                            ])
             
         with self.subTest(msg='register: msk_top_regs.Tx_Sync_Cnt'):
@@ -15833,16 +15531,6 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
                 self.dut.Tx_Sync_Ctrl.tx_sync_force.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
-        with self.subTest(msg='node: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f1'):
-            with self.assertRaises(AttributeError):
-                # this line is trying to set an illegal value so by definition should fail the type
-                # checks
-                self.dut.Tx_Sync_Ctrl.tx_sync_f1.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
-        with self.subTest(msg='node: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f2'):
-            with self.assertRaises(AttributeError):
-                # this line is trying to set an illegal value so by definition should fail the type
-                # checks
-                self.dut.Tx_Sync_Ctrl.tx_sync_f2.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
         with self.subTest(msg='node: msk_top_regs.Tx_Sync_Cnt.tx_sync_cnt'):
             with self.assertRaises(AttributeError):
                 # this line is trying to set an illegal value so by definition should fail the type
@@ -17661,12 +17349,6 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                  self.dut.Tx_Sync_Ctrl.tx_sync_force, # type: ignore[union-attr,list-item]
                                         
                                     
-                                 self.dut.Tx_Sync_Ctrl.tx_sync_f1, # type: ignore[union-attr,list-item]
-                                        
-                                    
-                                 self.dut.Tx_Sync_Ctrl.tx_sync_f2, # type: ignore[union-attr,list-item]
-                                        
-                                    
                                  
                                          ]
             fields = []
@@ -17677,10 +17359,6 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             expected_writable_fields = [self.dut.Tx_Sync_Ctrl.tx_sync_ena, # type: ignore[union-attr,list-item] 
                                             
                                          self.dut.Tx_Sync_Ctrl.tx_sync_force, # type: ignore[union-attr,list-item] 
-                                            
-                                         self.dut.Tx_Sync_Ctrl.tx_sync_f1, # type: ignore[union-attr,list-item] 
-                                            
-                                         self.dut.Tx_Sync_Ctrl.tx_sync_f2, # type: ignore[union-attr,list-item] 
                                             
                                          
                                          ]
@@ -17693,10 +17371,6 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             expected_readable_fields = [self.dut.Tx_Sync_Ctrl.tx_sync_ena, # type: ignore[union-attr,list-item] 
                                             
                                          self.dut.Tx_Sync_Ctrl.tx_sync_force, # type: ignore[union-attr,list-item] 
-                                            
-                                         self.dut.Tx_Sync_Ctrl.tx_sync_f1, # type: ignore[union-attr,list-item] 
-                                            
-                                         self.dut.Tx_Sync_Ctrl.tx_sync_f2, # type: ignore[union-attr,list-item] 
                                             
                                          
                                          ]
@@ -18201,16 +17875,6 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         
         
         
-        self.assertEqual(self.dut.Tx_Sync_Ctrl.get_child_by_system_rdl_name('tx_sync_f1').inst_name, 'tx_sync_f1')
-        
-        
-        
-        
-        self.assertEqual(self.dut.Tx_Sync_Ctrl.get_child_by_system_rdl_name('tx_sync_f2').inst_name, 'tx_sync_f2')
-        
-        
-        
-        
         
         self.assertEqual(self.dut.Tx_Sync_Cnt.get_child_by_system_rdl_name('tx_sync_cnt').inst_name, 'tx_sync_cnt')
         
@@ -18243,8 +17907,6 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         
         
         self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.get_child_by_system_rdl_name('data').inst_name, 'data')
-        
-        
         
         
         

@@ -147,7 +147,7 @@ class msk_top_regs_simulator_cls(Simulator):
                                                 ]),
             124 : 
     Register(width=32, full_inst_name='msk_top_regs.Tx_Sync_Ctrl', readable=True, writable=True,
-                                         fields=[FieldDefinition(high=0, low=0, msb=0, lsb=0, inst_name='tx_sync_ena'),FieldDefinition(high=1, low=1, msb=1, lsb=1, inst_name='tx_sync_force'),FieldDefinition(high=2, low=2, msb=2, lsb=2, inst_name='tx_sync_f1'),FieldDefinition(high=3, low=3, msb=3, lsb=3, inst_name='tx_sync_f2'),
+                                         fields=[FieldDefinition(high=0, low=0, msb=0, lsb=0, inst_name='tx_sync_ena'),FieldDefinition(high=1, low=1, msb=1, lsb=1, inst_name='tx_sync_force'),
                                                 ]),
             128 : 
     Register(width=32, full_inst_name='msk_top_regs.Tx_Sync_Cnt', readable=True, writable=True,

@@ -10,12 +10,12 @@
     <dt>Base Offset:</dt><dd class="address">0x8c</dd>
     <dt>Size:</dt><dd class="address">0x4</dd>
     
-    <dt>Source:</dt><dd><a href="https://github.com/OpenResearchInstitute/pluto_msk/blob/peakrdl/rdl/src/msk_top_regs.rdl#L542" target="_blank">msk_top_regs.rdl</a></dd>
+    <dt>Source:</dt><dd><a href="https://github.com/OpenResearchInstitute/pluto_msk/blob/peakrdl/rdl/src/msk_top_regs.rdl#L522" target="_blank">msk_top_regs.rdl</a></dd>
     
 </dl>
 <h2>Description</h2>
 <div id="_Content.desc">
-<p>Receive power computed from I/Q ssamples</p>
+<p>Receive power computed from I/Q samples</p>
 </div>
 
 <h2>Contents</h2>
@@ -72,10 +72,11 @@
     <a class="headerlink" href="#data.desc" title="Permalink to this headline"></a>
 </h3>
 <div id="_Content.data.desc">
-<p>Value that represent the RMS power of the incoming I</p>
-<p>This register is write-to-capture.</p>
-<p>To read data the following steps are required:</p>
-<p>1 - Write any value to this register to capture read data</p>
-<p>2 - Read the register</p>
+<p>Value that represent the RMS power of the incoming signal (I-channel)</p>
+<p>This register is write-to-capture. To read data the following steps are required:</p>
+<ol type="1">
+<li> Write any value to this register to capture read data
+</li><li> Read the register
+</li></ol>
 </div>
 </div>

@@ -633,6 +633,8 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 - Base Offset: 0x6C
 - Size: 0x4
 
+<p>Status Register</p>
+
 |Bits|Identifier|Access|Reset|Name|
 |----|----------|------|-----|----|
 |31:0|   data   |  rw  | 0x0 |  — |
@@ -650,6 +652,8 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 - Absolute Address: 0x70
 - Base Offset: 0x70
 - Size: 0x4
+
+<p>Status Register</p>
 
 |Bits|Identifier|Access|Reset|Name|
 |----|----------|------|-----|----|
@@ -669,6 +673,8 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 - Base Offset: 0x74
 - Size: 0x4
 
+<p>Status Register</p>
+
 |Bits|Identifier|Access|Reset|Name|
 |----|----------|------|-----|----|
 |31:0|   data   |  rw  | 0x0 |  — |
@@ -686,6 +692,8 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 - Absolute Address: 0x78
 - Base Offset: 0x78
 - Size: 0x4
+
+<p>Status Register</p>
 
 |Bits|Identifier|Access|Reset|Name|
 |----|----------|------|-----|----|
@@ -707,36 +715,20 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 <p>Provides control bits for generation of transmitter synchronization patterns</p>
 
-|Bits|  Identifier |Access|Reset|       Name      |
-|----|-------------|------|-----|-----------------|
-|  0 | tx_sync_ena |  rw  | 0x0 |  Tx Sync Enable |
-|  1 |tx_sync_force|  rw  | 0x0 |  Tx Sync Force  |
-|  2 |  tx_sync_f1 |  rw  | 0x0 |Tx F1 Sync Enable|
-|  3 |  tx_sync_f2 |  rw  | 0x0 |Tx F2 Sync Enable|
+|Bits|  Identifier |Access|Reset|     Name     |
+|----|-------------|------|-----|--------------|
+|  0 | tx_sync_ena |  rw  | 0x0 |Tx Sync Enable|
+|  1 |tx_sync_force|  rw  | 0x0 | Tx Sync Force|
 
 #### tx_sync_ena field
 
-<p>0 -&gt; Disable sync transmission</p>
-<p>1 -&gt; Enable sync transmission when PTT is asserted</p>
+<p>0 : Disable sync transmission</p>
+<p>1 : Enable sync transmission when PTT is asserted</p>
 
 #### tx_sync_force field
 
 <p>0 : Normal operation</p>
-<p>1 : Transmit synchronization pattern</p>
-
-#### tx_sync_f1 field
-
-<p>Enables/Disables transmission of F1 tone for receiver synchronization
-0 : F1 tone transmission disabled</p>
-<p>1 : F1 tone transmission enabled</p>
-<p>Both F1 and F2 can be enabled at the same time</p>
-
-#### tx_sync_f2 field
-
-<p>Enables/Disables transmission of F2 tone for receiver synchronization
-0 : F2 tone transmission disabled</p>
-<p>1 : F2 tone transmission enabled</p>
-<p>Both F1 and F2 can be enabled at the same time</p>
+<p>1 : Continuously transmit synchronization pattern</p>
 
 ### Tx_Sync_Cnt register
 
@@ -753,8 +745,7 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 #### tx_sync_cnt field
 
 <p>Value from 0x00_0000 to 0xFF_FFFF. </p>
-<p>This value represents the number bit-times the synchronization </p>
-<p>signal should be sent after PTT is asserted.</p>
+<p>This value represents the number bit-times the synchronization signal should be sent after PTT is asserted.</p>
 
 ### lowpass_ema_alpha1 register
 
@@ -794,7 +785,7 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 - Base Offset: 0x8C
 - Size: 0x4
 
-<p>Receive power computed from I/Q ssamples</p>
+<p>Receive power computed from I/Q samples</p>
 
 |Bits|Identifier|Access|Reset|     Name    |
 |----|----------|------|-----|-------------|
@@ -802,11 +793,12 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 #### data field
 
-<p>Value that represent the RMS power of the incoming I</p>
-<p>This register is write-to-capture.</p>
-<p>To read data the following steps are required:</p>
-<p>1 - Write any value to this register to capture read data</p>
-<p>2 - Read the register</p>
+<p>Value that represent the RMS power of the incoming signal (I-channel)</p>
+<p>This register is write-to-capture. To read data the following steps are required:</p>
+<ol type="1">
+<li> Write any value to this register to capture read data
+</li><li> Read the register
+</li></ol>
 
 ### tx_async_fifo_rd_wr_ptr register
 
@@ -814,25 +806,7 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 - Base Offset: 0x90
 - Size: 0x4
 
-|Bits|Identifier|Access|Reset|Name|
-|----|----------|------|-----|----|
-|31:0|   data   |  rw  | 0x0 |  — |
-
-#### data field
-
-<p>Read and Write Pointers</p>
-<p>Bits 31:16 - write pointer (12-bits)</p>
-<p>Bits 15:00 - read pointer (12-bits)</p>
-<p>This register is write-to-capture.</p>
-<p>To read data the following steps are required:</p>
-<p>1 - Write any value to this register to capture read data</p>
-<p>2 - Read the register</p>
-
-### rx_async_fifo_rd_wr_ptr register
-
-- Absolute Address: 0x94
-- Base Offset: 0x94
-- Size: 0x4
+<p>Tx async FIFO read and write pointers</p>
 
 |Bits|Identifier|Access|Reset|Name|
 |----|----------|------|-----|----|
@@ -842,10 +816,34 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 <p>Read and Write Pointers</p>
 <p><code>
-Bits 31:16 - write pointer (12-bits)</p>
-<p>Bits 15:00 - read pointer (12-bits)</code></p>
+Bits 31:16 - write pointer (12-bits)
+Bits 15:00 - read pointer (12-bits)</code></p>
 <p>This register is write-to-capture. To read data the following steps are required:</p>
-<ul>
-<li> Write any value to this register to capture read data<br>
+<ol type="1">
+<li> Write any value to this register to capture read data
 </li><li> Read the register
-</li></ul>
+</li></ol>
+
+### rx_async_fifo_rd_wr_ptr register
+
+- Absolute Address: 0x94
+- Base Offset: 0x94
+- Size: 0x4
+
+<p>Rx async FIFO read and write pointers</p>
+
+|Bits|Identifier|Access|Reset|Name|
+|----|----------|------|-----|----|
+|31:0|   data   |  rw  | 0x0 |  — |
+
+#### data field
+
+<p>Read and Write Pointers</p>
+<p><code>
+Bits 31:16 - write pointer (12-bits)
+Bits 15:00 - read pointer (12-bits)</code></p>
+<p>This register is write-to-capture. To read data the following steps are required:</p>
+<ol type="1">
+<li> Write any value to this register to capture read data
+</li><li> Read the register
+</li></ol>

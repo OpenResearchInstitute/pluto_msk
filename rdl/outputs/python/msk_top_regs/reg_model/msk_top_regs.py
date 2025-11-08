@@ -76,7 +76,7 @@ from ..lib import AsyncCallbackSet, AsyncCallbackSetLegacy
     
     
     
-class msk_top_regs_data32_desc_d7a81b16_cls(FieldAsyncReadWrite):
+class msk_top_regs_status_reg_data_desc_a6882ec4_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -88,11 +88,11 @@ class msk_top_regs_data32_desc_d7a81b16_cls(FieldAsyncReadWrite):
     | Description  | .. raw:: html                                                           |
     |              |                                                                         |
     |              |      <p>Read and Write Pointers</p> <p><code> Bits 31:16 - write        |
-    |              |      pointer (12-bits)</p> <p>Bits 15:00 - read pointer                 |
-    |              |      (12-bits)</code></p> <p>This register is write-to-capture. To read |
-    |              |      data the following steps are required:</p> <ul> <li> Write any     |
-    |              |      value to this register to capture read data<br> </li><li> Read the |
-    |              |      register </li></ul>                                                |
+    |              |      pointer (12-bits) Bits 15:00 - read pointer (12-bits)</code></p>   |
+    |              |      <p>This register is write-to-capture. To read data the following   |
+    |              |      steps are required:</p> <ol type="1"> <li> Write any value to this |
+    |              |      register to capture read data </li><li> Read the register          |
+    |              |      </li></ol>                                                         |
     +--------------+-------------------------------------------------------------------------+
     """
 
@@ -105,14 +105,14 @@ class msk_top_regs_data32_desc_d7a81b16_cls(FieldAsyncReadWrite):
 
     @property
     def rdl_desc(self) -> str:
-        return "Read and Write Pointers\n\n[code]\nBits 31:16 - write pointer (12-bits)\n\nBits 15:00 - read pointer (12-bits)\n[/code]\n\nThis register is write-to-capture. To read data the following steps are required:\n[list]\n[*] Write any value to this register to capture read data[br]\n[*] Read the register\n[/list]"
+        return "Read and Write Pointers\n\n[code]\nBits 31:16 - write pointer (12-bits)\nBits 15:00 - read pointer (12-bits)\n[/code]\n\nThis register is write-to-capture. To read data the following steps are required:\n[list=1]\n[*] Write any value to this register to capture read data\n[*] Read the register\n[/list]"
     
     
     
 
     
     
-class msk_top_regs_observation_data_data_91b9abca_name_8a90eed1_cls(RegAsyncReadWrite):
+class msk_top_regs_status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_cls(RegAsyncReadWrite):
     """
     Class to represent a register in the register model
 
@@ -123,6 +123,10 @@ class msk_top_regs_observation_data_data_91b9abca_name_8a90eed1_cls(RegAsyncRead
     | Name         | .. raw:: html                                                           |
     |              |                                                                         |
     |              |      Rx async FIFO read and write pointers                              |
+    +--------------+-------------------------------------------------------------------------+
+    | Description  | .. raw:: html                                                           |
+    |              |                                                                         |
+    |              |      <p>Rx async FIFO read and write pointers</p>                       |
     +--------------+-------------------------------------------------------------------------+
     """
 
@@ -145,7 +149,7 @@ class msk_top_regs_observation_data_data_91b9abca_name_8a90eed1_cls(RegAsyncRead
 
         # build the field attributes
         
-        self.__data:msk_top_regs_data32_desc_d7a81b16_cls = msk_top_regs_data32_desc_d7a81b16_cls(
+        self.__data:msk_top_regs_status_reg_data_desc_a6882ec4_cls = msk_top_regs_status_reg_data_desc_a6882ec4_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -176,7 +180,7 @@ class msk_top_regs_observation_data_data_91b9abca_name_8a90eed1_cls(RegAsyncRead
     # build the properties for the fields
     
     @property
-    def data(self) -> msk_top_regs_data32_desc_d7a81b16_cls:
+    def data(self) -> msk_top_regs_status_reg_data_desc_a6882ec4_cls:
         """
         Property to access data field of the register
 
@@ -187,11 +191,11 @@ class msk_top_regs_observation_data_data_91b9abca_name_8a90eed1_cls(RegAsyncRead
         | Description  | .. raw:: html                                                           |
         |              |                                                                         |
         |              |      <p>Read and Write Pointers</p> <p><code> Bits 31:16 - write        |
-        |              |      pointer (12-bits)</p> <p>Bits 15:00 - read pointer                 |
-        |              |      (12-bits)</code></p> <p>This register is write-to-capture. To read |
-        |              |      data the following steps are required:</p> <ul> <li> Write any     |
-        |              |      value to this register to capture read data<br> </li><li> Read the |
-        |              |      register </li></ul>                                                |
+        |              |      pointer (12-bits) Bits 15:00 - read pointer (12-bits)</code></p>   |
+        |              |      <p>This register is write-to-capture. To read data the following   |
+        |              |      steps are required:</p> <ol type="1"> <li> Write any value to this |
+        |              |      register to capture read data </li><li> Read the register          |
+        |              |      </li></ol>                                                         |
         +--------------+-------------------------------------------------------------------------+
         """
         return self.__data
@@ -216,7 +220,7 @@ class msk_top_regs_observation_data_data_91b9abca_name_8a90eed1_cls(RegAsyncRead
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data32_desc_d7a81b16_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_status_reg_data_desc_a6882ec4_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -230,6 +234,9 @@ class msk_top_regs_observation_data_data_91b9abca_name_8a90eed1_cls(RegAsyncRead
     @property
     def rdl_name(self) -> str:
         return "Rx async FIFO read and write pointers"
+    @property
+    def rdl_desc(self) -> str:
+        return "Rx async FIFO read and write pointers"
     
     
     
@@ -237,7 +244,7 @@ class msk_top_regs_observation_data_data_91b9abca_name_8a90eed1_cls(RegAsyncRead
     
     
     
-class msk_top_regs_data32_desc_52ad9f96_cls(FieldAsyncReadWrite):
+class msk_top_regs_status_reg_data_desc_a6882ec4_0x0x1059601d_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -248,11 +255,12 @@ class msk_top_regs_data32_desc_52ad9f96_cls(FieldAsyncReadWrite):
     +==============+=========================================================================+
     | Description  | .. raw:: html                                                           |
     |              |                                                                         |
-    |              |      <p>Read and Write Pointers</p> <p>Bits 31:16 - write pointer       |
-    |              |      (12-bits)</p> <p>Bits 15:00 - read pointer (12-bits)</p> <p>This   |
-    |              |      register is write-to-capture.</p> <p>To read data the following    |
-    |              |      steps are required:</p> <p>1 - Write any value to this register to |
-    |              |      capture read data</p> <p>2 - Read the register</p>                 |
+    |              |      <p>Read and Write Pointers</p> <p><code> Bits 31:16 - write        |
+    |              |      pointer (12-bits) Bits 15:00 - read pointer (12-bits)</code></p>   |
+    |              |      <p>This register is write-to-capture. To read data the following   |
+    |              |      steps are required:</p> <ol type="1"> <li> Write any value to this |
+    |              |      register to capture read data </li><li> Read the register          |
+    |              |      </li></ol>                                                         |
     +--------------+-------------------------------------------------------------------------+
     """
 
@@ -265,14 +273,14 @@ class msk_top_regs_data32_desc_52ad9f96_cls(FieldAsyncReadWrite):
 
     @property
     def rdl_desc(self) -> str:
-        return "Read and Write Pointers\n\nBits 31:16 - write pointer (12-bits)\n\nBits 15:00 - read pointer (12-bits)\n\nThis register is write-to-capture.\n\nTo read data the following steps are required:\n\n1 - Write any value to this register to capture read data\n\n2 - Read the register"
+        return "Read and Write Pointers\n\n[code]\nBits 31:16 - write pointer (12-bits)\nBits 15:00 - read pointer (12-bits)\n[/code]\n\nThis register is write-to-capture. To read data the following steps are required:\n[list=1]\n[*] Write any value to this register to capture read data\n[*] Read the register\n[/list]"
     
     
     
 
     
     
-class msk_top_regs_observation_data_data_dbd8270c_name_aa4ec676_cls(RegAsyncReadWrite):
+class msk_top_regs_status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_cls(RegAsyncReadWrite):
     """
     Class to represent a register in the register model
 
@@ -283,6 +291,10 @@ class msk_top_regs_observation_data_data_dbd8270c_name_aa4ec676_cls(RegAsyncRead
     | Name         | .. raw:: html                                                           |
     |              |                                                                         |
     |              |      Tx async FIFO read and write pointers                              |
+    +--------------+-------------------------------------------------------------------------+
+    | Description  | .. raw:: html                                                           |
+    |              |                                                                         |
+    |              |      <p>Tx async FIFO read and write pointers</p>                       |
     +--------------+-------------------------------------------------------------------------+
     """
 
@@ -305,7 +317,7 @@ class msk_top_regs_observation_data_data_dbd8270c_name_aa4ec676_cls(RegAsyncRead
 
         # build the field attributes
         
-        self.__data:msk_top_regs_data32_desc_52ad9f96_cls = msk_top_regs_data32_desc_52ad9f96_cls(
+        self.__data:msk_top_regs_status_reg_data_desc_a6882ec4_0x0x1059601d_cls = msk_top_regs_status_reg_data_desc_a6882ec4_0x0x1059601d_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -336,7 +348,7 @@ class msk_top_regs_observation_data_data_dbd8270c_name_aa4ec676_cls(RegAsyncRead
     # build the properties for the fields
     
     @property
-    def data(self) -> msk_top_regs_data32_desc_52ad9f96_cls:
+    def data(self) -> msk_top_regs_status_reg_data_desc_a6882ec4_0x0x1059601d_cls:
         """
         Property to access data field of the register
 
@@ -346,11 +358,12 @@ class msk_top_regs_observation_data_data_dbd8270c_name_aa4ec676_cls(RegAsyncRead
         +==============+=========================================================================+
         | Description  | .. raw:: html                                                           |
         |              |                                                                         |
-        |              |      <p>Read and Write Pointers</p> <p>Bits 31:16 - write pointer       |
-        |              |      (12-bits)</p> <p>Bits 15:00 - read pointer (12-bits)</p> <p>This   |
-        |              |      register is write-to-capture.</p> <p>To read data the following    |
-        |              |      steps are required:</p> <p>1 - Write any value to this register to |
-        |              |      capture read data</p> <p>2 - Read the register</p>                 |
+        |              |      <p>Read and Write Pointers</p> <p><code> Bits 31:16 - write        |
+        |              |      pointer (12-bits) Bits 15:00 - read pointer (12-bits)</code></p>   |
+        |              |      <p>This register is write-to-capture. To read data the following   |
+        |              |      steps are required:</p> <ol type="1"> <li> Write any value to this |
+        |              |      register to capture read data </li><li> Read the register          |
+        |              |      </li></ol>                                                         |
         +--------------+-------------------------------------------------------------------------+
         """
         return self.__data
@@ -375,7 +388,7 @@ class msk_top_regs_observation_data_data_dbd8270c_name_aa4ec676_cls(RegAsyncRead
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data32_desc_52ad9f96_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_status_reg_data_desc_a6882ec4_0x0x1059601d_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -388,6 +401,9 @@ class msk_top_regs_observation_data_data_dbd8270c_name_aa4ec676_cls(RegAsyncRead
 
     @property
     def rdl_name(self) -> str:
+        return "Tx async FIFO read and write pointers"
+    @property
+    def rdl_desc(self) -> str:
         return "Tx async FIFO read and write pointers"
     
     
@@ -411,10 +427,11 @@ class msk_top_regs_rx_power_data_cls(FieldAsyncReadWrite):
     +--------------+-------------------------------------------------------------------------+
     | Description  | .. raw:: html                                                           |
     |              |                                                                         |
-    |              |      <p>Value that represent the RMS power of the incoming I</p>        |
-    |              |      <p>This register is write-to-capture.</p> <p>To read data the      |
-    |              |      following steps are required:</p> <p>1 - Write any value to this   |
-    |              |      register to capture read data</p> <p>2 - Read the register</p>     |
+    |              |      <p>Value that represent the RMS power of the incoming signal       |
+    |              |      (I-channel)</p> <p>This register is write-to-capture. To read data |
+    |              |      the following steps are required:</p> <ol type="1"> <li> Write any |
+    |              |      value to this register to capture read data </li><li> Read the     |
+    |              |      register </li></ol>                                                |
     +--------------+-------------------------------------------------------------------------+
     """
 
@@ -430,7 +447,7 @@ class msk_top_regs_rx_power_data_cls(FieldAsyncReadWrite):
         return "Receive Power"
     @property
     def rdl_desc(self) -> str:
-        return "Value that represent the RMS power of the incoming I\n\nThis register is write-to-capture.\n\nTo read data the following steps are required:\n\n1 - Write any value to this register to capture read data\n\n2 - Read the register"
+        return "Value that represent the RMS power of the incoming signal (I-channel)\n\nThis register is write-to-capture. To read data the following steps are required:\n[list=1]\n[*] Write any value to this register to capture read data\n[*] Read the register\n[/list]"
     
     
     
@@ -451,7 +468,7 @@ class msk_top_regs_rx_power_cls(RegAsyncReadWrite):
     +--------------+-------------------------------------------------------------------------+
     | Description  | .. raw:: html                                                           |
     |              |                                                                         |
-    |              |      <p>Receive power computed from I/Q ssamples</p>                    |
+    |              |      <p>Receive power computed from I/Q samples</p>                     |
     +--------------+-------------------------------------------------------------------------+
     """
 
@@ -519,10 +536,11 @@ class msk_top_regs_rx_power_cls(RegAsyncReadWrite):
         +--------------+-------------------------------------------------------------------------+
         | Description  | .. raw:: html                                                           |
         |              |                                                                         |
-        |              |      <p>Value that represent the RMS power of the incoming I</p>        |
-        |              |      <p>This register is write-to-capture.</p> <p>To read data the      |
-        |              |      following steps are required:</p> <p>1 - Write any value to this   |
-        |              |      register to capture read data</p> <p>2 - Read the register</p>     |
+        |              |      <p>Value that represent the RMS power of the incoming signal       |
+        |              |      (I-channel)</p> <p>This register is write-to-capture. To read data |
+        |              |      the following steps are required:</p> <ol type="1"> <li> Write any |
+        |              |      value to this register to capture read data </li><li> Read the     |
+        |              |      register </li></ol>                                                |
         +--------------+-------------------------------------------------------------------------+
         """
         return self.__data
@@ -563,7 +581,7 @@ class msk_top_regs_rx_power_cls(RegAsyncReadWrite):
         return "Receive Power"
     @property
     def rdl_desc(self) -> str:
-        return "Receive power computed from I/Q ssamples"
+        return "Receive power computed from I/Q samples"
     
     
     
@@ -740,7 +758,7 @@ class msk_top_regs_lowpass_ema_alpha_cls(RegAsyncReadWrite):
     
     
     
-class msk_top_regs_lowpass_ema_alpha_alpha_0x0x104e6131_cls(FieldAsyncReadWrite):
+class msk_top_regs_lowpass_ema_alpha_alpha_0x0x105960a4_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -778,7 +796,7 @@ class msk_top_regs_lowpass_ema_alpha_alpha_0x0x104e6131_cls(FieldAsyncReadWrite)
 
     
     
-class msk_top_regs_lowpass_ema_alpha_0x0x104e6149_cls(RegAsyncReadWrite):
+class msk_top_regs_lowpass_ema_alpha_0x0x105960e6_cls(RegAsyncReadWrite):
     """
     Class to represent a register in the register model
 
@@ -815,7 +833,7 @@ class msk_top_regs_lowpass_ema_alpha_0x0x104e6149_cls(RegAsyncReadWrite):
 
         # build the field attributes
         
-        self.__alpha:msk_top_regs_lowpass_ema_alpha_alpha_0x0x104e6131_cls = msk_top_regs_lowpass_ema_alpha_alpha_0x0x104e6131_cls(
+        self.__alpha:msk_top_regs_lowpass_ema_alpha_alpha_0x0x105960a4_cls = msk_top_regs_lowpass_ema_alpha_alpha_0x0x105960a4_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=18,
@@ -846,7 +864,7 @@ class msk_top_regs_lowpass_ema_alpha_0x0x104e6149_cls(RegAsyncReadWrite):
     # build the properties for the fields
     
     @property
-    def alpha(self) -> msk_top_regs_lowpass_ema_alpha_alpha_0x0x104e6131_cls:
+    def alpha(self) -> msk_top_regs_lowpass_ema_alpha_alpha_0x0x105960a4_cls:
         """
         Property to access alpha field of the register
 
@@ -885,7 +903,7 @@ class msk_top_regs_lowpass_ema_alpha_0x0x104e6149_cls(RegAsyncReadWrite):
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_lowpass_ema_alpha_alpha_0x0x104e6131_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_lowpass_ema_alpha_alpha_0x0x105960a4_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -925,8 +943,8 @@ class msk_top_regs_tx_sync_cnt_tx_sync_cnt_cls(FieldAsyncReadWrite):
     | Description  | .. raw:: html                                                           |
     |              |                                                                         |
     |              |      <p>Value from 0x00_0000 to 0xFF_FFFF. </p> <p>This value           |
-    |              |      represents the number bit-times the synchronization </p> <p>signal |
-    |              |      should be sent after PTT is asserted.</p>                          |
+    |              |      represents the number bit-times the synchronization signal should  |
+    |              |      be sent after PTT is asserted.</p>                                 |
     +--------------+-------------------------------------------------------------------------+
     """
 
@@ -942,7 +960,7 @@ class msk_top_regs_tx_sync_cnt_tx_sync_cnt_cls(FieldAsyncReadWrite):
         return "Tx sync duration"
     @property
     def rdl_desc(self) -> str:
-        return "Value from 0x00_0000 to 0xFF_FFFF. \n\nThis value represents the number bit-times the synchronization \n\nsignal should be sent after PTT is asserted."
+        return "Value from 0x00_0000 to 0xFF_FFFF. \n\nThis value represents the number bit-times the synchronization signal should be sent after PTT is asserted."
     
     
     
@@ -1032,8 +1050,8 @@ class msk_top_regs_tx_sync_cnt_cls(RegAsyncReadWrite):
         | Description  | .. raw:: html                                                           |
         |              |                                                                         |
         |              |      <p>Value from 0x00_0000 to 0xFF_FFFF. </p> <p>This value           |
-        |              |      represents the number bit-times the synchronization </p> <p>signal |
-        |              |      should be sent after PTT is asserted.</p>                          |
+        |              |      represents the number bit-times the synchronization signal should  |
+        |              |      be sent after PTT is asserted.</p>                                 |
         +--------------+-------------------------------------------------------------------------+
         """
         return self.__tx_sync_cnt
@@ -1082,90 +1100,6 @@ class msk_top_regs_tx_sync_cnt_cls(RegAsyncReadWrite):
     
     
     
-class msk_top_regs_tx_sync_ctrl_tx_sync_f2_cls(FieldAsyncReadWrite):
-    
-    """
-    Class to represent a register field in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      Tx F2 Sync Enable                                                  |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Enables/Disables transmission of F2 tone for receiver           |
-    |              |      synchronization 0 : F2 tone transmission disabled</p> <p>1 : F2    |
-    |              |      tone transmission enabled</p> <p>Both F1 and F2 can be enabled at  |
-    |              |      the same time</p>                                                  |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = []
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "Tx F2 Sync Enable"
-    @property
-    def rdl_desc(self) -> str:
-        return "Enables/Disables transmission of F2 tone for receiver synchronization\n0 : F2 tone transmission disabled\n\n1 : F2 tone transmission enabled\n\nBoth F1 and F2 can be enabled at the same time"
-    
-    
-    
-
-    
-    
-    
-class msk_top_regs_tx_sync_ctrl_tx_sync_f1_cls(FieldAsyncReadWrite):
-    
-    """
-    Class to represent a register field in the register model
-
-    +--------------+-------------------------------------------------------------------------+
-    | SystemRDL    | Value                                                                   |
-    | Field        |                                                                         |
-    +==============+=========================================================================+
-    | Name         | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      Tx F1 Sync Enable                                                  |
-    +--------------+-------------------------------------------------------------------------+
-    | Description  | .. raw:: html                                                           |
-    |              |                                                                         |
-    |              |      <p>Enables/Disables transmission of F1 tone for receiver           |
-    |              |      synchronization 0 : F1 tone transmission disabled</p> <p>1 : F1    |
-    |              |      tone transmission enabled</p> <p>Both F1 and F2 can be enabled at  |
-    |              |      the same time</p>                                                  |
-    +--------------+-------------------------------------------------------------------------+
-    """
-
-    __slots__ : list[str] = []
-
-    
-
-    
-    
-
-    @property
-    def rdl_name(self) -> str:
-        return "Tx F1 Sync Enable"
-    @property
-    def rdl_desc(self) -> str:
-        return "Enables/Disables transmission of F1 tone for receiver synchronization\n0 : F1 tone transmission disabled\n\n1 : F1 tone transmission enabled\n\nBoth F1 and F2 can be enabled at the same time"
-    
-    
-    
-
-    
-    
-    
 class msk_top_regs_tx_sync_ctrl_tx_sync_force_cls(FieldAsyncReadWrite):
     
     """
@@ -1181,8 +1115,8 @@ class msk_top_regs_tx_sync_ctrl_tx_sync_force_cls(FieldAsyncReadWrite):
     +--------------+-------------------------------------------------------------------------+
     | Description  | .. raw:: html                                                           |
     |              |                                                                         |
-    |              |      <p>0 : Normal operation</p> <p>1 : Transmit synchronization        |
-    |              |      pattern</p>                                                        |
+    |              |      <p>0 : Normal operation</p> <p>1 : Continuously transmit           |
+    |              |      synchronization pattern</p>                                        |
     +--------------+-------------------------------------------------------------------------+
     """
 
@@ -1198,7 +1132,7 @@ class msk_top_regs_tx_sync_ctrl_tx_sync_force_cls(FieldAsyncReadWrite):
         return "Tx Sync Force"
     @property
     def rdl_desc(self) -> str:
-        return "0 : Normal operation\n\n1 : Transmit synchronization pattern"
+        return "0 : Normal operation\n\n1 : Continuously transmit synchronization pattern"
     
     
     
@@ -1221,7 +1155,7 @@ class msk_top_regs_tx_sync_ctrl_tx_sync_ena_cls(FieldAsyncReadWrite):
     +--------------+-------------------------------------------------------------------------+
     | Description  | .. raw:: html                                                           |
     |              |                                                                         |
-    |              |      <p>0 -&gt; Disable sync transmission</p> <p>1 -&gt; Enable sync    |
+    |              |      <p>0 : Disable sync transmission</p> <p>1 : Enable sync            |
     |              |      transmission when PTT is asserted</p>                              |
     +--------------+-------------------------------------------------------------------------+
     """
@@ -1238,7 +1172,7 @@ class msk_top_regs_tx_sync_ctrl_tx_sync_ena_cls(FieldAsyncReadWrite):
         return "Tx Sync Enable"
     @property
     def rdl_desc(self) -> str:
-        return "0 -\u003e Disable sync transmission\n\n1 -\u003e Enable sync transmission when PTT is asserted"
+        return "0 : Disable sync transmission\n\n1 : Enable sync transmission when PTT is asserted"
     
     
     
@@ -1264,7 +1198,7 @@ class msk_top_regs_tx_sync_ctrl_cls(RegAsyncReadWrite):
     +--------------+-------------------------------------------------------------------------+
     """
 
-    __slots__ : list[str] = ['__tx_sync_ena', '__tx_sync_force', '__tx_sync_f1', '__tx_sync_f2']
+    __slots__ : list[str] = ['__tx_sync_ena', '__tx_sync_force']
 
     def __init__(self,
                  address: int,
@@ -1311,34 +1245,6 @@ class msk_top_regs_tx_sync_ctrl_cls(RegAsyncReadWrite):
             logger_handle=logger_handle+'.tx_sync_force',
             inst_name='tx_sync_force',
             field_type=int)
-        self.__tx_sync_f1:msk_top_regs_tx_sync_ctrl_tx_sync_f1_cls = msk_top_regs_tx_sync_ctrl_tx_sync_f1_cls(
-            parent_register=self,
-            size_props=FieldSizeProps(
-                width=1,
-                lsb=2,
-                msb=2,
-                low=2,
-                high=2),
-            misc_props=FieldMiscProps(
-                default=0,
-                is_volatile=False),
-            logger_handle=logger_handle+'.tx_sync_f1',
-            inst_name='tx_sync_f1',
-            field_type=int)
-        self.__tx_sync_f2:msk_top_regs_tx_sync_ctrl_tx_sync_f2_cls = msk_top_regs_tx_sync_ctrl_tx_sync_f2_cls(
-            parent_register=self,
-            size_props=FieldSizeProps(
-                width=1,
-                lsb=3,
-                msb=3,
-                low=3,
-                high=3),
-            misc_props=FieldMiscProps(
-                default=0,
-                is_volatile=False),
-            logger_handle=logger_handle+'.tx_sync_f2',
-            inst_name='tx_sync_f2',
-            field_type=int)
 
     @property
     def fields(self) -> Iterator[Union[FieldAsyncReadOnly, FieldAsyncWriteOnly,FieldAsyncReadWrite]]:
@@ -1347,8 +1253,6 @@ class msk_top_regs_tx_sync_ctrl_cls(RegAsyncReadWrite):
         """
         yield self.tx_sync_ena
         yield self.tx_sync_force
-        yield self.tx_sync_f1
-        yield self.tx_sync_f2
         
         # Empty generator in case there are no children of this type
         if False: yield
@@ -1373,7 +1277,7 @@ class msk_top_regs_tx_sync_ctrl_cls(RegAsyncReadWrite):
         +--------------+-------------------------------------------------------------------------+
         | Description  | .. raw:: html                                                           |
         |              |                                                                         |
-        |              |      <p>0 -&gt; Disable sync transmission</p> <p>1 -&gt; Enable sync    |
+        |              |      <p>0 : Disable sync transmission</p> <p>1 : Enable sync            |
         |              |      transmission when PTT is asserted</p>                              |
         +--------------+-------------------------------------------------------------------------+
         """
@@ -1393,55 +1297,11 @@ class msk_top_regs_tx_sync_ctrl_cls(RegAsyncReadWrite):
         +--------------+-------------------------------------------------------------------------+
         | Description  | .. raw:: html                                                           |
         |              |                                                                         |
-        |              |      <p>0 : Normal operation</p> <p>1 : Transmit synchronization        |
-        |              |      pattern</p>                                                        |
+        |              |      <p>0 : Normal operation</p> <p>1 : Continuously transmit           |
+        |              |      synchronization pattern</p>                                        |
         +--------------+-------------------------------------------------------------------------+
         """
         return self.__tx_sync_force
-    @property
-    def tx_sync_f1(self) -> msk_top_regs_tx_sync_ctrl_tx_sync_f1_cls:
-        """
-        Property to access tx_sync_f1 field of the register
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      Tx F1 Sync Enable                                                  |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Enables/Disables transmission of F1 tone for receiver           |
-        |              |      synchronization 0 : F1 tone transmission disabled</p> <p>1 : F1    |
-        |              |      tone transmission enabled</p> <p>Both F1 and F2 can be enabled at  |
-        |              |      the same time</p>                                                  |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__tx_sync_f1
-    @property
-    def tx_sync_f2(self) -> msk_top_regs_tx_sync_ctrl_tx_sync_f2_cls:
-        """
-        Property to access tx_sync_f2 field of the register
-
-        +--------------+-------------------------------------------------------------------------+
-        | SystemRDL    | Value                                                                   |
-        | Field        |                                                                         |
-        +==============+=========================================================================+
-        | Name         | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      Tx F2 Sync Enable                                                  |
-        +--------------+-------------------------------------------------------------------------+
-        | Description  | .. raw:: html                                                           |
-        |              |                                                                         |
-        |              |      <p>Enables/Disables transmission of F2 tone for receiver           |
-        |              |      synchronization 0 : F2 tone transmission disabled</p> <p>1 : F2    |
-        |              |      tone transmission enabled</p> <p>Both F1 and F2 can be enabled at  |
-        |              |      the same time</p>                                                  |
-        +--------------+-------------------------------------------------------------------------+
-        """
-        return self.__tx_sync_f2
 
     
     @property
@@ -1453,7 +1313,7 @@ class msk_top_regs_tx_sync_ctrl_cls(RegAsyncReadWrite):
 
         Returns: dictionary whose key is the systemRDL names and value it the property name
         """
-        return {'tx_sync_ena':'tx_sync_ena','tx_sync_force':'tx_sync_force','tx_sync_f1':'tx_sync_f1','tx_sync_f2':'tx_sync_f2',
+        return {'tx_sync_ena':'tx_sync_ena','tx_sync_force':'tx_sync_force',
             }
 
     
@@ -1462,7 +1322,7 @@ class msk_top_regs_tx_sync_ctrl_cls(RegAsyncReadWrite):
     
     
     
-    # nodes:4
+    # nodes:2
                 
     @overload
     def get_child_by_system_rdl_name(self, name: Literal["tx_sync_ena"]) -> msk_top_regs_tx_sync_ctrl_tx_sync_ena_cls: ...
@@ -1471,17 +1331,9 @@ class msk_top_regs_tx_sync_ctrl_cls(RegAsyncReadWrite):
     @overload
     def get_child_by_system_rdl_name(self, name: Literal["tx_sync_force"]) -> msk_top_regs_tx_sync_ctrl_tx_sync_force_cls: ...
                 
-                
-    @overload
-    def get_child_by_system_rdl_name(self, name: Literal["tx_sync_f1"]) -> msk_top_regs_tx_sync_ctrl_tx_sync_f1_cls: ...
-                
-                
-    @overload
-    def get_child_by_system_rdl_name(self, name: Literal["tx_sync_f2"]) -> msk_top_regs_tx_sync_ctrl_tx_sync_f2_cls: ...
-                
 
     @overload
-    def get_child_by_system_rdl_name(self, name: str) -> Union[msk_top_regs_tx_sync_ctrl_tx_sync_ena_cls, msk_top_regs_tx_sync_ctrl_tx_sync_force_cls, msk_top_regs_tx_sync_ctrl_tx_sync_f1_cls, msk_top_regs_tx_sync_ctrl_tx_sync_f2_cls, ]: ...
+    def get_child_by_system_rdl_name(self, name: str) -> Union[msk_top_regs_tx_sync_ctrl_tx_sync_ena_cls, msk_top_regs_tx_sync_ctrl_tx_sync_force_cls, ]: ...
 
     def get_child_by_system_rdl_name(self, name: Any) -> Any:
         return super().get_child_by_system_rdl_name(name)
@@ -1506,7 +1358,7 @@ class msk_top_regs_tx_sync_ctrl_cls(RegAsyncReadWrite):
     
     
     
-class msk_top_regs_data32_desc_c8bf066a_cls(FieldAsyncReadWrite):
+class msk_top_regs_status_reg_data_desc_c8bf066a_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -1541,7 +1393,7 @@ class msk_top_regs_data32_desc_c8bf066a_cls(FieldAsyncReadWrite):
 
     
     
-class msk_top_regs_observation_data_data_0a9850a4_name_3de9a0d3_cls(RegAsyncReadWrite):
+class msk_top_regs_status_reg_data_642692cf_name_3de9a0d3_cls(RegAsyncReadWrite):
     """
     Class to represent a register in the register model
 
@@ -1552,6 +1404,10 @@ class msk_top_regs_observation_data_data_0a9850a4_name_3de9a0d3_cls(RegAsyncRead
     | Name         | .. raw:: html                                                           |
     |              |                                                                         |
     |              |      F2 Error Value                                                     |
+    +--------------+-------------------------------------------------------------------------+
+    | Description  | .. raw:: html                                                           |
+    |              |                                                                         |
+    |              |      <p>Status Register</p>                                             |
     +--------------+-------------------------------------------------------------------------+
     """
 
@@ -1574,7 +1430,7 @@ class msk_top_regs_observation_data_data_0a9850a4_name_3de9a0d3_cls(RegAsyncRead
 
         # build the field attributes
         
-        self.__data:msk_top_regs_data32_desc_c8bf066a_cls = msk_top_regs_data32_desc_c8bf066a_cls(
+        self.__data:msk_top_regs_status_reg_data_desc_c8bf066a_cls = msk_top_regs_status_reg_data_desc_c8bf066a_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -1605,7 +1461,7 @@ class msk_top_regs_observation_data_data_0a9850a4_name_3de9a0d3_cls(RegAsyncRead
     # build the properties for the fields
     
     @property
-    def data(self) -> msk_top_regs_data32_desc_c8bf066a_cls:
+    def data(self) -> msk_top_regs_status_reg_data_desc_c8bf066a_cls:
         """
         Property to access data field of the register
 
@@ -1644,7 +1500,7 @@ class msk_top_regs_observation_data_data_0a9850a4_name_3de9a0d3_cls(RegAsyncRead
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data32_desc_c8bf066a_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_status_reg_data_desc_c8bf066a_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -1658,6 +1514,9 @@ class msk_top_regs_observation_data_data_0a9850a4_name_3de9a0d3_cls(RegAsyncRead
     @property
     def rdl_name(self) -> str:
         return "F2 Error Value"
+    @property
+    def rdl_desc(self) -> str:
+        return "Status Register"
     
     
     
@@ -1665,7 +1524,7 @@ class msk_top_regs_observation_data_data_0a9850a4_name_3de9a0d3_cls(RegAsyncRead
     
     
     
-class msk_top_regs_data32_desc_83db1b72_cls(FieldAsyncReadWrite):
+class msk_top_regs_status_reg_data_desc_83db1b72_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -1700,7 +1559,7 @@ class msk_top_regs_data32_desc_83db1b72_cls(FieldAsyncReadWrite):
 
     
     
-class msk_top_regs_observation_data_data_f83682dd_name_3b640507_cls(RegAsyncReadWrite):
+class msk_top_regs_status_reg_data_10a2e5b5_name_3b640507_cls(RegAsyncReadWrite):
     """
     Class to represent a register in the register model
 
@@ -1711,6 +1570,10 @@ class msk_top_regs_observation_data_data_f83682dd_name_3b640507_cls(RegAsyncRead
     | Name         | .. raw:: html                                                           |
     |              |                                                                         |
     |              |      F1 Error Value                                                     |
+    +--------------+-------------------------------------------------------------------------+
+    | Description  | .. raw:: html                                                           |
+    |              |                                                                         |
+    |              |      <p>Status Register</p>                                             |
     +--------------+-------------------------------------------------------------------------+
     """
 
@@ -1733,7 +1596,7 @@ class msk_top_regs_observation_data_data_f83682dd_name_3b640507_cls(RegAsyncRead
 
         # build the field attributes
         
-        self.__data:msk_top_regs_data32_desc_83db1b72_cls = msk_top_regs_data32_desc_83db1b72_cls(
+        self.__data:msk_top_regs_status_reg_data_desc_83db1b72_cls = msk_top_regs_status_reg_data_desc_83db1b72_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -1764,7 +1627,7 @@ class msk_top_regs_observation_data_data_f83682dd_name_3b640507_cls(RegAsyncRead
     # build the properties for the fields
     
     @property
-    def data(self) -> msk_top_regs_data32_desc_83db1b72_cls:
+    def data(self) -> msk_top_regs_status_reg_data_desc_83db1b72_cls:
         """
         Property to access data field of the register
 
@@ -1803,7 +1666,7 @@ class msk_top_regs_observation_data_data_f83682dd_name_3b640507_cls(RegAsyncRead
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data32_desc_83db1b72_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_status_reg_data_desc_83db1b72_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -1817,6 +1680,9 @@ class msk_top_regs_observation_data_data_f83682dd_name_3b640507_cls(RegAsyncRead
     @property
     def rdl_name(self) -> str:
         return "F1 Error Value"
+    @property
+    def rdl_desc(self) -> str:
+        return "Status Register"
     
     
     
@@ -1824,7 +1690,7 @@ class msk_top_regs_observation_data_data_f83682dd_name_3b640507_cls(RegAsyncRead
     
     
     
-class msk_top_regs_data32_desc_13897f4c_cls(FieldAsyncReadWrite):
+class msk_top_regs_status_reg_data_desc_13897f4c_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -1858,7 +1724,7 @@ class msk_top_regs_data32_desc_13897f4c_cls(FieldAsyncReadWrite):
 
     
     
-class msk_top_regs_observation_data_data_5802c5b1_name_2c154788_cls(RegAsyncReadWrite):
+class msk_top_regs_status_reg_data_05243a4e_name_2c154788_cls(RegAsyncReadWrite):
     """
     Class to represent a register in the register model
 
@@ -1869,6 +1735,10 @@ class msk_top_regs_observation_data_data_5802c5b1_name_2c154788_cls(RegAsyncRead
     | Name         | .. raw:: html                                                           |
     |              |                                                                         |
     |              |      F2 NCO Frequency Adjust                                            |
+    +--------------+-------------------------------------------------------------------------+
+    | Description  | .. raw:: html                                                           |
+    |              |                                                                         |
+    |              |      <p>Status Register</p>                                             |
     +--------------+-------------------------------------------------------------------------+
     """
 
@@ -1891,7 +1761,7 @@ class msk_top_regs_observation_data_data_5802c5b1_name_2c154788_cls(RegAsyncRead
 
         # build the field attributes
         
-        self.__data:msk_top_regs_data32_desc_13897f4c_cls = msk_top_regs_data32_desc_13897f4c_cls(
+        self.__data:msk_top_regs_status_reg_data_desc_13897f4c_cls = msk_top_regs_status_reg_data_desc_13897f4c_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -1922,7 +1792,7 @@ class msk_top_regs_observation_data_data_5802c5b1_name_2c154788_cls(RegAsyncRead
     # build the properties for the fields
     
     @property
-    def data(self) -> msk_top_regs_data32_desc_13897f4c_cls:
+    def data(self) -> msk_top_regs_status_reg_data_desc_13897f4c_cls:
         """
         Property to access data field of the register
 
@@ -1960,7 +1830,7 @@ class msk_top_regs_observation_data_data_5802c5b1_name_2c154788_cls(RegAsyncRead
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data32_desc_13897f4c_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_status_reg_data_desc_13897f4c_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -1974,6 +1844,9 @@ class msk_top_regs_observation_data_data_5802c5b1_name_2c154788_cls(RegAsyncRead
     @property
     def rdl_name(self) -> str:
         return "F2 NCO Frequency Adjust"
+    @property
+    def rdl_desc(self) -> str:
+        return "Status Register"
     
     
     
@@ -1981,7 +1854,7 @@ class msk_top_regs_observation_data_data_5802c5b1_name_2c154788_cls(RegAsyncRead
     
     
     
-class msk_top_regs_data32_desc_0ed96915_cls(FieldAsyncReadWrite):
+class msk_top_regs_status_reg_data_desc_0ed96915_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -2015,7 +1888,7 @@ class msk_top_regs_data32_desc_0ed96915_cls(FieldAsyncReadWrite):
 
     
     
-class msk_top_regs_observation_data_data_521c7d53_name_d8ad3b25_cls(RegAsyncReadWrite):
+class msk_top_regs_status_reg_data_f53978c8_name_d8ad3b25_cls(RegAsyncReadWrite):
     """
     Class to represent a register in the register model
 
@@ -2026,6 +1899,10 @@ class msk_top_regs_observation_data_data_521c7d53_name_d8ad3b25_cls(RegAsyncRead
     | Name         | .. raw:: html                                                           |
     |              |                                                                         |
     |              |      F1 NCO Frequency Adjust                                            |
+    +--------------+-------------------------------------------------------------------------+
+    | Description  | .. raw:: html                                                           |
+    |              |                                                                         |
+    |              |      <p>Status Register</p>                                             |
     +--------------+-------------------------------------------------------------------------+
     """
 
@@ -2048,7 +1925,7 @@ class msk_top_regs_observation_data_data_521c7d53_name_d8ad3b25_cls(RegAsyncRead
 
         # build the field attributes
         
-        self.__data:msk_top_regs_data32_desc_0ed96915_cls = msk_top_regs_data32_desc_0ed96915_cls(
+        self.__data:msk_top_regs_status_reg_data_desc_0ed96915_cls = msk_top_regs_status_reg_data_desc_0ed96915_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -2079,7 +1956,7 @@ class msk_top_regs_observation_data_data_521c7d53_name_d8ad3b25_cls(RegAsyncRead
     # build the properties for the fields
     
     @property
-    def data(self) -> msk_top_regs_data32_desc_0ed96915_cls:
+    def data(self) -> msk_top_regs_status_reg_data_desc_0ed96915_cls:
         """
         Property to access data field of the register
 
@@ -2117,7 +1994,7 @@ class msk_top_regs_observation_data_data_521c7d53_name_d8ad3b25_cls(RegAsyncRead
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data32_desc_0ed96915_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_status_reg_data_desc_0ed96915_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -2131,6 +2008,9 @@ class msk_top_regs_observation_data_data_521c7d53_name_d8ad3b25_cls(RegAsyncRead
     @property
     def rdl_name(self) -> str:
         return "F1 NCO Frequency Adjust"
+    @property
+    def rdl_desc(self) -> str:
+        return "Status Register"
     
     
     
@@ -2994,7 +2874,7 @@ class msk_top_regs_stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce_cls(RegAsyncReadW
     
     
     
-class msk_top_regs_stat_32_lpf_acc_data_0x0x104e634a_cls(FieldAsyncReadWrite):
+class msk_top_regs_stat_32_lpf_acc_data_0x0x10526299_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -3072,7 +2952,7 @@ class msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls(RegAsyncReadW
 
         # build the field attributes
         
-        self.__data:msk_top_regs_stat_32_lpf_acc_data_0x0x104e634a_cls = msk_top_regs_stat_32_lpf_acc_data_0x0x104e634a_cls(
+        self.__data:msk_top_regs_stat_32_lpf_acc_data_0x0x10526299_cls = msk_top_regs_stat_32_lpf_acc_data_0x0x10526299_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -3103,7 +2983,7 @@ class msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls(RegAsyncReadW
     # build the properties for the fields
     
     @property
-    def data(self) -> msk_top_regs_stat_32_lpf_acc_data_0x0x104e634a_cls:
+    def data(self) -> msk_top_regs_stat_32_lpf_acc_data_0x0x10526299_cls:
         """
         Property to access data field of the register
 
@@ -3145,7 +3025,7 @@ class msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls(RegAsyncReadW
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_stat_32_lpf_acc_data_0x0x104e634a_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_stat_32_lpf_acc_data_0x0x10526299_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -4766,7 +4646,7 @@ class msk_top_regs_data_width_desc_6097df38_name_4609588b_cls(RegAsyncReadWrite)
     
     
     
-class msk_top_regs_data_width_data_width_0x0x104cd786_cls(FieldAsyncReadWrite):
+class msk_top_regs_data_width_data_width_0x0x1059408f_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -4842,7 +4722,7 @@ class msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls(RegAsyncReadWrite)
 
         # build the field attributes
         
-        self.__data_width:msk_top_regs_data_width_data_width_0x0x104cd786_cls = msk_top_regs_data_width_data_width_0x0x104cd786_cls(
+        self.__data_width:msk_top_regs_data_width_data_width_0x0x1059408f_cls = msk_top_regs_data_width_data_width_0x0x1059408f_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=8,
@@ -4873,7 +4753,7 @@ class msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls(RegAsyncReadWrite)
     # build the properties for the fields
     
     @property
-    def data_width(self) -> msk_top_regs_data_width_data_width_0x0x104cd786_cls:
+    def data_width(self) -> msk_top_regs_data_width_data_width_0x0x1059408f_cls:
         """
         Property to access data_width field of the register
 
@@ -4912,7 +4792,7 @@ class msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls(RegAsyncReadWrite)
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data_width_data_width_0x0x104cd786_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data_width_data_width_0x0x1059408f_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -5762,7 +5642,7 @@ class msk_top_regs_config_nco_fw_desc_43c0828f_name_bdc60ecf_cls(RegAsyncReadWri
     
     
     
-class msk_top_regs_config_nco_fw_config_data_0x0x104ce173_cls(FieldAsyncReadWrite):
+class msk_top_regs_config_nco_fw_config_data_0x0x1059568d_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -5839,7 +5719,7 @@ class msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls(RegAsyncReadWri
 
         # build the field attributes
         
-        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x104ce173_cls = msk_top_regs_config_nco_fw_config_data_0x0x104ce173_cls(
+        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x1059568d_cls = msk_top_regs_config_nco_fw_config_data_0x0x1059568d_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -5870,7 +5750,7 @@ class msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls(RegAsyncReadWri
     # build the properties for the fields
     
     @property
-    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x104ce173_cls:
+    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x1059568d_cls:
         """
         Property to access config_data field of the register
 
@@ -5911,7 +5791,7 @@ class msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls(RegAsyncReadWri
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x104ce173_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x1059568d_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -5935,7 +5815,7 @@ class msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls(RegAsyncReadWri
     
     
     
-class msk_top_regs_config_nco_fw_config_data_0x0x104ce218_cls(FieldAsyncReadWrite):
+class msk_top_regs_config_nco_fw_config_data_0x0x105956cc_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -6012,7 +5892,7 @@ class msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls(RegAsyncReadWri
 
         # build the field attributes
         
-        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x104ce218_cls = msk_top_regs_config_nco_fw_config_data_0x0x104ce218_cls(
+        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x105956cc_cls = msk_top_regs_config_nco_fw_config_data_0x0x105956cc_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -6043,7 +5923,7 @@ class msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls(RegAsyncReadWri
     # build the properties for the fields
     
     @property
-    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x104ce218_cls:
+    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x105956cc_cls:
         """
         Property to access config_data field of the register
 
@@ -6084,7 +5964,7 @@ class msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls(RegAsyncReadWri
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x104ce218_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x105956cc_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -6108,7 +5988,7 @@ class msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls(RegAsyncReadWri
     
     
     
-class msk_top_regs_config_nco_fw_config_data_0x0x104dced2_cls(FieldAsyncReadWrite):
+class msk_top_regs_config_nco_fw_config_data_0x0x1059570e_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -6185,7 +6065,7 @@ class msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls(RegAsyncReadWri
 
         # build the field attributes
         
-        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x104dced2_cls = msk_top_regs_config_nco_fw_config_data_0x0x104dced2_cls(
+        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x1059570e_cls = msk_top_regs_config_nco_fw_config_data_0x0x1059570e_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -6216,7 +6096,7 @@ class msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls(RegAsyncReadWri
     # build the properties for the fields
     
     @property
-    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x104dced2_cls:
+    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x1059570e_cls:
         """
         Property to access config_data field of the register
 
@@ -6257,7 +6137,7 @@ class msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls(RegAsyncReadWri
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x104dced2_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x1059570e_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -6281,7 +6161,7 @@ class msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls(RegAsyncReadWri
     
     
     
-class msk_top_regs_config_nco_fw_config_data_0x0x104dccb0_cls(FieldAsyncReadWrite):
+class msk_top_regs_config_nco_fw_config_data_0x0x10595720_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -6358,7 +6238,7 @@ class msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls(RegAsyncReadWri
 
         # build the field attributes
         
-        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x104dccb0_cls = msk_top_regs_config_nco_fw_config_data_0x0x104dccb0_cls(
+        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x10595720_cls = msk_top_regs_config_nco_fw_config_data_0x0x10595720_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -6389,7 +6269,7 @@ class msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls(RegAsyncReadWri
     # build the properties for the fields
     
     @property
-    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x104dccb0_cls:
+    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x10595720_cls:
         """
         Property to access config_data field of the register
 
@@ -6430,7 +6310,7 @@ class msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls(RegAsyncReadWri
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x104dccb0_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x10595720_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -8618,7 +8498,7 @@ class msk_top_regs_cls(AsyncAddressMap):
                                                                      inst_name='LPF_Config_2', parent=self)
         
             
-        self.__f1_nco_adjust:msk_top_regs_observation_data_data_521c7d53_name_d8ad3b25_cls = msk_top_regs_observation_data_data_521c7d53_name_d8ad3b25_cls(
+        self.__f1_nco_adjust:msk_top_regs_status_reg_data_f53978c8_name_d8ad3b25_cls = msk_top_regs_status_reg_data_f53978c8_name_d8ad3b25_cls(
                                                                      address=self.address+108,
                                                                      accesswidth=32,
                                                                      width=32,
@@ -8626,7 +8506,7 @@ class msk_top_regs_cls(AsyncAddressMap):
                                                                      inst_name='f1_nco_adjust', parent=self)
         
             
-        self.__f2_nco_adjust:msk_top_regs_observation_data_data_5802c5b1_name_2c154788_cls = msk_top_regs_observation_data_data_5802c5b1_name_2c154788_cls(
+        self.__f2_nco_adjust:msk_top_regs_status_reg_data_05243a4e_name_2c154788_cls = msk_top_regs_status_reg_data_05243a4e_name_2c154788_cls(
                                                                      address=self.address+112,
                                                                      accesswidth=32,
                                                                      width=32,
@@ -8634,7 +8514,7 @@ class msk_top_regs_cls(AsyncAddressMap):
                                                                      inst_name='f2_nco_adjust', parent=self)
         
             
-        self.__f1_error:msk_top_regs_observation_data_data_f83682dd_name_3b640507_cls = msk_top_regs_observation_data_data_f83682dd_name_3b640507_cls(
+        self.__f1_error:msk_top_regs_status_reg_data_10a2e5b5_name_3b640507_cls = msk_top_regs_status_reg_data_10a2e5b5_name_3b640507_cls(
                                                                      address=self.address+116,
                                                                      accesswidth=32,
                                                                      width=32,
@@ -8642,7 +8522,7 @@ class msk_top_regs_cls(AsyncAddressMap):
                                                                      inst_name='f1_error', parent=self)
         
             
-        self.__f2_error:msk_top_regs_observation_data_data_0a9850a4_name_3de9a0d3_cls = msk_top_regs_observation_data_data_0a9850a4_name_3de9a0d3_cls(
+        self.__f2_error:msk_top_regs_status_reg_data_642692cf_name_3de9a0d3_cls = msk_top_regs_status_reg_data_642692cf_name_3de9a0d3_cls(
                                                                      address=self.address+120,
                                                                      accesswidth=32,
                                                                      width=32,
@@ -8666,7 +8546,7 @@ class msk_top_regs_cls(AsyncAddressMap):
                                                                      inst_name='Tx_Sync_Cnt', parent=self)
         
             
-        self.__lowpass_ema_alpha1:msk_top_regs_lowpass_ema_alpha_0x0x104e6149_cls = msk_top_regs_lowpass_ema_alpha_0x0x104e6149_cls(
+        self.__lowpass_ema_alpha1:msk_top_regs_lowpass_ema_alpha_0x0x105960e6_cls = msk_top_regs_lowpass_ema_alpha_0x0x105960e6_cls(
                                                                      address=self.address+132,
                                                                      accesswidth=32,
                                                                      width=32,
@@ -8690,7 +8570,7 @@ class msk_top_regs_cls(AsyncAddressMap):
                                                                      inst_name='rx_power', parent=self)
         
             
-        self.__tx_async_fifo_rd_wr_ptr:msk_top_regs_observation_data_data_dbd8270c_name_aa4ec676_cls = msk_top_regs_observation_data_data_dbd8270c_name_aa4ec676_cls(
+        self.__tx_async_fifo_rd_wr_ptr:msk_top_regs_status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_cls = msk_top_regs_status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_cls(
                                                                      address=self.address+144,
                                                                      accesswidth=32,
                                                                      width=32,
@@ -8698,7 +8578,7 @@ class msk_top_regs_cls(AsyncAddressMap):
                                                                      inst_name='tx_async_fifo_rd_wr_ptr', parent=self)
         
             
-        self.__rx_async_fifo_rd_wr_ptr:msk_top_regs_observation_data_data_91b9abca_name_8a90eed1_cls = msk_top_regs_observation_data_data_91b9abca_name_8a90eed1_cls(
+        self.__rx_async_fifo_rd_wr_ptr:msk_top_regs_status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_cls = msk_top_regs_status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_cls(
                                                                      address=self.address+148,
                                                                      accesswidth=32,
                                                                      width=32,
@@ -9245,7 +9125,7 @@ class msk_top_regs_cls(AsyncAddressMap):
         return self.__LPF_Config_2
         
     @property
-    def f1_nco_adjust(self) -> msk_top_regs_observation_data_data_521c7d53_name_d8ad3b25_cls:
+    def f1_nco_adjust(self) -> msk_top_regs_status_reg_data_f53978c8_name_d8ad3b25_cls:
         """
         Property to access f1_nco_adjust 
 
@@ -9257,11 +9137,15 @@ class msk_top_regs_cls(AsyncAddressMap):
         |              |                                                                         |
         |              |      F1 NCO Frequency Adjust                                            |
         +--------------+-------------------------------------------------------------------------+
+        | Description  | .. raw:: html                                                           |
+        |              |                                                                         |
+        |              |      <p>Status Register</p>                                             |
+        +--------------+-------------------------------------------------------------------------+
         """
         return self.__f1_nco_adjust
         
     @property
-    def f2_nco_adjust(self) -> msk_top_regs_observation_data_data_5802c5b1_name_2c154788_cls:
+    def f2_nco_adjust(self) -> msk_top_regs_status_reg_data_05243a4e_name_2c154788_cls:
         """
         Property to access f2_nco_adjust 
 
@@ -9273,11 +9157,15 @@ class msk_top_regs_cls(AsyncAddressMap):
         |              |                                                                         |
         |              |      F2 NCO Frequency Adjust                                            |
         +--------------+-------------------------------------------------------------------------+
+        | Description  | .. raw:: html                                                           |
+        |              |                                                                         |
+        |              |      <p>Status Register</p>                                             |
+        +--------------+-------------------------------------------------------------------------+
         """
         return self.__f2_nco_adjust
         
     @property
-    def f1_error(self) -> msk_top_regs_observation_data_data_f83682dd_name_3b640507_cls:
+    def f1_error(self) -> msk_top_regs_status_reg_data_10a2e5b5_name_3b640507_cls:
         """
         Property to access f1_error 
 
@@ -9289,11 +9177,15 @@ class msk_top_regs_cls(AsyncAddressMap):
         |              |                                                                         |
         |              |      F1 Error Value                                                     |
         +--------------+-------------------------------------------------------------------------+
+        | Description  | .. raw:: html                                                           |
+        |              |                                                                         |
+        |              |      <p>Status Register</p>                                             |
+        +--------------+-------------------------------------------------------------------------+
         """
         return self.__f1_error
         
     @property
-    def f2_error(self) -> msk_top_regs_observation_data_data_0a9850a4_name_3de9a0d3_cls:
+    def f2_error(self) -> msk_top_regs_status_reg_data_642692cf_name_3de9a0d3_cls:
         """
         Property to access f2_error 
 
@@ -9304,6 +9196,10 @@ class msk_top_regs_cls(AsyncAddressMap):
         | Name         | .. raw:: html                                                           |
         |              |                                                                         |
         |              |      F2 Error Value                                                     |
+        +--------------+-------------------------------------------------------------------------+
+        | Description  | .. raw:: html                                                           |
+        |              |                                                                         |
+        |              |      <p>Status Register</p>                                             |
         +--------------+-------------------------------------------------------------------------+
         """
         return self.__f2_error
@@ -9350,7 +9246,7 @@ class msk_top_regs_cls(AsyncAddressMap):
         return self.__Tx_Sync_Cnt
         
     @property
-    def lowpass_ema_alpha1(self) -> msk_top_regs_lowpass_ema_alpha_0x0x104e6149_cls:
+    def lowpass_ema_alpha1(self) -> msk_top_regs_lowpass_ema_alpha_0x0x105960e6_cls:
         """
         Property to access lowpass_ema_alpha1 
 
@@ -9404,13 +9300,13 @@ class msk_top_regs_cls(AsyncAddressMap):
         +--------------+-------------------------------------------------------------------------+
         | Description  | .. raw:: html                                                           |
         |              |                                                                         |
-        |              |      <p>Receive power computed from I/Q ssamples</p>                    |
+        |              |      <p>Receive power computed from I/Q samples</p>                     |
         +--------------+-------------------------------------------------------------------------+
         """
         return self.__rx_power
         
     @property
-    def tx_async_fifo_rd_wr_ptr(self) -> msk_top_regs_observation_data_data_dbd8270c_name_aa4ec676_cls:
+    def tx_async_fifo_rd_wr_ptr(self) -> msk_top_regs_status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_cls:
         """
         Property to access tx_async_fifo_rd_wr_ptr 
 
@@ -9422,11 +9318,15 @@ class msk_top_regs_cls(AsyncAddressMap):
         |              |                                                                         |
         |              |      Tx async FIFO read and write pointers                              |
         +--------------+-------------------------------------------------------------------------+
+        | Description  | .. raw:: html                                                           |
+        |              |                                                                         |
+        |              |      <p>Tx async FIFO read and write pointers</p>                       |
+        +--------------+-------------------------------------------------------------------------+
         """
         return self.__tx_async_fifo_rd_wr_ptr
         
     @property
-    def rx_async_fifo_rd_wr_ptr(self) -> msk_top_regs_observation_data_data_91b9abca_name_8a90eed1_cls:
+    def rx_async_fifo_rd_wr_ptr(self) -> msk_top_regs_status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_cls:
         """
         Property to access rx_async_fifo_rd_wr_ptr 
 
@@ -9437,6 +9337,10 @@ class msk_top_regs_cls(AsyncAddressMap):
         | Name         | .. raw:: html                                                           |
         |              |                                                                         |
         |              |      Rx async FIFO read and write pointers                              |
+        +--------------+-------------------------------------------------------------------------+
+        | Description  | .. raw:: html                                                           |
+        |              |                                                                         |
+        |              |      <p>Rx async FIFO read and write pointers</p>                       |
         +--------------+-------------------------------------------------------------------------+
         """
         return self.__rx_async_fifo_rd_wr_ptr
@@ -9572,19 +9476,19 @@ class msk_top_regs_cls(AsyncAddressMap):
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["f1_nco_adjust"]) -> msk_top_regs_observation_data_data_521c7d53_name_d8ad3b25_cls: ...
+    def get_child_by_system_rdl_name(self, name: Literal["f1_nco_adjust"]) -> msk_top_regs_status_reg_data_f53978c8_name_d8ad3b25_cls: ...
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["f2_nco_adjust"]) -> msk_top_regs_observation_data_data_5802c5b1_name_2c154788_cls: ...
+    def get_child_by_system_rdl_name(self, name: Literal["f2_nco_adjust"]) -> msk_top_regs_status_reg_data_05243a4e_name_2c154788_cls: ...
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["f1_error"]) -> msk_top_regs_observation_data_data_f83682dd_name_3b640507_cls: ...
+    def get_child_by_system_rdl_name(self, name: Literal["f1_error"]) -> msk_top_regs_status_reg_data_10a2e5b5_name_3b640507_cls: ...
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["f2_error"]) -> msk_top_regs_observation_data_data_0a9850a4_name_3de9a0d3_cls: ...
+    def get_child_by_system_rdl_name(self, name: Literal["f2_error"]) -> msk_top_regs_status_reg_data_642692cf_name_3de9a0d3_cls: ...
                 
                 
     @overload
@@ -9596,7 +9500,7 @@ class msk_top_regs_cls(AsyncAddressMap):
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["lowpass_ema_alpha1"]) -> msk_top_regs_lowpass_ema_alpha_0x0x104e6149_cls: ...
+    def get_child_by_system_rdl_name(self, name: Literal["lowpass_ema_alpha1"]) -> msk_top_regs_lowpass_ema_alpha_0x0x105960e6_cls: ...
                 
                 
     @overload
@@ -9608,15 +9512,15 @@ class msk_top_regs_cls(AsyncAddressMap):
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["tx_async_fifo_rd_wr_ptr"]) -> msk_top_regs_observation_data_data_dbd8270c_name_aa4ec676_cls: ...
+    def get_child_by_system_rdl_name(self, name: Literal["tx_async_fifo_rd_wr_ptr"]) -> msk_top_regs_status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_cls: ...
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["rx_async_fifo_rd_wr_ptr"]) -> msk_top_regs_observation_data_data_91b9abca_name_8a90eed1_cls: ...
+    def get_child_by_system_rdl_name(self, name: Literal["rx_async_fifo_rd_wr_ptr"]) -> msk_top_regs_status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_cls: ...
                 
 
     @overload
-    def get_child_by_system_rdl_name(self, name: str) -> Union[msk_top_regs_msk_hash_lo_cls, msk_top_regs_msk_hash_hi_cls, msk_top_regs_msk_init_cls, msk_top_regs_msk_ctrl_cls, msk_top_regs_msk_stat_0_cls, msk_top_regs_msk_stat_1_cls, msk_top_regs_msk_stat_2_cls, msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls, msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls, msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls, msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls, msk_top_regs_config_nco_fw_desc_43c0828f_name_bdc60ecf_cls, msk_top_regs_lpf_config_0_cls, msk_top_regs_lpf_config_1_cls, msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls, msk_top_regs_data_width_desc_6097df38_name_4609588b_cls, msk_top_regs_prbs_ctrl_cls, msk_top_regs_config_prbs_seed_cls, msk_top_regs_config_prbs_poly_cls, msk_top_regs_config_prbs_errmask_cls, msk_top_regs_stat_32_bits_cls, msk_top_regs_stat_32_errs_cls, msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls, msk_top_regs_stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce_cls, msk_top_regs_msk_stat_3_cls, msk_top_regs_rx_sample_discard_cls, msk_top_regs_lpf_config_2_cls, msk_top_regs_observation_data_data_521c7d53_name_d8ad3b25_cls, msk_top_regs_observation_data_data_5802c5b1_name_2c154788_cls, msk_top_regs_observation_data_data_f83682dd_name_3b640507_cls, msk_top_regs_observation_data_data_0a9850a4_name_3de9a0d3_cls, msk_top_regs_tx_sync_ctrl_cls, msk_top_regs_tx_sync_cnt_cls, msk_top_regs_lowpass_ema_alpha_0x0x104e6149_cls, msk_top_regs_lowpass_ema_alpha_cls, msk_top_regs_rx_power_cls, msk_top_regs_observation_data_data_dbd8270c_name_aa4ec676_cls, msk_top_regs_observation_data_data_91b9abca_name_8a90eed1_cls, ]: ...
+    def get_child_by_system_rdl_name(self, name: str) -> Union[msk_top_regs_msk_hash_lo_cls, msk_top_regs_msk_hash_hi_cls, msk_top_regs_msk_init_cls, msk_top_regs_msk_ctrl_cls, msk_top_regs_msk_stat_0_cls, msk_top_regs_msk_stat_1_cls, msk_top_regs_msk_stat_2_cls, msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls, msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls, msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls, msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls, msk_top_regs_config_nco_fw_desc_43c0828f_name_bdc60ecf_cls, msk_top_regs_lpf_config_0_cls, msk_top_regs_lpf_config_1_cls, msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls, msk_top_regs_data_width_desc_6097df38_name_4609588b_cls, msk_top_regs_prbs_ctrl_cls, msk_top_regs_config_prbs_seed_cls, msk_top_regs_config_prbs_poly_cls, msk_top_regs_config_prbs_errmask_cls, msk_top_regs_stat_32_bits_cls, msk_top_regs_stat_32_errs_cls, msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls, msk_top_regs_stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce_cls, msk_top_regs_msk_stat_3_cls, msk_top_regs_rx_sample_discard_cls, msk_top_regs_lpf_config_2_cls, msk_top_regs_status_reg_data_f53978c8_name_d8ad3b25_cls, msk_top_regs_status_reg_data_05243a4e_name_2c154788_cls, msk_top_regs_status_reg_data_10a2e5b5_name_3b640507_cls, msk_top_regs_status_reg_data_642692cf_name_3de9a0d3_cls, msk_top_regs_tx_sync_ctrl_cls, msk_top_regs_tx_sync_cnt_cls, msk_top_regs_lowpass_ema_alpha_0x0x105960e6_cls, msk_top_regs_lowpass_ema_alpha_cls, msk_top_regs_rx_power_cls, msk_top_regs_status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_cls, msk_top_regs_status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_cls, ]: ...
 
     def get_child_by_system_rdl_name(self, name: Any) -> Any:
         return super().get_child_by_system_rdl_name(name)

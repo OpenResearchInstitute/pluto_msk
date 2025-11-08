@@ -489,21 +489,9 @@ architecture rtl of msk_top_regs is
         load_next : std_logic;
     end record;
 
-    type \msk_top_regs.Tx_Sync_Ctrl.tx_sync_f1_combo_t\ is record
-        next_q : std_logic;
-        load_next : std_logic;
-    end record;
-
-    type \msk_top_regs.Tx_Sync_Ctrl.tx_sync_f2_combo_t\ is record
-        next_q : std_logic;
-        load_next : std_logic;
-    end record;
-
     type \msk_top_regs.Tx_Sync_Ctrl_combo_t\ is record
         tx_sync_ena : \msk_top_regs.Tx_Sync_Ctrl.tx_sync_ena_combo_t\;
         tx_sync_force : \msk_top_regs.Tx_Sync_Ctrl.tx_sync_force_combo_t\;
-        tx_sync_f1 : \msk_top_regs.Tx_Sync_Ctrl.tx_sync_f1_combo_t\;
-        tx_sync_f2 : \msk_top_regs.Tx_Sync_Ctrl.tx_sync_f2_combo_t\;
     end record;
 
     type \msk_top_regs.Tx_Sync_Cnt.tx_sync_cnt_combo_t\ is record
@@ -917,19 +905,9 @@ architecture rtl of msk_top_regs is
         value : std_logic;
     end record;
 
-    type \msk_top_regs.Tx_Sync_Ctrl.tx_sync_f1_storage_t\ is record
-        value : std_logic;
-    end record;
-
-    type \msk_top_regs.Tx_Sync_Ctrl.tx_sync_f2_storage_t\ is record
-        value : std_logic;
-    end record;
-
     type \msk_top_regs.Tx_Sync_Ctrl_storage_t\ is record
         tx_sync_ena : \msk_top_regs.Tx_Sync_Ctrl.tx_sync_ena_storage_t\;
         tx_sync_force : \msk_top_regs.Tx_Sync_Ctrl.tx_sync_force_storage_t\;
-        tx_sync_f1 : \msk_top_regs.Tx_Sync_Ctrl.tx_sync_f1_storage_t\;
-        tx_sync_f2 : \msk_top_regs.Tx_Sync_Ctrl.tx_sync_f2_storage_t\;
     end record;
 
     type \msk_top_regs.Tx_Sync_Cnt.tx_sync_cnt_storage_t\ is record
@@ -2699,64 +2677,6 @@ begin
     end process;
     hwif_out.Tx_Sync_Ctrl.tx_sync_force.value <= field_storage.Tx_Sync_Ctrl.tx_sync_force.value;
 
-    -- Field: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f1
-    process(all)
-        variable next_c: std_logic;
-        variable load_next_c: std_logic;
-    begin
-        next_c := field_storage.Tx_Sync_Ctrl.tx_sync_f1.value;
-        load_next_c := '0';
-        if decoded_reg_strb.Tx_Sync_Ctrl and decoded_req_is_wr then -- SW write
-            next_c := (field_storage.Tx_Sync_Ctrl.tx_sync_f1.value and not decoded_wr_biten(2)) or (decoded_wr_data(2) and decoded_wr_biten(2));
-            load_next_c := '1';
-        end if;
-        field_combo.Tx_Sync_Ctrl.tx_sync_f1.next_q <= next_c;
-        field_combo.Tx_Sync_Ctrl.tx_sync_f1.load_next <= load_next_c;
-    end process;
-    process(clk) begin
-        if false then -- async reset
-            field_storage.Tx_Sync_Ctrl.tx_sync_f1.value <= '0';
-        elsif rising_edge(clk) then
-            if rst then -- sync reset
-                field_storage.Tx_Sync_Ctrl.tx_sync_f1.value <= '0';
-            else
-                if field_combo.Tx_Sync_Ctrl.tx_sync_f1.load_next then
-                    field_storage.Tx_Sync_Ctrl.tx_sync_f1.value <= field_combo.Tx_Sync_Ctrl.tx_sync_f1.next_q;
-                end if;
-            end if;
-        end if;
-    end process;
-    hwif_out.Tx_Sync_Ctrl.tx_sync_f1.value <= field_storage.Tx_Sync_Ctrl.tx_sync_f1.value;
-
-    -- Field: msk_top_regs.Tx_Sync_Ctrl.tx_sync_f2
-    process(all)
-        variable next_c: std_logic;
-        variable load_next_c: std_logic;
-    begin
-        next_c := field_storage.Tx_Sync_Ctrl.tx_sync_f2.value;
-        load_next_c := '0';
-        if decoded_reg_strb.Tx_Sync_Ctrl and decoded_req_is_wr then -- SW write
-            next_c := (field_storage.Tx_Sync_Ctrl.tx_sync_f2.value and not decoded_wr_biten(3)) or (decoded_wr_data(3) and decoded_wr_biten(3));
-            load_next_c := '1';
-        end if;
-        field_combo.Tx_Sync_Ctrl.tx_sync_f2.next_q <= next_c;
-        field_combo.Tx_Sync_Ctrl.tx_sync_f2.load_next <= load_next_c;
-    end process;
-    process(clk) begin
-        if false then -- async reset
-            field_storage.Tx_Sync_Ctrl.tx_sync_f2.value <= '0';
-        elsif rising_edge(clk) then
-            if rst then -- sync reset
-                field_storage.Tx_Sync_Ctrl.tx_sync_f2.value <= '0';
-            else
-                if field_combo.Tx_Sync_Ctrl.tx_sync_f2.load_next then
-                    field_storage.Tx_Sync_Ctrl.tx_sync_f2.value <= field_combo.Tx_Sync_Ctrl.tx_sync_f2.next_q;
-                end if;
-            end if;
-        end if;
-    end process;
-    hwif_out.Tx_Sync_Ctrl.tx_sync_f2.value <= field_storage.Tx_Sync_Ctrl.tx_sync_f2.value;
-
     -- Field: msk_top_regs.Tx_Sync_Cnt.tx_sync_cnt
     process(all)
         variable next_c: std_logic_vector(23 downto 0);
@@ -3009,9 +2929,7 @@ begin
     readback_array(30)(31 downto 0) <= field_storage.f2_error.data.value when (decoded_reg_strb.f2_error and not decoded_req_is_wr) else (others => '0');
     readback_array(31)(0 downto 0) <= to_std_logic_vector(field_storage.Tx_Sync_Ctrl.tx_sync_ena.value) when (decoded_reg_strb.Tx_Sync_Ctrl and not decoded_req_is_wr) else (others => '0');
     readback_array(31)(1 downto 1) <= to_std_logic_vector(field_storage.Tx_Sync_Ctrl.tx_sync_force.value) when (decoded_reg_strb.Tx_Sync_Ctrl and not decoded_req_is_wr) else (others => '0');
-    readback_array(31)(2 downto 2) <= to_std_logic_vector(field_storage.Tx_Sync_Ctrl.tx_sync_f1.value) when (decoded_reg_strb.Tx_Sync_Ctrl and not decoded_req_is_wr) else (others => '0');
-    readback_array(31)(3 downto 3) <= to_std_logic_vector(field_storage.Tx_Sync_Ctrl.tx_sync_f2.value) when (decoded_reg_strb.Tx_Sync_Ctrl and not decoded_req_is_wr) else (others => '0');
-    readback_array(31)(31 downto 4) <= (others => '0');
+    readback_array(31)(31 downto 2) <= (others => '0');
     readback_array(32)(23 downto 0) <= field_storage.Tx_Sync_Cnt.tx_sync_cnt.value when (decoded_reg_strb.Tx_Sync_Cnt and not decoded_req_is_wr) else (others => '0');
     readback_array(32)(31 downto 24) <= (others => '0');
     readback_array(33)(17 downto 0) <= field_storage.lowpass_ema_alpha1.alpha.value when (decoded_reg_strb.lowpass_ema_alpha1 and not decoded_req_is_wr) else (others => '0');
