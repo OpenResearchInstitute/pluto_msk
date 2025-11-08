@@ -236,7 +236,7 @@ ad_ip_parameter axi_ad9361_adc_dma CONFIG.AXI_SLICE_DEST 0
 ad_ip_parameter axi_ad9361_adc_dma CONFIG.DMA_2D_TRANSFER 0
 # Abraxas3d changed below parameter from 64 to 32
 ad_ip_parameter axi_ad9361_adc_dma CONFIG.DMA_DATA_WIDTH_SRC 32
-ad_ip_parameter axi_ad9361_adc_dma CONFIG.SYNC_TRANSFER_START {true}
+#ad_ip_parameter axi_ad9361_adc_dma CONFIG.SYNC_TRANSFER_START {true}
 
 #ad_add_decimation_filter "rx_fir_decimator" 8 2 1 {61.44} {61.44} \
 #                         "$ad_hdl_dir/library/util_fir_int/coefile_int.coe"
