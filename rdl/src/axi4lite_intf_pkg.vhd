@@ -1,5 +1,6 @@
 library ieee;
-context ieee.ieee_std_context;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 package axi4lite_intf_pkg is
 

@@ -26,6 +26,13 @@ $(OUTCHEADER)/msk_top_regs.h: $(SRCS)
 
 $(OUTRTL)/msk_top_regs.vhd: $(SRCS)
 	peakrdl regblock-vhdl $(SRCS) -o $(OUTRTL) --cpuif axi4-lite
+	@echo "Converting VHDL-2019 to VHDL-2008 for XSim compatibility..."
+	sed -i 's/^context ieee\.ieee_std_context;$$/use ieee.std_logic_1164.all;\nuse ieee.numeric_std.all;/' \
+		$(OUTRTL)/msk_top_regs.vhd \
+		src/axi4lite_intf_pkg.vhd \
+		src/reg_utils.vhd
+	@echo "Conversion complete!"
+
 
 $(OUTDOCS)/msk_top_regs.pdf: $(OUTDOCS)/html/index.html
 	pandoc -o $(OUTDOCS)/msk_top_regs.pdf $(OUTDOCS)/html/index.html --pdf-engine=weasyprint --css=$(OUTDOCS)/html/css/theme.css

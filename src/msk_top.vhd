@@ -134,9 +134,9 @@ ENTITY msk_top IS
 		m_axis_tlast	: OUT std_logic;
 
 		frame_sync_locked	: OUT std_logic;
-		frames_received	: OUT std_logic_vector(31 DOWNTO 0);
+		frames_received	        : OUT std_logic_vector(31 DOWNTO 0);
 		frame_sync_errors	: OUT std_logic_vector(31 DOWNTO 0);
-		fifo_overflow	: OUT std_logic
+		frame_buffer_overflow	: OUT std_logic
 
 	);
 END ENTITY msk_top;
@@ -196,10 +196,10 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL sync_det_tready      : std_logic;
 	SIGNAL sync_det_tlast       : std_logic;
     
-	SIGNAL rx_fifo_overflow     : std_logic;
-	SIGNAL rx_frame_sync_locked       : std_logic;
-	SIGNAL rx_frames_count      : std_logic_vector(31 DOWNTO 0);
-	SIGNAL rx_frame_sync_errors       : std_logic_vector(31 DOWNTO 0);
+	SIGNAL rx_frame_buffer_overflow     : std_logic;
+	SIGNAL rx_frame_sync_locked         : std_logic;
+	SIGNAL rx_frames_count              : std_logic_vector(31 DOWNTO 0);
+	SIGNAL rx_frame_sync_errors         : std_logic_vector(31 DOWNTO 0);
 	
 	-- Flywheel debug signals (internal only, not exposed to top-level ports)
 	SIGNAL rx_debug_state           : std_logic_vector(2 DOWNTO 0);
@@ -499,7 +499,7 @@ BEGIN
 	    frame_sync_locked       => rx_frame_sync_locked,            
             frames_received         => rx_frames_count,
             frame_sync_errors       => rx_frame_sync_errors,
-            buffer_overflow         => rx_fifo_overflow,
+            frame_buffer_overflow   => rx_frame_buffer_overflow,
             
             -- Debug signals (internal only)
             debug_state             => rx_debug_state,
@@ -555,7 +555,7 @@ BEGIN
     frame_sync_locked     <= rx_frame_sync_locked;
     frames_received       <= rx_frames_count;
     frame_sync_errors     <= rx_frame_sync_errors;
-    fifo_overflow         <= rx_fifo_overflow;
+    frame_buffer_overflow <= rx_frame_buffer_overflow;
 
 
 

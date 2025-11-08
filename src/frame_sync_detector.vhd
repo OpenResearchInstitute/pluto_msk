@@ -7,7 +7,7 @@
 -- 3. Adaptive Threshold: Stricter when hunting, more relaxed when locked
 -- 4. Better lock management: Distinguishes between acquiring lock vs maintaining lock
 ------------------------------------------------------------------------------------------------------
--- Based on original by Open Research Institute
+-- by Open Research Institute
 -- Enhanced with robust sync tracking for low-SNR operation
 ------------------------------------------------------------------------------------------------------
 
@@ -18,7 +18,7 @@ USE ieee.numeric_std.ALL;
 
 ENTITY frame_sync_detector IS
     GENERIC (
-        SYNC_WORD           : std_logic_vector(23 DOWNTO 0) := x"02B8DB";  -- MSB-first sync word (CORRECTED)
+        SYNC_WORD           : std_logic_vector(23 DOWNTO 0) := x"02B8DB";
         PAYLOAD_BYTES       : NATURAL := 268;
         
         -- Threshold when hunting for initial sync (conservative)
@@ -53,7 +53,7 @@ ENTITY frame_sync_detector IS
         frame_sync_locked     : OUT std_logic;
         frames_received       : OUT std_logic_vector(31 DOWNTO 0);
         frame_sync_errors     : OUT std_logic_vector(31 DOWNTO 0);
-        buffer_overflow       : OUT std_logic;
+        frame_buffer_overflow : OUT std_logic;
         
         -- Debug outputs (optional, helpful for monitoring)
         debug_state           : OUT std_logic_vector(2 DOWNTO 0);
@@ -166,10 +166,10 @@ BEGIN
                 acquiring_lock <= '0';
                 frame_ready <= '0';
                 frame_rd_ptr <= (OTHERS => '0');
-                buffer_overflow <= '0';
+                frame_buffer_overflow <= '0';
                 
             ELSE
-                buffer_overflow <= '0';
+                frame_buffer_overflow <= '0';
                 
                 -- Clear frame_ready when acknowledged
                 IF frame_ack = '1' THEN
@@ -237,7 +237,7 @@ BEGIN
                                 wr_ptr <= wr_ptr + 1;
                                 
                                 IF wr_ptr + 1 = rd_ptr THEN
-                                    buffer_overflow <= '1';
+                                    frame_buffer_overflow <= '1';
                                     errors_count <= errors_count + 1;
                                 END IF;
                                 
