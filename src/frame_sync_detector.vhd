@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------------------------------
--- Frame Sync Detector with Frame Tracking and Flywheel - IMPROVED VERSION
+-- Frame Sync Detector with Frame Tracking and Flywheel
 ------------------------------------------------------------------------------------------------------
--- IMPROVEMENTS OVER ORIGINAL:
+-- FEATURES:
 -- 1. Frame Tracking: Knows exactly where to expect next sync word
 -- 2. Flywheel: Tolerates missed syncs during brief interference (stays locked)
 -- 3. Adaptive Threshold: Stricter when hunting, more relaxed when locked
@@ -9,6 +9,13 @@
 ------------------------------------------------------------------------------------------------------
 -- by Open Research Institute
 -- Enhanced with robust sync tracking for low-SNR operation
+------------------------------------------------------------------------------------------------------
+-- SIGNAL INITIALIZATION NOTE:
+-- Per ASIC/FPGA best practices, signals should NOT be initialized in declarations
+-- as this can cause simulation/synthesis mismatches. However, some control signals
+-- require initialization for proper simulation behavior. These are marked with
+-- "CRITICAL INIT" comments. In hardware, these MUST be properly initialized via
+-- reset assertion at power-up. Ensure the reset circuit is reliable
 ------------------------------------------------------------------------------------------------------
 
 LIBRARY ieee;
@@ -67,8 +74,8 @@ END ENTITY frame_sync_detector;
 ARCHITECTURE rtl OF frame_sync_detector IS
 
     -- Bit-level sync detection (MSB shifts in from left)
-    SIGNAL sync_shift_bits : std_logic_vector(23 DOWNTO 0) := (OTHERS => '0');
-    SIGNAL sync_bit_count  : unsigned(4 DOWNTO 0) := (OTHERS => '0');  -- Counts 0-23
+    SIGNAL sync_shift_bits : std_logic_vector(23 DOWNTO 0);
+    SIGNAL sync_bit_count  : unsigned(4 DOWNTO 0);  -- Counts 0-23
     
     -- Byte assembly for output (MSB shifts in from left)
     SIGNAL byte_shift_reg  : std_logic_vector(7 DOWNTO 0);
@@ -78,34 +85,44 @@ ARCHITECTURE rtl OF frame_sync_detector IS
     CONSTANT BUFFER_SIZE : NATURAL := 2**BUFFER_DEPTH;
     TYPE byte_buffer_t IS ARRAY(0 TO BUFFER_SIZE-1) OF std_logic_vector(7 DOWNTO 0);
     SIGNAL circ_buffer : byte_buffer_t;
+
     -- Force Block RAM usage for circular buffer
     ATTRIBUTE ram_style : STRING;
     ATTRIBUTE ram_style OF circ_buffer : SIGNAL IS "block";
     
-    SIGNAL wr_ptr : unsigned(BUFFER_DEPTH-1 DOWNTO 0) := (OTHERS => '0');
-    SIGNAL rd_ptr : unsigned(BUFFER_DEPTH-1 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL wr_ptr : unsigned(BUFFER_DEPTH-1 DOWNTO 0);
+    SIGNAL rd_ptr : unsigned(BUFFER_DEPTH-1 DOWNTO 0);
     
     -- Enhanced state machine
     TYPE state_t IS (HUNTING, LOCKED, VERIFYING_SYNC);
+
+    -- CRITICAL INIT: State machine needs defined starting state for simulation
+    -- In hardware, reset MUST be asserted to establish this
     SIGNAL state : state_t := HUNTING;
     
     -- Frame tracking
     SIGNAL frame_start_ptr      : unsigned(BUFFER_DEPTH-1 DOWNTO 0);
     SIGNAL frame_byte_count     : natural range 0 to PAYLOAD_BYTES;
-    SIGNAL frames_count         : unsigned(31 DOWNTO 0) := (OTHERS => '0');
-    SIGNAL errors_count         : unsigned(31 DOWNTO 0) := (OTHERS => '0');
-    SIGNAL consecutive_good     : natural range 0 to LOCK_FRAMES := 0;
-    SIGNAL missed_sync_count    : natural range 0 to FLYWHEEL_TOLERANCE := 0;
+    SIGNAL frames_count         : unsigned(31 DOWNTO 0);
+    SIGNAL errors_count         : unsigned(31 DOWNTO 0);
+    -- Natural types with ranges default to 0, but making reset explicit
+    SIGNAL consecutive_good     : natural range 0 to LOCK_FRAMES;
+    SIGNAL missed_sync_count    : natural range 0 to FLYWHEEL_TOLERANCE;
+
+    -- CRITICAL INIT: These control signals prevent spurious operation at startup
     SIGNAL lock_status          : std_logic := '0';
-    SIGNAL acquiring_lock       : std_logic := '0';  -- True during initial lock acquisition
+    SIGNAL acquiring_lock       : std_logic := '0';
     
     -- Handshake signals
+    -- CRITICAL INIT: frame_ready MUST start at '0' or output process triggers immediately
+    -- This is a signal that can cause multiple unwanted AXIS transfers
     SIGNAL frame_ready      : std_logic := '0';
     SIGNAL frame_ack        : std_logic := '0';
-    SIGNAL frame_rd_ptr     : unsigned(BUFFER_DEPTH-1 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL frame_rd_ptr     : unsigned(BUFFER_DEPTH-1 DOWNTO 0);
     
+    -- CRITICAL INIT: These control the output state machine
     SIGNAL output_active    : std_logic := '0';
-    SIGNAL output_count     : natural range 0 to PAYLOAD_BYTES := 0;
+    SIGNAL output_count     : natural range 0 to PAYLOAD_BYTES;
     SIGNAL tvalid_int       : std_logic := '0';
     SIGNAL tlast_int        : std_logic := '0';
     
@@ -152,6 +169,9 @@ BEGIN
     BEGIN
         IF rising_edge(clk) THEN
             IF reset = '1' THEN
+                -- COMPREHENSIVE RESET: All signals explicitly set to known values
+                -- This is critical for hardware operation where signal initializers
+                -- in declarations may not be reliable
                 sync_shift_bits <= (OTHERS => '0');
                 sync_bit_count <= (OTHERS => '0');
                 byte_shift_reg <= (OTHERS => '0');
@@ -167,76 +187,66 @@ BEGIN
                 frame_ready <= '0';
                 frame_rd_ptr <= (OTHERS => '0');
                 frame_buffer_overflow <= '0';
+                frames_count <= (OTHERS => '0');
+                errors_count <= (OTHERS => '0');
                 
             ELSE
                 frame_buffer_overflow <= '0';
                 
-                -- Clear frame_ready when acknowledged
+                -- Handle frame acknowledgment
                 IF frame_ack = '1' THEN
                     frame_ready <= '0';
                 END IF;
                 
-                -- Always shift in new bits to both registers
+                -- Main reception state machine
                 IF rx_bit_valid = '1' THEN
-                    -- MSB-FIRST: Shift LEFT so first bit ends up at position 23
+                    -- Always shift in new bits to sync detector
                     sync_shift_bits <= sync_shift_bits(22 DOWNTO 0) & rx_bit;
-                    byte_shift_reg <= byte_shift_reg(6 DOWNTO 0) & rx_bit;
-                END IF;
-                
-                -- State machine
-                CASE state IS
-                    ------------------------------------------------------
-                    -- HUNTING: Looking for initial sync
-                    ------------------------------------------------------
-                    WHEN HUNTING =>
-                        acquiring_lock <= '1';  -- We're trying to acquire lock
-                        
-                        IF rx_bit_valid = '1' THEN
-                            -- Use conservative threshold when hunting
-                            threshold_to_use := HUNTING_THRESHOLD;
+                    
+                    CASE state IS
+                        ------------------------------------------------------
+                        -- HUNTING: Looking for first valid sync word
+                        ------------------------------------------------------
+                        WHEN HUNTING =>
+                            sync_bit_count <= sync_bit_count + 1;
                             
-                            hamming_dist := calc_hamming_distance(
-                                sync_shift_bits,
-                                SYNC_WORD
-                            );
-                            
-                            IF hamming_dist <= threshold_to_use THEN
-                                -- Found potential sync!
-                                frame_byte_count <= 0;
-                                bit_count <= (OTHERS => '0');
-                                sync_bit_count <= (OTHERS => '0');
-                                frame_start_ptr <= wr_ptr;  -- AI!!! ADD THIS LINE!
-                                state <= LOCKED;
+                            -- Check after every bit if we've found sync
+                            IF sync_bit_count >= 23 THEN
+                                hamming_dist := calc_hamming_distance(
+                                    sync_shift_bits,
+                                    SYNC_WORD
+                                );
                                 
-                                -- Track consecutive good detections
-                                IF consecutive_good < LOCK_FRAMES THEN
-                                    consecutive_good <= consecutive_good + 1;
-                                ELSE
-                                    -- Achieved stable lock
-                                    lock_status <= '1';
-                                    acquiring_lock <= '0';
+                                IF hamming_dist <= HUNTING_THRESHOLD THEN
+                                    -- Found sync! Initialize frame capture
+                                    state <= LOCKED;
+                                    acquiring_lock <= '1';
+                                    consecutive_good <= 0;
+                                    bit_count <= (OTHERS => '0');
+                                    frame_start_ptr <= wr_ptr;
+                                    frame_byte_count <= 0;
                                     missed_sync_count <= 0;
                                 END IF;
+                                -- Continue hunting (don't reset sync_bit_count in free-running mode)
                             END IF;
-                        END IF;
-                    
-                    ------------------------------------------------------
-                    -- LOCKED: Collecting frame payload
-                    ------------------------------------------------------
-                    WHEN LOCKED =>
-                        IF rx_bit_valid = '1' THEN
+                        
+                        ------------------------------------------------------
+                        -- LOCKED: Receiving payload bytes
+                        ------------------------------------------------------
+                        WHEN LOCKED =>
+                            -- Shift bits into byte register
+                            byte_shift_reg <= byte_shift_reg(6 DOWNTO 0) & rx_bit;
                             bit_count <= bit_count + 1;
-                            --sync_bit_count <= sync_bit_count + 1; --AI!!! only increment in VERIFYING_SYNC
                             
+                            -- When byte complete, write to buffer
                             IF bit_count = 7 THEN
-                                -- Byte complete (MSB-first assembly)
-                                assembled_byte := byte_shift_reg;
+                                assembled_byte := byte_shift_reg(6 DOWNTO 0) & rx_bit;
                                 
-                                -- Write to circular buffer
-                                circ_buffer(to_integer(wr_ptr)) <= assembled_byte;
-                                wr_ptr <= wr_ptr + 1;
-                                
-                                IF wr_ptr + 1 = rd_ptr THEN
+                                -- Check for buffer overflow
+                                IF (wr_ptr + 1) /= rd_ptr THEN
+                                    circ_buffer(to_integer(wr_ptr)) <= assembled_byte;
+                                    wr_ptr <= wr_ptr + 1;
+                                ELSE
                                     frame_buffer_overflow <= '1';
                                     errors_count <= errors_count + 1;
                                 END IF;
@@ -262,16 +272,13 @@ BEGIN
                                     -- Now expect next sync word
                                     state <= VERIFYING_SYNC;
                                     sync_bit_count <= (OTHERS => '0');
-                                    --sync_bit_count <= (OTHERS => '0'); --AI!!! run continuously without resets
                                 END IF;
                             END IF;
-                        END IF;
-                    
-                    ------------------------------------------------------
-                    -- VERIFYING_SYNC: Check for next sync at expected position
-                    ------------------------------------------------------
-                    WHEN VERIFYING_SYNC =>
-                        IF rx_bit_valid = '1' THEN
+                        
+                        ------------------------------------------------------
+                        -- VERIFYING_SYNC: Check for next sync at expected position
+                        ------------------------------------------------------
+                        WHEN VERIFYING_SYNC =>
                             sync_bit_count <= sync_bit_count + 1;
                             
                             -- After collecting 24 bits, verify it's a sync word
@@ -312,7 +319,7 @@ BEGIN
                                     -- Continue with next frame
                                     state <= LOCKED;
                                     bit_count <= (OTHERS => '0');
-                                    frame_start_ptr <= wr_ptr;  -- AI!!! ADD THIS LINE!
+                                    frame_start_ptr <= wr_ptr;
                                     
                                 ELSE
                                     -- Missed expected sync!
@@ -341,16 +348,13 @@ BEGIN
                                         errors_count <= errors_count + 1;
                                     END IF;
                                 END IF;
-                            ELSE
-                                -- Still collecting sync bits, stay in this state
-                                NULL;
                             END IF;
-                        END IF;
+                        
+                        WHEN OTHERS =>
+                            state <= HUNTING;
+                    END CASE;
                     
-                    WHEN OTHERS =>
-                        state <= HUNTING;
-                END CASE;
-                
+                END IF;  -- rx_bit_valid
             END IF;  -- End of ELSE for reset
         END IF;  -- End of rising_edge(clk)
     END PROCESS reception_proc;
@@ -362,6 +366,7 @@ BEGIN
     BEGIN
         IF rising_edge(clk) THEN
             IF reset = '1' THEN
+                -- COMPREHENSIVE RESET for output process
                 m_axis_tdata <= (OTHERS => '0');
                 tvalid_int <= '0';
                 tlast_int <= '0';
