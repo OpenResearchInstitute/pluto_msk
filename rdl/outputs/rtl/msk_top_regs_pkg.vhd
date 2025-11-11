@@ -97,40 +97,40 @@ package msk_top_regs_pkg is
         data : \msk_top_regs.msk_stat_3.data_in_t\;
     end record;
 
-    type \msk_top_regs.data32_desc_0ed96915_in_t\ is record
+    type \msk_top_regs.status_reg_data_f53978c8_name_d8ad3b25.data_desc_0ed96915_in_t\ is record
         next_q : std_logic_vector(31 downto 0);
         we : std_logic;
     end record;
 
-    type \msk_top_regs.observation_data_data_521c7d53_name_d8ad3b25_in_t\ is record
-        data : \msk_top_regs.data32_desc_0ed96915_in_t\;
+    type \msk_top_regs.status_reg_data_f53978c8_name_d8ad3b25_in_t\ is record
+        data : \msk_top_regs.status_reg_data_f53978c8_name_d8ad3b25.data_desc_0ed96915_in_t\;
     end record;
 
-    type \msk_top_regs.data32_desc_13897f4c_in_t\ is record
+    type \msk_top_regs.status_reg_data_05243a4e_name_2c154788.data_desc_13897f4c_in_t\ is record
         next_q : std_logic_vector(31 downto 0);
         we : std_logic;
     end record;
 
-    type \msk_top_regs.observation_data_data_5802c5b1_name_2c154788_in_t\ is record
-        data : \msk_top_regs.data32_desc_13897f4c_in_t\;
+    type \msk_top_regs.status_reg_data_05243a4e_name_2c154788_in_t\ is record
+        data : \msk_top_regs.status_reg_data_05243a4e_name_2c154788.data_desc_13897f4c_in_t\;
     end record;
 
-    type \msk_top_regs.data32_desc_83db1b72_in_t\ is record
+    type \msk_top_regs.status_reg_data_10a2e5b5_name_3b640507.data_desc_83db1b72_in_t\ is record
         next_q : std_logic_vector(31 downto 0);
         we : std_logic;
     end record;
 
-    type \msk_top_regs.observation_data_data_f83682dd_name_3b640507_in_t\ is record
-        data : \msk_top_regs.data32_desc_83db1b72_in_t\;
+    type \msk_top_regs.status_reg_data_10a2e5b5_name_3b640507_in_t\ is record
+        data : \msk_top_regs.status_reg_data_10a2e5b5_name_3b640507.data_desc_83db1b72_in_t\;
     end record;
 
-    type \msk_top_regs.data32_desc_c8bf066a_in_t\ is record
+    type \msk_top_regs.status_reg_data_642692cf_name_3de9a0d3.data_desc_c8bf066a_in_t\ is record
         next_q : std_logic_vector(31 downto 0);
         we : std_logic;
     end record;
 
-    type \msk_top_regs.observation_data_data_0a9850a4_name_3de9a0d3_in_t\ is record
-        data : \msk_top_regs.data32_desc_c8bf066a_in_t\;
+    type \msk_top_regs.status_reg_data_642692cf_name_3de9a0d3_in_t\ is record
+        data : \msk_top_regs.status_reg_data_642692cf_name_3de9a0d3.data_desc_c8bf066a_in_t\;
     end record;
 
     type \msk_top_regs.rx_power.data_in_t\ is record
@@ -142,22 +142,22 @@ package msk_top_regs_pkg is
         data : \msk_top_regs.rx_power.data_in_t\;
     end record;
 
-    type \msk_top_regs.data32_desc_52ad9f96_in_t\ is record
+    type \msk_top_regs.status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676.data_desc_a6882ec4_in_t\ is record
         next_q : std_logic_vector(31 downto 0);
         we : std_logic;
     end record;
 
-    type \msk_top_regs.observation_data_data_dbd8270c_name_aa4ec676_in_t\ is record
-        data : \msk_top_regs.data32_desc_52ad9f96_in_t\;
+    type \msk_top_regs.status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_in_t\ is record
+        data : \msk_top_regs.status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676.data_desc_a6882ec4_in_t\;
     end record;
 
-    type \msk_top_regs.data32_desc_d7a81b16_in_t\ is record
+    type \msk_top_regs.status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1.data_desc_a6882ec4_in_t\ is record
         next_q : std_logic_vector(31 downto 0);
         we : std_logic;
     end record;
 
-    type \msk_top_regs.observation_data_data_91b9abca_name_8a90eed1_in_t\ is record
-        data : \msk_top_regs.data32_desc_d7a81b16_in_t\;
+    type \msk_top_regs.status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_in_t\ is record
+        data : \msk_top_regs.status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1.data_desc_a6882ec4_in_t\;
     end record;
 
     type msk_top_regs_in_t is record
@@ -169,13 +169,13 @@ package msk_top_regs_pkg is
         LPF_Accum_F1 : \msk_top_regs.stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_in_t\;
         LPF_Accum_F2 : \msk_top_regs.stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce_in_t\;
         axis_xfer_count : \msk_top_regs.msk_stat_3_in_t\;
-        f1_nco_adjust : \msk_top_regs.observation_data_data_521c7d53_name_d8ad3b25_in_t\;
-        f2_nco_adjust : \msk_top_regs.observation_data_data_5802c5b1_name_2c154788_in_t\;
-        f1_error : \msk_top_regs.observation_data_data_f83682dd_name_3b640507_in_t\;
-        f2_error : \msk_top_regs.observation_data_data_0a9850a4_name_3de9a0d3_in_t\;
+        f1_nco_adjust : \msk_top_regs.status_reg_data_f53978c8_name_d8ad3b25_in_t\;
+        f2_nco_adjust : \msk_top_regs.status_reg_data_05243a4e_name_2c154788_in_t\;
+        f1_error : \msk_top_regs.status_reg_data_10a2e5b5_name_3b640507_in_t\;
+        f2_error : \msk_top_regs.status_reg_data_642692cf_name_3de9a0d3_in_t\;
         rx_power : \msk_top_regs.rx_power_in_t\;
-        tx_async_fifo_rd_wr_ptr : \msk_top_regs.observation_data_data_dbd8270c_name_aa4ec676_in_t\;
-        rx_async_fifo_rd_wr_ptr : \msk_top_regs.observation_data_data_91b9abca_name_8a90eed1_in_t\;
+        tx_async_fifo_rd_wr_ptr : \msk_top_regs.status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_in_t\;
+        rx_async_fifo_rd_wr_ptr : \msk_top_regs.status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_in_t\;
     end record;
 
     type \msk_top_regs.msk_init.txrxinit_out_t\ is record
@@ -455,36 +455,36 @@ package msk_top_regs_pkg is
         p_shift : \msk_top_regs.lpf_config_2.p_shift_out_t\;
     end record;
 
-    type \msk_top_regs.data32_desc_0ed96915_out_t\ is record
+    type \msk_top_regs.status_reg_data_f53978c8_name_d8ad3b25.data_desc_0ed96915_out_t\ is record
         swmod : std_logic;
     end record;
 
-    type \msk_top_regs.observation_data_data_521c7d53_name_d8ad3b25_out_t\ is record
-        data : \msk_top_regs.data32_desc_0ed96915_out_t\;
+    type \msk_top_regs.status_reg_data_f53978c8_name_d8ad3b25_out_t\ is record
+        data : \msk_top_regs.status_reg_data_f53978c8_name_d8ad3b25.data_desc_0ed96915_out_t\;
     end record;
 
-    type \msk_top_regs.data32_desc_13897f4c_out_t\ is record
+    type \msk_top_regs.status_reg_data_05243a4e_name_2c154788.data_desc_13897f4c_out_t\ is record
         swmod : std_logic;
     end record;
 
-    type \msk_top_regs.observation_data_data_5802c5b1_name_2c154788_out_t\ is record
-        data : \msk_top_regs.data32_desc_13897f4c_out_t\;
+    type \msk_top_regs.status_reg_data_05243a4e_name_2c154788_out_t\ is record
+        data : \msk_top_regs.status_reg_data_05243a4e_name_2c154788.data_desc_13897f4c_out_t\;
     end record;
 
-    type \msk_top_regs.data32_desc_83db1b72_out_t\ is record
+    type \msk_top_regs.status_reg_data_10a2e5b5_name_3b640507.data_desc_83db1b72_out_t\ is record
         swmod : std_logic;
     end record;
 
-    type \msk_top_regs.observation_data_data_f83682dd_name_3b640507_out_t\ is record
-        data : \msk_top_regs.data32_desc_83db1b72_out_t\;
+    type \msk_top_regs.status_reg_data_10a2e5b5_name_3b640507_out_t\ is record
+        data : \msk_top_regs.status_reg_data_10a2e5b5_name_3b640507.data_desc_83db1b72_out_t\;
     end record;
 
-    type \msk_top_regs.data32_desc_c8bf066a_out_t\ is record
+    type \msk_top_regs.status_reg_data_642692cf_name_3de9a0d3.data_desc_c8bf066a_out_t\ is record
         swmod : std_logic;
     end record;
 
-    type \msk_top_regs.observation_data_data_0a9850a4_name_3de9a0d3_out_t\ is record
-        data : \msk_top_regs.data32_desc_c8bf066a_out_t\;
+    type \msk_top_regs.status_reg_data_642692cf_name_3de9a0d3_out_t\ is record
+        data : \msk_top_regs.status_reg_data_642692cf_name_3de9a0d3.data_desc_c8bf066a_out_t\;
     end record;
 
     type \msk_top_regs.tx_sync_ctrl.tx_sync_ena_out_t\ is record
@@ -495,19 +495,9 @@ package msk_top_regs_pkg is
         value : std_logic;
     end record;
 
-    type \msk_top_regs.tx_sync_ctrl.tx_sync_f1_out_t\ is record
-        value : std_logic;
-    end record;
-
-    type \msk_top_regs.tx_sync_ctrl.tx_sync_f2_out_t\ is record
-        value : std_logic;
-    end record;
-
     type \msk_top_regs.tx_sync_ctrl_out_t\ is record
         tx_sync_ena : \msk_top_regs.tx_sync_ctrl.tx_sync_ena_out_t\;
         tx_sync_force : \msk_top_regs.tx_sync_ctrl.tx_sync_force_out_t\;
-        tx_sync_f1 : \msk_top_regs.tx_sync_ctrl.tx_sync_f1_out_t\;
-        tx_sync_f2 : \msk_top_regs.tx_sync_ctrl.tx_sync_f2_out_t\;
     end record;
 
     type \msk_top_regs.tx_sync_cnt.tx_sync_cnt_out_t\ is record
@@ -534,20 +524,20 @@ package msk_top_regs_pkg is
         data : \msk_top_regs.rx_power.data_out_t\;
     end record;
 
-    type \msk_top_regs.data32_desc_52ad9f96_out_t\ is record
+    type \msk_top_regs.status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676.data_desc_a6882ec4_out_t\ is record
         swmod : std_logic;
     end record;
 
-    type \msk_top_regs.observation_data_data_dbd8270c_name_aa4ec676_out_t\ is record
-        data : \msk_top_regs.data32_desc_52ad9f96_out_t\;
+    type \msk_top_regs.status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_out_t\ is record
+        data : \msk_top_regs.status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676.data_desc_a6882ec4_out_t\;
     end record;
 
-    type \msk_top_regs.data32_desc_d7a81b16_out_t\ is record
+    type \msk_top_regs.status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1.data_desc_a6882ec4_out_t\ is record
         swmod : std_logic;
     end record;
 
-    type \msk_top_regs.observation_data_data_91b9abca_name_8a90eed1_out_t\ is record
-        data : \msk_top_regs.data32_desc_d7a81b16_out_t\;
+    type \msk_top_regs.status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_out_t\ is record
+        data : \msk_top_regs.status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1.data_desc_a6882ec4_out_t\;
     end record;
 
     type msk_top_regs_out_t is record
@@ -575,16 +565,16 @@ package msk_top_regs_pkg is
         axis_xfer_count : \msk_top_regs.msk_stat_3_out_t\;
         Rx_Sample_Discard : \msk_top_regs.rx_sample_discard_out_t\;
         LPF_Config_2 : \msk_top_regs.lpf_config_2_out_t\;
-        f1_nco_adjust : \msk_top_regs.observation_data_data_521c7d53_name_d8ad3b25_out_t\;
-        f2_nco_adjust : \msk_top_regs.observation_data_data_5802c5b1_name_2c154788_out_t\;
-        f1_error : \msk_top_regs.observation_data_data_f83682dd_name_3b640507_out_t\;
-        f2_error : \msk_top_regs.observation_data_data_0a9850a4_name_3de9a0d3_out_t\;
+        f1_nco_adjust : \msk_top_regs.status_reg_data_f53978c8_name_d8ad3b25_out_t\;
+        f2_nco_adjust : \msk_top_regs.status_reg_data_05243a4e_name_2c154788_out_t\;
+        f1_error : \msk_top_regs.status_reg_data_10a2e5b5_name_3b640507_out_t\;
+        f2_error : \msk_top_regs.status_reg_data_642692cf_name_3de9a0d3_out_t\;
         Tx_Sync_Ctrl : \msk_top_regs.tx_sync_ctrl_out_t\;
         Tx_Sync_Cnt : \msk_top_regs.tx_sync_cnt_out_t\;
         lowpass_ema_alpha1 : \msk_top_regs.lowpass_ema_alpha_out_t\;
         lowpass_ema_alpha2 : \msk_top_regs.lowpass_ema_alpha_out_t\;
         rx_power : \msk_top_regs.rx_power_out_t\;
-        tx_async_fifo_rd_wr_ptr : \msk_top_regs.observation_data_data_dbd8270c_name_aa4ec676_out_t\;
-        rx_async_fifo_rd_wr_ptr : \msk_top_regs.observation_data_data_91b9abca_name_8a90eed1_out_t\;
+        tx_async_fifo_rd_wr_ptr : \msk_top_regs.status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_out_t\;
+        rx_async_fifo_rd_wr_ptr : \msk_top_regs.status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_out_t\;
     end record;
 end package;

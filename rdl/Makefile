@@ -11,12 +11,16 @@ OUTCHEADER  = outputs/c-header
 all: $(OUTDOCS)/msk_top_regs.pdf \
 	 $(OUTDOCS)/msk_top_regs.md \
 	 $(OUTDOCS)/html/index.html \
+	 $(OUTDOCS)/msk_top_regs.docx \
 	 $(OUTRTL)/msk_top_regs.vhd \
 	 $(OUTPYTHON)/__init__.py \
 	 $(OUTCHEADER)/msk_top_regs.h
 
 $(OUTDOCS)/msk_top_regs.md: $(SRCS)
 	peakrdl markdown $(SRCS) -o $(OUTDOCS)/msk_top_regs.md 
+
+$(OUTDOCS)/msk_top_regs.docx: $(SRCS)
+	peakrdl docx $(SRCS) -o $(OUTDOCS)/msk_top_regs.docx --title "MSK Modem Registers"
 
 $(OUTDOCS)/html/index.html: $(SRCS)
 	peakrdl html $(SRCS) -o $(OUTDOCS)/html
@@ -34,8 +38,8 @@ $(OUTRTL)/msk_top_regs.vhd: $(SRCS)
 	@echo "Conversion complete!"
 
 
-$(OUTDOCS)/msk_top_regs.pdf: $(OUTDOCS)/html/index.html
-	pandoc -o $(OUTDOCS)/msk_top_regs.pdf $(OUTDOCS)/html/index.html --pdf-engine=weasyprint --css=$(OUTDOCS)/html/css/theme.css
+$(OUTDOCS)/msk_top_regs.pdf: $(OUTDOCS)/msk_top_regs.md 
+	pandoc -o $(OUTDOCS)/msk_top_regs.pdf $(OUTDOCS)/msk_top_regs.md
 
 $(OUTPYTHON)/__init__.py: $(SRCS)
 	peakrdl python $(SRCS) --async -o $(OUTPYTHON)

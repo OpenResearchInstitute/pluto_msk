@@ -30,7 +30,7 @@
         <th></th>
     </tr>
     <tr class="reserved-field">
-    <td>[31:4]</td>
+    <td>[31:2]</td>
     <td>-</td>
     <td>-</td>
     <td>-</td>
@@ -38,46 +38,6 @@
     <td>-</td>
     <td></td>
 </tr>
-    <tr id="tx_sync_f2">
-        <td>[3]</td>
-        <td><a href="#tx_sync_f2.desc">tx_sync_f2</a></td>
-        <td>
-            <span title='Readable and Writable'>rw</span></td>
-        <td>0x0
-        </td>
-        <td>
-            <input id="_FieldValueTestertx_sync_f2" class="field-value-tester"
-                type="text" autocomplete="off"
-                data-name="tx_sync_f2" oninput="onDecodedFieldInput(this)"/>
-        </td>
-        <td>Tx F2 Sync Enable</td>
-        <td>
-            <button type="button" id="_RadixButtontx_sync_f2" class="radix-button"
-                title="Switch radix" aria-label="Switch radix"
-                data-name="tx_sync_f2" onclick="onRadixSwitch(this)">H</button>
-            <a class="headerlink" href="#tx_sync_f2" title="Permalink to this row"></a>
-        </td>
-    </tr>
-    <tr id="tx_sync_f1">
-        <td>[2]</td>
-        <td><a href="#tx_sync_f1.desc">tx_sync_f1</a></td>
-        <td>
-            <span title='Readable and Writable'>rw</span></td>
-        <td>0x0
-        </td>
-        <td>
-            <input id="_FieldValueTestertx_sync_f1" class="field-value-tester"
-                type="text" autocomplete="off"
-                data-name="tx_sync_f1" oninput="onDecodedFieldInput(this)"/>
-        </td>
-        <td>Tx F1 Sync Enable</td>
-        <td>
-            <button type="button" id="_RadixButtontx_sync_f1" class="radix-button"
-                title="Switch radix" aria-label="Switch radix"
-                data-name="tx_sync_f1" onclick="onRadixSwitch(this)">H</button>
-            <a class="headerlink" href="#tx_sync_f1" title="Permalink to this row"></a>
-        </td>
-    </tr>
     <tr id="tx_sync_force">
         <td>[1]</td>
         <td><a href="#tx_sync_force.desc">tx_sync_force</a></td>
@@ -128,39 +88,19 @@
 </p>
 <hr/><h2>Field Descriptions</h2>
 
-<h3 id="tx_sync_f2.desc">tx_sync_f2 - Tx F2 Sync Enable
-    <a class="headerlink" href="#tx_sync_f2.desc" title="Permalink to this headline"></a>
-</h3>
-<div id="_Content.tx_sync_f2.desc">
-<p>Enables/Disables transmission of F2 tone for receiver synchronization
-0 : F2 tone transmission disabled</p>
-<p>1 : F2 tone transmission enabled</p>
-<p>Both F1 and F2 can be enabled at the same time</p>
-</div>
-
-<h3 id="tx_sync_f1.desc">tx_sync_f1 - Tx F1 Sync Enable
-    <a class="headerlink" href="#tx_sync_f1.desc" title="Permalink to this headline"></a>
-</h3>
-<div id="_Content.tx_sync_f1.desc">
-<p>Enables/Disables transmission of F1 tone for receiver synchronization
-0 : F1 tone transmission disabled</p>
-<p>1 : F1 tone transmission enabled</p>
-<p>Both F1 and F2 can be enabled at the same time</p>
-</div>
-
 <h3 id="tx_sync_force.desc">tx_sync_force - Tx Sync Force
     <a class="headerlink" href="#tx_sync_force.desc" title="Permalink to this headline"></a>
 </h3>
 <div id="_Content.tx_sync_force.desc">
 <p>0 : Normal operation</p>
-<p>1 : Transmit synchronization pattern</p>
+<p>1 : Continuously transmit synchronization pattern</p>
 </div>
 
 <h3 id="tx_sync_ena.desc">tx_sync_ena - Tx Sync Enable
     <a class="headerlink" href="#tx_sync_ena.desc" title="Permalink to this headline"></a>
 </h3>
 <div id="_Content.tx_sync_ena.desc">
-<p>0 -&gt; Disable sync transmission</p>
-<p>1 -&gt; Enable sync transmission when PTT is asserted</p>
+<p>0 : Disable sync transmission</p>
+<p>1 : Enable sync transmission when PTT is asserted</p>
 </div>
 </div>

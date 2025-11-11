@@ -10,9 +10,13 @@
     <dt>Base Offset:</dt><dd class="address">0x94</dd>
     <dt>Size:</dt><dd class="address">0x4</dd>
     
-    <dt>Source:</dt><dd><a href="https://github.com/OpenResearchInstitute/pluto_msk/blob/peakrdl/rdl/src/msk_top_regs.rdl#L572" target="_blank">msk_top_regs.rdl</a></dd>
+    <dt>Source:</dt><dd><a href="https://github.com/OpenResearchInstitute/pluto_msk/blob/peakrdl/rdl/src/msk_top_regs.rdl#L542" target="_blank">msk_top_regs.rdl</a></dd>
     
 </dl>
+<h2>Description</h2>
+<div id="_Content.desc">
+<p>Rx async FIFO read and write pointers</p>
+</div>
 
 <h2>Contents</h2>
 <table border="1">
@@ -61,12 +65,12 @@
 <div id="_Content.data.desc">
 <p>Read and Write Pointers</p>
 <p><code>
-Bits 31:16 - write pointer (12-bits)</p>
-<p>Bits 15:00 - read pointer (12-bits)</code></p>
+Bits 31:16 - write pointer (12-bits)
+Bits 15:00 - read pointer (12-bits)</code></p>
 <p>This register is write-to-capture. To read data the following steps are required:</p>
-<ul>
-<li> Write any value to this register to capture read data<br>
+<ol type="1">
+<li> Write any value to this register to capture read data
 </li><li> Read the register
-</li></ul>
+</li></ol>
 </div>
 </div>
