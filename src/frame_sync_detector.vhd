@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------------------------------
--- Frame Sync Detector with Frame Tracking and Flywheel - IMPROVED VERSION
+-- Frame Sync Detector with Frame Tracking and Flywheel
 ------------------------------------------------------------------------------------------------------
--- IMPROVEMENTS OVER ORIGINAL:
+-- FEATURES:
 -- 1. Frame Tracking: Knows exactly where to expect next sync word
 -- 2. Flywheel: Tolerates missed syncs during brief interference (stays locked)
 -- 3. Adaptive Threshold: Stricter when hunting, more relaxed when locked
@@ -10,7 +10,15 @@
 -- by Open Research Institute
 -- Enhanced with robust sync tracking for low-SNR operation
 ------------------------------------------------------------------------------------------------------
-
+-- SIGNAL INITIALIZATION PRACTICES:
+-- Per ASIC/FPGA best practices, most signals should NOT be initialized in declarations
+-- as they are properly initialized via the reset block. However, a few critical control
+-- signals require initialization for proper simulation startup behavior:
+--   - State machine 'state' MUST start in defined state (HUNTING)
+--   - Control signals that gate processes SHOULD start in safe state ('0')
+-- These critical initializations are marked with "CRITICAL INIT" comments below.
+-- All other signals rely on synchronous reset for initialization.
+------------------------------------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
@@ -67,8 +75,8 @@ END ENTITY frame_sync_detector;
 ARCHITECTURE rtl OF frame_sync_detector IS
 
     -- Bit-level sync detection (MSB shifts in from left)
-    SIGNAL sync_shift_bits : std_logic_vector(23 DOWNTO 0) := (OTHERS => '0');
-    SIGNAL sync_bit_count  : unsigned(4 DOWNTO 0) := (OTHERS => '0');  -- Counts 0-23
+    SIGNAL sync_shift_bits : std_logic_vector(23 DOWNTO 0);
+    SIGNAL sync_bit_count  : unsigned(4 DOWNTO 0);  -- Counts 0-23
     
     -- Byte assembly for output (MSB shifts in from left)
     SIGNAL byte_shift_reg  : std_logic_vector(7 DOWNTO 0);
@@ -82,30 +90,35 @@ ARCHITECTURE rtl OF frame_sync_detector IS
     ATTRIBUTE ram_style : STRING;
     ATTRIBUTE ram_style OF circ_buffer : SIGNAL IS "block";
     
-    SIGNAL wr_ptr : unsigned(BUFFER_DEPTH-1 DOWNTO 0) := (OTHERS => '0');
-    SIGNAL rd_ptr : unsigned(BUFFER_DEPTH-1 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL wr_ptr : unsigned(BUFFER_DEPTH-1 DOWNTO 0);
+    SIGNAL rd_ptr : unsigned(BUFFER_DEPTH-1 DOWNTO 0);
     
     -- Enhanced state machine
     TYPE state_t IS (HUNTING, LOCKED, VERIFYING_SYNC);
+    -- CRITICAL INIT: State machine must start in defined state for proper simulation startup
     SIGNAL state : state_t := HUNTING;
     
-    -- Frame tracking
+    -- Frame tracking (reset-initialized)
     SIGNAL frame_start_ptr      : unsigned(BUFFER_DEPTH-1 DOWNTO 0);
     SIGNAL frame_byte_count     : natural range 0 to PAYLOAD_BYTES;
-    SIGNAL frames_count         : unsigned(31 DOWNTO 0) := (OTHERS => '0');
-    SIGNAL errors_count         : unsigned(31 DOWNTO 0) := (OTHERS => '0');
-    SIGNAL consecutive_good     : natural range 0 to LOCK_FRAMES := 0;
-    SIGNAL missed_sync_count    : natural range 0 to FLYWHEEL_TOLERANCE := 0;
-    SIGNAL lock_status          : std_logic := '0';
-    SIGNAL acquiring_lock       : std_logic := '0';  -- True during initial lock acquisition
+    -- Processor-visible status counters (must be initialized in reset for clean readback)
+    SIGNAL frames_count         : unsigned(31 DOWNTO 0);
+    SIGNAL errors_count         : unsigned(31 DOWNTO 0);
+    SIGNAL consecutive_good     : natural range 0 to LOCK_FRAMES;
+    SIGNAL missed_sync_count    : natural range 0 to FLYWHEEL_TOLERANCE;
     
-    -- Handshake signals
+    -- CRITICAL INIT: Control signals that gate state machine behavior
+    SIGNAL lock_status          : std_logic := '0';
+    SIGNAL acquiring_lock       : std_logic := '0';
+    
+    -- CRITICAL INIT: Handshake signals - frame_ready must start '0' to prevent spurious output
     SIGNAL frame_ready      : std_logic := '0';
     SIGNAL frame_ack        : std_logic := '0';
-    SIGNAL frame_rd_ptr     : unsigned(BUFFER_DEPTH-1 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL frame_rd_ptr     : unsigned(BUFFER_DEPTH-1 DOWNTO 0);
     
+    -- CRITICAL INIT: Output state machine control signals
     SIGNAL output_active    : std_logic := '0';
-    SIGNAL output_count     : natural range 0 to PAYLOAD_BYTES := 0;
+    SIGNAL output_count     : natural range 0 to PAYLOAD_BYTES;
     SIGNAL tvalid_int       : std_logic := '0';
     SIGNAL tlast_int        : std_logic := '0';
     
@@ -160,6 +173,8 @@ BEGIN
                 state <= HUNTING;
                 frame_start_ptr <= (OTHERS => '0');
                 frame_byte_count <= 0;
+                frames_count <= (OTHERS => '0');
+                errors_count <= (OTHERS => '0');
                 consecutive_good <= 0;
                 missed_sync_count <= 0;
                 lock_status <= '0';
