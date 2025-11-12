@@ -1,8 +1,14 @@
 ------------------------------------------------------------------------------------------------------
--- AXIS-Compliant Asynchronous FIFO - SYNC LAG FIX
+-- AXIS-Compliant Asynchronous FIFO
 ------------------------------------------------------------------------------------------------------
 -- FIX: Added safety margin to empty detection to account for 2-cycle synchronization lag
 -- This prevents reading past actual data and hitting stale tlast markers
+------------------------------------------------------------------------------------------------------
+-- SIGNAL INITIALIZATION PRACTICES:
+-- Per FPGA best practices, signals are initialized via reset blocks in their respective clock
+-- domains. CDC synchronizer registers intentionally have no initialization to avoid forcing
+-- specific reset timing across clock domains. All control and data path signals are properly
+-- reset-initialized in their corresponding clock domain processes.
 ------------------------------------------------------------------------------------------------------
 
 LIBRARY ieee;
@@ -67,25 +73,25 @@ ARCHITECTURE rtl OF axis_async_fifo IS
     ATTRIBUTE ram_style OF ram_data : SIGNAL IS "block";
     ATTRIBUTE ram_style OF ram_last : SIGNAL IS "block";
     
-    -- Gray code pointers
-    SIGNAL wr_ptr_gray      : std_logic_vector(ADDR_WIDTH DOWNTO 0) := (OTHERS => '0');
-    SIGNAL wr_ptr_bin       : std_logic_vector(ADDR_WIDTH DOWNTO 0) := (OTHERS => '0');
-    SIGNAL rd_ptr_gray      : std_logic_vector(ADDR_WIDTH DOWNTO 0) := (OTHERS => '0');
-    SIGNAL rd_ptr_bin       : std_logic_vector(ADDR_WIDTH DOWNTO 0) := (OTHERS => '0');
+    -- Gray code pointers (reset-initialized in respective clock domains)
+    SIGNAL wr_ptr_gray      : std_logic_vector(ADDR_WIDTH DOWNTO 0);
+    SIGNAL wr_ptr_bin       : std_logic_vector(ADDR_WIDTH DOWNTO 0);
+    SIGNAL rd_ptr_gray      : std_logic_vector(ADDR_WIDTH DOWNTO 0);
+    SIGNAL rd_ptr_bin       : std_logic_vector(ADDR_WIDTH DOWNTO 0);
     
-    -- Synchronized pointers
-    SIGNAL wr_ptr_gray_sync1 : std_logic_vector(ADDR_WIDTH DOWNTO 0) := (OTHERS => '0');
-    SIGNAL wr_ptr_gray_sync2 : std_logic_vector(ADDR_WIDTH DOWNTO 0) := (OTHERS => '0');
-    SIGNAL rd_ptr_gray_sync1 : std_logic_vector(ADDR_WIDTH DOWNTO 0) := (OTHERS => '0');
-    SIGNAL rd_ptr_gray_sync2 : std_logic_vector(ADDR_WIDTH DOWNTO 0) := (OTHERS => '0');
+    -- CDC Synchronizers (intentionally not reset - avoids cross-domain reset timing issues)
+    SIGNAL wr_ptr_gray_sync1 : std_logic_vector(ADDR_WIDTH DOWNTO 0);
+    SIGNAL wr_ptr_gray_sync2 : std_logic_vector(ADDR_WIDTH DOWNTO 0);
+    SIGNAL rd_ptr_gray_sync1 : std_logic_vector(ADDR_WIDTH DOWNTO 0);
+    SIGNAL rd_ptr_gray_sync2 : std_logic_vector(ADDR_WIDTH DOWNTO 0);
     
-    -- Status flags
-    SIGNAL full_int         : std_logic := '0';
-    SIGNAL empty_int        : std_logic := '1';
-    SIGNAL tready_int       : std_logic := '0';
-    SIGNAL tvalid_int       : std_logic := '0';
-    SIGNAL prog_full_int    : std_logic := '0';
-    SIGNAL prog_empty_int   : std_logic := '0';
+    -- Status flags (reset-initialized in respective clock domains)
+    SIGNAL full_int         : std_logic;
+    SIGNAL empty_int        : std_logic;
+    SIGNAL tready_int       : std_logic;
+    SIGNAL tvalid_int       : std_logic;
+    SIGNAL prog_full_int    : std_logic;
+    SIGNAL prog_empty_int   : std_logic;
     
     -- Status resync to AXI
     SIGNAL wr_status_ack        : std_logic;
