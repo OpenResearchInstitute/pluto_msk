@@ -9,7 +9,7 @@ package msk_top_regs_pkg is
 
     constant MSK_TOP_REGS_DATA_WIDTH : positive := 32;
     constant MSK_TOP_REGS_MIN_ADDR_WIDTH : positive := 8;
-    constant MSK_TOP_REGS_SIZE : positive := 152;
+    constant MSK_TOP_REGS_SIZE : positive := 156;
 
     type \msk_top_regs.msk_stat_0.demod_sync_lock_in_t\ is record
         next_q : std_logic;
@@ -160,6 +160,32 @@ package msk_top_regs_pkg is
         data : \msk_top_regs.status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1.data_desc_a6882ec4_in_t\;
     end record;
 
+    type \msk_top_regs.frame_sync_status.frame_sync_locked_in_t\ is record
+        next_q : std_logic;
+    end record;
+
+    type \msk_top_regs.frame_sync_status.frame_buffer_overflow_in_t\ is record
+        next_q : std_logic;
+        we : std_logic;
+    end record;
+
+    type \msk_top_regs.frame_sync_status.frames_received_in_t\ is record
+        next_q : std_logic_vector(23 downto 0);
+        we : std_logic;
+    end record;
+
+    type \msk_top_regs.frame_sync_status.frame_sync_errors_in_t\ is record
+        next_q : std_logic_vector(5 downto 0);
+        we : std_logic;
+    end record;
+
+    type \msk_top_regs.frame_sync_status_in_t\ is record
+        frame_sync_locked : \msk_top_regs.frame_sync_status.frame_sync_locked_in_t\;
+        frame_buffer_overflow : \msk_top_regs.frame_sync_status.frame_buffer_overflow_in_t\;
+        frames_received : \msk_top_regs.frame_sync_status.frames_received_in_t\;
+        frame_sync_errors : \msk_top_regs.frame_sync_status.frame_sync_errors_in_t\;
+    end record;
+
     type msk_top_regs_in_t is record
         MSK_Status : \msk_top_regs.msk_stat_0_in_t\;
         Tx_Bit_Count : \msk_top_regs.msk_stat_1_in_t\;
@@ -176,6 +202,7 @@ package msk_top_regs_pkg is
         rx_power : \msk_top_regs.rx_power_in_t\;
         tx_async_fifo_rd_wr_ptr : \msk_top_regs.status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_in_t\;
         rx_async_fifo_rd_wr_ptr : \msk_top_regs.status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_in_t\;
+        rx_frame_sync_status : \msk_top_regs.frame_sync_status_in_t\;
     end record;
 
     type \msk_top_regs.msk_init.txrxinit_out_t\ is record
@@ -540,6 +567,19 @@ package msk_top_regs_pkg is
         data : \msk_top_regs.status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1.data_desc_a6882ec4_out_t\;
     end record;
 
+    type \msk_top_regs.frame_sync_status.frames_received_out_t\ is record
+        swmod : std_logic;
+    end record;
+
+    type \msk_top_regs.frame_sync_status.frame_sync_errors_out_t\ is record
+        swmod : std_logic;
+    end record;
+
+    type \msk_top_regs.frame_sync_status_out_t\ is record
+        frames_received : \msk_top_regs.frame_sync_status.frames_received_out_t\;
+        frame_sync_errors : \msk_top_regs.frame_sync_status.frame_sync_errors_out_t\;
+    end record;
+
     type msk_top_regs_out_t is record
         MSK_Init : \msk_top_regs.msk_init_out_t\;
         MSK_Control : \msk_top_regs.msk_ctrl_out_t\;
@@ -576,5 +616,6 @@ package msk_top_regs_pkg is
         rx_power : \msk_top_regs.rx_power_out_t\;
         tx_async_fifo_rd_wr_ptr : \msk_top_regs.status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_out_t\;
         rx_async_fifo_rd_wr_ptr : \msk_top_regs.status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_out_t\;
+        rx_frame_sync_status : \msk_top_regs.frame_sync_status_out_t\;
     end record;
 end package;

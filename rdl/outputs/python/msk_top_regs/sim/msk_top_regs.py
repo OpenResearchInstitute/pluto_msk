@@ -173,6 +173,10 @@ class msk_top_regs_simulator_cls(Simulator):
     Register(width=32, full_inst_name='msk_top_regs.rx_async_fifo_rd_wr_ptr', readable=True, writable=True,
                                          fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='data'),
                                                 ]),
+            152 : 
+    Register(width=32, full_inst_name='msk_top_regs.rx_frame_sync_status', readable=True, writable=True,
+                                         fields=[FieldDefinition(high=0, low=0, msb=0, lsb=0, inst_name='frame_sync_locked'),FieldDefinition(high=1, low=1, msb=1, lsb=1, inst_name='frame_buffer_overflow'),FieldDefinition(high=25, low=2, msb=25, lsb=2, inst_name='frames_received'),FieldDefinition(high=31, low=26, msb=31, lsb=26, inst_name='frame_sync_errors'),
+                                                ]),
         }
 
     def _build_memories(self) -> list[MemoryEntry]:

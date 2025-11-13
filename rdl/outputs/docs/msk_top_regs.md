@@ -10,7 +10,7 @@ Don't override. Generated from: msk_top_regs
 
 - Absolute Address: 0x0
 - Base Offset: 0x0
-- Size: 0x98
+- Size: 0x9C
 
 <p>MSK Modem Configuration and Status Registers</p>
 
@@ -54,6 +54,7 @@ Don't override. Generated from: msk_top_regs
 | 0x8C |        rx_power       |                        Receive Power                        |
 | 0x90 |tx_async_fifo_rd_wr_ptr|            Tx async FIFO read and write pointers            |
 | 0x94 |rx_async_fifo_rd_wr_ptr|            Rx async FIFO read and write pointers            |
+| 0x98 |  rx_frame_sync_status |                      Frame Sync Status                      |
 
 ### Hash_ID_Low register
 
@@ -847,3 +848,34 @@ Bits 15:00 - read pointer (12-bits)</code></p>
 <li> Write any value to this register to capture read data
 </li><li> Read the register
 </li></ol>
+
+### rx_frame_sync_status register
+
+- Absolute Address: 0x98
+- Base Offset: 0x98
+- Size: 0x4
+
+| Bits|      Identifier     | Access |Reset|         Name        |
+|-----|---------------------|--------|-----|---------------------|
+|  0  |  frame_sync_locked  |   rw   | 0x0 |   Frame Sync Lock   |
+|  1  |frame_buffer_overflow|rw, rclr| 0x0 |Frame Buffer Overflow|
+| 25:2|   frames_received   |   rw   | 0x0 |   Frames Received   |
+|31:26|  frame_sync_errors  |   rw   | 0x0 |  Frames Sync Errors |
+
+#### frame_sync_locked field
+
+<p>0 - Frame sync not locked
+1 - Frame sync locked</p>
+
+#### frame_buffer_overflow field
+
+<p>0 - Normal operation
+1 - Buffer overflow</p>
+
+#### frames_received field
+
+<p>Count of frames received since last read. Value is 0x00_0000 to 0xFF_FFFF</p>
+
+#### frame_sync_errors field
+
+<p>Count of frame sync errors since last read. Value is 0 to 63. This field will saturate at 63 if more than 63 occur.</p>

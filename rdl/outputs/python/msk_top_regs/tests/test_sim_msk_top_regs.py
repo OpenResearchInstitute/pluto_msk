@@ -2062,6 +2062,61 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
             
             
 
+        # test access operations (read and/or write) to register:
+        # msk_top_regs.rx_frame_sync_status
+        with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status'):
+            sim_register = self.sim.register_by_full_name('msk_top_regs.rx_frame_sync_status')
+            self.assertIsInstance(sim_register, (Register,MemoryRegister))
+            register_read_callback = Mock()
+            register_write_callback = Mock()
+
+            # register read checks
+            # update the value via the backdoor in the simulator
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = random_value
+            self.assertEqual(await self.dut.rx_frame_sync_status.read(), random_value)
+            # up to now the callback should not have been called
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = random_value
+            self.assertEqual(await self.dut.rx_frame_sync_status.read(), random_value)
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_called_once_with(value=random_value)
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            sim_register.value = random_value
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            self.assertEqual(await self.dut.rx_frame_sync_status.read(), random_value)
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+
+            
+
+            # register write checks
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.rx_frame_sync_status.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            # up to now the callback should not have been called
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.rx_frame_sync_status.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            register_write_callback.assert_called_once_with(value=random_value)
+            register_read_callback.assert_not_called()
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            await self.dut.rx_frame_sync_status.write(random_value)  # type: ignore[union-attr]
+            self.assertEqual(sim_register.value, random_value)
+            self.assertEqual(await self.dut.rx_frame_sync_status.read(), random_value)
+            
+            
+
         
 
     async def test_field_read_and_write(self) -> None:
@@ -8399,6 +8454,470 @@ class msk_top_regs_single_access(msk_top_regs_SimTestCase): # type: ignore[valid
             
             await self.dut.rx_async_fifo_rd_wr_ptr.data.write(random_field_value) # type: ignore[arg-type]
             self.assertEqual(sim_register.value, (inital_reg_random_value & 0x0) | (0xFFFFFFFF & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            
+
+        # test access operations (read and/or write) to register:
+        # msk_top_regs.rx_frame_sync_status.frame_sync_locked
+        with self.subTest(msg='field: msk_top_regs.rx_frame_sync_status.frame_sync_locked'):
+            sim_register = self.sim.register_by_full_name('msk_top_regs.rx_frame_sync_status')
+            self.assertIsInstance(sim_register, (Register,MemoryRegister))
+            sim_field = self.sim.field_by_full_name('msk_top_regs.rx_frame_sync_status.frame_sync_locked')
+            self.assertIsInstance(sim_field, Field)
+            register_read_callback = Mock()
+            register_write_callback = Mock()
+            field_read_callback = Mock()
+            field_write_callback = Mock()
+
+            # register read checks
+            # update the register value via the backdoor in the simulator
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            random_field_value = (random_value & 0x1) >> 0
+                
+            random_field_value = self._reverse_bits(value=random_field_value, number_bits=1)
+                
+            
+            sim_register.value = random_value
+            self.assertEqual(await self.dut.rx_frame_sync_status.frame_sync_locked.read(), random_field_value)
+            # update the field value via the backdoor in the simulator
+            previous_register_value = random_value
+            random_field_value = random.randrange(0, 0x1+1)
+            sim_field.value = random_field_value
+            self.assertEqual(sim_register.value, (previous_register_value & 0xFFFFFFFE) | (random_field_value << 0))
+            
+            self.assertEqual(await self.dut.rx_frame_sync_status.frame_sync_locked.read(), random_field_value)
+            # hook up the call backs to check they work correctly
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            random_field_value = (random_value & 0x1) >> 0
+                
+            random_field_value = self._reverse_bits(value=random_field_value, number_bits=1)
+                
+            
+            sim_register.value = random_value
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = field_read_callback
+            sim_field.write_callback = field_write_callback
+            self.assertEqual(await self.dut.rx_frame_sync_status.frame_sync_locked.read(), random_field_value)
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_called_once_with(value=random_value)
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_called_once_with(value=random_field_value)
+            
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            sim_field.read_callback = None
+            sim_field.write_callback = None
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            random_field_value = (random_value & 0x1) >> 0
+                
+            random_field_value = self._reverse_bits(value=random_field_value, number_bits=1)
+                
+            
+            sim_register.value = random_value
+            self.assertEqual(await self.dut.rx_frame_sync_status.frame_sync_locked.read(), random_field_value)
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            
+
+            # register write checks
+            # update the register value via the backdoor in the simulator, then perform a field
+            # write and make sure it is updated
+            inital_reg_random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = inital_reg_random_value
+            
+            random_field_value = random.randrange(0, 0x1+1)
+            
+            await self.dut.rx_frame_sync_status.frame_sync_locked.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0xFFFFFFFE) | (0x1 & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # hook up the call backs
+            sim_register.read_callback = None
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = None
+            sim_field.write_callback = field_write_callback
+            random_field_value = random.randrange(0, 0x1+1)
+            
+            await self.dut.rx_frame_sync_status.frame_sync_locked.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0xFFFFFFFE) | (0x1 & (random_field_value << 0)))
+            register_write_callback.assert_called_once_with(value=(reg_random_value & 0xFFFFFFFE) | (0x1 & (random_field_value << 0)))
+            field_write_callback.assert_called_once_with(value=random_field_value)
+            
+            register_read_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.write_callback = None
+            sim_field.write_callback = None
+            random_field_value = random.randrange(0, 0x1+1)
+            
+            await self.dut.rx_frame_sync_status.frame_sync_locked.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0xFFFFFFFE) | (0x1 & (random_field_value << 0)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            
+
+        # test access operations (read and/or write) to register:
+        # msk_top_regs.rx_frame_sync_status.frame_buffer_overflow
+        with self.subTest(msg='field: msk_top_regs.rx_frame_sync_status.frame_buffer_overflow'):
+            sim_register = self.sim.register_by_full_name('msk_top_regs.rx_frame_sync_status')
+            self.assertIsInstance(sim_register, (Register,MemoryRegister))
+            sim_field = self.sim.field_by_full_name('msk_top_regs.rx_frame_sync_status.frame_buffer_overflow')
+            self.assertIsInstance(sim_field, Field)
+            register_read_callback = Mock()
+            register_write_callback = Mock()
+            field_read_callback = Mock()
+            field_write_callback = Mock()
+
+            # register read checks
+            # update the register value via the backdoor in the simulator
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            random_field_value = (random_value & 0x2) >> 1
+                
+            random_field_value = self._reverse_bits(value=random_field_value, number_bits=1)
+                
+            
+            sim_register.value = random_value
+            self.assertEqual(await self.dut.rx_frame_sync_status.frame_buffer_overflow.read(), random_field_value)
+            # update the field value via the backdoor in the simulator
+            previous_register_value = random_value
+            random_field_value = random.randrange(0, 0x1+1)
+            sim_field.value = random_field_value
+            self.assertEqual(sim_register.value, (previous_register_value & 0xFFFFFFFD) | (random_field_value << 1))
+            
+            self.assertEqual(await self.dut.rx_frame_sync_status.frame_buffer_overflow.read(), random_field_value)
+            # hook up the call backs to check they work correctly
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            random_field_value = (random_value & 0x2) >> 1
+                
+            random_field_value = self._reverse_bits(value=random_field_value, number_bits=1)
+                
+            
+            sim_register.value = random_value
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = field_read_callback
+            sim_field.write_callback = field_write_callback
+            self.assertEqual(await self.dut.rx_frame_sync_status.frame_buffer_overflow.read(), random_field_value)
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_called_once_with(value=random_value)
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_called_once_with(value=random_field_value)
+            
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            sim_field.read_callback = None
+            sim_field.write_callback = None
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            random_field_value = (random_value & 0x2) >> 1
+                
+            random_field_value = self._reverse_bits(value=random_field_value, number_bits=1)
+                
+            
+            sim_register.value = random_value
+            self.assertEqual(await self.dut.rx_frame_sync_status.frame_buffer_overflow.read(), random_field_value)
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            
+
+            # register write checks
+            # update the register value via the backdoor in the simulator, then perform a field
+            # write and make sure it is updated
+            inital_reg_random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = inital_reg_random_value
+            
+            random_field_value = random.randrange(0, 0x1+1)
+            
+            await self.dut.rx_frame_sync_status.frame_buffer_overflow.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0xFFFFFFFD) | (0x2 & (random_field_value << 1)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # hook up the call backs
+            sim_register.read_callback = None
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = None
+            sim_field.write_callback = field_write_callback
+            random_field_value = random.randrange(0, 0x1+1)
+            
+            await self.dut.rx_frame_sync_status.frame_buffer_overflow.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0xFFFFFFFD) | (0x2 & (random_field_value << 1)))
+            register_write_callback.assert_called_once_with(value=(reg_random_value & 0xFFFFFFFD) | (0x2 & (random_field_value << 1)))
+            field_write_callback.assert_called_once_with(value=random_field_value)
+            
+            register_read_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.write_callback = None
+            sim_field.write_callback = None
+            random_field_value = random.randrange(0, 0x1+1)
+            
+            await self.dut.rx_frame_sync_status.frame_buffer_overflow.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0xFFFFFFFD) | (0x2 & (random_field_value << 1)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            
+
+        # test access operations (read and/or write) to register:
+        # msk_top_regs.rx_frame_sync_status.frames_received
+        with self.subTest(msg='field: msk_top_regs.rx_frame_sync_status.frames_received'):
+            sim_register = self.sim.register_by_full_name('msk_top_regs.rx_frame_sync_status')
+            self.assertIsInstance(sim_register, (Register,MemoryRegister))
+            sim_field = self.sim.field_by_full_name('msk_top_regs.rx_frame_sync_status.frames_received')
+            self.assertIsInstance(sim_field, Field)
+            register_read_callback = Mock()
+            register_write_callback = Mock()
+            field_read_callback = Mock()
+            field_write_callback = Mock()
+
+            # register read checks
+            # update the register value via the backdoor in the simulator
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            random_field_value = (random_value & 0x3FFFFFC) >> 2
+                
+            
+            sim_register.value = random_value
+            self.assertEqual(await self.dut.rx_frame_sync_status.frames_received.read(), random_field_value)
+            # update the field value via the backdoor in the simulator
+            previous_register_value = random_value
+            random_field_value = random.randrange(0, 0xFFFFFF+1)
+            sim_field.value = random_field_value
+            self.assertEqual(sim_register.value, (previous_register_value & 0xFC000003) | (random_field_value << 2))
+            
+            self.assertEqual(await self.dut.rx_frame_sync_status.frames_received.read(), random_field_value)
+            # hook up the call backs to check they work correctly
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            random_field_value = (random_value & 0x3FFFFFC) >> 2
+                
+            
+            sim_register.value = random_value
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = field_read_callback
+            sim_field.write_callback = field_write_callback
+            self.assertEqual(await self.dut.rx_frame_sync_status.frames_received.read(), random_field_value)
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_called_once_with(value=random_value)
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_called_once_with(value=random_field_value)
+            
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            sim_field.read_callback = None
+            sim_field.write_callback = None
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            random_field_value = (random_value & 0x3FFFFFC) >> 2
+                
+            
+            sim_register.value = random_value
+            self.assertEqual(await self.dut.rx_frame_sync_status.frames_received.read(), random_field_value)
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            
+
+            # register write checks
+            # update the register value via the backdoor in the simulator, then perform a field
+            # write and make sure it is updated
+            inital_reg_random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = inital_reg_random_value
+            
+            random_field_value = random.randrange(0, 0xFFFFFF+1)
+            
+            await self.dut.rx_frame_sync_status.frames_received.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0xFC000003) | (0x3FFFFFC & (random_field_value << 2)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # hook up the call backs
+            sim_register.read_callback = None
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = None
+            sim_field.write_callback = field_write_callback
+            random_field_value = random.randrange(0, 0xFFFFFF+1)
+            
+            await self.dut.rx_frame_sync_status.frames_received.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0xFC000003) | (0x3FFFFFC & (random_field_value << 2)))
+            register_write_callback.assert_called_once_with(value=(reg_random_value & 0xFC000003) | (0x3FFFFFC & (random_field_value << 2)))
+            field_write_callback.assert_called_once_with(value=random_field_value)
+            
+            register_read_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.write_callback = None
+            sim_field.write_callback = None
+            random_field_value = random.randrange(0, 0xFFFFFF+1)
+            
+            await self.dut.rx_frame_sync_status.frames_received.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0xFC000003) | (0x3FFFFFC & (random_field_value << 2)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            
+
+        # test access operations (read and/or write) to register:
+        # msk_top_regs.rx_frame_sync_status.frame_sync_errors
+        with self.subTest(msg='field: msk_top_regs.rx_frame_sync_status.frame_sync_errors'):
+            sim_register = self.sim.register_by_full_name('msk_top_regs.rx_frame_sync_status')
+            self.assertIsInstance(sim_register, (Register,MemoryRegister))
+            sim_field = self.sim.field_by_full_name('msk_top_regs.rx_frame_sync_status.frame_sync_errors')
+            self.assertIsInstance(sim_field, Field)
+            register_read_callback = Mock()
+            register_write_callback = Mock()
+            field_read_callback = Mock()
+            field_write_callback = Mock()
+
+            # register read checks
+            # update the register value via the backdoor in the simulator
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            random_field_value = (random_value & 0xFC000000) >> 26
+                
+            
+            sim_register.value = random_value
+            self.assertEqual(await self.dut.rx_frame_sync_status.frame_sync_errors.read(), random_field_value)
+            # update the field value via the backdoor in the simulator
+            previous_register_value = random_value
+            random_field_value = random.randrange(0, 0x3F+1)
+            sim_field.value = random_field_value
+            self.assertEqual(sim_register.value, (previous_register_value & 0x3FFFFFF) | (random_field_value << 26))
+            
+            self.assertEqual(await self.dut.rx_frame_sync_status.frame_sync_errors.read(), random_field_value)
+            # hook up the call backs to check they work correctly
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            random_field_value = (random_value & 0xFC000000) >> 26
+                
+            
+            sim_register.value = random_value
+            sim_register.read_callback = register_read_callback
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = field_read_callback
+            sim_field.write_callback = field_write_callback
+            self.assertEqual(await self.dut.rx_frame_sync_status.frame_sync_errors.read(), random_field_value)
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_called_once_with(value=random_value)
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_called_once_with(value=random_field_value)
+            
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.read_callback = None
+            sim_register.write_callback = None
+            sim_field.read_callback = None
+            sim_field.write_callback = None
+            random_value = random.randrange(0, 0xFFFFFFFF+1)
+            random_field_value = (random_value & 0xFC000000) >> 26
+                
+            
+            sim_register.value = random_value
+            self.assertEqual(await self.dut.rx_frame_sync_status.frame_sync_errors.read(), random_field_value)
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            
+
+            # register write checks
+            # update the register value via the backdoor in the simulator, then perform a field
+            # write and make sure it is updated
+            inital_reg_random_value = random.randrange(0, 0xFFFFFFFF+1)
+            sim_register.value = inital_reg_random_value
+            
+            random_field_value = random.randrange(0, 0x3F+1)
+            
+            await self.dut.rx_frame_sync_status.frame_sync_errors.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x3FFFFFF) | (0xFC000000 & (random_field_value << 26)))
+            
+            register_write_callback.assert_not_called()
+            register_read_callback.assert_not_called()
+            field_write_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # hook up the call backs
+            sim_register.read_callback = None
+            sim_register.write_callback = register_write_callback
+            sim_field.read_callback = None
+            sim_field.write_callback = field_write_callback
+            random_field_value = random.randrange(0, 0x3F+1)
+            
+            await self.dut.rx_frame_sync_status.frame_sync_errors.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x3FFFFFF) | (0xFC000000 & (random_field_value << 26)))
+            register_write_callback.assert_called_once_with(value=(reg_random_value & 0x3FFFFFF) | (0xFC000000 & (random_field_value << 26)))
+            field_write_callback.assert_called_once_with(value=random_field_value)
+            
+            register_read_callback.assert_not_called()
+            field_read_callback.assert_not_called()
+            reg_random_value = sim_register.value
+            # revert the callbacks and check again
+            register_write_callback.reset_mock()
+            register_read_callback.reset_mock()
+            field_write_callback.reset_mock()
+            field_read_callback.reset_mock()
+            sim_register.write_callback = None
+            sim_field.write_callback = None
+            random_field_value = random.randrange(0, 0x3F+1)
+            
+            await self.dut.rx_frame_sync_status.frame_sync_errors.write(random_field_value) # type: ignore[arg-type]
+            self.assertEqual(sim_register.value, (inital_reg_random_value & 0x3FFFFFF) | (0xFC000000 & (random_field_value << 26)))
             
             register_write_callback.assert_not_called()
             register_read_callback.assert_not_called()

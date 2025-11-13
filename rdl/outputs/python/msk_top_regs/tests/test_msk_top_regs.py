@@ -170,6 +170,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
             self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.inst_name, 'rx_async_fifo_rd_wr_ptr') # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.full_inst_name, 'msk_top_regs.rx_async_fifo_rd_wr_ptr')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status'):
+            self.assertEqual(self.dut.rx_frame_sync_status.inst_name, 'rx_frame_sync_status') # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_frame_sync_status.full_inst_name, 'msk_top_regs.rx_frame_sync_status')  # type: ignore[union-attr]
         with self.subTest(msg='node: msk_top_regs.Hash_ID_Low.hash_id_lo'):
             self.assertEqual(self.dut.Hash_ID_Low.hash_id_lo.inst_name, 'hash_id_lo') # type: ignore[union-attr]
             self.assertEqual(self.dut.Hash_ID_Low.hash_id_lo.full_inst_name, 'msk_top_regs.Hash_ID_Low.hash_id_lo')  # type: ignore[union-attr]
@@ -347,6 +350,18 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.rx_async_fifo_rd_wr_ptr.data'):
             self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.data.inst_name, 'data') # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.data.full_inst_name, 'msk_top_regs.rx_async_fifo_rd_wr_ptr.data')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frame_sync_locked'):
+            self.assertEqual(self.dut.rx_frame_sync_status.frame_sync_locked.inst_name, 'frame_sync_locked') # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_frame_sync_status.frame_sync_locked.full_inst_name, 'msk_top_regs.rx_frame_sync_status.frame_sync_locked')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frame_buffer_overflow'):
+            self.assertEqual(self.dut.rx_frame_sync_status.frame_buffer_overflow.inst_name, 'frame_buffer_overflow') # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_frame_sync_status.frame_buffer_overflow.full_inst_name, 'msk_top_regs.rx_frame_sync_status.frame_buffer_overflow')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frames_received'):
+            self.assertEqual(self.dut.rx_frame_sync_status.frames_received.inst_name, 'frames_received') # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_frame_sync_status.frames_received.full_inst_name, 'msk_top_regs.rx_frame_sync_status.frames_received')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frame_sync_errors'):
+            self.assertEqual(self.dut.rx_frame_sync_status.frame_sync_errors.inst_name, 'frame_sync_errors') # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_frame_sync_status.frame_sync_errors.full_inst_name, 'msk_top_regs.rx_frame_sync_status.frame_sync_errors')  # type: ignore[union-attr]
         
 
     def test_name_property(self)  -> None:
@@ -616,6 +631,13 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             
                 
             self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.rdl_name, "Rx async FIFO read and write pointers") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status'):
+            
+                
+            self.assertEqual(self.dut.rx_frame_sync_status.rdl_name, "Frame Sync Status") # type: ignore[union-attr]
                 
             
 
@@ -1032,6 +1054,34 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
             
 
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frame_sync_locked'):
+            
+                
+            self.assertEqual(self.dut.rx_frame_sync_status.frame_sync_locked.rdl_name, "Frame Sync Lock") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frame_buffer_overflow'):
+            
+                
+            self.assertEqual(self.dut.rx_frame_sync_status.frame_buffer_overflow.rdl_name, "Frame Buffer Overflow") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frames_received'):
+            
+                
+            self.assertEqual(self.dut.rx_frame_sync_status.frames_received.rdl_name, "Frames Received") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frame_sync_errors'):
+            
+                
+            self.assertEqual(self.dut.rx_frame_sync_status.frame_sync_errors.rdl_name, "Frames Sync Errors") # type: ignore[union-attr]
+                
+            
+
         
 
     def test_desc(self)  -> None:
@@ -1301,6 +1351,13 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             
                 
             self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.rdl_desc, "Rx async FIFO read and write pointers") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status'):
+            
+                
+            self.assertIsNone(self.dut.rx_frame_sync_status.rdl_desc)  # type: ignore[union-attr]
                 
             
 
@@ -1717,6 +1774,34 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
             
 
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frame_sync_locked'):
+            
+                
+            self.assertEqual(self.dut.rx_frame_sync_status.frame_sync_locked.rdl_desc, "0 - Frame sync not locked\n1 - Frame sync locked") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frame_buffer_overflow'):
+            
+                
+            self.assertEqual(self.dut.rx_frame_sync_status.frame_buffer_overflow.rdl_desc, "0 - Normal operation\n1 - Buffer overflow") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frames_received'):
+            
+                
+            self.assertEqual(self.dut.rx_frame_sync_status.frames_received.rdl_desc, "Count of frames received since last read. Value is 0x00_0000 to 0xFF_FFFF") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frame_sync_errors'):
+            
+                
+            self.assertEqual(self.dut.rx_frame_sync_status.frame_sync_errors.rdl_desc, "Count of frame sync errors since last read. Value is 0 to 63. This field will saturate at 63 if more than 63 occur.") # type: ignore[union-attr]
+                
+            
+
         
 
     def test_sizes(self) -> None:
@@ -1799,12 +1884,14 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.size, 4) # type: ignore[union-attr]
         with self.subTest(msg='node: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
             self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.size, 4) # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status'):
+            self.assertEqual(self.dut.rx_frame_sync_status.size, 4) # type: ignore[union-attr]
         
 
         # check the size of the address map itself
         
         with self.subTest(msg='node: msk_top_regs'):
-            self.assertEqual(self.dut.size, 152) # type: ignore[union-attr]
+            self.assertEqual(self.dut.size, 156) # type: ignore[union-attr]
         
 
 
@@ -2003,6 +2090,11 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.width, 32) # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.size, 4) # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.accesswidth, 32) # type: ignore[union-attr]
+        with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status'):
+            self.assertEqual(self.dut.rx_frame_sync_status.address, 152) # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_frame_sync_status.width, 32) # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_frame_sync_status.size, 4) # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_frame_sync_status.accesswidth, 32) # type: ignore[union-attr]
         
 
     def test_memory_properties(self)  -> None:
@@ -2964,12 +3056,80 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(fut.default,0)
                 
             self.assertEqual(fut.is_volatile,True)
+        with self.subTest(msg='field: msk_top_regs.rx_frame_sync_status.frame_sync_locked'):
+            # test properties of field: msk_top_regs.rx_frame_sync_status.frame_sync_locked
+            fut = self.dut.rx_frame_sync_status.frame_sync_locked # type: ignore[union-attr]
+            if not isinstance(fut, Field):
+                raise TypeError('This test relies on node being of type Field')
+            self.assertEqual(fut.lsb,0)
+            self.assertEqual(fut.msb,0)
+            self.assertEqual(fut.low,0)
+            self.assertEqual(fut.high,0)
+            self.assertEqual(fut.bitmask,0x1)
+            self.assertEqual(fut.inverse_bitmask,0xFFFFFFFE)
+            self.assertEqual(fut.max_value,0x1)
+                
+            self.assertEqual(fut.default,0)
+                
+            self.assertEqual(fut.is_volatile,True)
+        with self.subTest(msg='field: msk_top_regs.rx_frame_sync_status.frame_buffer_overflow'):
+            # test properties of field: msk_top_regs.rx_frame_sync_status.frame_buffer_overflow
+            fut = self.dut.rx_frame_sync_status.frame_buffer_overflow # type: ignore[union-attr]
+            if not isinstance(fut, Field):
+                raise TypeError('This test relies on node being of type Field')
+            self.assertEqual(fut.lsb,1)
+            self.assertEqual(fut.msb,1)
+            self.assertEqual(fut.low,1)
+            self.assertEqual(fut.high,1)
+            self.assertEqual(fut.bitmask,0x2)
+            self.assertEqual(fut.inverse_bitmask,0xFFFFFFFD)
+            self.assertEqual(fut.max_value,0x1)
+                
+            self.assertEqual(fut.default,0)
+                
+            self.assertEqual(fut.is_volatile,True)
+        with self.subTest(msg='field: msk_top_regs.rx_frame_sync_status.frames_received'):
+            # test properties of field: msk_top_regs.rx_frame_sync_status.frames_received
+            fut = self.dut.rx_frame_sync_status.frames_received # type: ignore[union-attr]
+            if not isinstance(fut, Field):
+                raise TypeError('This test relies on node being of type Field')
+            self.assertEqual(fut.lsb,2)
+            self.assertEqual(fut.msb,25)
+            self.assertEqual(fut.low,2)
+            self.assertEqual(fut.high,25)
+            self.assertEqual(fut.bitmask,0x3FFFFFC)
+            self.assertEqual(fut.inverse_bitmask,0xFC000003)
+            self.assertEqual(fut.max_value,0xFFFFFF)
+                
+            self.assertEqual(fut.default,0)
+                
+            self.assertEqual(fut.is_volatile,True)
+        with self.subTest(msg='field: msk_top_regs.rx_frame_sync_status.frame_sync_errors'):
+            # test properties of field: msk_top_regs.rx_frame_sync_status.frame_sync_errors
+            fut = self.dut.rx_frame_sync_status.frame_sync_errors # type: ignore[union-attr]
+            if not isinstance(fut, Field):
+                raise TypeError('This test relies on node being of type Field')
+            self.assertEqual(fut.lsb,26)
+            self.assertEqual(fut.msb,31)
+            self.assertEqual(fut.low,26)
+            self.assertEqual(fut.high,31)
+            self.assertEqual(fut.bitmask,0xFC000000)
+            self.assertEqual(fut.inverse_bitmask,0x3FFFFFF)
+            self.assertEqual(fut.max_value,0x3F)
+                
+            self.assertEqual(fut.default,0)
+                
+            self.assertEqual(fut.is_volatile,True)
         
 
     def test_field_encoding_properties(self)  -> None:
         """
         Check that enumeration has the name and desc meta data from the systemRDL
         """
+        
+        
+        
+        
         
         
         
@@ -3186,6 +3346,10 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='register: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
             
             self.assertDictEqual(self.dut.rx_async_fifo_rd_wr_ptr.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status'):
+            
+            self.assertDictEqual(self.dut.rx_frame_sync_status.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Hash_ID_Low.hash_id_lo'):
             
@@ -3422,6 +3586,22 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='register: msk_top_regs.rx_async_fifo_rd_wr_ptr.data'):
             
             self.assertDictEqual(self.dut.rx_async_fifo_rd_wr_ptr.data.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status.frame_sync_locked'):
+            
+            self.assertDictEqual(self.dut.rx_frame_sync_status.frame_sync_locked.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status.frame_buffer_overflow'):
+            
+            self.assertDictEqual(self.dut.rx_frame_sync_status.frame_buffer_overflow.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status.frames_received'):
+            
+            self.assertDictEqual(self.dut.rx_frame_sync_status.frames_received.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status.frame_sync_errors'):
+            
+            self.assertDictEqual(self.dut.rx_frame_sync_status.frame_sync_errors.udp,{})
             
         
 
@@ -6810,6 +6990,98 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 await rut.write(random_value)  # type: ignore[union-attr]
                 write_callback_mock.assert_called_once_with(
                                     addr=148,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=random_value)
+                write_callback_mock.reset_mock()
+
+                # test writing a value beyond the register range is blocked with an exception being raised
+                with self.assertRaises(ValueError):
+                    await rut.write(-1)
+
+                with self.assertRaises(ValueError):
+                    await rut.write(0xFFFFFFFF+1)
+
+                # check the read has not been called in the write test
+                read_callback_mock.assert_not_called()
+        # test access operations (read and/or write) to register:
+        # msk_top_regs.rx_frame_sync_status
+        with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status'):
+            rut=self.dut.rx_frame_sync_status # type: ignore[union-attr,assignment]
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                patch(base_name + '.read_addr_space', return_value=1) as read_callback_mock:
+
+                
+                if not isinstance(rut, (RegAsyncReadOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Readable Async Type')
+                
+                # test reading back 1 (the unpatched version returns 0 so this confirms the patch works)
+                self.assertEqual(await rut.read(), 1)
+                read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read check with high value
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0xFFFFFFFF
+                self.assertEqual(await rut.read(), 0xFFFFFFFF)
+                read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read of the low value
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0
+                self.assertEqual(await rut.read(), 0x0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read of a random value
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = random_value
+                self.assertEqual(await rut.read(), random_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+                
+
+                
+                if not isinstance(rut, (RegAsyncWriteOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Writeable Async Type')
+                
+                # test the write with high value
+                await rut.write(0xFFFFFFFF)
+                write_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0xFFFFFFFF)
+                write_callback_mock.reset_mock()
+
+                # test the write of a low value
+                await rut.write(0)
+                write_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0)
+                write_callback_mock.reset_mock()
+
+                # test the write of a random
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                await rut.write(random_value)  # type: ignore[union-attr]
+                write_callback_mock.assert_called_once_with(
+                                    addr=152,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=random_value)
@@ -11372,6 +11644,342 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 with self.assertRaises(ValueError):
                     await fut.write(-1)
 
+        # test access operations (read and/or write) to field:
+        # msk_top_regs.rx_frame_sync_status.frame_sync_locked
+        with self.subTest(msg='field: msk_top_regs.rx_frame_sync_status.frame_sync_locked'):
+            fut = self.dut.rx_frame_sync_status.frame_sync_locked # type: ignore[union-attr]
+            with patch(base_name + '.write_addr_space') as write_callback_mock,\
+                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
+
+                
+                
+                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a readable async field')
+                
+
+                # read back - zero, this is achieved by setting the register to inverse bitmask
+                read_callback_mock.return_value = 0xFFFFFFFE
+                self.assertEqual(await fut.read(),
+                                 0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - max_value, this is achieved by setting the register to bitmask
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0x1
+                self.assertEqual(await fut.read(),
+                                 0x1)
+                read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - random value
+                read_callback_mock.reset_mock()
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.return_value = random_value
+                random_field_value = (random_value & 0x1) >> 0
+                self.assertEqual(await fut.read(),
+                                 random_field_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0x1 + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0x1, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.rx_frame_sync_status.frame_sync_locked.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+                        
+                        write_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=self.dut.rx_frame_sync_status.frame_sync_locked.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0xFFFFFFFE) | \
+                                         (0x1 & (field_value << 0)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0x1 + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
+
+        # test access operations (read and/or write) to field:
+        # msk_top_regs.rx_frame_sync_status.frame_buffer_overflow
+        with self.subTest(msg='field: msk_top_regs.rx_frame_sync_status.frame_buffer_overflow'):
+            fut = self.dut.rx_frame_sync_status.frame_buffer_overflow # type: ignore[union-attr]
+            with patch(base_name + '.write_addr_space') as write_callback_mock,\
+                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
+
+                
+                
+                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a readable async field')
+                
+
+                # read back - zero, this is achieved by setting the register to inverse bitmask
+                read_callback_mock.return_value = 0xFFFFFFFD
+                self.assertEqual(await fut.read(),
+                                 0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - max_value, this is achieved by setting the register to bitmask
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0x2
+                self.assertEqual(await fut.read(),
+                                 0x1)
+                read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - random value
+                read_callback_mock.reset_mock()
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.return_value = random_value
+                random_field_value = (random_value & 0x2) >> 1
+                self.assertEqual(await fut.read(),
+                                 random_field_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0x1 + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0x1, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.rx_frame_sync_status.frame_buffer_overflow.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+                        
+                        write_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=self.dut.rx_frame_sync_status.frame_buffer_overflow.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0xFFFFFFFD) | \
+                                         (0x2 & (field_value << 1)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0x1 + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
+
+        # test access operations (read and/or write) to field:
+        # msk_top_regs.rx_frame_sync_status.frames_received
+        with self.subTest(msg='field: msk_top_regs.rx_frame_sync_status.frames_received'):
+            fut = self.dut.rx_frame_sync_status.frames_received # type: ignore[union-attr]
+            with patch(base_name + '.write_addr_space') as write_callback_mock,\
+                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
+
+                
+                
+                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a readable async field')
+                
+
+                # read back - zero, this is achieved by setting the register to inverse bitmask
+                read_callback_mock.return_value = 0xFC000003
+                self.assertEqual(await fut.read(),
+                                 0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - max_value, this is achieved by setting the register to bitmask
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0x3FFFFFC
+                self.assertEqual(await fut.read(),
+                                 0xFFFFFF)
+                read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - random value
+                read_callback_mock.reset_mock()
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.return_value = random_value
+                random_field_value = (random_value & 0x3FFFFFC) >> 2
+                self.assertEqual(await fut.read(),
+                                 random_field_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0xFFFFFF + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0xFFFFFF, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.rx_frame_sync_status.frames_received.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+                        
+                        write_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=self.dut.rx_frame_sync_status.frames_received.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0xFC000003) | \
+                                         (0x3FFFFFC & (field_value << 2)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0xFFFFFF + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
+
+        # test access operations (read and/or write) to field:
+        # msk_top_regs.rx_frame_sync_status.frame_sync_errors
+        with self.subTest(msg='field: msk_top_regs.rx_frame_sync_status.frame_sync_errors'):
+            fut = self.dut.rx_frame_sync_status.frame_sync_errors # type: ignore[union-attr]
+            with patch(base_name + '.write_addr_space') as write_callback_mock,\
+                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
+
+                
+                
+                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a readable async field')
+                
+
+                # read back - zero, this is achieved by setting the register to inverse bitmask
+                read_callback_mock.return_value = 0x3FFFFFF
+                self.assertEqual(await fut.read(),
+                                 0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - max_value, this is achieved by setting the register to bitmask
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0xFC000000
+                self.assertEqual(await fut.read(),
+                                 0x3F)
+                read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - random value
+                read_callback_mock.reset_mock()
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.return_value = random_value
+                random_field_value = (random_value & 0xFC000000) >> 26
+                self.assertEqual(await fut.read(),
+                                 random_field_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0x3F + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0x3F, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.rx_frame_sync_status.frame_sync_errors.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+                        
+                        write_callback_mock.assert_called_once_with(
+                                    addr=152,
+                                    width=32,
+                                    accesswidth=self.dut.rx_frame_sync_status.frame_sync_errors.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0x3FFFFFF) | \
+                                         (0xFC000000 & (field_value << 26)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0x3F + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
+
     
 
     async def test_register_read_fields(self) -> None:
@@ -12821,6 +13429,74 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.reset_mock()
 
                 self.assertDictEqual(await self.dut.rx_async_fifo_rd_wr_ptr.read_fields(),
+                                     reference_read_fields)
+                read_callback_mock.assert_called_once()
+                write_callback_mock.assert_not_called()
+        with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status'):
+            # test read_fields to register:
+            # msk_top_regs.rx_frame_sync_status
+            # build up the register value with a random base value, overlaid with
+            # a random value for each field
+            rand_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x1 + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFFFFE) | (rand_field_value << 0)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x1 + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFFFFD) | (rand_field_value << 1)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0xFFFFFF + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFC000003) | (rand_field_value << 2)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x3F + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0x3FFFFFF) | (rand_field_value << 26)
+                        
+                    
+                
+            
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                 patch(base_name + '.read_addr_space', return_value=rand_reg_value) as read_callback_mock:
+                # the read_fields method gets a dictionary back
+                # from the object with all the read back field
+                # values
+                reference_read_fields = { 
+                                          'frame_sync_locked' : await self.dut.rx_frame_sync_status.frame_sync_locked.read(),
+                                          'frame_buffer_overflow' : await self.dut.rx_frame_sync_status.frame_buffer_overflow.read(),
+                                          'frames_received' : await self.dut.rx_frame_sync_status.frames_received.read(),
+                                          'frame_sync_errors' : await self.dut.rx_frame_sync_status.frame_sync_errors.read()
+                                        }
+
+                read_callback_mock.reset_mock()
+
+                self.assertDictEqual(await self.dut.rx_frame_sync_status.read_fields(),
                                      reference_read_fields)
                 read_callback_mock.assert_called_once()
                 write_callback_mock.assert_not_called()
@@ -14516,6 +15192,88 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
 
                 read_callback_mock.assert_called_once()
                 write_callback_mock.assert_not_called()
+        # test context manager to register:
+        # msk_top_regs.rx_frame_sync_status
+        # build up the register value with a random base value, overlaid with
+        # a random value for each field
+        with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status'):
+            rand_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x1 + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFFFFE) | (rand_field_value << 0)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x1 + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFFFFD) | (rand_field_value << 1)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0xFFFFFF + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFC000003) | (rand_field_value << 2)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x3F + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0x3FFFFFF) | (rand_field_value << 26)
+                        
+                    
+                
+            
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                 patch(base_name + '.read_addr_space', return_value=rand_reg_value) as read_callback_mock:
+
+                # first read the fields using the "normal" method, then compare the result to reading
+                # via the context manager
+                reference_read_fields = { 
+                                          'frame_sync_locked' : await self.dut.rx_frame_sync_status.frame_sync_locked.read(),  # type: ignore[union-attr]
+                                          'frame_buffer_overflow' : await self.dut.rx_frame_sync_status.frame_buffer_overflow.read(),  # type: ignore[union-attr]
+                                          'frames_received' : await self.dut.rx_frame_sync_status.frames_received.read(),  # type: ignore[union-attr]
+                                          'frame_sync_errors' : await self.dut.rx_frame_sync_status.frame_sync_errors.read()  # type: ignore[union-attr]
+                                        }
+                read_callback_mock.reset_mock()
+
+                
+                async with self.dut.rx_frame_sync_status.single_read_modify_write(skip_write=True) as reg_context: # type: ignore[union-attr]
+                
+                    self.assertEqual(reference_read_fields['frame_sync_locked'],
+                                      await reg_context.get_child_by_system_rdl_name('frame_sync_locked').read()
+                                     )
+                    self.assertEqual(reference_read_fields['frame_buffer_overflow'],
+                                      await reg_context.get_child_by_system_rdl_name('frame_buffer_overflow').read()
+                                     )
+                    self.assertEqual(reference_read_fields['frames_received'],
+                                      await reg_context.get_child_by_system_rdl_name('frames_received').read()
+                                     )
+                    self.assertEqual(reference_read_fields['frame_sync_errors'],
+                                      await reg_context.get_child_by_system_rdl_name('frame_sync_errors').read()
+                                     )
+                    pass
+
+                read_callback_mock.assert_called_once()
+                write_callback_mock.assert_not_called()
 
     async def test_register_write_context_manager(self) -> None:
         """
@@ -14752,6 +15510,13 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='register: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
             await write_field_combinations(reg=self.dut.rx_async_fifo_rd_wr_ptr,
                                writable_fields = [ 'data'
+                                                   ])
+        with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status'):
+            await write_field_combinations(reg=self.dut.rx_frame_sync_status,
+                               writable_fields = [ 'frame_sync_locked',
+                                                   'frame_buffer_overflow',
+                                                   'frames_received',
+                                                   'frame_sync_errors'
                                                    ])
 
     async def test_register_write_fields(self) -> None:
@@ -15065,6 +15830,16 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                        writable_fields = [ 'data'
                                                            ])
             
+        with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status'):
+            # test read_fields to register:
+            # msk_top_regs.rx_frame_sync_status
+            await write_field_combinations(reg=self.dut.rx_frame_sync_status,
+                                       writable_fields = [ 'frame_sync_locked',
+                                                           'frame_buffer_overflow',
+                                                           'frames_received',
+                                                           'frame_sync_errors'
+                                                           ])
+            
 
     
 
@@ -15266,6 +16041,11 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
                 self.dut.rx_async_fifo_rd_wr_ptr.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.rx_frame_sync_status.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
         with self.subTest(msg='node: msk_top_regs.Hash_ID_Low.hash_id_lo'):
             with self.assertRaises(AttributeError):
                 # this line is trying to set an illegal value so by definition should fail the type
@@ -15561,6 +16341,26 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
                 self.dut.rx_async_fifo_rd_wr_ptr.data.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frame_sync_locked'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.rx_frame_sync_status.frame_sync_locked.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frame_buffer_overflow'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.rx_frame_sync_status.frame_buffer_overflow.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frames_received'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.rx_frame_sync_status.frames_received.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frame_sync_errors'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.rx_frame_sync_status.frame_sync_errors.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
         
 
     
@@ -15650,6 +16450,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                         
                                     self.dut.rx_async_fifo_rd_wr_ptr, # type: ignore[union-attr,list-item] 
                                         
+                                    self.dut.rx_frame_sync_status, # type: ignore[union-attr,list-item] 
+                                        
                                      ]
         readable_regs = []
         for readable_reg in self.dut.get_readable_registers(unroll=True):  # type: ignore[union-attr]
@@ -15732,6 +16534,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                    self.dut.tx_async_fifo_rd_wr_ptr, # type: ignore[union-attr,list-item] 
                                        
                                    self.dut.rx_async_fifo_rd_wr_ptr, # type: ignore[union-attr,list-item] 
+                                       
+                                   self.dut.rx_frame_sync_status, # type: ignore[union-attr,list-item] 
                                        
                                     ]
         readable_regs = []
@@ -15816,6 +16620,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                        
                                    self.dut.rx_async_fifo_rd_wr_ptr, # type: ignore[union-attr,list-item] 
                                        
+                                   self.dut.rx_frame_sync_status, # type: ignore[union-attr,list-item] 
+                                       
                                     ]
         writable_regs = []
         for writable_reg in self.dut.get_writable_registers(unroll=True):  # type: ignore[union-attr]
@@ -15899,6 +16705,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                        
                                    self.dut.rx_async_fifo_rd_wr_ptr, # type: ignore[union-attr,list-item] 
                                        
+                                   self.dut.rx_frame_sync_status, # type: ignore[union-attr,list-item] 
+                                       
                                     ]
         writable_regs = []
         for writable_reg in self.dut.get_writable_registers(unroll=False):  # type: ignore[union-attr]
@@ -15907,6 +16715,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
 
         # check the sections
         expected_sections = [
+                                  
+                              
                                   
                               
                                   
@@ -16065,6 +16875,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                   
                               
                                   
+                              
+                                  
                                ]
         sections = []
         for section in self.dut.get_sections(unroll=False):  # type: ignore[union-attr]
@@ -16148,6 +16960,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                   
                               
                                   
+                              
+                                  
                                ]
         memories = []
         for memory in self.dut.get_memories(unroll=True):  # type: ignore[union-attr]
@@ -16156,6 +16970,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         self.assertCountEqual(expected_memories, memories)
         
         expected_memories = [
+                                  
+                              
                                   
                               
                                   
@@ -17565,6 +18381,58 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 readable_fields.append(readable_field)
             self.assertCountEqual(expected_readable_fields, readable_fields)
                     
+        with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status'):
+                
+            expected_fields = [self.dut.rx_frame_sync_status.frame_sync_locked, # type: ignore[union-attr,list-item]
+                                        
+                                    
+                                 self.dut.rx_frame_sync_status.frame_buffer_overflow, # type: ignore[union-attr,list-item]
+                                        
+                                    
+                                 self.dut.rx_frame_sync_status.frames_received, # type: ignore[union-attr,list-item]
+                                        
+                                    
+                                 self.dut.rx_frame_sync_status.frame_sync_errors, # type: ignore[union-attr,list-item]
+                                        
+                                    
+                                 
+                                         ]
+            fields = []
+            for field in self.dut.rx_frame_sync_status.fields:  # type: ignore[union-attr]
+                fields.append(field)
+            self.assertCountEqual(expected_fields, fields)
+                
+            expected_writable_fields = [self.dut.rx_frame_sync_status.frame_sync_locked, # type: ignore[union-attr,list-item] 
+                                            
+                                         self.dut.rx_frame_sync_status.frame_buffer_overflow, # type: ignore[union-attr,list-item] 
+                                            
+                                         self.dut.rx_frame_sync_status.frames_received, # type: ignore[union-attr,list-item] 
+                                            
+                                         self.dut.rx_frame_sync_status.frame_sync_errors, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            writable_fields = []
+            for writable_field in self.dut.rx_frame_sync_status.writable_fields:  # type: ignore[union-attr]
+                writable_fields.append(writable_field)
+            self.assertCountEqual(expected_writable_fields, writable_fields)
+                    
+                    
+            expected_readable_fields = [self.dut.rx_frame_sync_status.frame_sync_locked, # type: ignore[union-attr,list-item] 
+                                            
+                                         self.dut.rx_frame_sync_status.frame_buffer_overflow, # type: ignore[union-attr,list-item] 
+                                            
+                                         self.dut.rx_frame_sync_status.frames_received, # type: ignore[union-attr,list-item] 
+                                            
+                                         self.dut.rx_frame_sync_status.frame_sync_errors, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            readable_fields = []
+            for readable_field in self.dut.rx_frame_sync_status.readable_fields: # type: ignore[union-attr]
+                readable_fields.append(readable_field)
+            self.assertCountEqual(expected_readable_fields, readable_fields)
+                    
         
         # test all the memories
         
@@ -17907,6 +18775,31 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         
         
         self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.get_child_by_system_rdl_name('data').inst_name, 'data')
+        
+        
+        
+        
+        
+        self.assertEqual(self.dut.rx_frame_sync_status.get_child_by_system_rdl_name('frame_sync_locked').inst_name, 'frame_sync_locked')
+        
+        
+        
+        
+        self.assertEqual(self.dut.rx_frame_sync_status.get_child_by_system_rdl_name('frame_buffer_overflow').inst_name, 'frame_buffer_overflow')
+        
+        
+        
+        
+        self.assertEqual(self.dut.rx_frame_sync_status.get_child_by_system_rdl_name('frames_received').inst_name, 'frames_received')
+        
+        
+        
+        
+        self.assertEqual(self.dut.rx_frame_sync_status.get_child_by_system_rdl_name('frame_sync_errors').inst_name, 'frame_sync_errors')
+        
+        
+        
+        
         
         
         

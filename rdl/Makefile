@@ -31,10 +31,10 @@ $(OUTCHEADER)/msk_top_regs.h: $(SRCS)
 $(OUTRTL)/msk_top_regs.vhd: $(SRCS)
 	peakrdl regblock-vhdl $(SRCS) -o $(OUTRTL) --cpuif axi4-lite
 	@echo "Converting VHDL-2019 to VHDL-2008 for XSim compatibility..."
-	sed -i 's/^context ieee\.ieee_std_context;$$/use ieee.std_logic_1164.all;\nuse ieee.numeric_std.all;/' \
-		$(OUTRTL)/msk_top_regs.vhd \
-		src/axi4lite_intf_pkg.vhd \
-		src/reg_utils.vhd
+	perl -i -pe 's/^context ieee\.ieee_std_context;$$/use ieee.std_logic_1164.all;\nuse ieee.numeric_std.all;/' \
+    outputs/rtl/msk_top_regs.vhd \
+    src/axi4lite_intf_pkg.vhd \
+    src/reg_utils.vhd
 	@echo "Conversion complete!"
 
 
@@ -45,7 +45,7 @@ $(OUTPYTHON)/__init__.py: $(SRCS)
 	peakrdl python $(SRCS) --async -o $(OUTPYTHON)
 
 clean:
-	rm -r outputs/docs/*
-	rm outputs/c-header/*
-	rm -r outputs/python/*
-	rm outputs/rtl/*
+	rm -rf outputs/docs/*
+	rm -f outputs/c-header/*
+	rm -rf outputs/python/*
+	rm -f outputs/rtl/*

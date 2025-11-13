@@ -317,6 +317,24 @@ extern "C" {
 #define MSK_TOP_REGS__STATUS_REG_DATA_8A67E1FE_DESC_8A90EED1_NAME_8A90EED1__DATA_bw 32
 #define MSK_TOP_REGS__STATUS_REG_DATA_8A67E1FE_DESC_8A90EED1_NAME_8A90EED1__DATA_reset 0x0
 
+// Reg - msk_top_regs::frame_sync_status
+#define MSK_TOP_REGS__FRAME_SYNC_STATUS__FRAME_SYNC_LOCKED_bm 0x1
+#define MSK_TOP_REGS__FRAME_SYNC_STATUS__FRAME_SYNC_LOCKED_bp 0
+#define MSK_TOP_REGS__FRAME_SYNC_STATUS__FRAME_SYNC_LOCKED_bw 1
+#define MSK_TOP_REGS__FRAME_SYNC_STATUS__FRAME_SYNC_LOCKED_reset 0x0
+#define MSK_TOP_REGS__FRAME_SYNC_STATUS__FRAME_BUFFER_OVERFLOW_bm 0x2
+#define MSK_TOP_REGS__FRAME_SYNC_STATUS__FRAME_BUFFER_OVERFLOW_bp 1
+#define MSK_TOP_REGS__FRAME_SYNC_STATUS__FRAME_BUFFER_OVERFLOW_bw 1
+#define MSK_TOP_REGS__FRAME_SYNC_STATUS__FRAME_BUFFER_OVERFLOW_reset 0x0
+#define MSK_TOP_REGS__FRAME_SYNC_STATUS__FRAMES_RECEIVED_bm 0x3fffffc
+#define MSK_TOP_REGS__FRAME_SYNC_STATUS__FRAMES_RECEIVED_bp 2
+#define MSK_TOP_REGS__FRAME_SYNC_STATUS__FRAMES_RECEIVED_bw 24
+#define MSK_TOP_REGS__FRAME_SYNC_STATUS__FRAMES_RECEIVED_reset 0x0
+#define MSK_TOP_REGS__FRAME_SYNC_STATUS__FRAME_SYNC_ERRORS_bm 0xfc000000
+#define MSK_TOP_REGS__FRAME_SYNC_STATUS__FRAME_SYNC_ERRORS_bp 26
+#define MSK_TOP_REGS__FRAME_SYNC_STATUS__FRAME_SYNC_ERRORS_bw 6
+#define MSK_TOP_REGS__FRAME_SYNC_STATUS__FRAME_SYNC_ERRORS_reset 0x0
+
 // Addrmap - msk_top_regs
 typedef struct __attribute__ ((__packed__)) {
     uint32_t Hash_ID_Low;
@@ -357,10 +375,11 @@ typedef struct __attribute__ ((__packed__)) {
     uint32_t rx_power;
     uint32_t tx_async_fifo_rd_wr_ptr;
     uint32_t rx_async_fifo_rd_wr_ptr;
+    uint32_t rx_frame_sync_status;
 } msk_top_regs_t;
 
 
-static_assert(sizeof(msk_top_regs_t) == 0x98, "Packing error");
+static_assert(sizeof(msk_top_regs_t) == 0x9c, "Packing error");
 
 #ifdef __cplusplus
 }

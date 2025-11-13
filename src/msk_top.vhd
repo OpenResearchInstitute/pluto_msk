@@ -496,7 +496,7 @@ BEGIN
             m_axis_tlast    => sync_det_tlast,
 
             -- Frame synchronization signals
-	    frame_sync_locked       => rx_frame_sync_locked,            
+	    	frame_sync_locked       => rx_frame_sync_locked,            
             frames_received         => rx_frames_count,
             frame_sync_errors       => rx_frame_sync_errors,
             frame_buffer_overflow   => rx_frame_buffer_overflow,
@@ -780,6 +780,11 @@ BEGIN
 		f2_nco_adjust	=> f2_nco_adjust,
 		f1_error		=> f1_error,
 		f2_error		=> f2_error,
+		pd_power 		=> pd_power,
+		rx_frame_sync 				=> rx_frame_sync_locked,
+		rx_frame_buffer_ovf			=> rx_frame_buffer_overflow,
+		rx_frame_count 				=> rx_frames_count(23 DOWNTO 0),
+		rx_frame_sync_err  			=> rx_frame_sync_errors(5 DOWNTO 0),
 		tx_async_fifo_wr_ptr		=> tx_async_fifo_wr_ptr,
 		tx_async_fifo_rd_ptr 		=> tx_async_fifo_rd_ptr,
 		tx_async_fifo_status_req	=> tx_async_fifo_status_req,
@@ -825,8 +830,7 @@ BEGIN
 		tx_sync_f1			=> tx_sync_f1,
 		tx_sync_f2			=> tx_sync_f2,
 		pd_alpha1			=> pd_alpha1,
-		pd_alpha2			=> pd_alpha2,
-		pd_power 			=> pd_power
+		pd_alpha2			=> pd_alpha2
 	);
 
 END ARCHITECTURE struct;

@@ -128,6 +128,11 @@ ENTITY msk_top_csr IS
 		f2_nco_adjust		: IN std_logic_vector(31 DOWNTO 0);
 		f1_error			: IN std_logic_vector(31 DOWNTO 0);
 		f2_error			: IN std_logic_vector(31 DOWNTO 0);
+		pd_power			: IN std_logic_vector(22 DOWNTO 0);
+		rx_frame_sync 		: IN std_logic;
+		rx_frame_buffer_ovf : IN std_logic;
+		rx_frame_count 		: IN std_logic_vector(23 DOWNTO 0);
+		rx_frame_sync_err   : IN std_logic_vector( 5 DOWNTO 0);
 
 		tx_async_fifo_wr_ptr		: IN  std_logic_vector(FIFO_ADDR_WIDTH DOWNTO 0);
 		tx_async_fifo_rd_ptr 		: IN  std_logic_vector(FIFO_ADDR_WIDTH DOWNTO 0);
@@ -175,8 +180,7 @@ ENTITY msk_top_csr IS
 		tx_sync_f1			: out std_logic;
 		tx_sync_f2			: out std_logic;
 		pd_alpha1			: out std_logic_vector(17 DOWNTO 0);
-		pd_alpha2			: out std_logic_vector(17 DOWNTO 0);
-		pd_power			: in  std_logic_vector(22 DOWNTO 0)
+		pd_alpha2			: out std_logic_vector(17 DOWNTO 0)
 	);
 END ENTITY msk_top_csr;
 
@@ -249,6 +253,9 @@ ARCHITECTURE rtl OF msk_top_csr IS
 	SIGNAL pd_power_req			: std_logic;
 	SIGNAL axis_xfer_count_req 	: std_logic;
 
+	SIGNAL frames_received_req 	: std_logic;
+	SIGNAL frame_sync_errors_req: std_logic;
+
 BEGIN
 
 	s_axil_i.AWVALID 	<= s_axi_awvalid;
@@ -294,10 +301,14 @@ BEGIN
     	END IF;
     END PROCESS csr_init_proc;
 
-    ulck_s: cdc_resync PORT MAP (s_axi_aclk, NOT s_axi_aresetn, '0',		hwif_in.MSK_Status.demod_sync_lock.next_q);
-    utxe_s: cdc_resync PORT MAP (s_axi_aclk, NOT s_axi_aresetn, tx_enable,	hwif_in.MSK_Status.tx_enable.next_q);
-    urxe_s: cdc_resync PORT MAP (s_axi_aclk, NOT s_axi_aresetn, rx_enable,	hwif_in.MSK_Status.rx_enable.next_q);
+    ulck_s: cdc_resync PORT MAP (s_axi_aclk, NOT s_axi_aresetn, '0',					hwif_in.MSK_Status.demod_sync_lock.next_q);
+    utxe_s: cdc_resync PORT MAP (s_axi_aclk, NOT s_axi_aresetn, tx_enable,				hwif_in.MSK_Status.tx_enable.next_q);
+    urxe_s: cdc_resync PORT MAP (s_axi_aclk, NOT s_axi_aresetn, rx_enable,				hwif_in.MSK_Status.rx_enable.next_q);
+    urfl_s: cdc_resync PORT MAP (s_axi_aclk, NOT s_axi_aresetn, rx_frame_sync,			hwif_in.rx_frame_sync_status.frame_sync_locked.next_q);
 
+    urfo_s: cdc_resync PORT MAP (s_axi_aclk, NOT s_axi_aresetn, rx_frame_buffer_ovf,	hwif_in.rx_frame_sync_status.frame_buffer_overflow.we);
+
+    hwif_in.MSK_Status.rx_enable.next_q 	<= '1';
     hwif_in.MSK_Status.tx_axis_valid.next_q	<= tx_axis_valid;
 
     -- Status Request from AXI to MDM
@@ -313,6 +324,8 @@ BEGIN
     utlp1_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.LPF_Accum_F1.data.swmod, 			lpf_accum_f1_req		);
     utlp2_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.LPF_Accum_F2.data.swmod, 			lpf_accum_f2_req		);
     utpwr_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.rx_power.data.swmod, 				pd_power_req			);
+    utfss_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.rx_frame_sync_status.frames_received.swmod,	frames_received_req );
+    utfsr_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.rx_frame_sync_status.frame_sync_errors.swmod,	frame_sync_errors_req );
 
     -- Status acknowledge from MDM to AXI
     utbc_a : pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, tx_bit_counter_req,		hwif_in.Tx_Bit_Count.data.we		);
@@ -327,6 +340,8 @@ BEGIN
     utlp1_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, lpf_accum_f1_req,		hwif_in.LPF_Accum_F1.data.we 		);
     utlp2_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, lpf_accum_f2_req,		hwif_in.LPF_Accum_F2.data.we 		);
     utpwr_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, pd_power_req,			hwif_in.rx_power.data.we			);
+    utfss_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, frames_received_req,		hwif_in.rx_frame_sync_status.frames_received.we   );
+    utfsr_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, frame_sync_errors_req,	hwif_in.rx_frame_sync_status.frame_sync_errors.we );
 
     -- Status capture from MDM to AXI
     utbc_c : data_capture PORT MAP (clk, csr_init, tx_bit_counter_req,		tx_bit_counter,		hwif_in.Tx_Bit_Count.data.next_q	);
@@ -342,6 +357,10 @@ BEGIN
     utlp2_c: data_capture PORT MAP (clk, csr_init, lpf_accum_f2_req,		lpf_accum_f2, 		hwif_in.LPF_Accum_F2.data.next_q 	);
     utpwr_c: data_capture GENERIC MAP (23)
     					  PORT MAP (clk, csr_init, pd_power_req, 			pd_power, 			hwif_in.rx_power.data.next_q		);
+    utfsc_c: data_capture GENERIC MAP (24)
+    					  PORT MAP (clk, csr_init, frames_received_req, 	rx_frame_count, 	hwif_in.rx_frame_sync_status.frames_received.next_q		);
+    utfse_c: data_capture GENERIC MAP (6)
+    					  PORT MAP (clk, csr_init, frame_sync_errors_req, 	rx_frame_sync_err, 	hwif_in.rx_frame_sync_status.frame_sync_errors.next_q		);
 
     -- FIFO status reads
 	rx_async_fifo_status_req 					<= hwif_out.rx_async_fifo_rd_wr_ptr.data.swmod;

@@ -552,6 +552,48 @@ addrmap msk_top_regs {
         } data[31:0] = 0;
     };
 
+    reg frame_sync_status {
+        name = "Frame Sync Status";
+        //desc = "Frame Sync Status";
+        regwidth = 32;        
+        field {
+            name = "Frame Sync Lock";
+            desc = "0 - Frame sync not locked
+                    1 - Frame sync locked";
+            fieldwidth = 1;
+            sw = r; 
+            hw = w; 
+        } frame_sync_locked = 0;
+        field {
+            name = "Frame Buffer Overflow";
+            desc = "0 - Normal operation
+                    1 - Buffer overflow";
+            fieldwidth = 1;
+            sw = r; 
+            hw = w; 
+            we = true;
+            rclr = true;
+        } frame_buffer_overflow = 0;
+        field {
+            name = "Frames Received";
+            desc = "Count of frames received since last read. Value is 0x00_0000 to 0xFF_FFFF";
+            fieldwidth = 24;
+            sw = rw; 
+            hw = w; 
+            swmod = true;
+            we = true;
+        } frames_received = 0;
+        field {
+            name = "Frames Sync Errors";
+            desc = "Count of frame sync errors since last read. Value is 0 to 63. This field will saturate at 63 if more than 63 occur.";
+            fieldwidth = 6;
+            sw = rw; 
+            hw = w; 
+            swmod = true;
+            we = true;
+        } frame_sync_errors = 0;
+    };
+
 
     msk_hash_lo         Hash_ID_Low;
     msk_hash_hi         Hash_ID_High;
@@ -684,5 +726,7 @@ addrmap msk_top_regs {
                                                               [*] Write any value to this register to capture read data
                                                               [*] Read the register
                                                               [/list]";
+
+    frame_sync_status   rx_frame_sync_status;
 
 };
