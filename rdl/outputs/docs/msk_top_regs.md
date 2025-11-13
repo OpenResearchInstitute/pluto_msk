@@ -855,12 +855,12 @@ Bits 15:00 - read pointer (12-bits)</code></p>
 - Base Offset: 0x98
 - Size: 0x4
 
-| Bits|      Identifier     | Access |Reset|         Name        |
-|-----|---------------------|--------|-----|---------------------|
-|  0  |  frame_sync_locked  |   rw   | 0x0 |   Frame Sync Lock   |
-|  1  |frame_buffer_overflow|rw, rclr| 0x0 |Frame Buffer Overflow|
-| 25:2|   frames_received   |   rw   | 0x0 |   Frames Received   |
-|31:26|  frame_sync_errors  |   rw   | 0x0 |  Frames Sync Errors |
+| Bits|      Identifier     | Access|Reset|         Name        |
+|-----|---------------------|-------|-----|---------------------|
+|  0  |  frame_sync_locked  |   r   | 0x0 |   Frame Sync Lock   |
+|  1  |frame_buffer_overflow|r, rclr| 0x0 |Frame Buffer Overflow|
+| 25:2|   frames_received   |   rw  | 0x0 |   Frames Received   |
+|31:26|  frame_sync_errors  |   rw  | 0x0 |  Frames Sync Errors |
 
 #### frame_sync_locked field
 

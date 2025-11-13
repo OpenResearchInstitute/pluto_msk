@@ -549,11 +549,6 @@ architecture rtl of msk_top_regs is
         data : \msk_top_regs.rx_async_fifo_rd_wr_ptr.data_combo_t\;
     end record;
 
-    type \msk_top_regs.rx_frame_sync_status.frame_sync_locked_combo_t\ is record
-        next_q : std_logic;
-        load_next : std_logic;
-    end record;
-
     type \msk_top_regs.rx_frame_sync_status.frame_buffer_overflow_combo_t\ is record
         next_q : std_logic;
         load_next : std_logic;
@@ -570,7 +565,6 @@ architecture rtl of msk_top_regs is
     end record;
 
     type \msk_top_regs.rx_frame_sync_status_combo_t\ is record
-        frame_sync_locked : \msk_top_regs.rx_frame_sync_status.frame_sync_locked_combo_t\;
         frame_buffer_overflow : \msk_top_regs.rx_frame_sync_status.frame_buffer_overflow_combo_t\;
         frames_received : \msk_top_regs.rx_frame_sync_status.frames_received_combo_t\;
         frame_sync_errors : \msk_top_regs.rx_frame_sync_status.frame_sync_errors_combo_t\;
@@ -987,10 +981,6 @@ architecture rtl of msk_top_regs is
         data : \msk_top_regs.rx_async_fifo_rd_wr_ptr.data_storage_t\;
     end record;
 
-    type \msk_top_regs.rx_frame_sync_status.frame_sync_locked_storage_t\ is record
-        value : std_logic;
-    end record;
-
     type \msk_top_regs.rx_frame_sync_status.frame_buffer_overflow_storage_t\ is record
         value : std_logic;
     end record;
@@ -1004,7 +994,6 @@ architecture rtl of msk_top_regs is
     end record;
 
     type \msk_top_regs.rx_frame_sync_status_storage_t\ is record
-        frame_sync_locked : \msk_top_regs.rx_frame_sync_status.frame_sync_locked_storage_t\;
         frame_buffer_overflow : \msk_top_regs.rx_frame_sync_status.frame_buffer_overflow_storage_t\;
         frames_received : \msk_top_regs.rx_frame_sync_status.frames_received_storage_t\;
         frame_sync_errors : \msk_top_regs.rx_frame_sync_status.frame_sync_errors_storage_t\;
@@ -2914,37 +2903,6 @@ begin
     end process;
     hwif_out.rx_async_fifo_rd_wr_ptr.data.swmod <= decoded_reg_strb.rx_async_fifo_rd_wr_ptr and decoded_req_is_wr and or_reduce(decoded_wr_biten(31 downto 0));
 
-    -- Field: msk_top_regs.rx_frame_sync_status.frame_sync_locked
-    process(all)
-        variable next_c: std_logic;
-        variable load_next_c: std_logic;
-    begin
-        next_c := field_storage.rx_frame_sync_status.frame_sync_locked.value;
-        load_next_c := '0';
-        if decoded_reg_strb.rx_frame_sync_status and decoded_req_is_wr then -- SW write
-            next_c := (field_storage.rx_frame_sync_status.frame_sync_locked.value and not decoded_wr_biten(0)) or (decoded_wr_data(0) and decoded_wr_biten(0));
-            load_next_c := '1';
-        else -- HW Write
-            next_c := hwif_in.rx_frame_sync_status.frame_sync_locked.next_q;
-            load_next_c := '1';
-        end if;
-        field_combo.rx_frame_sync_status.frame_sync_locked.next_q <= next_c;
-        field_combo.rx_frame_sync_status.frame_sync_locked.load_next <= load_next_c;
-    end process;
-    process(clk) begin
-        if false then -- async reset
-            field_storage.rx_frame_sync_status.frame_sync_locked.value <= '0';
-        elsif rising_edge(clk) then
-            if rst then -- sync reset
-                field_storage.rx_frame_sync_status.frame_sync_locked.value <= '0';
-            else
-                if field_combo.rx_frame_sync_status.frame_sync_locked.load_next then
-                    field_storage.rx_frame_sync_status.frame_sync_locked.value <= field_combo.rx_frame_sync_status.frame_sync_locked.next_q;
-                end if;
-            end if;
-        end if;
-    end process;
-
     -- Field: msk_top_regs.rx_frame_sync_status.frame_buffer_overflow
     process(all)
         variable next_c: std_logic;
@@ -2954,9 +2912,6 @@ begin
         load_next_c := '0';
         if decoded_reg_strb.rx_frame_sync_status and not decoded_req_is_wr then -- SW clear on read
             next_c := '0';
-            load_next_c := '1';
-        elsif decoded_reg_strb.rx_frame_sync_status and decoded_req_is_wr then -- SW write
-            next_c := (field_storage.rx_frame_sync_status.frame_buffer_overflow.value and not decoded_wr_biten(1)) or (decoded_wr_data(1) and decoded_wr_biten(1));
             load_next_c := '1';
         elsif hwif_in.rx_frame_sync_status.frame_buffer_overflow.we then -- HW Write - we
             next_c := hwif_in.rx_frame_sync_status.frame_buffer_overflow.next_q;
@@ -3123,7 +3078,7 @@ begin
     readback_array(35)(31 downto 23) <= (others => '0');
     readback_array(36)(31 downto 0) <= field_storage.tx_async_fifo_rd_wr_ptr.data.value when (decoded_reg_strb.tx_async_fifo_rd_wr_ptr and not decoded_req_is_wr) else (others => '0');
     readback_array(37)(31 downto 0) <= field_storage.rx_async_fifo_rd_wr_ptr.data.value when (decoded_reg_strb.rx_async_fifo_rd_wr_ptr and not decoded_req_is_wr) else (others => '0');
-    readback_array(38)(0 downto 0) <= to_std_logic_vector(field_storage.rx_frame_sync_status.frame_sync_locked.value) when (decoded_reg_strb.rx_frame_sync_status and not decoded_req_is_wr) else (others => '0');
+    readback_array(38)(0 downto 0) <= to_std_logic_vector(hwif_in.rx_frame_sync_status.frame_sync_locked.next_q) when (decoded_reg_strb.rx_frame_sync_status and not decoded_req_is_wr) else (others => '0');
     readback_array(38)(1 downto 1) <= to_std_logic_vector(field_storage.rx_frame_sync_status.frame_buffer_overflow.value) when (decoded_reg_strb.rx_frame_sync_status and not decoded_req_is_wr) else (others => '0');
     readback_array(38)(25 downto 2) <= field_storage.rx_frame_sync_status.frames_received.value when (decoded_reg_strb.rx_frame_sync_status and not decoded_req_is_wr) else (others => '0');
     readback_array(38)(31 downto 26) <= field_storage.rx_frame_sync_status.frame_sync_errors.value when (decoded_reg_strb.rx_frame_sync_status and not decoded_req_is_wr) else (others => '0');

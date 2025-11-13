@@ -156,7 +156,7 @@ class msk_top_regs_frame_sync_status_frames_received_cls(FieldAsyncReadWrite):
     
     
     
-class msk_top_regs_frame_sync_status_frame_buffer_overflow_cls(FieldAsyncReadWrite):
+class msk_top_regs_frame_sync_status_frame_buffer_overflow_cls(FieldAsyncReadOnly):
     
     """
     Class to represent a register field in the register model
@@ -195,7 +195,7 @@ class msk_top_regs_frame_sync_status_frame_buffer_overflow_cls(FieldAsyncReadWri
     
     
     
-class msk_top_regs_frame_sync_status_frame_sync_locked_cls(FieldAsyncReadWrite):
+class msk_top_regs_frame_sync_status_frame_sync_locked_cls(FieldAsyncReadOnly):
     
     """
     Class to represent a register field in the register model
@@ -648,7 +648,7 @@ class msk_top_regs_status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_cls(RegA
     
     
     
-class msk_top_regs_status_reg_data_desc_a6882ec4_0x0x10447444_cls(FieldAsyncReadWrite):
+class msk_top_regs_status_reg_data_desc_a6882ec4_0x0x1101989e_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -721,7 +721,7 @@ class msk_top_regs_status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_cls(RegA
 
         # build the field attributes
         
-        self.__data:msk_top_regs_status_reg_data_desc_a6882ec4_0x0x10447444_cls = msk_top_regs_status_reg_data_desc_a6882ec4_0x0x10447444_cls(
+        self.__data:msk_top_regs_status_reg_data_desc_a6882ec4_0x0x1101989e_cls = msk_top_regs_status_reg_data_desc_a6882ec4_0x0x1101989e_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -752,7 +752,7 @@ class msk_top_regs_status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_cls(RegA
     # build the properties for the fields
     
     @property
-    def data(self) -> msk_top_regs_status_reg_data_desc_a6882ec4_0x0x10447444_cls:
+    def data(self) -> msk_top_regs_status_reg_data_desc_a6882ec4_0x0x1101989e_cls:
         """
         Property to access data field of the register
 
@@ -792,7 +792,7 @@ class msk_top_regs_status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_cls(RegA
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_status_reg_data_desc_a6882ec4_0x0x10447444_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_status_reg_data_desc_a6882ec4_0x0x1101989e_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -1162,7 +1162,7 @@ class msk_top_regs_lowpass_ema_alpha_cls(RegAsyncReadWrite):
     
     
     
-class msk_top_regs_lowpass_ema_alpha_alpha_0x0x1042fd22_cls(FieldAsyncReadWrite):
+class msk_top_regs_lowpass_ema_alpha_alpha_0x0x110198d4_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -1200,7 +1200,7 @@ class msk_top_regs_lowpass_ema_alpha_alpha_0x0x1042fd22_cls(FieldAsyncReadWrite)
 
     
     
-class msk_top_regs_lowpass_ema_alpha_0x0x1042fd73_cls(RegAsyncReadWrite):
+class msk_top_regs_lowpass_ema_alpha_0x0x1101991f_cls(RegAsyncReadWrite):
     """
     Class to represent a register in the register model
 
@@ -1237,7 +1237,7 @@ class msk_top_regs_lowpass_ema_alpha_0x0x1042fd73_cls(RegAsyncReadWrite):
 
         # build the field attributes
         
-        self.__alpha:msk_top_regs_lowpass_ema_alpha_alpha_0x0x1042fd22_cls = msk_top_regs_lowpass_ema_alpha_alpha_0x0x1042fd22_cls(
+        self.__alpha:msk_top_regs_lowpass_ema_alpha_alpha_0x0x110198d4_cls = msk_top_regs_lowpass_ema_alpha_alpha_0x0x110198d4_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=18,
@@ -1268,7 +1268,7 @@ class msk_top_regs_lowpass_ema_alpha_0x0x1042fd73_cls(RegAsyncReadWrite):
     # build the properties for the fields
     
     @property
-    def alpha(self) -> msk_top_regs_lowpass_ema_alpha_alpha_0x0x1042fd22_cls:
+    def alpha(self) -> msk_top_regs_lowpass_ema_alpha_alpha_0x0x110198d4_cls:
         """
         Property to access alpha field of the register
 
@@ -1307,7 +1307,7 @@ class msk_top_regs_lowpass_ema_alpha_0x0x1042fd73_cls(RegAsyncReadWrite):
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_lowpass_ema_alpha_alpha_0x0x1042fd22_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_lowpass_ema_alpha_alpha_0x0x110198d4_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -3278,7 +3278,7 @@ class msk_top_regs_stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce_cls(RegAsyncReadW
     
     
     
-class msk_top_regs_stat_32_lpf_acc_data_0x0x10427b77_cls(FieldAsyncReadWrite):
+class msk_top_regs_stat_32_lpf_acc_data_0x0x10797426_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -3356,7 +3356,7 @@ class msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls(RegAsyncReadW
 
         # build the field attributes
         
-        self.__data:msk_top_regs_stat_32_lpf_acc_data_0x0x10427b77_cls = msk_top_regs_stat_32_lpf_acc_data_0x0x10427b77_cls(
+        self.__data:msk_top_regs_stat_32_lpf_acc_data_0x0x10797426_cls = msk_top_regs_stat_32_lpf_acc_data_0x0x10797426_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -3387,7 +3387,7 @@ class msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls(RegAsyncReadW
     # build the properties for the fields
     
     @property
-    def data(self) -> msk_top_regs_stat_32_lpf_acc_data_0x0x10427b77_cls:
+    def data(self) -> msk_top_regs_stat_32_lpf_acc_data_0x0x10797426_cls:
         """
         Property to access data field of the register
 
@@ -3429,7 +3429,7 @@ class msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls(RegAsyncReadW
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_stat_32_lpf_acc_data_0x0x10427b77_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_stat_32_lpf_acc_data_0x0x10797426_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -5050,7 +5050,7 @@ class msk_top_regs_data_width_desc_6097df38_name_4609588b_cls(RegAsyncReadWrite)
     
     
     
-class msk_top_regs_data_width_data_width_0x0x10443038_cls(FieldAsyncReadWrite):
+class msk_top_regs_data_width_data_width_0x0x1079ec62_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -5126,7 +5126,7 @@ class msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls(RegAsyncReadWrite)
 
         # build the field attributes
         
-        self.__data_width:msk_top_regs_data_width_data_width_0x0x10443038_cls = msk_top_regs_data_width_data_width_0x0x10443038_cls(
+        self.__data_width:msk_top_regs_data_width_data_width_0x0x1079ec62_cls = msk_top_regs_data_width_data_width_0x0x1079ec62_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=8,
@@ -5157,7 +5157,7 @@ class msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls(RegAsyncReadWrite)
     # build the properties for the fields
     
     @property
-    def data_width(self) -> msk_top_regs_data_width_data_width_0x0x10443038_cls:
+    def data_width(self) -> msk_top_regs_data_width_data_width_0x0x1079ec62_cls:
         """
         Property to access data_width field of the register
 
@@ -5196,7 +5196,7 @@ class msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls(RegAsyncReadWrite)
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data_width_data_width_0x0x10443038_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data_width_data_width_0x0x1079ec62_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -6046,7 +6046,7 @@ class msk_top_regs_config_nco_fw_desc_43c0828f_name_bdc60ecf_cls(RegAsyncReadWri
     
     
     
-class msk_top_regs_config_nco_fw_config_data_0x0x1044472f_cls(FieldAsyncReadWrite):
+class msk_top_regs_config_nco_fw_config_data_0x0x1079c844_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -6123,7 +6123,7 @@ class msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls(RegAsyncReadWri
 
         # build the field attributes
         
-        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x1044472f_cls = msk_top_regs_config_nco_fw_config_data_0x0x1044472f_cls(
+        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x1079c844_cls = msk_top_regs_config_nco_fw_config_data_0x0x1079c844_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -6154,7 +6154,7 @@ class msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls(RegAsyncReadWri
     # build the properties for the fields
     
     @property
-    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x1044472f_cls:
+    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x1079c844_cls:
         """
         Property to access config_data field of the register
 
@@ -6195,7 +6195,7 @@ class msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls(RegAsyncReadWri
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x1044472f_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x1079c844_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -6219,7 +6219,7 @@ class msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls(RegAsyncReadWri
     
     
     
-class msk_top_regs_config_nco_fw_config_data_0x0x10445a0c_cls(FieldAsyncReadWrite):
+class msk_top_regs_config_nco_fw_config_data_0x0x1079621e_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -6296,7 +6296,7 @@ class msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls(RegAsyncReadWri
 
         # build the field attributes
         
-        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x10445a0c_cls = msk_top_regs_config_nco_fw_config_data_0x0x10445a0c_cls(
+        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x1079621e_cls = msk_top_regs_config_nco_fw_config_data_0x0x1079621e_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -6327,7 +6327,7 @@ class msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls(RegAsyncReadWri
     # build the properties for the fields
     
     @property
-    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x10445a0c_cls:
+    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x1079621e_cls:
         """
         Property to access config_data field of the register
 
@@ -6368,7 +6368,7 @@ class msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls(RegAsyncReadWri
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x10445a0c_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x1079621e_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -6392,7 +6392,7 @@ class msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls(RegAsyncReadWri
     
     
     
-class msk_top_regs_config_nco_fw_config_data_0x0x10445a24_cls(FieldAsyncReadWrite):
+class msk_top_regs_config_nco_fw_config_data_0x0x1079636b_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -6469,7 +6469,7 @@ class msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls(RegAsyncReadWri
 
         # build the field attributes
         
-        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x10445a24_cls = msk_top_regs_config_nco_fw_config_data_0x0x10445a24_cls(
+        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x1079636b_cls = msk_top_regs_config_nco_fw_config_data_0x0x1079636b_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -6500,7 +6500,7 @@ class msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls(RegAsyncReadWri
     # build the properties for the fields
     
     @property
-    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x10445a24_cls:
+    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x1079636b_cls:
         """
         Property to access config_data field of the register
 
@@ -6541,7 +6541,7 @@ class msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls(RegAsyncReadWri
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x10445a24_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x1079636b_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -6565,7 +6565,7 @@ class msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls(RegAsyncReadWri
     
     
     
-class msk_top_regs_config_nco_fw_config_data_0x0x10445a66_cls(FieldAsyncReadWrite):
+class msk_top_regs_config_nco_fw_config_data_0x0x11011ef6_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -6642,7 +6642,7 @@ class msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls(RegAsyncReadWri
 
         # build the field attributes
         
-        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x10445a66_cls = msk_top_regs_config_nco_fw_config_data_0x0x10445a66_cls(
+        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x11011ef6_cls = msk_top_regs_config_nco_fw_config_data_0x0x11011ef6_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -6673,7 +6673,7 @@ class msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls(RegAsyncReadWri
     # build the properties for the fields
     
     @property
-    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x10445a66_cls:
+    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x11011ef6_cls:
         """
         Property to access config_data field of the register
 
@@ -6714,7 +6714,7 @@ class msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls(RegAsyncReadWri
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x10445a66_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x11011ef6_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -8950,7 +8950,7 @@ class msk_top_regs_cls(AsyncAddressMap):
                                                                      inst_name='Tx_Sync_Cnt', parent=self)
         
             
-        self.__lowpass_ema_alpha1:msk_top_regs_lowpass_ema_alpha_0x0x1042fd73_cls = msk_top_regs_lowpass_ema_alpha_0x0x1042fd73_cls(
+        self.__lowpass_ema_alpha1:msk_top_regs_lowpass_ema_alpha_0x0x1101991f_cls = msk_top_regs_lowpass_ema_alpha_0x0x1101991f_cls(
                                                                      address=self.address+132,
                                                                      accesswidth=32,
                                                                      width=32,
@@ -9658,7 +9658,7 @@ class msk_top_regs_cls(AsyncAddressMap):
         return self.__Tx_Sync_Cnt
         
     @property
-    def lowpass_ema_alpha1(self) -> msk_top_regs_lowpass_ema_alpha_0x0x1042fd73_cls:
+    def lowpass_ema_alpha1(self) -> msk_top_regs_lowpass_ema_alpha_0x0x1101991f_cls:
         """
         Property to access lowpass_ema_alpha1 
 
@@ -9928,7 +9928,7 @@ class msk_top_regs_cls(AsyncAddressMap):
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["lowpass_ema_alpha1"]) -> msk_top_regs_lowpass_ema_alpha_0x0x1042fd73_cls: ...
+    def get_child_by_system_rdl_name(self, name: Literal["lowpass_ema_alpha1"]) -> msk_top_regs_lowpass_ema_alpha_0x0x1101991f_cls: ...
                 
                 
     @overload
@@ -9952,7 +9952,7 @@ class msk_top_regs_cls(AsyncAddressMap):
                 
 
     @overload
-    def get_child_by_system_rdl_name(self, name: str) -> Union[msk_top_regs_msk_hash_lo_cls, msk_top_regs_msk_hash_hi_cls, msk_top_regs_msk_init_cls, msk_top_regs_msk_ctrl_cls, msk_top_regs_msk_stat_0_cls, msk_top_regs_msk_stat_1_cls, msk_top_regs_msk_stat_2_cls, msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls, msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls, msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls, msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls, msk_top_regs_config_nco_fw_desc_43c0828f_name_bdc60ecf_cls, msk_top_regs_lpf_config_0_cls, msk_top_regs_lpf_config_1_cls, msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls, msk_top_regs_data_width_desc_6097df38_name_4609588b_cls, msk_top_regs_prbs_ctrl_cls, msk_top_regs_config_prbs_seed_cls, msk_top_regs_config_prbs_poly_cls, msk_top_regs_config_prbs_errmask_cls, msk_top_regs_stat_32_bits_cls, msk_top_regs_stat_32_errs_cls, msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls, msk_top_regs_stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce_cls, msk_top_regs_msk_stat_3_cls, msk_top_regs_rx_sample_discard_cls, msk_top_regs_lpf_config_2_cls, msk_top_regs_status_reg_data_f53978c8_name_d8ad3b25_cls, msk_top_regs_status_reg_data_05243a4e_name_2c154788_cls, msk_top_regs_status_reg_data_10a2e5b5_name_3b640507_cls, msk_top_regs_status_reg_data_642692cf_name_3de9a0d3_cls, msk_top_regs_tx_sync_ctrl_cls, msk_top_regs_tx_sync_cnt_cls, msk_top_regs_lowpass_ema_alpha_0x0x1042fd73_cls, msk_top_regs_lowpass_ema_alpha_cls, msk_top_regs_rx_power_cls, msk_top_regs_status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_cls, msk_top_regs_status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_cls, msk_top_regs_frame_sync_status_cls, ]: ...
+    def get_child_by_system_rdl_name(self, name: str) -> Union[msk_top_regs_msk_hash_lo_cls, msk_top_regs_msk_hash_hi_cls, msk_top_regs_msk_init_cls, msk_top_regs_msk_ctrl_cls, msk_top_regs_msk_stat_0_cls, msk_top_regs_msk_stat_1_cls, msk_top_regs_msk_stat_2_cls, msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls, msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls, msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls, msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls, msk_top_regs_config_nco_fw_desc_43c0828f_name_bdc60ecf_cls, msk_top_regs_lpf_config_0_cls, msk_top_regs_lpf_config_1_cls, msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls, msk_top_regs_data_width_desc_6097df38_name_4609588b_cls, msk_top_regs_prbs_ctrl_cls, msk_top_regs_config_prbs_seed_cls, msk_top_regs_config_prbs_poly_cls, msk_top_regs_config_prbs_errmask_cls, msk_top_regs_stat_32_bits_cls, msk_top_regs_stat_32_errs_cls, msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls, msk_top_regs_stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce_cls, msk_top_regs_msk_stat_3_cls, msk_top_regs_rx_sample_discard_cls, msk_top_regs_lpf_config_2_cls, msk_top_regs_status_reg_data_f53978c8_name_d8ad3b25_cls, msk_top_regs_status_reg_data_05243a4e_name_2c154788_cls, msk_top_regs_status_reg_data_10a2e5b5_name_3b640507_cls, msk_top_regs_status_reg_data_642692cf_name_3de9a0d3_cls, msk_top_regs_tx_sync_ctrl_cls, msk_top_regs_tx_sync_cnt_cls, msk_top_regs_lowpass_ema_alpha_0x0x1101991f_cls, msk_top_regs_lowpass_ema_alpha_cls, msk_top_regs_rx_power_cls, msk_top_regs_status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_cls, msk_top_regs_status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_cls, msk_top_regs_frame_sync_status_cls, ]: ...
 
     def get_child_by_system_rdl_name(self, name: Any) -> Any:
         return super().get_child_by_system_rdl_name(name)

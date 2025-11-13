@@ -11691,42 +11691,6 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # at the end of the read tests the write should not have been called
                 read_callback_mock.reset_mock()
                 write_callback_mock.assert_not_called()
-                # check the write
-                
-                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
-                    raise TypeError('Test can not proceed as the fut is not a writable async field')
-                
-
-                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
-                random_field_value = random.randrange(0, 0x1 + 1)
-                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
-                    for field_value in [0, 0x1, random_field_value]:
-                        read_callback_mock.reset_mock()
-                        write_callback_mock.reset_mock()
-                        read_callback_mock.return_value = reg_base_value
-
-                        await self.dut.rx_frame_sync_status.frame_sync_locked.write(field_value) # type: ignore[union-attr]
-
-                        
-                        read_callback_mock.assert_called_once_with(
-                                    addr=152,
-                                    width=32,
-                                    accesswidth=fut.parent_register.accesswidth)
-                        
-                        write_callback_mock.assert_called_once_with(
-                                    addr=152,
-                                    width=32,
-                                    accesswidth=self.dut.rx_frame_sync_status.frame_sync_locked.parent_register.accesswidth, # type: ignore[union-attr]
-                                    data=(reg_base_value & 0xFFFFFFFE) | \
-                                         (0x1 & (field_value << 0)))
-                        
-
-                # check invalid write values bounce
-                with self.assertRaises(ValueError):
-                    await fut.write(0x1 + 1)
-
-                with self.assertRaises(ValueError):
-                    await fut.write(-1)
 
         # test access operations (read and/or write) to field:
         # msk_top_regs.rx_frame_sync_status.frame_buffer_overflow
@@ -11775,42 +11739,6 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # at the end of the read tests the write should not have been called
                 read_callback_mock.reset_mock()
                 write_callback_mock.assert_not_called()
-                # check the write
-                
-                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
-                    raise TypeError('Test can not proceed as the fut is not a writable async field')
-                
-
-                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
-                random_field_value = random.randrange(0, 0x1 + 1)
-                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
-                    for field_value in [0, 0x1, random_field_value]:
-                        read_callback_mock.reset_mock()
-                        write_callback_mock.reset_mock()
-                        read_callback_mock.return_value = reg_base_value
-
-                        await self.dut.rx_frame_sync_status.frame_buffer_overflow.write(field_value) # type: ignore[union-attr]
-
-                        
-                        read_callback_mock.assert_called_once_with(
-                                    addr=152,
-                                    width=32,
-                                    accesswidth=fut.parent_register.accesswidth)
-                        
-                        write_callback_mock.assert_called_once_with(
-                                    addr=152,
-                                    width=32,
-                                    accesswidth=self.dut.rx_frame_sync_status.frame_buffer_overflow.parent_register.accesswidth, # type: ignore[union-attr]
-                                    data=(reg_base_value & 0xFFFFFFFD) | \
-                                         (0x2 & (field_value << 1)))
-                        
-
-                # check invalid write values bounce
-                with self.assertRaises(ValueError):
-                    await fut.write(0x1 + 1)
-
-                with self.assertRaises(ValueError):
-                    await fut.write(-1)
 
         # test access operations (read and/or write) to field:
         # msk_top_regs.rx_frame_sync_status.frames_received
@@ -15513,9 +15441,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                                    ])
         with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status'):
             await write_field_combinations(reg=self.dut.rx_frame_sync_status,
-                               writable_fields = [ 'frame_sync_locked',
-                                                   'frame_buffer_overflow',
-                                                   'frames_received',
+                               writable_fields = [ 'frames_received',
                                                    'frame_sync_errors'
                                                    ])
 
@@ -15834,9 +15760,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             # test read_fields to register:
             # msk_top_regs.rx_frame_sync_status
             await write_field_combinations(reg=self.dut.rx_frame_sync_status,
-                                       writable_fields = [ 'frame_sync_locked',
-                                                           'frame_buffer_overflow',
-                                                           'frames_received',
+                                       writable_fields = [ 'frames_received',
                                                            'frame_sync_errors'
                                                            ])
             
@@ -18402,9 +18326,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 fields.append(field)
             self.assertCountEqual(expected_fields, fields)
                 
-            expected_writable_fields = [self.dut.rx_frame_sync_status.frame_sync_locked, # type: ignore[union-attr,list-item] 
+            expected_writable_fields = [
                                             
-                                         self.dut.rx_frame_sync_status.frame_buffer_overflow, # type: ignore[union-attr,list-item] 
+                                         
                                             
                                          self.dut.rx_frame_sync_status.frames_received, # type: ignore[union-attr,list-item] 
                                             
