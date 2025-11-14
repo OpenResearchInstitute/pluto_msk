@@ -576,7 +576,7 @@ addrmap msk_top_regs {
         } frame_buffer_overflow = 0;
         field {
             name = "Frames Received";
-            desc = "Count of frames received since last read. Value is 0x00_0000 to 0xFF_FFFF";
+            desc = "Count of frames received. Value is 0x00_0000 to 0xFF_FFFF. Counter rolls over when max count is reached.";
             fieldwidth = 24;
             sw = rw; 
             hw = w; 
@@ -585,7 +585,7 @@ addrmap msk_top_regs {
         } frames_received = 0;
         field {
             name = "Frames Sync Errors";
-            desc = "Count of frame sync errors since last read. Value is 0 to 63. This field will saturate at 63 if more than 63 occur.";
+            desc = "Count of frame sync errors. Value is 0 to 63. Counter rolls over when max count is reached.";
             fieldwidth = 6;
             sw = rw; 
             hw = w; 
