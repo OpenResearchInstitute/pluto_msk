@@ -328,7 +328,7 @@ BEGIN
 		)
 		PORT MAP (
 			wr_aclk         => s_axis_aclk,
-			wr_aresetn      => s_axis_aresetn,
+			wr_aresetn      => s_axis_aresetn AND NOT txinit, -- add software control
 			
 			s_axis_tdata    => adapter_tdata,
 			s_axis_tvalid   => adapter_tvalid,
@@ -528,7 +528,7 @@ BEGIN
             
             -- Read side (AXI clock domain)
             rd_aclk         => s_axis_aclk,  -- Use system AXI clock
-            rd_aresetn      => s_axis_aresetn,
+            rd_aresetn      => s_axis_aresetn AND NOT rxinit, -- add software control
             
             m_axis_tdata    => m_axis_tdata(7 DOWNTO 0),
             m_axis_tvalid   => m_axis_tvalid,
