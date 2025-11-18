@@ -59,6 +59,20 @@
 -- MODIFIED FOR MSB-FIRST: Updated sync word from 0xACFA47/0xE25F35 to 0xE25F35/0xE25F35
 -- Both TX and RX now use the same sync word pattern (no bit reversal)
 ------------------------------------------------------------------------------------------------------
+-- PHASE 1: OV ENCODER/DECODER INTEGRATION (Issue #24)
+------------------------------------------------------------------------------------------------------
+-- Integrated OV frame encoder (TX) and decoder (RX) into datapath:
+--   TX: FIFO → Encoder (134→268 bytes) → Deserializer → Modulator
+--   RX: Demodulator → Frame Sync → Decoder (268→134 bytes) → FIFO
+--
+-- KNOWN LIMITATION: Frame size mismatch - PS currently sends/expects 268 bytes
+--   - Encoder expects 134-byte input but receives 268 bytes
+--   - Decoder outputs 134 bytes but PS expects 268 bytes
+--   - This will be resolved in Phase 2 by updating PS frame size to 134 bytes
+--
+-- Modified: TX Stage 3 (encoder insertion), TX Stage 4 (deserializer rewire)
+--           RX Stage 3 (decoder insertion), RX Stage 4 (FIFO rewire)
+------------------------------------------------------------------------------------------------------
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
@@ -168,6 +182,14 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL fifo_tlast       : std_logic;
 	
 	SIGNAL frame_complete   : std_logic;
+	
+	-- TX Encoder signals (OV Frame Encoder - Phase 1)
+	SIGNAL encoder_tdata    : std_logic_vector(7 DOWNTO 0);
+	SIGNAL encoder_tvalid   : std_logic;
+	SIGNAL encoder_tready   : std_logic;
+	SIGNAL encoder_tlast    : std_logic;
+	SIGNAL tx_frames_encoded : std_logic_vector(31 DOWNTO 0);
+	SIGNAL tx_encoder_active : std_logic;
 
 	SIGNAL tx_async_fifo_prog_full	: std_logic;
 	SIGNAL tx_async_fifo_prog_empty	: std_logic;
@@ -205,6 +227,14 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL rx_debug_state           : std_logic_vector(2 DOWNTO 0);
 	SIGNAL rx_debug_missed_syncs    : std_logic_vector(3 DOWNTO 0);
 	SIGNAL rx_debug_consecutive_good: std_logic_vector(3 DOWNTO 0);
+	
+	-- RX Decoder signals (OV Frame Decoder - Phase 1)
+	SIGNAL decoder_tdata    : std_logic_vector(7 DOWNTO 0);
+	SIGNAL decoder_tvalid   : std_logic;
+	SIGNAL decoder_tready   : std_logic;
+	SIGNAL decoder_tlast    : std_logic;
+	SIGNAL rx_frames_decoded : std_logic_vector(31 DOWNTO 0);
+	SIGNAL rx_decoder_active : std_logic;
 
 	SIGNAL rx_bit   		: std_logic;
 	SIGNAL rx_bit_corr 		: std_logic;
@@ -356,7 +386,42 @@ BEGIN
 			fifo_rd_ptr 	=> tx_async_fifo_rd_ptr
 		);
 
-	-- Stage 3: Byte-to-Bit De-serializer (MSB-FIRST VERSION)
+	------------------------------------------------------------------------------------------------------
+	-- TX Stage 3: OV Frame Encoder (Randomize + FEC + Interleave) - PHASE 1
+	------------------------------------------------------------------------------------------------------
+	-- NOTE: Phase 1 limitation - encoder expects 134-byte frames but currently receives 268 bytes
+	-- This will be corrected in Phase 2 when PS side is updated to send 134-byte frames
+	------------------------------------------------------------------------------------------------------
+	
+	u_ov_encoder : ENTITY work.ov_frame_encoder
+		GENERIC MAP (
+			PAYLOAD_BYTES => 134,
+			ENCODED_BYTES => 268,
+			ENCODED_BITS  => 2144,
+			BYTE_WIDTH    => 8
+		)
+		PORT MAP (
+			clk             => clk,
+			aresetn         => NOT txinit,
+			
+			-- Input from FIFO
+			s_axis_tdata    => fifo_tdata,
+			s_axis_tvalid   => fifo_tvalid,
+			s_axis_tready   => fifo_tready,
+			s_axis_tlast    => fifo_tlast,
+			
+			-- Output to deserializer
+			m_axis_tdata    => encoder_tdata,
+			m_axis_tvalid   => encoder_tvalid,
+			m_axis_tready   => encoder_tready,
+			m_axis_tlast    => encoder_tlast,
+			
+			-- Status
+			frames_encoded  => tx_frames_encoded,
+			encoder_active  => tx_encoder_active
+		);
+
+	-- Stage 4: Byte-to-Bit De-serializer (MSB-FIRST VERSION)
 	u_deserializer : ENTITY work.byte_to_bit_deserializer
 		GENERIC MAP (
 			BYTE_WIDTH => 8
@@ -365,10 +430,11 @@ BEGIN
 			clk             => clk,
 			init            => txinit,
 			
-			s_axis_tdata    => fifo_tdata,
-			s_axis_tvalid   => fifo_tvalid,
-			s_axis_tready   => fifo_tready,
-			s_axis_tlast    => fifo_tlast,
+			-- Input from encoder (was: from FIFO)
+			s_axis_tdata    => encoder_tdata,
+			s_axis_tvalid   => encoder_tvalid,
+			s_axis_tready   => encoder_tready,
+			s_axis_tlast    => encoder_tlast,
 			
 			tx_data         => tx_data_bit,
 			tx_req          => tx_req,
@@ -508,7 +574,42 @@ BEGIN
        );
     
     ------------------------------------------------------------------------------
-    -- RX Stage 3: Async FIFO (Clock Domain Crossing)
+    -- RX Stage 3: OV Frame Decoder (Deinterleave + FEC Decode + Derandomize) - PHASE 1
+    ------------------------------------------------------------------------------
+    -- NOTE: Phase 1 limitation - decoder outputs 134 bytes but RX FIFO/DMA expects 268 bytes
+    -- This will be corrected in Phase 2 when PS side is updated to receive 134-byte frames
+    ------------------------------------------------------------------------------
+    
+    u_ov_decoder : ENTITY work.ov_frame_decoder
+        GENERIC MAP (
+            PAYLOAD_BYTES => 134,
+            ENCODED_BYTES => 268,
+            ENCODED_BITS  => 2144,
+            BYTE_WIDTH    => 8
+        )
+        PORT MAP (
+            clk             => clk,
+            aresetn         => NOT rxinit,
+            
+            -- Input from frame sync detector
+            s_axis_tdata    => sync_det_tdata,
+            s_axis_tvalid   => sync_det_tvalid,
+            s_axis_tready   => sync_det_tready,
+            s_axis_tlast    => sync_det_tlast,
+            
+            -- Output to RX FIFO
+            m_axis_tdata    => decoder_tdata,
+            m_axis_tvalid   => decoder_tvalid,
+            m_axis_tready   => decoder_tready,
+            m_axis_tlast    => decoder_tlast,
+            
+            -- Status
+            frames_decoded  => rx_frames_decoded,
+            decoder_active  => rx_decoder_active
+        );
+    
+    ------------------------------------------------------------------------------
+    -- RX Stage 4: Async FIFO (Clock Domain Crossing)
     -- Reuses existing axis_async_fifo component!
     ------------------------------------------------------------------------------
     u_rx_async_fifo : ENTITY work.axis_async_fifo
@@ -521,10 +622,11 @@ BEGIN
             wr_aclk         => clk,
             wr_aresetn      => NOT rxinit,
             
-            s_axis_tdata    => sync_det_tdata,
-            s_axis_tvalid   => sync_det_tvalid,
-            s_axis_tready   => sync_det_tready,
-            s_axis_tlast    => sync_det_tlast,
+            -- Input from decoder (was: from frame sync detector)
+            s_axis_tdata    => decoder_tdata,
+            s_axis_tvalid   => decoder_tvalid,
+            s_axis_tready   => decoder_tready,
+            s_axis_tlast    => decoder_tlast,
             
             -- Read side (AXI clock domain)
             rd_aclk         => s_axis_aclk,  -- Use system AXI clock
