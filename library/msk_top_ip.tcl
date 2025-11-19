@@ -11,6 +11,10 @@ read_vhdl -vhdl2008 "../rdl/src/reg_utils.vhd"
 read_vhdl "../rdl/outputs/rtl/msk_top_regs_pkg.vhd"
 read_vhdl -vhdl2008 "../rdl/outputs/rtl/msk_top_regs.vhd"
 
+# OV frame encoder/decoder require VHDL-2008 for division/modulo operators
+read_vhdl -vhdl2008 "../src/ov_frame_encoder.vhd"
+read_vhdl -vhdl2008 "../src/ov_frame_decoder.vhd"
+
 #set_property FILE_TYPE {VHDL 2008} [get_files $ad_hdl_dir/library/msk_top/src/*.vhd]
 adi_ip_files msk_top [list \
   "../msk_demodulator/src/costas_loop.vhd" \
@@ -75,4 +79,3 @@ adi_add_bus_clock "s_axis_aclk" "m_axis" "s_axis_aresetn"
 ipx::save_core [ipx::current_core]
 
 ipx::save_core [ipx::current_core]
-
