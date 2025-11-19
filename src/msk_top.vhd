@@ -62,8 +62,8 @@
 -- PHASE 1: OV ENCODER/DECODER INTEGRATION (Issue #24)
 ------------------------------------------------------------------------------------------------------
 -- Integrated OV frame encoder (TX) and decoder (RX) into datapath:
---   TX: FIFO → Encoder (134→268 bytes) → Deserializer → Modulator
---   RX: Demodulator → Frame Sync → Decoder (268→134 bytes) → FIFO
+--   TX: FIFO ? Encoder (134?268 bytes) ? Deserializer ? Modulator
+--   RX: Demodulator ? Frame Sync ? Decoder (268?134 bytes) ? FIFO
 --
 -- KNOWN LIMITATION: Frame size mismatch - PS currently sends/expects 268 bytes
 --   - Encoder expects 134-byte input but receives 268 bytes

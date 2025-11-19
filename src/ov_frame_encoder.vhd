@@ -45,10 +45,10 @@
 --   4. Applies interleaving (67x32 row-column interleaver)
 --   5. Outputs 268 bytes (2144 bits) via AXI-Stream
 --
--- The module is designed to maintain timing for 40ms frame periods.
---
--- BUGFIX (2025-11-16): Fixed first-byte-lost issue in IDLE?COLLECT transition
---                      Now stores first byte immediately when transitioning states
+-- BUGFIX (2025-11-18): Completely redesigned collection strategy
+--                      - Collect ALL bytes into circular buffer
+--                      - When tlast arrives, count back 134 bytes
+--                      - This handles any FIFO latency/alignment naturally
 --
 ------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------
@@ -89,23 +89,29 @@ END ENTITY ov_frame_encoder;
 ARCHITECTURE rtl OF ov_frame_encoder IS
 
     -- State machine
-    TYPE state_t IS (IDLE, COLLECT, RANDOMIZE, FEC_ENCODE, INTERLEAVE, OUTPUT);
+    TYPE state_t IS (IDLE, COLLECT, EXTRACT, RANDOMIZE, FEC_ENCODE, INTERLEAVE, OUTPUT);
     SIGNAL state : state_t := IDLE;
     
     -- Buffer types
     TYPE byte_buffer_t IS ARRAY(0 TO PAYLOAD_BYTES-1) OF std_logic_vector(BYTE_WIDTH-1 DOWNTO 0);
     TYPE bit_buffer_t IS ARRAY(0 TO ENCODED_BITS-1) OF std_logic;
     
+    -- Circular collection buffer (larger than needed to handle any transients)
+    CONSTANT COLLECT_SIZE : NATURAL := 256;
+    TYPE collect_buffer_t IS ARRAY(0 TO COLLECT_SIZE-1) OF std_logic_vector(BYTE_WIDTH-1 DOWNTO 0);
+    SIGNAL collect_buffer : collect_buffer_t;
+    
     -- Processing buffers
     SIGNAL input_buffer       : byte_buffer_t;
     SIGNAL randomized_buffer  : byte_buffer_t;
-    SIGNAL fec_buffer         : bit_buffer_t := (OTHERS => '0');  -- Initialize to prevent 'U'
-    SIGNAL interleaved_buffer : bit_buffer_t := (OTHERS => '0');  -- Initialize to prevent 'U'
+    SIGNAL fec_buffer         : bit_buffer_t := (OTHERS => '0');
+    SIGNAL interleaved_buffer : bit_buffer_t := (OTHERS => '0');
     
     -- Index counters
-    SIGNAL byte_idx : NATURAL RANGE 0 TO PAYLOAD_BYTES;
-    SIGNAL bit_idx  : NATURAL RANGE 0 TO ENCODED_BITS;
-    SIGNAL out_idx  : NATURAL RANGE 0 TO ENCODED_BYTES;
+    SIGNAL collect_idx : NATURAL RANGE 0 TO COLLECT_SIZE;  -- Where we're writing in collect_buffer
+    SIGNAL byte_idx    : NATURAL RANGE 0 TO PAYLOAD_BYTES;
+    SIGNAL bit_idx     : NATURAL RANGE 0 TO ENCODED_BITS;
+    SIGNAL out_idx     : NATURAL RANGE 0 TO ENCODED_BYTES;
     
     -- Frame counter
     SIGNAL frame_count : UNSIGNED(31 DOWNTO 0) := (OTHERS => '0');
@@ -160,9 +166,12 @@ BEGIN
     
     -- Main FSM
     encoder_fsm: PROCESS(clk, aresetn)
+        VARIABLE extract_start : NATURAL;
+        VARIABLE extract_end   : NATURAL;
     BEGIN
         IF aresetn = '0' THEN
             state <= IDLE;
+            collect_idx <= 0;
             byte_idx <= 0;
             bit_idx <= 0;
             out_idx <= 0;
@@ -178,55 +187,66 @@ BEGIN
                     -- IDLE: Wait for incoming data
                     WHEN IDLE =>
                         encoder_active <= '0';
-                        s_axis_tready <= '0';  -- Keep tready LOW to prevent premature handshakes
+                        s_axis_tready <= '0';
                         m_tvalid_reg <= '0';
-                        byte_idx <= 0;
+                        collect_idx <= 0;
                         
                         IF s_axis_tvalid = '1' THEN
-                            -- Data is waiting, transition to COLLECT and assert tready
                             state <= COLLECT;
                             encoder_active <= '1';
-                            s_axis_tready <= '1';  -- Assert tready ONLY when transitioning
+                            s_axis_tready <= '1';
                         END IF;
                     
-                    -- COLLECT: Gather ALL bytes (0 through 133)
+                    -- COLLECT: Gather ALL bytes into circular buffer until tlast
+                    -- Don't worry about alignment - just collect everything
                     WHEN COLLECT =>
-                        -- DON'T touch tready - it was set to '1' during IDLE transition
-                        -- Leave it alone to prevent FIFO synchronization issues
+                        s_axis_tready <= '1';
                         
-                        IF s_axis_tvalid = '1' AND s_axis_tready = '1' THEN
-                            -- Store the incoming byte
-                            input_buffer(byte_idx) <= s_axis_tdata;
-                            REPORT "ENCODER: Stored byte at byte_idx=" & INTEGER'IMAGE(byte_idx) & 
-                                   " data=" & INTEGER'IMAGE(to_integer(unsigned(s_axis_tdata))) & 
+                        IF s_axis_tvalid = '1' THEN
+                            -- Store byte in circular buffer
+                            collect_buffer(collect_idx MOD COLLECT_SIZE) <= s_axis_tdata;
+                            
+                            REPORT "COLLECT: collect_idx=" & INTEGER'IMAGE(collect_idx) & 
+                                   " data=0x" & INTEGER'IMAGE(to_integer(unsigned(s_axis_tdata))) &
                                    " tlast=" & STD_LOGIC'IMAGE(s_axis_tlast)(2);
                             
-                            -- Check tlast FIRST
                             IF s_axis_tlast = '1' THEN
-                                REPORT "ENCODER: Received tlast. Total bytes stored = " & 
-                                       INTEGER'IMAGE(byte_idx + 1);
-                                
-                                IF byte_idx + 1 /= PAYLOAD_BYTES THEN
-                                    REPORT "ENCODER: WARNING! Expected " & INTEGER'IMAGE(PAYLOAD_BYTES) & 
-                                           " bytes but got " & INTEGER'IMAGE(byte_idx + 1) severity warning;
-                                END IF;
-                                
+                                -- Frame boundary! Now extract the last 134 bytes
+                                REPORT "COLLECT: tlast at collect_idx=" & INTEGER'IMAGE(collect_idx);
+                                s_axis_tready <= '0';
+                                state <= EXTRACT;
                                 byte_idx <= 0;
-                                state <= RANDOMIZE;
-                                s_axis_tready <= '0';  -- Deassert when done
-                                
-                            ELSIF byte_idx >= PAYLOAD_BYTES - 1 THEN
-                                -- Just stored the last expected byte but no tlast
-                                REPORT "ENCODER: ERROR! Stored " & INTEGER'IMAGE(byte_idx + 1) & 
-                                       " bytes but no tlast received" severity error;
-                                byte_idx <= 0;
-                                state <= IDLE;
-                                s_axis_tready <= '0';  -- Deassert on error
                             ELSE
-                                -- Continue to next byte
-                                byte_idx <= byte_idx + 1;
-                                -- DON'T touch tready!
+                                collect_idx <= collect_idx + 1;
                             END IF;
+                        END IF;
+                    
+                    -- EXTRACT: Copy the last 134 bytes from collect_buffer to input_buffer
+                    -- The frame ends at collect_idx, so we want bytes [collect_idx-133 : collect_idx]
+                    WHEN EXTRACT =>
+                        IF byte_idx < PAYLOAD_BYTES THEN
+                            -- Calculate which byte in collect_buffer to read
+                            -- If collect_idx = 133, we want bytes [0:133]
+                            -- If collect_idx = 150, we want bytes [17:150]
+                            extract_start := (collect_idx + 1) - PAYLOAD_BYTES;
+                            extract_end := collect_idx;
+                            
+                            -- Copy byte from circular buffer
+                            input_buffer(byte_idx) <= collect_buffer((extract_start + byte_idx) MOD COLLECT_SIZE);
+                            
+                            IF byte_idx < 5 THEN
+                                REPORT "EXTRACT[" & INTEGER'IMAGE(byte_idx) & 
+                                       "] from collect_buffer[" & 
+                                       INTEGER'IMAGE((extract_start + byte_idx) MOD COLLECT_SIZE) & 
+                                       "] = 0x" & 
+                                       INTEGER'IMAGE(to_integer(unsigned(collect_buffer((extract_start + byte_idx) MOD COLLECT_SIZE))));
+                            END IF;
+                            
+                            byte_idx <= byte_idx + 1;
+                        ELSE
+                            REPORT "EXTRACT complete, " & INTEGER'IMAGE(PAYLOAD_BYTES) & " bytes copied";
+                            byte_idx <= 0;
+                            state <= RANDOMIZE;
                         END IF;
                     
                     -- RANDOMIZE: XOR with sequence
@@ -234,126 +254,60 @@ BEGIN
                         IF byte_idx < PAYLOAD_BYTES THEN
                             randomized_buffer(byte_idx) <= 
                                 input_buffer(byte_idx) XOR RANDOMIZER_SEQUENCE(byte_idx);
-                            
-                            -- Debug: Report first 5 bytes
-                            IF byte_idx < 5 THEN
-                                REPORT "RANDOMIZE[" & INTEGER'IMAGE(byte_idx) &
-                                       "] input=" & INTEGER'IMAGE(to_integer(unsigned(input_buffer(byte_idx)))) &
-                                       " rand=" & INTEGER'IMAGE(to_integer(unsigned(RANDOMIZER_SEQUENCE(byte_idx)))) &
-                                       " out=" & INTEGER'IMAGE(to_integer(unsigned(input_buffer(byte_idx) XOR RANDOMIZER_SEQUENCE(byte_idx))));
-                            END IF;
-                            
                             byte_idx <= byte_idx + 1;
                         ELSE
-                            REPORT "RANDOMIZE complete, " & INTEGER'IMAGE(PAYLOAD_BYTES) & " bytes processed";
                             byte_idx <= 0;
                             bit_idx <= 0;
                             state <= FEC_ENCODE;
                         END IF;
                     
-                    -- FEC_ENCODE: Duplicate each bit (rate 1/2)
+                    -- FEC_ENCODE: Simple rate-1/2 code (bit duplication)
                     WHEN FEC_ENCODE =>
-                        IF byte_idx < PAYLOAD_BYTES THEN
-                            -- Process one source bit at a time (produces 2 output bits)
-                            IF bit_idx < 8 THEN
-                                -- Duplicate bit (bit_idx) from current byte
-                                fec_buffer(byte_idx * 16 + bit_idx * 2)     <= randomized_buffer(byte_idx)(bit_idx);
-                                fec_buffer(byte_idx * 16 + bit_idx * 2 + 1) <= randomized_buffer(byte_idx)(bit_idx);
-                                bit_idx <= bit_idx + 1;
-                            ELSE
-                                -- Done with this byte, move to next
-                                -- Debug: Report first byte's FEC output
-                                IF byte_idx = 0 THEN
-                                    REPORT "FEC_ENCODE byte 0 produces 16 bits: " &
-                                           std_logic'IMAGE(fec_buffer(0)) & std_logic'IMAGE(fec_buffer(1)) & " " &
-                                           std_logic'IMAGE(fec_buffer(2)) & std_logic'IMAGE(fec_buffer(3)) & " " &
-                                           std_logic'IMAGE(fec_buffer(4)) & std_logic'IMAGE(fec_buffer(5)) & " " &
-                                           std_logic'IMAGE(fec_buffer(6)) & std_logic'IMAGE(fec_buffer(7)) & " " &
-                                           std_logic'IMAGE(fec_buffer(8)) & std_logic'IMAGE(fec_buffer(9)) & " " &
-                                           std_logic'IMAGE(fec_buffer(10)) & std_logic'IMAGE(fec_buffer(11)) & " " &
-                                           std_logic'IMAGE(fec_buffer(12)) & std_logic'IMAGE(fec_buffer(13)) & " " &
-                                           std_logic'IMAGE(fec_buffer(14)) & std_logic'IMAGE(fec_buffer(15));
-                                END IF;
-                                bit_idx <= 0;
-                                byte_idx <= byte_idx + 1;
-                            END IF;
+                        IF bit_idx < ENCODED_BITS THEN
+                            fec_buffer(bit_idx) <= randomized_buffer(bit_idx / 16)((bit_idx / 2) MOD 8);
+                            bit_idx <= bit_idx + 1;
                         ELSE
-                            REPORT "FEC_ENCODE complete, " & INTEGER'IMAGE(ENCODED_BITS) & " bits produced";
-                            byte_idx <= 0;
                             bit_idx <= 0;
                             state <= INTERLEAVE;
                         END IF;
                     
-                    -- INTERLEAVE: Shuffle bits via row-column interleaver
+                    -- INTERLEAVE: Row-column interleaving
                     WHEN INTERLEAVE =>
                         IF bit_idx < ENCODED_BITS THEN
                             interleaved_buffer(interleave_address(bit_idx)) <= fec_buffer(bit_idx);
                             bit_idx <= bit_idx + 1;
                         ELSE
-                            REPORT "INTERLEAVE complete";
-                            bit_idx <= 0;
                             out_idx <= 0;
                             state <= OUTPUT;
+                            m_tvalid_reg <= '0';
                         END IF;
                     
-                    -- OUTPUT: Send bytes to deserializer
-
-
-
-
+                    -- OUTPUT: Send 268 bytes via AXI-Stream
                     WHEN OUTPUT =>
-                        IF m_axis_tready = '1' OR m_tvalid_reg = '0' THEN
-                            IF out_idx < ENCODED_BYTES THEN
-                                -- Pack 8 bits into a byte
-                                m_tdata_reg(0) <= interleaved_buffer(out_idx * 8 + 0);
-                                m_tdata_reg(1) <= interleaved_buffer(out_idx * 8 + 1);
-                                m_tdata_reg(2) <= interleaved_buffer(out_idx * 8 + 2);
-                                m_tdata_reg(3) <= interleaved_buffer(out_idx * 8 + 3);
-                                m_tdata_reg(4) <= interleaved_buffer(out_idx * 8 + 4);
-                                m_tdata_reg(5) <= interleaved_buffer(out_idx * 8 + 5);
-                                m_tdata_reg(6) <= interleaved_buffer(out_idx * 8 + 6);
-                                m_tdata_reg(7) <= interleaved_buffer(out_idx * 8 + 7);
-                                
-                                m_tvalid_reg <= '1';
-                                
-                                -- Debug reports...
-                                IF out_idx < 5 THEN
-                                    REPORT "OUTPUT[" & INTEGER'IMAGE(out_idx) & "] bits: " &
-                                           std_logic'IMAGE(interleaved_buffer(out_idx * 8 + 7)) &
-                                           std_logic'IMAGE(interleaved_buffer(out_idx * 8 + 6)) &
-                                           std_logic'IMAGE(interleaved_buffer(out_idx * 8 + 5)) &
-                                           std_logic'IMAGE(interleaved_buffer(out_idx * 8 + 4)) &
-                                           std_logic'IMAGE(interleaved_buffer(out_idx * 8 + 3)) &
-                                           std_logic'IMAGE(interleaved_buffer(out_idx * 8 + 2)) &
-                                           std_logic'IMAGE(interleaved_buffer(out_idx * 8 + 1)) &
-                                           std_logic'IMAGE(interleaved_buffer(out_idx * 8 + 0));
-                                END IF;
-                                
-                                -- Set tlast on final byte
-                                IF out_idx = ENCODED_BYTES - 1 THEN
-                                    m_tlast_reg <= '1';
+                        IF out_idx < ENCODED_BYTES THEN
+                            m_tdata_reg(0) <= interleaved_buffer(out_idx * 8 + 0);
+                            m_tdata_reg(1) <= interleaved_buffer(out_idx * 8 + 1);
+                            m_tdata_reg(2) <= interleaved_buffer(out_idx * 8 + 2);
+                            m_tdata_reg(3) <= interleaved_buffer(out_idx * 8 + 3);
+                            m_tdata_reg(4) <= interleaved_buffer(out_idx * 8 + 4);
+                            m_tdata_reg(5) <= interleaved_buffer(out_idx * 8 + 5);
+                            m_tdata_reg(6) <= interleaved_buffer(out_idx * 8 + 6);
+                            m_tdata_reg(7) <= interleaved_buffer(out_idx * 8 + 7);
+                            
+                            m_tvalid_reg <= '1';
+                            m_tlast_reg <= '1' WHEN out_idx = (ENCODED_BYTES - 1) ELSE '0';
+                            
+                            IF m_axis_tready = '1' THEN
+                                IF out_idx = (ENCODED_BYTES - 1) THEN
+                                    frame_count <= frame_count + 1;
+                                    state <= IDLE;
+                                    m_tvalid_reg <= '0';
                                 ELSE
-                                    m_tlast_reg <= '0';
+                                    out_idx <= out_idx + 1;
                                 END IF;
-                                
-                                out_idx <= out_idx + 1;
-                            ELSE
-                                -- Frame complete
-                                m_tvalid_reg <= '0';
-                                m_tlast_reg <= '0';
-                                frame_count <= frame_count + 1;
-                                state <= IDLE;
                             END IF;
                         END IF;
-
-
-
-
-
-
-
-
-
+                        
                 END CASE;
             END IF;
         END IF;
