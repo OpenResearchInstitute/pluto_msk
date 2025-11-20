@@ -1,8 +1,10 @@
 ------------------------------------------------------------------------------------------------------
 -- AXIS-Compliant Asynchronous FIFO
 ------------------------------------------------------------------------------------------------------
--- FIX: Added safety margin to empty detection to account for 2-cycle synchronization lag
--- This prevents reading past actual data and hitting stale tlast markers
+-- FIX v3: Proper three-state handling
+-- State A: Becoming valid (empty→non-empty): Present first byte, assert tvalid
+-- State B: Handshake completes (tvalid='1', tready='1'): Advance pointer, present next byte
+-- State C: Valid but not consumed (tvalid='1', tready='0'): HOLD STABLE
 ------------------------------------------------------------------------------------------------------
 -- SIGNAL INITIALIZATION PRACTICES:
 -- Per FPGA best practices, signals are initialized via reset blocks in their respective clock
@@ -41,9 +43,6 @@ ENTITY axis_async_fifo IS
         m_axis_tready   : IN  std_logic;
         m_axis_tlast    : OUT std_logic;
         
-        -- Control signals
-        --prog_packet_size: IN  std_logic_vector...
-
         -- Status signals
         prog_full       : OUT std_logic;
         prog_empty      : OUT std_logic;
@@ -193,12 +192,16 @@ BEGIN
     END PROCESS write_proc;
 
     ------------------------------------------------------------------------------
-    -- Read Clock Domain - WITH SYNC LAG FIX
+    -- Read Clock Domain - CORRECTED THREE-STATE LOGIC
+    ------------------------------------------------------------------------------
+    -- State A: Becoming valid (tvalid_int='0' → '1'): Present first byte
+    -- State B: Handshake completes (tvalid='1', tready='1'): Advance, present next
+    -- State C: Valid but stalled (tvalid='1', tready='0'): HOLD STABLE
     ------------------------------------------------------------------------------
     read_proc: PROCESS(rd_aclk)
         VARIABLE rd_ptr_bin_next : std_logic_vector(ADDR_WIDTH DOWNTO 0);
         VARIABLE wr_ptr_bin_sync : std_logic_vector(ADDR_WIDTH DOWNTO 0);
-        VARIABLE empty_next : std_logic;
+        VARIABLE empty_current : std_logic;
     BEGIN
         IF rising_edge(rd_aclk) THEN
             IF rd_aresetn = '0' THEN
@@ -216,44 +219,61 @@ BEGIN
                 wr_ptr_gray_sync2 <= wr_ptr_gray_sync1;
                 wr_ptr_bin_sync := gray_to_bin(wr_ptr_gray_sync2);
                 
-                -- Calculate next empty status based on CURRENT pointers
+                -- Check if FIFO is currently empty
                 IF wr_ptr_bin_sync = rd_ptr_bin THEN
-                    empty_next := '1';
+                    empty_current := '1';
                 ELSE
-                    empty_next := '0';
+                    empty_current := '0';
                 END IF;
                 
-                -- Present data when not empty
-                -- This sets up tdata, tlast, and tvalid for the CURRENT cycle
-                IF empty_next = '0' THEN
+                ----------------------------------------------------------------------
+                -- THREE STATE LOGIC
+                ----------------------------------------------------------------------
+                
+                -- STATE A: Becoming valid (was invalid, now have data)
+                -- Action: Present first byte, assert tvalid, DO NOT advance pointer
+                IF tvalid_int = '0' AND empty_current = '0' THEN
                     m_axis_tdata <= ram_data(to_integer(unsigned(rd_ptr_bin(ADDR_WIDTH-1 DOWNTO 0))));
                     m_axis_tlast <= ram_last(to_integer(unsigned(rd_ptr_bin(ADDR_WIDTH-1 DOWNTO 0))));
                     tvalid_int <= '1';
-                ELSE
-                    -- When empty, deassert tvalid and clear tlast
-                    -- (tdata is don't care per AXI-Stream spec, but we clear it for cleanliness)
-                    tvalid_int <= '0';
-                    m_axis_tlast <= '0';
-                    m_axis_tdata <= (OTHERS => '0');
-                END IF;
+                    empty_int <= '0';
+                    -- rd_ptr_bin stays same! This is the first presentation
                 
-                -- AXIS read handshake - advance pointer only when:
-                -- 1. We're presenting valid data (empty_next = '0')
-                -- 2. Downstream is ready (m_axis_tready = '1')
-                IF empty_next = '0' AND m_axis_tready = '1' THEN
+                -- STATE B: Handshake completes (valid and ready)
+                -- Action: Advance pointer, present next byte OR deassert tvalid
+                ELSIF tvalid_int = '1' AND m_axis_tready = '1' THEN
                     rd_ptr_bin_next := std_logic_vector(unsigned(rd_ptr_bin) + 1);
                     rd_ptr_bin <= rd_ptr_bin_next;
                     rd_ptr_gray <= bin_to_gray(rd_ptr_bin_next);
                     
-                    -- Update empty status based on where we'll be AFTER this read
+                    -- Check if we'll be empty after this read
                     IF wr_ptr_bin_sync = rd_ptr_bin_next THEN
+                        -- Going empty
                         empty_int <= '1';
+                        tvalid_int <= '0';
+                        m_axis_tlast <= '0';
+                        m_axis_tdata <= (OTHERS => '0');
                     ELSE
+                        -- More data available - present next byte
                         empty_int <= '0';
+                        tvalid_int <= '1';
+                        m_axis_tdata <= ram_data(to_integer(unsigned(rd_ptr_bin_next(ADDR_WIDTH-1 DOWNTO 0))));
+                        m_axis_tlast <= ram_last(to_integer(unsigned(rd_ptr_bin_next(ADDR_WIDTH-1 DOWNTO 0))));
                     END IF;
+                
+                -- STATE C: Valid but NOT ready (tvalid='1', tready='0')
+                -- Action: HOLD EVERYTHING STABLE - no changes to tdata, tlast, tvalid, rd_ptr
+                ELSIF tvalid_int = '1' AND m_axis_tready = '0' THEN
+                    -- Explicitly do nothing - all signals hold their values
+                    -- This is the critical fix: maintain protocol compliance
+                    empty_int <= '0';  -- We know we're not empty if tvalid='1'
+                    
+                -- All other cases: remain invalid
                 ELSE
-                    -- No advancement
-                    empty_int <= empty_next;
+                    empty_int <= '1';
+                    tvalid_int <= '0';
+                    m_axis_tlast <= '0';
+                    m_axis_tdata <= (OTHERS => '0');
                 END IF;
                 
                 -- Programmable empty
@@ -274,8 +294,6 @@ BEGIN
     BEGIN
         IF rising_edge(status_aclk) THEN
             IF status_aresetn = '0' THEN
-                --prog_empty      <= '0';
-                --prog_full       <= '0';
                 fifo_overflow   <= '0';
                 fifo_underflow  <= '0';
                 status_ack      <= '0';

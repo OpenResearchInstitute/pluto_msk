@@ -45,8 +45,11 @@
 --   4. Derandomizes (XOR with same fixed sequence)
 --   5. Outputs 134 bytes of payload via AXI-Stream
 --
--- BUGFIX (2025-11-16): Fixed first-byte-lost issue in IDLE→COLLECT transition
---                      Now stores first byte immediately when transitioning states
+-- CIRCULAR BUFFER FIX (2025-11-20): Matching encoder's proven strategy
+--                      - Collect ALL incoming bytes into circular buffer
+--                      - When tlast arrives, count back 268 bytes
+--                      - This handles FIFO timing issues naturally
+--                      - Never try to time the "first" byte arrival
 --
 ------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------
@@ -86,17 +89,24 @@ END ENTITY ov_frame_decoder;
 
 ARCHITECTURE rtl OF ov_frame_decoder IS
 
-    -- State machine
-    TYPE state_t IS (IDLE, COLLECT, DEINTERLEAVE, PREP_FEC_DECODE, FEC_DECODE, DERANDOMIZE, OUTPUT);
+    -- State machine - ADDED EXTRACT STATE
+    TYPE state_t IS (IDLE, COLLECT, EXTRACT, DEINTERLEAVE, PREP_FEC_DECODE, FEC_DECODE, DERANDOMIZE, OUTPUT);
     SIGNAL state : state_t := IDLE;
+    
+    -- Circular collection buffer (2x encoded size for safety)
+    CONSTANT COLLECT_SIZE : NATURAL := 512;
+    TYPE collect_buffer_t IS ARRAY(0 TO COLLECT_SIZE-1) OF std_logic_vector(BYTE_WIDTH-1 DOWNTO 0);
+    SIGNAL collect_buffer : collect_buffer_t;
+    SIGNAL collect_idx : NATURAL RANGE 0 TO COLLECT_SIZE-1;
     
     -- Buffer types
     TYPE byte_buffer_t IS ARRAY(0 TO PAYLOAD_BYTES-1) OF std_logic_vector(BYTE_WIDTH-1 DOWNTO 0);
+    TYPE encoded_byte_buffer_t IS ARRAY(0 TO ENCODED_BYTES-1) OF std_logic_vector(BYTE_WIDTH-1 DOWNTO 0);
     TYPE bit_buffer_t IS ARRAY(0 TO ENCODED_BITS-1) OF std_logic;
     
     -- Processing buffers
-    SIGNAL input_buffer         : bit_buffer_t := (OTHERS => '0');      -- Initialize to prevent 'U'
-    SIGNAL deinterleaved_buffer : bit_buffer_t := (OTHERS => '0');      -- Initialize to prevent 'U'
+    SIGNAL input_buffer         : encoded_byte_buffer_t;  -- 268 bytes extracted from circular buffer
+    SIGNAL deinterleaved_buffer : bit_buffer_t := (OTHERS => '0');
     SIGNAL fec_decoded_buffer   : byte_buffer_t;
     SIGNAL output_buffer        : byte_buffer_t;
     
@@ -139,9 +149,9 @@ ARCHITECTURE rtl OF ov_frame_decoder IS
     SIGNAL decoder_start      : std_logic := '0';
     SIGNAL decoder_busy       : std_logic;
     SIGNAL decoder_done       : std_logic;
-    SIGNAL decoder_input_g1   : std_logic_vector(2143 DOWNTO 0);  -- 268*8 bits
+    SIGNAL decoder_input_g1   : std_logic_vector(2143 DOWNTO 0);
     SIGNAL decoder_input_g2   : std_logic_vector(2143 DOWNTO 0);
-    SIGNAL decoder_output_buf : std_logic_vector(1071 DOWNTO 0);  -- 134*8 bits
+    SIGNAL decoder_output_buf : std_logic_vector(1071 DOWNTO 0);
 
     -- Deinterleaver address calculation (reverse of interleaver)
     FUNCTION deinterleave_address(addr : NATURAL) RETURN NATURAL IS
@@ -160,8 +170,8 @@ BEGIN
     -- Viterbi Decoder Instantiation (Hard Decision)
     U_DECODER : ENTITY work.viterbi_decoder_k7_simple
         GENERIC MAP (
-            PAYLOAD_BITS    => PAYLOAD_BYTES * 8,  -- 1072 bits
-            ENCODED_BITS    => ENCODED_BYTES * 8,  -- 2144 bits
+            PAYLOAD_BITS    => PAYLOAD_BYTES * 8,
+            ENCODED_BITS    => ENCODED_BYTES * 8,
             TRACEBACK_DEPTH => 35
         )
         PORT MAP (
@@ -182,9 +192,10 @@ BEGIN
     
     frames_decoded <= std_logic_vector(frame_count);
 
-    -- Main FSM
+    -- Main FSM with Circular Buffer Collection
     decoder_fsm : PROCESS(clk)
-        VARIABLE bit_0, bit_1 : std_logic;
+        VARIABLE extract_start : INTEGER;
+        VARIABLE extract_end : INTEGER;
     BEGIN
         IF rising_edge(clk) THEN
             IF aresetn = '0' THEN
@@ -192,140 +203,126 @@ BEGIN
                 byte_idx <= 0;
                 bit_idx <= 0;
                 out_idx <= 0;
+                collect_idx <= 0;
                 frame_count <= (OTHERS => '0');
                 s_axis_tready <= '0';
                 m_tvalid_reg <= '0';
                 m_tlast_reg <= '0';
                 decoder_active <= '0';
-                decoder_start <= '0';  -- Initialize FEC decoder control
+                decoder_start <= '0';
                 
             ELSE
                 CASE state IS
                 
-                    -- IDLE: Wait for incoming data and capture first byte
+                    -- IDLE: Ready to start collecting
                     WHEN IDLE =>
                         decoder_active <= '0';
-                        s_axis_tready <= '1';  -- Ready to accept data
-                        m_tvalid_reg <= '0';   -- Not outputting yet
+                        s_axis_tready <= '0';  -- Keep tready LOW in IDLE
+                        m_tvalid_reg <= '0';
+                        collect_idx <= 0;
                         
                         IF s_axis_tvalid = '1' THEN
-                            -- *** FIX: Store the FIRST byte immediately! ***
-                            input_buffer(0) <= s_axis_tdata(0);
-                            input_buffer(1) <= s_axis_tdata(1);
-                            input_buffer(2) <= s_axis_tdata(2);
-                            input_buffer(3) <= s_axis_tdata(3);
-                            input_buffer(4) <= s_axis_tdata(4);
-                            input_buffer(5) <= s_axis_tdata(5);
-                            input_buffer(6) <= s_axis_tdata(6);
-                            input_buffer(7) <= s_axis_tdata(7);
-                            
-                            REPORT "DECODER: Stored FIRST byte at index 0, data=" & 
-                                   INTEGER'IMAGE(to_integer(unsigned(s_axis_tdata))) & 
-                                   " tlast=" & STD_LOGIC'IMAGE(s_axis_tlast)(2);
-                            
-                            -- Check for edge case: single-byte frame (unlikely with ENCODED_BYTES=268)
-                            IF s_axis_tlast = '1' AND ENCODED_BYTES = 1 THEN
-                                REPORT "DECODER: Single-byte frame received";
-                                byte_idx <= 0;
-                                bit_idx <= 0;
-                                state <= DEINTERLEAVE;
-                                s_axis_tready <= '0';
-                            ELSE
-                                -- Normal case: transition to COLLECT for remaining bytes
-                                byte_idx <= 1;  -- Next byte will go to index 1
-                                bit_idx <= 0;
-                                state <= COLLECT;
-                                decoder_active <= '1';
-                            END IF;
+                            state <= COLLECT;
+                            s_axis_tready <= '1';  -- Set tready HIGH when entering COLLECT
                         END IF;
                     
-                    -- COLLECT: Gather remaining bytes (1 through 267)
+                    -- COLLECT: Continuously store ALL incoming bytes into circular buffer
                     WHEN COLLECT =>
+                        s_axis_tready <= '1';  -- Maintain tready HIGH during collection
+                        
                         IF s_axis_tvalid = '1' THEN
-                            -- Store incoming byte as 8 bits
-                            input_buffer(byte_idx * 8 + 0) <= s_axis_tdata(0);
-                            input_buffer(byte_idx * 8 + 1) <= s_axis_tdata(1);
-                            input_buffer(byte_idx * 8 + 2) <= s_axis_tdata(2);
-                            input_buffer(byte_idx * 8 + 3) <= s_axis_tdata(3);
-                            input_buffer(byte_idx * 8 + 4) <= s_axis_tdata(4);
-                            input_buffer(byte_idx * 8 + 5) <= s_axis_tdata(5);
-                            input_buffer(byte_idx * 8 + 6) <= s_axis_tdata(6);
-                            input_buffer(byte_idx * 8 + 7) <= s_axis_tdata(7);
+                            -- Store byte at current circular buffer position
+                            collect_buffer(collect_idx) <= s_axis_tdata;
                             
-                            -- Debug: Report first 5 received bytes
-                            IF byte_idx < 5 THEN
-                                REPORT "DECODER: Stored byte at byte_idx=" & INTEGER'IMAGE(byte_idx) & 
-                                       " data=" & INTEGER'IMAGE(to_integer(unsigned(s_axis_tdata))) & 
+                            -- Debug: Report first few bytes
+                            IF collect_idx < 5 THEN
+                                REPORT "COLLECT: collect_idx=" & INTEGER'IMAGE(collect_idx) & 
+                                       " data=0x" & INTEGER'IMAGE(to_integer(unsigned(s_axis_tdata))) &
                                        " tlast=" & STD_LOGIC'IMAGE(s_axis_tlast)(2);
                             END IF;
                             
-                            byte_idx <= byte_idx + 1;
-                            
-                            -- Check for frame completion
+                            -- Check for tlast
                             IF s_axis_tlast = '1' THEN
-                                REPORT "DECODER: Received tlast. Total bytes stored = " & 
-                                       INTEGER'IMAGE(byte_idx + 1);
+                                REPORT "COLLECT: tlast at collect_idx=" & INTEGER'IMAGE(collect_idx);
                                 
-                                -- Verify we got the expected number of bytes
-                                IF byte_idx + 1 /= ENCODED_BYTES THEN
-                                    REPORT "DECODER: WARNING! Expected " & INTEGER'IMAGE(ENCODED_BYTES) & 
-                                           " bytes but got " & INTEGER'IMAGE(byte_idx + 1) severity warning;
-                                END IF;
-                                
-                                byte_idx <= 0;
-                                bit_idx <= 0;
-                                state <= DEINTERLEAVE;
+                                -- Move to EXTRACT state to count back 268 bytes
                                 s_axis_tready <= '0';
-                                
-                            ELSIF byte_idx + 1 >= ENCODED_BYTES THEN
-                                -- Stored all bytes but no tlast! This is an error condition
-                                REPORT "DECODER: ERROR! Stored " & INTEGER'IMAGE(ENCODED_BYTES) & 
-                                       " bytes but no tlast received" severity error;
                                 byte_idx <= 0;
-                                state <= IDLE;
-                                s_axis_tready <= '1';
+                                state <= EXTRACT;
+                            ELSE
+                                -- Advance circular buffer pointer (wrap around)
+                                IF collect_idx = COLLECT_SIZE - 1 THEN
+                                    collect_idx <= 0;
+                                ELSE
+                                    collect_idx <= collect_idx + 1;
+                                END IF;
                             END IF;
+                        END IF;
+                    
+                    -- EXTRACT: Count back ENCODED_BYTES from where tlast arrived
+                    WHEN EXTRACT =>
+                        IF byte_idx < ENCODED_BYTES THEN
+                            -- Calculate which byte in collect_buffer to read
+                            -- If collect_idx = 267, we want bytes [0:267]
+                            -- If collect_idx = 300, we want bytes [33:300]
+                            extract_start := (collect_idx + 1) - ENCODED_BYTES;
+                            extract_end := collect_idx;
+                            
+                            -- Copy byte from circular buffer (with modulo wraparound)
+                            input_buffer(byte_idx) <= collect_buffer((extract_start + byte_idx) MOD COLLECT_SIZE);
+                            
+                            IF byte_idx < 5 THEN
+                                REPORT "EXTRACT[" & INTEGER'IMAGE(byte_idx) & 
+                                       "] from collect_buffer[" & 
+                                       INTEGER'IMAGE((extract_start + byte_idx) MOD COLLECT_SIZE) & 
+                                       "] = 0x" & 
+                                       INTEGER'IMAGE(to_integer(unsigned(collect_buffer((extract_start + byte_idx) MOD COLLECT_SIZE))));
+                            END IF;
+                            
+                            byte_idx <= byte_idx + 1;
+                        ELSE
+                            REPORT "EXTRACT complete, " & INTEGER'IMAGE(ENCODED_BYTES) & " bytes copied";
+                            byte_idx <= 0;
+                            bit_idx <= 0;
+                            state <= DEINTERLEAVE;
+                            decoder_active <= '1';
                         END IF;
                     
                     -- DEINTERLEAVE: Reverse the row-column shuffle
                     WHEN DEINTERLEAVE =>
                         IF bit_idx < ENCODED_BITS THEN
-                            deinterleaved_buffer(deinterleave_address(bit_idx)) <= input_buffer(bit_idx);
+                            -- Unpack input_buffer bytes to bits
+                            deinterleaved_buffer(deinterleave_address(bit_idx)) <= 
+                                input_buffer(bit_idx / 8)(bit_idx MOD 8);
                             bit_idx <= bit_idx + 1;
                         ELSE
                             REPORT "DEINTERLEAVE complete";
                             byte_idx <= 0;
                             bit_idx <= 0;
-                            state <= PREP_FEC_DECODE;  -- Changed to go to prep state first
+                            state <= PREP_FEC_DECODE;
                         END IF;
                     
                     -- PREP_FEC_DECODE: Separate deinterleaved bits into G1 and G2 streams
-WHEN PREP_FEC_DECODE =>
-    -- **FIX: Pack bits in FORWARD order, not reversed!**
-    -- deinterleaved_buffer[0] = first g1, [1] = first g2, etc.
-    FOR i IN 0 TO ENCODED_BITS/2 - 1 LOOP
-        decoder_input_g1(i) <= deinterleaved_buffer(i*2);      -- G1 bits: 0, 2, 4, ...
-        decoder_input_g2(i) <= deinterleaved_buffer(i*2 + 1);  -- G2 bits: 1, 3, 5, ...
-    END LOOP;
-    decoder_start <= '1';
-    state <= FEC_DECODE;
+                    WHEN PREP_FEC_DECODE =>
+                        FOR i IN 0 TO ENCODED_BITS/2 - 1 LOOP
+                            decoder_input_g1(i) <= deinterleaved_buffer(i*2);
+                            decoder_input_g2(i) <= deinterleaved_buffer(i*2 + 1);
+                        END LOOP;
+                        decoder_start <= '1';
+                        state <= FEC_DECODE;
 
-WHEN FEC_DECODE =>
-    decoder_start <= '0';  -- Clear start pulse
-    IF decoder_done = '1' THEN
-        -- Unpack decoded bits in FORWARD order
-        -- decoder_output_buf[0] = first bit, goes to byte 0 bit 7
-        FOR i IN 0 TO PAYLOAD_BYTES-1 LOOP
-            FOR j IN 0 TO 7 LOOP
-                fec_decoded_buffer(i)(7-j) <= decoder_output_buf(i*8 + j);
-            END LOOP;
-        END LOOP;
-        byte_idx <= 0;
-        state <= DERANDOMIZE;
-    END IF;
-
-
-
+                    WHEN FEC_DECODE =>
+                        decoder_start <= '0';
+                        IF decoder_done = '1' THEN
+                            -- Unpack decoded bits in FORWARD order
+                            FOR i IN 0 TO PAYLOAD_BYTES-1 LOOP
+                                FOR j IN 0 TO 7 LOOP
+                                    fec_decoded_buffer(i)(7-j) <= decoder_output_buf(i*8 + j);
+                                END LOOP;
+                            END LOOP;
+                            byte_idx <= 0;
+                            state <= DERANDOMIZE;
+                        END IF;
 
                     -- DERANDOMIZE: XOR with same sequence (inverse operation)
                     WHEN DERANDOMIZE =>
@@ -333,7 +330,6 @@ WHEN FEC_DECODE =>
                             output_buffer(byte_idx) <= 
                                 fec_decoded_buffer(byte_idx) XOR RANDOMIZER_SEQUENCE(byte_idx);
                             
-                            -- Debug: Report first 5 derandomized bytes
                             IF byte_idx < 5 THEN
                                 REPORT "DERANDOMIZE[" & INTEGER'IMAGE(byte_idx) &
                                        "] fec=" & INTEGER'IMAGE(to_integer(unsigned(fec_decoded_buffer(byte_idx)))) &
@@ -348,34 +344,35 @@ WHEN FEC_DECODE =>
                             state <= OUTPUT;
                         END IF;
                     
-                    -- OUTPUT: Send bytes to next stage
+                    -- OUTPUT: Send bytes to next stage (FIXED AXI-Stream handshaking)
                     WHEN OUTPUT =>
-                        IF m_axis_tready = '1' OR m_tvalid_reg = '0' THEN
-                            IF out_idx < PAYLOAD_BYTES THEN
-                                m_tdata_reg <= output_buffer(out_idx);
-                                m_tvalid_reg <= '1';
-                                
-                                -- Debug: Report first 5 output bytes
-                                IF out_idx < 5 THEN
-                                    REPORT "DECODER OUTPUT byte " & INTEGER'IMAGE(out_idx) & " = " &
-                                           INTEGER'IMAGE(to_integer(unsigned(output_buffer(out_idx))));
-                                END IF;
-                                
-                                -- Set tlast on final byte
-                                IF out_idx = PAYLOAD_BYTES - 1 THEN
-                                    m_tlast_reg <= '1';
-                                ELSE
-                                    m_tlast_reg <= '0';
-                                END IF;
-                                
-                                out_idx <= out_idx + 1;
-                            ELSE
-                                -- Frame complete
-                                m_tvalid_reg <= '0';
-                                m_tlast_reg <= '0';
-                                frame_count <= frame_count + 1;
-                                state <= IDLE;
+                        IF out_idx < PAYLOAD_BYTES THEN
+                            -- Present current data
+                            m_tdata_reg <= output_buffer(out_idx);
+                            m_tvalid_reg <= '1';
+                            
+                            IF out_idx < 5 THEN
+                                REPORT "DECODER OUTPUT byte " & INTEGER'IMAGE(out_idx) & " = " &
+                                       INTEGER'IMAGE(to_integer(unsigned(output_buffer(out_idx))));
                             END IF;
+                            
+                            -- Set tlast on final byte
+                            IF out_idx = PAYLOAD_BYTES - 1 THEN
+                                m_tlast_reg <= '1';
+                            ELSE
+                                m_tlast_reg <= '0';
+                            END IF;
+                            
+                            -- Advance on handshake OR on first presentation (tvalid was 0)
+                            IF m_axis_tready = '1' OR m_tvalid_reg = '0' THEN
+                                out_idx <= out_idx + 1;
+                            END IF;
+                        ELSE
+                            -- Frame complete
+                            m_tvalid_reg <= '0';
+                            m_tlast_reg <= '0';
+                            frame_count <= frame_count + 1;
+                            state <= IDLE;
                         END IF;
                         
                 END CASE;

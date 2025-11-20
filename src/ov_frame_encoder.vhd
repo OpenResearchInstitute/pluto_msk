@@ -211,14 +211,14 @@ BEGIN
                     -- IDLE: Wait for incoming data
                     WHEN IDLE =>
                         encoder_active <= '0';
-                        s_axis_tready <= '0';
+                        s_axis_tready <= '0';  -- Keep LOW in IDLE
                         m_tvalid_reg <= '0';
                         collect_idx <= 0;
                         
                         IF s_axis_tvalid = '1' THEN
                             state <= COLLECT;
                             encoder_active <= '1';
-                            s_axis_tready <= '1';
+                            -- tready set HIGH in COLLECT state, not here
                         END IF;
                     
                     -- COLLECT: Gather ALL bytes into circular buffer until tlast
