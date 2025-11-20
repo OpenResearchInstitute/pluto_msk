@@ -50,6 +50,10 @@ ENTITY frame_sync_detector IS
         -- BIT Input Interface
         rx_bit          : IN  std_logic;
         rx_bit_valid    : IN  std_logic;
+
+	-- soft decision signals
+	s_axis_soft_tdata  : IN  signed(15 DOWNTO 0);  -- Soft decision input
+	m_axis_soft_tdata  : OUT signed(15 DOWNTO 0);  -- Soft decision output
         
         -- AXIS Master Interface (to FIFO)
         m_axis_tdata    : OUT std_logic_vector(7 DOWNTO 0);

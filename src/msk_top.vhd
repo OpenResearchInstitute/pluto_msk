@@ -244,6 +244,9 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL rx_data_int 		: std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
 	SIGNAL rx_invert 		: std_logic;
 
+	SIGNAL rx_data_soft		: signed(15 downto 0);
+	SIGNAL rx_data_soft_valid	: std_logic;
+
 	SIGNAL rx_sample_clk 	: std_logic;
 	SIGNAL discard_rxsamples: std_logic_vector(7 DOWNTO 0);
 	SIGNAL discard_rxnco  	: std_logic_vector(7 DOWNTO 0);
@@ -555,6 +558,7 @@ BEGIN
             
             rx_bit          => rx_bit_corr,
             rx_bit_valid    => rx_bit_valid,
+            s_axis_soft_tdata => (OTHERS => '0'),  -- tied to zero for hard decisions
             
             m_axis_tdata    => sync_det_tdata,
             m_axis_tvalid   => sync_det_tvalid,
@@ -745,7 +749,8 @@ BEGIN
 			rx_svalid 		=> rx_sample_clk,
 			rx_samples 		=> rx_samples_dec(11 DOWNTO 0),
 
-			rx_data 		=> rx_bit,
+			rx_data 		=> rx_bit, -- hard decision
+			rx_data_soft 		=> rx_data_soft,     -- soft decision
 			rx_dvalid 		=> rx_bit_valid
 		);
 

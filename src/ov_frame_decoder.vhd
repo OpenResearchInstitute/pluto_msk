@@ -87,7 +87,7 @@ END ENTITY ov_frame_decoder;
 ARCHITECTURE rtl OF ov_frame_decoder IS
 
     -- State machine
-    TYPE state_t IS (IDLE, COLLECT, DEINTERLEAVE, FEC_DECODE, DERANDOMIZE, OUTPUT);
+    TYPE state_t IS (IDLE, COLLECT, DEINTERLEAVE, PREP_FEC_DECODE, FEC_DECODE, DERANDOMIZE, OUTPUT);
     SIGNAL state : state_t := IDLE;
     
     -- Buffer types
@@ -135,6 +135,14 @@ ARCHITECTURE rtl OF ov_frame_decoder IS
         x"9D", x"8E", x"E8", x"34", x"C9", x"59"
     );
     
+    -- Viterbi decoder signals
+    SIGNAL decoder_start      : std_logic := '0';
+    SIGNAL decoder_busy       : std_logic;
+    SIGNAL decoder_done       : std_logic;
+    SIGNAL decoder_input_g1   : std_logic_vector(2143 DOWNTO 0);  -- 268*8 bits
+    SIGNAL decoder_input_g2   : std_logic_vector(2143 DOWNTO 0);
+    SIGNAL decoder_output_buf : std_logic_vector(1071 DOWNTO 0);  -- 134*8 bits
+
     -- Deinterleaver address calculation (reverse of interleaver)
     FUNCTION deinterleave_address(addr : NATURAL) RETURN NATURAL IS
         CONSTANT ROWS : NATURAL := 67;
@@ -148,6 +156,24 @@ ARCHITECTURE rtl OF ov_frame_decoder IS
     END FUNCTION;
 
 BEGIN
+
+    -- Viterbi Decoder Instantiation (Hard Decision)
+    U_DECODER : ENTITY work.viterbi_decoder_k7_simple
+        GENERIC MAP (
+            PAYLOAD_BITS    => PAYLOAD_BYTES * 8,  -- 1072 bits
+            ENCODED_BITS    => ENCODED_BYTES * 8,  -- 2144 bits
+            TRACEBACK_DEPTH => 35
+        )
+        PORT MAP (
+            clk           => clk,
+            aresetn       => aresetn,
+            start         => decoder_start,
+            busy          => decoder_busy,
+            done          => decoder_done,
+            input_bits_g1 => decoder_input_g1,
+            input_bits_g2 => decoder_input_g2,
+            output_bits   => decoder_output_buf
+        );
 
     -- Output assignments
     m_axis_tdata  <= m_tdata_reg;
@@ -171,6 +197,7 @@ BEGIN
                 m_tvalid_reg <= '0';
                 m_tlast_reg <= '0';
                 decoder_active <= '0';
+                decoder_start <= '0';  -- Initialize FEC decoder control
                 
             ELSE
                 CASE state IS
@@ -269,29 +296,37 @@ BEGIN
                             REPORT "DEINTERLEAVE complete";
                             byte_idx <= 0;
                             bit_idx <= 0;
-                            state <= FEC_DECODE;
+                            state <= PREP_FEC_DECODE;  -- Changed to go to prep state first
                         END IF;
                     
-                    -- FEC_DECODE: Majority vote on bit pairs
-                    WHEN FEC_DECODE =>
-                        IF byte_idx < PAYLOAD_BYTES THEN
-                            -- Process one bit position at a time
-                            IF bit_idx < 8 THEN
-                                bit_0 := deinterleaved_buffer(byte_idx * 16 + bit_idx * 2);
-                                bit_1 := deinterleaved_buffer(byte_idx * 16 + bit_idx * 2 + 1);
-                                fec_decoded_buffer(byte_idx)(bit_idx) <= bit_0 OR bit_1;
-                                bit_idx <= bit_idx + 1;
-                            ELSE
-                                -- Done with this byte, move to next
-                                bit_idx <= 0;
-                                byte_idx <= byte_idx + 1;
-                            END IF;
-                        ELSE
-                            REPORT "FEC_DECODE complete";
-                            byte_idx <= 0;
-                            state <= DERANDOMIZE;
-                        END IF;
-                    
+                    -- PREP_FEC_DECODE: Separate deinterleaved bits into G1 and G2 streams
+WHEN PREP_FEC_DECODE =>
+    -- **FIX: Pack bits in FORWARD order, not reversed!**
+    -- deinterleaved_buffer[0] = first g1, [1] = first g2, etc.
+    FOR i IN 0 TO ENCODED_BITS/2 - 1 LOOP
+        decoder_input_g1(i) <= deinterleaved_buffer(i*2);      -- G1 bits: 0, 2, 4, ...
+        decoder_input_g2(i) <= deinterleaved_buffer(i*2 + 1);  -- G2 bits: 1, 3, 5, ...
+    END LOOP;
+    decoder_start <= '1';
+    state <= FEC_DECODE;
+
+WHEN FEC_DECODE =>
+    decoder_start <= '0';  -- Clear start pulse
+    IF decoder_done = '1' THEN
+        -- Unpack decoded bits in FORWARD order
+        -- decoder_output_buf[0] = first bit, goes to byte 0 bit 7
+        FOR i IN 0 TO PAYLOAD_BYTES-1 LOOP
+            FOR j IN 0 TO 7 LOOP
+                fec_decoded_buffer(i)(7-j) <= decoder_output_buf(i*8 + j);
+            END LOOP;
+        END LOOP;
+        byte_idx <= 0;
+        state <= DERANDOMIZE;
+    END IF;
+
+
+
+
                     -- DERANDOMIZE: XOR with same sequence (inverse operation)
                     WHEN DERANDOMIZE =>
                         IF byte_idx < PAYLOAD_BYTES THEN

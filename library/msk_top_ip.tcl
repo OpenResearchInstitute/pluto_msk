@@ -15,8 +15,11 @@ read_vhdl -vhdl2008 "../rdl/outputs/rtl/msk_top_regs.vhd"
 read_vhdl -vhdl2008 "../src/ov_frame_encoder.vhd"
 read_vhdl -vhdl2008 "../src/ov_frame_decoder.vhd"
 
+
 #set_property FILE_TYPE {VHDL 2008} [get_files $ad_hdl_dir/library/msk_top/src/*.vhd]
 adi_ip_files msk_top [list \
+  "../src/conv_encoder_k7.vhd" \
+  "../src/viterbi_decoder_k7_simple.vhd" \
   "../msk_demodulator/src/costas_loop.vhd" \
   "../pi_controller/src/pi_controller.vhd" \
   "../lowpass_ema/src/lowpass_ema.vhd" \
@@ -31,12 +34,15 @@ adi_ip_files msk_top [list \
   "../src/axis_dma_adapter.vhd" \
   "../src/axis_async_fifo.vhd" \
   "../src/byte_to_bit_deserializer.vhd" \
-  "../src/bit_to_byte_serializer.vhd" \
   "../src/frame_sync_detector.vhd" \
   "../nco/src/nco.vhd" \
   "../prbs/src/prbs_gen.vhd" \
   "../prbs/src/prbs_mon.vhd" \
   "../nco/src/sin_cos_lut.vhd" ]
+
+# Set VHDL-2008 for FEC files
+set_property FILE_TYPE {VHDL 2008} [get_files "../src/conv_encoder_k7.vhd"]
+set_property FILE_TYPE {VHDL 2008} [get_files "../src/viterbi_decoder_k7_simple.vhd"]
 
 # use this command if we have AXI lite interface for register control
 adi_ip_properties msk_top

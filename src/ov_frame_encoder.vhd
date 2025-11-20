@@ -89,7 +89,7 @@ END ENTITY ov_frame_encoder;
 ARCHITECTURE rtl OF ov_frame_encoder IS
 
     -- State machine
-    TYPE state_t IS (IDLE, COLLECT, EXTRACT, RANDOMIZE, FEC_ENCODE, INTERLEAVE, OUTPUT);
+    TYPE state_t IS (IDLE, COLLECT, EXTRACT, RANDOMIZE, PREP_FEC, FEC_ENCODE, INTERLEAVE, OUTPUT);
     SIGNAL state : state_t := IDLE;
     
     -- Buffer types
@@ -142,6 +142,13 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
         x"15", x"ED", x"35", x"F4", x"57", x"F5", x"58", x"11",
         x"9D", x"8E", x"E8", x"34", x"C9", x"59"
     );
+
+    -- Viterbi encoder signals
+    SIGNAL encoder_start      : std_logic := '0';
+    SIGNAL encoder_busy       : std_logic;
+    SIGNAL encoder_done       : std_logic;
+    SIGNAL encoder_input_buf  : std_logic_vector(1071 DOWNTO 0);  -- 134*8
+    SIGNAL encoder_output_buf : std_logic_vector(2143 DOWNTO 0);  -- 268*8
     
     -- Interleaver address calculation (67 rows x 32 cols)
     FUNCTION interleave_address(addr : NATURAL) RETURN NATURAL IS
@@ -156,6 +163,22 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
     END FUNCTION;
     
 BEGIN
+
+    -- Convolutional Encoder Instantiation
+    U_ENCODER : ENTITY work.conv_encoder_k7
+        GENERIC MAP (
+            PAYLOAD_BYTES => PAYLOAD_BYTES,
+            ENCODED_BYTES => ENCODED_BYTES
+        )
+        PORT MAP (
+            clk           => clk,
+            aresetn       => aresetn,
+            start         => encoder_start,
+            busy          => encoder_busy,
+            done          => encoder_done,
+            input_buffer  => encoder_input_buf,
+            output_buffer => encoder_output_buf
+        );
 
     -- Connect output registers to ports
     m_axis_tdata  <= m_tdata_reg;
@@ -179,6 +202,7 @@ BEGIN
             m_tvalid_reg <= '0';
             m_tlast_reg <= '0';
             frame_count <= (OTHERS => '0');
+            encoder_start <= '0';  -- Initialize FEC encoder control;
             
         ELSIF rising_edge(clk) THEN
             IF aresetn = '1' THEN
@@ -258,18 +282,33 @@ BEGIN
                         ELSE
                             byte_idx <= 0;
                             bit_idx <= 0;
-                            state <= FEC_ENCODE;
+                            state <= PREP_FEC;  -- Changed from FEC_ENCODE
                         END IF;
                     
-                    -- FEC_ENCODE: Simple rate-1/2 code (bit duplication)
+WHEN PREP_FEC =>
+    -- Pack randomized_buffer MSB-first to match encoder's MSB-first reading
+    FOR i IN 0 TO PAYLOAD_BYTES-1 LOOP
+        FOR j IN 0 TO 7 LOOP
+            -- Put byte 0 at top of buffer, MSB of each byte first
+            encoder_input_buf(PAYLOAD_BYTES*8 - 1 - (i*8 + j)) <= randomized_buffer(i)(7-j);
+        END LOOP;
+    END LOOP;
+    encoder_start <= '1';
+    state <= FEC_ENCODE;
+                    
+                    -- FEC_ENCODE: Wait for convolution encoder to complete
                     WHEN FEC_ENCODE =>
-                        IF bit_idx < ENCODED_BITS THEN
-                            fec_buffer(bit_idx) <= randomized_buffer(bit_idx / 16)((bit_idx / 2) MOD 8);
-                            bit_idx <= bit_idx + 1;
-                        ELSE
+                        encoder_start <= '0';  -- Clear start pulse
+                        IF encoder_done = '1' THEN
+                            -- Unpack encoded bits into fec_buffer
+                            FOR i IN 0 TO ENCODED_BITS-1 LOOP
+                                fec_buffer(i) <= encoder_output_buf(ENCODED_BITS - 1 - i);  -- MSB-first
+                                --fec_buffer(i) <= encoder_output_buf(i);
+                            END LOOP;
                             bit_idx <= 0;
                             state <= INTERLEAVE;
                         END IF;
+
                     
                     -- INTERLEAVE: Row-column interleaving
                     WHEN INTERLEAVE =>
