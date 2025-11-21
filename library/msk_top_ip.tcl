@@ -1,25 +1,22 @@
 # ip
-#   "src/axi_ctrlif.vhd" 
-
 source ../hdl/scripts/adi_env.tcl
 source $ad_hdl_dir/library/scripts/adi_ip_xilinx.tcl
 
 adi_ip_create msk_top
 
+# Register ALL VHDL-2008 files first with read_vhdl -vhdl2008
+# Order matters: dependencies before modules that use them
 read_vhdl -vhdl2008 "../rdl/src/axi4lite_intf_pkg.vhd"
 read_vhdl -vhdl2008 "../rdl/src/reg_utils.vhd"
 read_vhdl "../rdl/outputs/rtl/msk_top_regs_pkg.vhd"
 read_vhdl -vhdl2008 "../rdl/outputs/rtl/msk_top_regs.vhd"
-
-# OV frame encoder/decoder require VHDL-2008 for division/modulo operators
+read_vhdl -vhdl2008 "../src/conv_encoder_k7.vhd"
+read_vhdl -vhdl2008 "../src/viterbi_decoder_k7_simple.vhd"
 read_vhdl -vhdl2008 "../src/ov_frame_encoder.vhd"
 read_vhdl -vhdl2008 "../src/ov_frame_decoder.vhd"
 
-
-#set_property FILE_TYPE {VHDL 2008} [get_files $ad_hdl_dir/library/msk_top/src/*.vhd]
+# Register all non-VHDL-2008 files
 adi_ip_files msk_top [list \
-  "../src/conv_encoder_k7.vhd" \
-  "../src/viterbi_decoder_k7_simple.vhd" \
   "../msk_demodulator/src/costas_loop.vhd" \
   "../pi_controller/src/pi_controller.vhd" \
   "../lowpass_ema/src/lowpass_ema.vhd" \
@@ -40,13 +37,8 @@ adi_ip_files msk_top [list \
   "../prbs/src/prbs_mon.vhd" \
   "../nco/src/sin_cos_lut.vhd" ]
 
-# Set VHDL-2008 for FEC files
-set_property FILE_TYPE {VHDL 2008} [get_files "../src/conv_encoder_k7.vhd"]
-set_property FILE_TYPE {VHDL 2008} [get_files "../src/viterbi_decoder_k7_simple.vhd"]
-
-# use this command if we have AXI lite interface for register control
+# Configure IP properties
 adi_ip_properties msk_top
-
 
 # Remove auto-inferred ADI custom bus interfaces before defining proper AXI-Stream
 set core [ipx::current_core]
@@ -56,7 +48,7 @@ foreach intf {rx s_axis tx} {
     }
 }
 
-
+# TX AXIS slave interface (from DMA to MSK)
 adi_add_bus "s_axis" "slave" \
   "xilinx.com:interface:axis_rtl:1.0" \
   "xilinx.com:interface:axis:1.0" \
@@ -79,9 +71,6 @@ adi_add_bus "m_axis" "master" \
     {"m_axis_tdata" "TDATA"} \
     {"m_axis_tlast" "TLAST"}]
 
-# m_axis shares the same clock as the demodulator
 adi_add_bus_clock "s_axis_aclk" "m_axis" "s_axis_aresetn"
-
-ipx::save_core [ipx::current_core]
 
 ipx::save_core [ipx::current_core]

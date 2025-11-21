@@ -85,7 +85,7 @@ ENTITY msk_top_csr IS
 		C_S_AXI_DATA_WIDTH	: NATURAL := 32;
 		C_S_AXI_ADDR_WIDTH	: NATURAL := 32;
 		SYNC_CNT_W 			: NATURAL := 24;
-		FIFO_ADDR_WIDTH 	: NATURAL := 11
+		FIFO_ADDR_WIDTH 	: NATURAL := 9
 	);
 	PORT (
 		clk 				: IN  std_logic;

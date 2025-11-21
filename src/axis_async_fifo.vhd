@@ -68,9 +68,9 @@ ARCHITECTURE rtl OF axis_async_fifo IS
     SIGNAL ram_data : ram_data_type;
     SIGNAL ram_last : ram_last_type;
     
-    ATTRIBUTE ram_style : STRING;
-    ATTRIBUTE ram_style OF ram_data : SIGNAL IS "block";
-    ATTRIBUTE ram_style OF ram_last : SIGNAL IS "block";
+    --ATTRIBUTE ram_style : STRING;
+    --ATTRIBUTE ram_style OF ram_data : SIGNAL IS "auto";
+    --ATTRIBUTE ram_style OF ram_last : SIGNAL IS "auto";
     
     -- Gray code pointers (reset-initialized in respective clock domains)
     SIGNAL wr_ptr_gray      : std_logic_vector(ADDR_WIDTH DOWNTO 0);

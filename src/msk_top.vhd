@@ -97,7 +97,7 @@ ENTITY msk_top IS
 		C_S_AXI_DATA_WIDTH	: NATURAL := 32;
 		C_S_AXI_ADDR_WIDTH	: NATURAL := 32;
 		SYNC_CNT_W 			: NATURAL := 24;
-		FIFO_ADDR_WIDTH 	: NATURAL := 11  -- 2048 byte FIFO (used in both tx and rx)
+		FIFO_ADDR_WIDTH 	: NATURAL := 9  -- 512 byte FIFO (used in both tx and rx)
 	);
 	PORT (
 		clk 			: IN  std_logic;
@@ -325,6 +325,9 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL pd_alpha2			: std_logic_vector(17 DOWNTO 0);
 	SIGNAL pd_power 			: std_logic_vector(22 DOWNTO 0);
 
+        ATTRIBUTE dont_touch : STRING;
+        ATTRIBUTE dont_touch OF u_async_fifo : LABEL IS "true";
+        ATTRIBUTE dont_touch OF u_rx_async_fifo : LABEL IS "true";
 BEGIN 
 
 ------------------------------------------------------------------------------------------------------
@@ -357,7 +360,7 @@ BEGIN
 	u_async_fifo : ENTITY work.axis_async_fifo
 		GENERIC MAP (
 			DATA_WIDTH  => 8,
-			ADDR_WIDTH  => FIFO_ADDR_WIDTH
+			ADDR_WIDTH  => FIFO_ADDR_WIDTH  --9 which is 512 bytes
 		)
 		PORT MAP (
 			wr_aclk         => s_axis_aclk,
@@ -619,7 +622,7 @@ BEGIN
     u_rx_async_fifo : ENTITY work.axis_async_fifo
         GENERIC MAP (
             DATA_WIDTH  => 8,
-            ADDR_WIDTH  => FIFO_ADDR_WIDTH  -- Reuse generic (11 = 2048 bytes)
+            ADDR_WIDTH  => FIFO_ADDR_WIDTH  -- Reuse generic (9 = 512 bytes)
         )
         PORT MAP (
             -- Write side (symbol clock domain)

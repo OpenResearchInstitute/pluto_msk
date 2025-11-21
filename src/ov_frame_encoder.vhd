@@ -106,6 +106,12 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
     SIGNAL randomized_buffer  : byte_buffer_t;
     SIGNAL fec_buffer         : bit_buffer_t := (OTHERS => '0');
     SIGNAL interleaved_buffer : bit_buffer_t := (OTHERS => '0');
+
+    ATTRIBUTE ram_style : STRING;
+    --ATTRIBUTE ram_style OF collect_buffer : SIGNAL IS "block";
+    --ATTRIBUTE ram_style OF input_buffer : SIGNAL IS "block";
+    --ATTRIBUTE ram_style OF randomized_buffer : SIGNAL IS "block";
+    ATTRIBUTE ram_style OF interleaved_buffer : SIGNAL IS "register";
     
     -- Index counters
     SIGNAL collect_idx : NATURAL RANGE 0 TO COLLECT_SIZE;  -- Where we're writing in collect_buffer
