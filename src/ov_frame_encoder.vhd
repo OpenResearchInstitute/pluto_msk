@@ -89,12 +89,15 @@ END ENTITY ov_frame_encoder;
 ARCHITECTURE rtl OF ov_frame_encoder IS
 
     -- State machine
-    TYPE state_t IS (IDLE, COLLECT, EXTRACT, RANDOMIZE, PREP_FEC, FEC_ENCODE, INTERLEAVE, OUTPUT);
+    TYPE state_t IS (IDLE, COLLECT, EXTRACT, RANDOMIZE, PREP_FEC, FEC_ENCODE, PACK_FEC, INTERLEAVE, OUTPUT);
+    --TYPE state_t IS (IDLE, COLLECT, EXTRACT, RANDOMIZE, PREP_FEC, FEC_ENCODE, INTERLEAVE, OUTPUT);
     SIGNAL state : state_t := IDLE;
     
     -- Buffer types
     TYPE byte_buffer_t IS ARRAY(0 TO PAYLOAD_BYTES-1) OF std_logic_vector(BYTE_WIDTH-1 DOWNTO 0);
     TYPE bit_buffer_t IS ARRAY(0 TO ENCODED_BITS-1) OF std_logic;
+    TYPE byte_interleave_buffer_t IS ARRAY(0 TO ENCODED_BYTES-1) OF std_logic_vector(7 DOWNTO 0);
+
     
     -- Circular collection buffer (larger than needed to handle any transients)
     CONSTANT COLLECT_SIZE : NATURAL := 256;
@@ -105,7 +108,12 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
     SIGNAL input_buffer       : byte_buffer_t;
     SIGNAL randomized_buffer  : byte_buffer_t;
     SIGNAL fec_buffer         : bit_buffer_t := (OTHERS => '0');
-    SIGNAL interleaved_buffer : bit_buffer_t := (OTHERS => '0');
+    --SIGNAL interleaved_buffer : bit_buffer_t := (OTHERS => '0');
+    SIGNAL interleaved_buffer : byte_interleave_buffer_t := (OTHERS => (OTHERS => '0'));
+
+    TYPE fec_byte_buffer_t IS ARRAY(0 TO ENCODED_BYTES-1) OF std_logic_vector(7 DOWNTO 0);
+    SIGNAL fec_buffer_bytes   : fec_byte_buffer_t;
+
 
     ATTRIBUTE ram_style : STRING;
     --ATTRIBUTE ram_style OF collect_buffer : SIGNAL IS "block";
@@ -156,15 +164,17 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
     SIGNAL encoder_input_buf  : std_logic_vector(1071 DOWNTO 0);  -- 134*8
     SIGNAL encoder_output_buf : std_logic_vector(2143 DOWNTO 0);  -- 268*8
     
-    -- Interleaver address calculation (67 rows x 32 cols)
-    FUNCTION interleave_address(addr : NATURAL) RETURN NATURAL IS
+    -- Interleaver address calculation (67 rows x 32 bit cols)
+    FUNCTION interleave_address_byte(byte_addr : NATURAL) RETURN NATURAL IS
         CONSTANT ROWS : NATURAL := 67;
-        CONSTANT COLS : NATURAL := 32;
+        CONSTANT COLS : NATURAL := 4; --was 32 with bit level. 32/8 = 4
         VARIABLE row : NATURAL;
         VARIABLE col : NATURAL;
     BEGIN
-        row := addr / COLS;
-        col := addr MOD COLS;
+        --row := addr / COLS; -- bit level
+        --col := addr MOD COLS; -- bit level
+        row := byte_addr / COLS; -- byte version
+        col := byte_addr MOD COLS; -- byte version
         RETURN col * ROWS + row;
     END FUNCTION;
     
@@ -315,12 +325,31 @@ WHEN PREP_FEC =>
                             state <= INTERLEAVE;
                         END IF;
 
+
+
+
+WHEN PACK_FEC =>
+    IF byte_idx < ENCODED_BYTES THEN
+        FOR i IN 0 TO 7 LOOP
+            fec_buffer_bytes(byte_idx)(i) <= fec_buffer(byte_idx * 8 + i);
+        END LOOP;
+        byte_idx <= byte_idx + 1;
+    ELSE
+        byte_idx <= 0;
+        state <= INTERLEAVE;
+    END IF;
+
+
+
                     
                     -- INTERLEAVE: Row-column interleaving
                     WHEN INTERLEAVE =>
-                        IF bit_idx < ENCODED_BITS THEN
-                            interleaved_buffer(interleave_address(bit_idx)) <= fec_buffer(bit_idx);
-                            bit_idx <= bit_idx + 1;
+                        IF byte_idx < ENCODED_BYTES THEN
+                        --IF bit_idx < ENCODED_BITS THEN
+                            --interleaved_buffer(interleave_address(bit_idx)) <= fec_buffer(bit_idx);
+                            interleaved_buffer(interleave_address_byte(byte_idx)) <= fec_buffer_bytes(byte_idx);
+                            --bit_idx <= bit_idx + 1;
+                            byte_idx <= byte_idx + 1; 
                         ELSE
                             out_idx <= 0;
                             state <= OUTPUT;
@@ -330,14 +359,15 @@ WHEN PREP_FEC =>
                     -- OUTPUT: Send 268 bytes via AXI-Stream
                     WHEN OUTPUT =>
                         IF out_idx < ENCODED_BYTES THEN
-                            m_tdata_reg(0) <= interleaved_buffer(out_idx * 8 + 0);
-                            m_tdata_reg(1) <= interleaved_buffer(out_idx * 8 + 1);
-                            m_tdata_reg(2) <= interleaved_buffer(out_idx * 8 + 2);
-                            m_tdata_reg(3) <= interleaved_buffer(out_idx * 8 + 3);
-                            m_tdata_reg(4) <= interleaved_buffer(out_idx * 8 + 4);
-                            m_tdata_reg(5) <= interleaved_buffer(out_idx * 8 + 5);
-                            m_tdata_reg(6) <= interleaved_buffer(out_idx * 8 + 6);
-                            m_tdata_reg(7) <= interleaved_buffer(out_idx * 8 + 7);
+                            m_tdata_reg <= interleaved_buffer(out_idx);  -- Direct byte assignment!
+                            --m_tdata_reg(0) <= interleaved_buffer(out_idx * 8 + 0);
+                            --m_tdata_reg(1) <= interleaved_buffer(out_idx * 8 + 1);
+                            --m_tdata_reg(2) <= interleaved_buffer(out_idx * 8 + 2);
+                            --m_tdata_reg(3) <= interleaved_buffer(out_idx * 8 + 3);
+                            --m_tdata_reg(4) <= interleaved_buffer(out_idx * 8 + 4);
+                            --m_tdata_reg(5) <= interleaved_buffer(out_idx * 8 + 5);
+                            --m_tdata_reg(6) <= interleaved_buffer(out_idx * 8 + 6);
+                            --m_tdata_reg(7) <= interleaved_buffer(out_idx * 8 + 7);
                             
                             m_tvalid_reg <= '1';
                             m_tlast_reg <= '1' WHEN out_idx = (ENCODED_BYTES - 1) ELSE '0';

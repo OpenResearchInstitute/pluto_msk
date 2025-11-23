@@ -308,7 +308,7 @@ BEGIN
 
     urfo_s: cdc_resync PORT MAP (s_axi_aclk, NOT s_axi_aresetn, rx_frame_buffer_ovf,	hwif_in.rx_frame_sync_status.frame_buffer_overflow.we);
 
-    hwif_in.MSK_Status.rx_enable.next_q 	<= '1';
+    -- hwif_in.MSK_Status.rx_enable.next_q <= '1';  -- Commented out becuase handled by urxe_s CDC, by Abraxas3d
     hwif_in.MSK_Status.tx_axis_valid.next_q	<= tx_axis_valid;
 
     -- Status Request from AXI to MDM

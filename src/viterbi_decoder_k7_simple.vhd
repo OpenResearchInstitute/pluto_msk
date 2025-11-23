@@ -32,26 +32,54 @@ END ENTITY viterbi_decoder_k7_simple;
 
 ARCHITECTURE rtl OF viterbi_decoder_k7_simple IS
 
+
     CONSTANT NUM_STATES : INTEGER := 64;
     CONSTANT METRIC_WIDTH : INTEGER := 12;
     CONSTANT INF_METRIC : INTEGER := 4095;
     CONSTANT NUM_SYMBOLS : INTEGER := ENCODED_BITS/2;
-    
+
     TYPE state_t IS (IDLE, INITIALIZE, ACS_COMPUTE, FIND_BEST, 
-                     TB_FETCH, TB_USE, COMPLETE);
+                 TB_FETCH, TB_USE, COMPLETE);
     SIGNAL state : state_t := IDLE;
     
     TYPE metric_array_t IS ARRAY(0 TO NUM_STATES-1) OF unsigned(METRIC_WIDTH-1 DOWNTO 0);
     SIGNAL metrics_current : metric_array_t;
     SIGNAL metrics_next : metric_array_t;
     
+    --CONSTANT DECISION_DEPTH : INTEGER := NUM_SYMBOLS * NUM_STATES;
+    --TYPE decision_mem_t IS ARRAY(0 TO DECISION_DEPTH-1) OF std_logic;
+    --SIGNAL decision_mem : decision_mem_t;
+    
+    -- ATTRIBUTE ram_style : STRING;
+    -- ATTRIBUTE ram_style OF decision_mem : SIGNAL IS "ultra"; 
+    -- was block, worked with distributed but was too large of a design, tried ultra
+    -- still too big. removed entirely tried, was still too big. Then...
+
+    --ATTRIBUTE ram_style : STRING;
+    --ATTRIBUTE ram_style OF decision_mem : SIGNAL IS "block";
+    --ATTRIBUTE ram_extract : STRING;
+    --ATTRIBUTE ram_extract OF decision_mem : SIGNAL IS "yes";
+    --ATTRIBUTE keep : STRING;
+    --ATTRIBUTE keep OF decision_mem : SIGNAL IS "true";
+    -- crashed in a different place
+
+    --CONSTANT DECISION_DEPTH : INTEGER := NUM_SYMBOLS * NUM_STATES;
+    --CONSTANT CHUNK_SIZE : INTEGER := 4096;
+    --CONSTANT NUM_CHUNKS : INTEGER := (DECISION_DEPTH + CHUNK_SIZE - 1) / CHUNK_SIZE;
+
+    --TYPE decision_chunk_t IS ARRAY(0 TO CHUNK_SIZE-1) OF std_logic;
+    --TYPE decision_mem_array_t IS ARRAY(0 TO NUM_CHUNKS-1) OF decision_chunk_t;
+    --SIGNAL decision_mem : decision_mem_array_t;
+
+    --ATTRIBUTE ram_style : STRING;
+    --ATTRIBUTE ram_style OF decision_mem : SIGNAL IS "block";
+ 
     CONSTANT DECISION_DEPTH : INTEGER := NUM_SYMBOLS * NUM_STATES;
     TYPE decision_mem_t IS ARRAY(0 TO DECISION_DEPTH-1) OF std_logic;
     SIGNAL decision_mem : decision_mem_t;
-    
-    ATTRIBUTE ram_style : STRING;
-    ATTRIBUTE ram_style OF decision_mem : SIGNAL IS "block";
-    
+
+
+   
     SIGNAL dec_wr_en : std_logic;
     SIGNAL dec_wr_addr : INTEGER RANGE 0 TO DECISION_DEPTH-1;
     SIGNAL dec_wr_data : std_logic;
@@ -110,6 +138,7 @@ BEGIN
         IF rising_edge(clk) THEN
             IF dec_wr_en = '1' THEN
                 decision_mem(dec_wr_addr) <= dec_wr_data;
+                --decision_mem(dec_wr_addr / CHUNK_SIZE)(dec_wr_addr MOD CHUNK_SIZE) <= dec_wr_data;
             END IF;
         END IF;
     END PROCESS;
@@ -118,6 +147,7 @@ BEGIN
     BEGIN
         IF rising_edge(clk) THEN
             dec_rd_data <= decision_mem(dec_rd_addr);
+            --dec_rd_data <= decision_mem(dec_rd_addr / CHUNK_SIZE)(dec_rd_addr MOD CHUNK_SIZE);
         END IF;
     END PROCESS;
 
