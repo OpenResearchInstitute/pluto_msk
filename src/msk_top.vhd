@@ -404,7 +404,8 @@ BEGIN
 			PAYLOAD_BYTES => 134,
 			ENCODED_BYTES => 268,
 			ENCODED_BITS  => 2144,
-			BYTE_WIDTH    => 8
+			BYTE_WIDTH    => 8,
+                        USE_BIT_INTERLEAVER => FALSE
 		)
 		PORT MAP (
 			clk             => clk,
@@ -592,7 +593,8 @@ BEGIN
             PAYLOAD_BYTES => 134,
             ENCODED_BYTES => 268,
             ENCODED_BITS  => 2144,
-            BYTE_WIDTH    => 8
+            BYTE_WIDTH    => 8,
+            USE_BIT_INTERLEAVER => FALSE
         )
         PORT MAP (
             clk             => clk,

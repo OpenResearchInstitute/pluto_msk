@@ -60,10 +60,11 @@ USE ieee.numeric_std.ALL;
 
 ENTITY ov_frame_decoder IS 
     GENERIC (
-        PAYLOAD_BYTES   : NATURAL := 134;   -- Output frame size
-        ENCODED_BYTES   : NATURAL := 268;   -- Input frame size
-        ENCODED_BITS    : NATURAL := 2144;  -- Encoded bits (268 * 8)
-        BYTE_WIDTH      : NATURAL := 8
+        PAYLOAD_BYTES       : NATURAL := 134;   -- Output frame size
+        ENCODED_BYTES       : NATURAL := 268;   -- Input frame size
+        ENCODED_BITS        : NATURAL := 2144;  -- Encoded bits (268 * 8)
+        BYTE_WIDTH          : NATURAL := 8;
+        USE_BIT_INTERLEAVER : BOOLEAN := TRUE   -- Must match encoder setting
     );
     PORT (
         clk             : IN  std_logic;
@@ -153,10 +154,22 @@ ARCHITECTURE rtl OF ov_frame_decoder IS
     SIGNAL decoder_input_g2   : std_logic_vector(2143 DOWNTO 0);
     SIGNAL decoder_output_buf : std_logic_vector(1071 DOWNTO 0);
 
-    -- Deinterleaver address calculation (reverse of interleaver)
+    -- Bit-level deinterleaver address calculation (67x32 - reverse of interleaver)
     FUNCTION deinterleave_address(addr : NATURAL) RETURN NATURAL IS
         CONSTANT ROWS : NATURAL := 67;
         CONSTANT COLS : NATURAL := 32;
+        VARIABLE row : NATURAL;
+        VARIABLE col : NATURAL;
+    BEGIN
+        row := addr MOD ROWS;
+        col := addr / ROWS;
+        RETURN row * COLS + col;
+    END FUNCTION;
+    
+    -- Byte-level deinterleaver address calculation (67x4 - reverse of byte interleaver)
+    FUNCTION deinterleave_address_byte(addr : NATURAL) RETURN NATURAL IS
+        CONSTANT ROWS : NATURAL := 67;
+        CONSTANT COLS : NATURAL := 4;
         VARIABLE row : NATURAL;
         VARIABLE col : NATURAL;
     BEGIN
@@ -290,16 +303,33 @@ BEGIN
                     
                     -- DEINTERLEAVE: Reverse the row-column shuffle
                     WHEN DEINTERLEAVE =>
-                        IF bit_idx < ENCODED_BITS THEN
-                            -- Unpack input_buffer bytes to bits
-                            deinterleaved_buffer(deinterleave_address(bit_idx)) <= 
-                                input_buffer(bit_idx / 8)(bit_idx MOD 8);
-                            bit_idx <= bit_idx + 1;
+                        IF USE_BIT_INTERLEAVER THEN
+                            -- BIT-LEVEL mode: Process 1 bit per clock (2144 clocks)
+                            IF bit_idx < ENCODED_BITS THEN
+                                -- Unpack input_buffer bytes to bits
+                                deinterleaved_buffer(deinterleave_address(bit_idx)) <= 
+                                    input_buffer(bit_idx / 8)(bit_idx MOD 8);
+                                bit_idx <= bit_idx + 1;
+                            ELSE
+                                REPORT "DEINTERLEAVE complete (bit-level)";
+                                byte_idx <= 0;
+                                bit_idx <= 0;
+                                state <= PREP_FEC_DECODE;
+                            END IF;
                         ELSE
-                            REPORT "DEINTERLEAVE complete";
-                            byte_idx <= 0;
-                            bit_idx <= 0;
-                            state <= PREP_FEC_DECODE;
+                            -- BYTE-LEVEL mode: Process 1 byte per clock (268 clocks)
+                            IF byte_idx < ENCODED_BYTES THEN
+                                FOR j IN 0 TO 7 LOOP
+                                    deinterleaved_buffer(deinterleave_address_byte(byte_idx)*8 + j) <= 
+                                        input_buffer(byte_idx)(j);
+                                END LOOP;
+                                byte_idx <= byte_idx + 1;
+                            ELSE
+                                REPORT "DEINTERLEAVE complete (byte-level)";
+                                byte_idx <= 0;
+                                bit_idx <= 0;
+                                state <= PREP_FEC_DECODE;
+                            END IF;
                         END IF;
                     
                     -- PREP_FEC_DECODE: Separate deinterleaved bits into G1 and G2 streams
