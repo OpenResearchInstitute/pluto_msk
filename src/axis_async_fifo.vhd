@@ -2,7 +2,7 @@
 -- AXIS-Compliant Asynchronous FIFO
 ------------------------------------------------------------------------------------------------------
 -- FIX v3: Proper three-state handling
--- State A: Becoming valid (empty→non-empty): Present first byte, assert tvalid
+-- State A: Becoming valid (empty?non-empty): Present first byte, assert tvalid
 -- State B: Handshake completes (tvalid='1', tready='1'): Advance pointer, present next byte
 -- State C: Valid but not consumed (tvalid='1', tready='0'): HOLD STABLE
 ------------------------------------------------------------------------------------------------------
@@ -60,6 +60,14 @@ END ENTITY axis_async_fifo;
 ARCHITECTURE rtl OF axis_async_fifo IS
 
     CONSTANT DEPTH : NATURAL := 2**ADDR_WIDTH;
+    
+    -- Frame-aware programmable full threshold
+    -- Alert when only fractional frame space remains, allowing N complete frames
+    -- to buffer without backpressure while maintaining elasticity for system response
+    CONSTANT FRAME_SIZE : NATURAL := 134;  -- OV frame payload size (bytes)
+    CONSTANT ALERT_THRESHOLD : NATURAL := DEPTH MOD FRAME_SIZE;  -- Remainder space
+    -- Example: 512-byte FIFO holds 3 full frames (402 bytes) + 110 bytes remainder
+    -- Alerts when ?110 bytes free, giving elasticity while protecting overflow
     
     -- Separate arrays for Block RAM inference
     TYPE ram_data_type IS ARRAY (0 TO DEPTH-1) OF std_logic_vector(DATA_WIDTH-1 DOWNTO 0);
@@ -174,8 +182,9 @@ BEGIN
                     full_int <= '0';
                 END IF;
                 
-                -- Programmable full
-                IF DEPTH - (unsigned(wr_ptr_bin) - unsigned(rd_ptr_bin_sync)) <= 512 THEN
+                -- Programmable full - frame-aware threshold
+                -- Alerts when free space drops below one fractional frame
+                IF DEPTH - (unsigned(wr_ptr_bin) - unsigned(rd_ptr_bin_sync)) <= ALERT_THRESHOLD THEN
                     prog_full_int <= '1';
                 ELSE
                     prog_full_int <= '0';
@@ -194,7 +203,7 @@ BEGIN
     ------------------------------------------------------------------------------
     -- Read Clock Domain - CORRECTED THREE-STATE LOGIC
     ------------------------------------------------------------------------------
-    -- State A: Becoming valid (tvalid_int='0' → '1'): Present first byte
+    -- State A: Becoming valid (tvalid_int='0' ? '1'): Present first byte
     -- State B: Handshake completes (tvalid='1', tready='1'): Advance, present next
     -- State C: Valid but stalled (tvalid='1', tready='0'): HOLD STABLE
     ------------------------------------------------------------------------------

@@ -314,10 +314,13 @@ BEGIN
                     WHEN FEC_DECODE =>
                         decoder_start <= '0';
                         IF decoder_done = '1' THEN
-                            -- Unpack decoded bits in FORWARD order
+                            -- Unpack decoded bits in REVERSE order to match encoder's bit reversal
+                            -- Viterbi traceback produces bits in reverse order, compensating for
+                            -- conv encoder's MSB-first processing, but we need to reverse again
+                            -- to match how encoder packed the input
                             FOR i IN 0 TO PAYLOAD_BYTES-1 LOOP
                                 FOR j IN 0 TO 7 LOOP
-                                    fec_decoded_buffer(i)(7-j) <= decoder_output_buf(i*8 + j);
+                                    fec_decoded_buffer(i)(j) <= decoder_output_buf(PAYLOAD_BYTES*8 - 1 - i*8 - j);
                                 END LOOP;
                             END LOOP;
                             byte_idx <= 0;

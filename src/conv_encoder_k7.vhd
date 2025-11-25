@@ -30,7 +30,8 @@ END ENTITY conv_encoder_k7;
 
 ARCHITECTURE rtl OF conv_encoder_k7 IS
 
-    TYPE state_t IS (IDLE, ENCODE_DATA, FLUSH_TRELLIS, COMPLETE);
+    -- TYPE state_t IS (IDLE, ENCODE_DATA, FLUSH_TRELLIS, COMPLETE);
+    TYPE state_t IS (IDLE, ENCODE_DATA, COMPLETE);
     SIGNAL state : state_t := IDLE;
     
     SIGNAL input_bit_count  : NATURAL RANGE 0 TO PAYLOAD_BYTES*8;
@@ -106,7 +107,7 @@ BEGIN
                 
                 WHEN ENCODE_DATA =>
                     -- Process 1,070 bits (stop 2 bits early for tail)
-                    IF input_bit_count < PAYLOAD_BYTES*8 - 2 THEN
+                    IF input_bit_count < PAYLOAD_BYTES*8 THEN
                         -- Read input bit (MSB first)
                         current_bit := input_buffer(PAYLOAD_BYTES*8 - 1 - input_bit_count);
                         
@@ -123,30 +124,31 @@ BEGIN
                         input_bit_count <= input_bit_count + 1;
                         output_bit_count <= output_bit_count + 2;
                     ELSE
-                        state <= FLUSH_TRELLIS;
-                        input_bit_count <= 0;
-                    END IF;
-
-                WHEN FLUSH_TRELLIS =>
-                    -- Add 2 tail bits (produces 4 encoded bits)
-                    IF input_bit_count < 2 THEN
-                        current_bit := '0';
-                        
-                        -- Compute outputs
-                        outputs := compute_outputs(current_bit, shift_reg);
-                        
-                        -- Store outputs
-                        out_buf(ENCODED_BYTES*8 - 1 - output_bit_count) <= outputs(1);
-                        out_buf(ENCODED_BYTES*8 - 2 - output_bit_count) <= outputs(0);
-                        
-                        -- Update shift register
-                        shift_reg := shift_reg(4 DOWNTO 0) & '0';
-                        
-                        input_bit_count <= input_bit_count + 1;
-                        output_bit_count <= output_bit_count + 2;
-                    ELSE
+                        -- state <= FLUSH_TRELLIS;
+                        -- input_bit_count <= 0;
                         state <= COMPLETE;
                     END IF;
+
+--                WHEN FLUSH_TRELLIS =>
+--                    -- Add 2 tail bits (produces 4 encoded bits)
+--                    IF input_bit_count < 2 THEN
+--                        current_bit := '0';
+--                        
+--                        -- Compute outputs
+--                        outputs := compute_outputs(current_bit, shift_reg);
+--                        
+--                        -- Store outputs
+--                        out_buf(ENCODED_BYTES*8 - 1 - output_bit_count) <= outputs(1);
+--                        out_buf(ENCODED_BYTES*8 - 2 - output_bit_count) <= outputs(0);
+--                        
+--                        -- Update shift register
+--                        shift_reg := shift_reg(4 DOWNTO 0) & '0';
+--                        
+--                        input_bit_count <= input_bit_count + 1;
+--                        output_bit_count <= output_bit_count + 2;
+--                    ELSE
+--                        state <= COMPLETE;
+--                    END IF;
                 
                 WHEN COMPLETE =>
                     done <= '1';

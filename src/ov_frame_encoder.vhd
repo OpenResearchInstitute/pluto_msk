@@ -41,14 +41,13 @@
 -- This module implements the TX path processing for OVP frames:
 --   1. Collects 134 bytes of payload from AXI-Stream input
 --   2. Applies randomization (XOR with fixed sequence)
---   3. Applies FEC (rate 1/2 convolutional - currently simple bit duplication)
---   4. Applies interleaving (67x32 row-column interleaver)
+--   3. Applies FEC (rate 1/2 convolutional encoding via conv_encoder_k7)
+--   4. Applies interleaving (67x32 row-column BIT interleaver)
 --   5. Outputs 268 bytes (2144 bits) via AXI-Stream
 --
--- BUGFIX (2025-11-18): Completely redesigned collection strategy
---                      - Collect ALL bytes into circular buffer
---                      - When tlast arrives, count back 134 bytes
---                      - This handles any FIFO latency/alignment naturally
+-- FIX (2025-11-24): Restored bit-level 67x32 interleaving
+--                   Byte-level interleaving broke protocol compatibility
+--                   Now processes 8 bits/clock for throughput (not 1 bit/clock)
 --
 ------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------
@@ -88,17 +87,14 @@ END ENTITY ov_frame_encoder;
 
 ARCHITECTURE rtl OF ov_frame_encoder IS
 
-    -- State machine
-    TYPE state_t IS (IDLE, COLLECT, EXTRACT, RANDOMIZE, PREP_FEC, FEC_ENCODE, PACK_FEC, INTERLEAVE, OUTPUT);
-    --TYPE state_t IS (IDLE, COLLECT, EXTRACT, RANDOMIZE, PREP_FEC, FEC_ENCODE, INTERLEAVE, OUTPUT);
+    -- State machine (no PACK_FEC needed with bit-level interleaving)
+    TYPE state_t IS (IDLE, COLLECT, EXTRACT, RANDOMIZE, PREP_FEC, FEC_ENCODE, INTERLEAVE, OUTPUT);
     SIGNAL state : state_t := IDLE;
     
     -- Buffer types
     TYPE byte_buffer_t IS ARRAY(0 TO PAYLOAD_BYTES-1) OF std_logic_vector(BYTE_WIDTH-1 DOWNTO 0);
     TYPE bit_buffer_t IS ARRAY(0 TO ENCODED_BITS-1) OF std_logic;
-    TYPE byte_interleave_buffer_t IS ARRAY(0 TO ENCODED_BYTES-1) OF std_logic_vector(7 DOWNTO 0);
 
-    
     -- Circular collection buffer (larger than needed to handle any transients)
     CONSTANT COLLECT_SIZE : NATURAL := 256;
     TYPE collect_buffer_t IS ARRAY(0 TO COLLECT_SIZE-1) OF std_logic_vector(BYTE_WIDTH-1 DOWNTO 0);
@@ -108,21 +104,13 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
     SIGNAL input_buffer       : byte_buffer_t;
     SIGNAL randomized_buffer  : byte_buffer_t;
     SIGNAL fec_buffer         : bit_buffer_t := (OTHERS => '0');
-    --SIGNAL interleaved_buffer : bit_buffer_t := (OTHERS => '0');
-    SIGNAL interleaved_buffer : byte_interleave_buffer_t := (OTHERS => (OTHERS => '0'));
-
-    TYPE fec_byte_buffer_t IS ARRAY(0 TO ENCODED_BYTES-1) OF std_logic_vector(7 DOWNTO 0);
-    SIGNAL fec_buffer_bytes   : fec_byte_buffer_t;
-
+    SIGNAL interleaved_buffer : bit_buffer_t := (OTHERS => '0');  -- BIT-level buffer!
 
     ATTRIBUTE ram_style : STRING;
-    --ATTRIBUTE ram_style OF collect_buffer : SIGNAL IS "block";
-    --ATTRIBUTE ram_style OF input_buffer : SIGNAL IS "block";
-    --ATTRIBUTE ram_style OF randomized_buffer : SIGNAL IS "block";
-    ATTRIBUTE ram_style OF interleaved_buffer : SIGNAL IS "register";
+    ATTRIBUTE ram_style OF interleaved_buffer : SIGNAL IS "distributed";
     
     -- Index counters
-    SIGNAL collect_idx : NATURAL RANGE 0 TO COLLECT_SIZE;  -- Where we're writing in collect_buffer
+    SIGNAL collect_idx : NATURAL RANGE 0 TO COLLECT_SIZE;
     SIGNAL byte_idx    : NATURAL RANGE 0 TO PAYLOAD_BYTES;
     SIGNAL bit_idx     : NATURAL RANGE 0 TO ENCODED_BITS;
     SIGNAL out_idx     : NATURAL RANGE 0 TO ENCODED_BYTES;
@@ -137,6 +125,7 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
     
     -- OVP Randomizer sequence (from OVP spec)
     TYPE randomizer_t IS ARRAY(0 TO PAYLOAD_BYTES-1) OF std_logic_vector(7 DOWNTO 0);
+    -- OVP Randomizer sequence (from protocol spec - must match decoder!)
     CONSTANT RANDOMIZER_SEQUENCE : randomizer_t := (
         x"A3", x"81", x"5C", x"C4", x"C9", x"08", x"0E", x"53",
         x"CC", x"A1", x"FB", x"29", x"9E", x"4F", x"16", x"E0",
@@ -157,30 +146,29 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
         x"9D", x"8E", x"E8", x"34", x"C9", x"59"
     );
 
-    -- Viterbi encoder signals
+    -- Convolutional encoder signals (matches conv_encoder_k7 interface)
     SIGNAL encoder_start      : std_logic := '0';
     SIGNAL encoder_busy       : std_logic;
     SIGNAL encoder_done       : std_logic;
     SIGNAL encoder_input_buf  : std_logic_vector(1071 DOWNTO 0);  -- 134*8
     SIGNAL encoder_output_buf : std_logic_vector(2143 DOWNTO 0);  -- 268*8
     
-    -- Interleaver address calculation (67 rows x 32 bit cols)
-    FUNCTION interleave_address_byte(byte_addr : NATURAL) RETURN NATURAL IS
+    -- BIT-LEVEL interleaver address calculation (67 rows x 32 cols)
+    -- This is the CORRECT algorithm - scatters bits across byte boundaries
+    FUNCTION interleave_address(addr : NATURAL) RETURN NATURAL IS
         CONSTANT ROWS : NATURAL := 67;
-        CONSTANT COLS : NATURAL := 4; --was 32 with bit level. 32/8 = 4
+        CONSTANT COLS : NATURAL := 32;
         VARIABLE row : NATURAL;
         VARIABLE col : NATURAL;
     BEGIN
-        --row := addr / COLS; -- bit level
-        --col := addr MOD COLS; -- bit level
-        row := byte_addr / COLS; -- byte version
-        col := byte_addr MOD COLS; -- byte version
+        row := addr / COLS;
+        col := addr MOD COLS;
         RETURN col * ROWS + row;
     END FUNCTION;
     
 BEGIN
 
-    -- Convolutional Encoder Instantiation
+    -- Convolutional Encoder Instantiation (using YOUR actual component)
     U_ENCODER : ENTITY work.conv_encoder_k7
         GENERIC MAP (
             PAYLOAD_BYTES => PAYLOAD_BYTES,
@@ -202,94 +190,63 @@ BEGIN
     m_axis_tlast  <= m_tlast_reg;
     
     frames_encoded <= std_logic_vector(frame_count);
+    encoder_active <= '1' WHEN state /= IDLE ELSE '0';
+    
+    -- Ready to accept data when IDLE or COLLECT
+    s_axis_tready <= '1' WHEN (state = IDLE OR state = COLLECT) AND aresetn = '1' ELSE '0';
     
     -- Main FSM
-    encoder_fsm: PROCESS(clk, aresetn)
-        VARIABLE extract_start : NATURAL;
-        VARIABLE extract_end   : NATURAL;
+    encoder_fsm: PROCESS(clk)
     BEGIN
-        IF aresetn = '0' THEN
-            state <= IDLE;
-            collect_idx <= 0;
-            byte_idx <= 0;
-            bit_idx <= 0;
-            out_idx <= 0;
-            s_axis_tready <= '0';
-            m_tvalid_reg <= '0';
-            m_tlast_reg <= '0';
-            frame_count <= (OTHERS => '0');
-            encoder_start <= '0';  -- Initialize FEC encoder control;
-            
-        ELSIF rising_edge(clk) THEN
-            IF aresetn = '1' THEN
+        IF rising_edge(clk) THEN
+            IF aresetn = '0' THEN
+                state <= IDLE;
+                collect_idx <= 0;
+                byte_idx <= 0;
+                bit_idx <= 0;
+                out_idx <= 0;
+                m_tvalid_reg <= '0';
+                m_tlast_reg <= '0';
+                encoder_start <= '0';
+                frame_count <= (OTHERS => '0');
+            ELSE
                 CASE state IS
-                
-                    -- IDLE: Wait for incoming data
+                    -- IDLE: Wait for start of frame
                     WHEN IDLE =>
-                        encoder_active <= '0';
-                        s_axis_tready <= '0';  -- Keep LOW in IDLE
                         m_tvalid_reg <= '0';
-                        collect_idx <= 0;
+                        m_tlast_reg <= '0';
+                        encoder_start <= '0';
                         
                         IF s_axis_tvalid = '1' THEN
+                            collect_buffer(0) <= s_axis_tdata;
+                            collect_idx <= 1;
                             state <= COLLECT;
-                            encoder_active <= '1';
-                            -- tready set HIGH in COLLECT state, not here
                         END IF;
                     
-                    -- COLLECT: Gather ALL bytes into circular buffer until tlast
-                    -- Don't worry about alignment - just collect everything
+                    -- COLLECT: Gather bytes until tlast
                     WHEN COLLECT =>
-                        s_axis_tready <= '1';
-                        
                         IF s_axis_tvalid = '1' THEN
-                            -- Store byte in circular buffer
                             collect_buffer(collect_idx MOD COLLECT_SIZE) <= s_axis_tdata;
-                            
-                            REPORT "COLLECT: collect_idx=" & INTEGER'IMAGE(collect_idx) & 
-                                   " data=0x" & INTEGER'IMAGE(to_integer(unsigned(s_axis_tdata))) &
-                                   " tlast=" & STD_LOGIC'IMAGE(s_axis_tlast)(2);
+                            collect_idx <= collect_idx + 1;
                             
                             IF s_axis_tlast = '1' THEN
-                                -- Frame boundary! Now extract the last 134 bytes
-                                REPORT "COLLECT: tlast at collect_idx=" & INTEGER'IMAGE(collect_idx);
-                                s_axis_tready <= '0';
-                                state <= EXTRACT;
                                 byte_idx <= 0;
-                            ELSE
-                                collect_idx <= collect_idx + 1;
+                                state <= EXTRACT;
                             END IF;
                         END IF;
                     
-                    -- EXTRACT: Copy the last 134 bytes from collect_buffer to input_buffer
-                    -- The frame ends at collect_idx, so we want bytes [collect_idx-133 : collect_idx]
+                    -- EXTRACT: Pull last 134 bytes from circular buffer
                     WHEN EXTRACT =>
                         IF byte_idx < PAYLOAD_BYTES THEN
-                            -- Calculate which byte in collect_buffer to read
-                            -- If collect_idx = 133, we want bytes [0:133]
-                            -- If collect_idx = 150, we want bytes [17:150]
-                            extract_start := (collect_idx + 1) - PAYLOAD_BYTES;
-                            extract_end := collect_idx;
-                            
-                            -- Copy byte from circular buffer
-                            input_buffer(byte_idx) <= collect_buffer((extract_start + byte_idx) MOD COLLECT_SIZE);
-                            
-                            IF byte_idx < 5 THEN
-                                REPORT "EXTRACT[" & INTEGER'IMAGE(byte_idx) & 
-                                       "] from collect_buffer[" & 
-                                       INTEGER'IMAGE((extract_start + byte_idx) MOD COLLECT_SIZE) & 
-                                       "] = 0x" & 
-                                       INTEGER'IMAGE(to_integer(unsigned(collect_buffer((extract_start + byte_idx) MOD COLLECT_SIZE))));
-                            END IF;
-                            
+                            input_buffer(byte_idx) <= 
+                                collect_buffer((collect_idx - PAYLOAD_BYTES + byte_idx) MOD COLLECT_SIZE);
                             byte_idx <= byte_idx + 1;
                         ELSE
-                            REPORT "EXTRACT complete, " & INTEGER'IMAGE(PAYLOAD_BYTES) & " bytes copied";
                             byte_idx <= 0;
                             state <= RANDOMIZE;
                         END IF;
                     
-                    -- RANDOMIZE: XOR with sequence
+                    -- RANDOMIZE: XOR with randomizer sequence
                     WHEN RANDOMIZE =>
                         IF byte_idx < PAYLOAD_BYTES THEN
                             randomized_buffer(byte_idx) <= 
@@ -297,59 +254,45 @@ BEGIN
                             byte_idx <= byte_idx + 1;
                         ELSE
                             byte_idx <= 0;
-                            bit_idx <= 0;
-                            state <= PREP_FEC;  -- Changed from FEC_ENCODE
+                            state <= PREP_FEC;
                         END IF;
                     
-WHEN PREP_FEC =>
-    -- Pack randomized_buffer MSB-first to match encoder's MSB-first reading
-    FOR i IN 0 TO PAYLOAD_BYTES-1 LOOP
-        FOR j IN 0 TO 7 LOOP
-            -- Put byte 0 at top of buffer, MSB of each byte first
-            encoder_input_buf(PAYLOAD_BYTES*8 - 1 - (i*8 + j)) <= randomized_buffer(i)(7-j);
-        END LOOP;
-    END LOOP;
-    encoder_start <= '1';
-    state <= FEC_ENCODE;
+                    -- PREP_FEC: Pack bytes into encoder input vector
+                    WHEN PREP_FEC =>
+                        FOR i IN 0 TO PAYLOAD_BYTES-1 LOOP
+                            FOR j IN 0 TO 7 LOOP
+                                encoder_input_buf(i*8 + j) <= randomized_buffer(i)(j);
+                            END LOOP;
+                        END LOOP;
+                        encoder_start <= '1';
+                        state <= FEC_ENCODE;
                     
-                    -- FEC_ENCODE: Wait for convolution encoder to complete
+                    -- FEC_ENCODE: Wait for convolutional encoder to complete
                     WHEN FEC_ENCODE =>
-                        encoder_start <= '0';  -- Clear start pulse
+                        encoder_start <= '0';
                         IF encoder_done = '1' THEN
                             -- Unpack encoded bits into fec_buffer
                             FOR i IN 0 TO ENCODED_BITS-1 LOOP
                                 fec_buffer(i) <= encoder_output_buf(ENCODED_BITS - 1 - i);  -- MSB-first
-                                --fec_buffer(i) <= encoder_output_buf(i);
                             END LOOP;
                             bit_idx <= 0;
                             state <= INTERLEAVE;
                         END IF;
-
-
-
-
-WHEN PACK_FEC =>
-    IF byte_idx < ENCODED_BYTES THEN
-        FOR i IN 0 TO 7 LOOP
-            fec_buffer_bytes(byte_idx)(i) <= fec_buffer(byte_idx * 8 + i);
-        END LOOP;
-        byte_idx <= byte_idx + 1;
-    ELSE
-        byte_idx <= 0;
-        state <= INTERLEAVE;
-    END IF;
-
-
-
                     
-                    -- INTERLEAVE: Row-column interleaving
+                    -- INTERLEAVE: Bit-level 67x32 interleaving
+                    -- Process 8 bits per clock for throughput (268 clocks total)
                     WHEN INTERLEAVE =>
-                        IF byte_idx < ENCODED_BYTES THEN
-                        --IF bit_idx < ENCODED_BITS THEN
-                            --interleaved_buffer(interleave_address(bit_idx)) <= fec_buffer(bit_idx);
-                            interleaved_buffer(interleave_address_byte(byte_idx)) <= fec_buffer_bytes(byte_idx);
-                            --bit_idx <= bit_idx + 1;
-                            byte_idx <= byte_idx + 1; 
+                        IF bit_idx < ENCODED_BITS THEN
+                            -- Write 8 bits in parallel to their interleaved positions
+                            interleaved_buffer(interleave_address(bit_idx + 0)) <= fec_buffer(bit_idx + 0);
+                            interleaved_buffer(interleave_address(bit_idx + 1)) <= fec_buffer(bit_idx + 1);
+                            interleaved_buffer(interleave_address(bit_idx + 2)) <= fec_buffer(bit_idx + 2);
+                            interleaved_buffer(interleave_address(bit_idx + 3)) <= fec_buffer(bit_idx + 3);
+                            interleaved_buffer(interleave_address(bit_idx + 4)) <= fec_buffer(bit_idx + 4);
+                            interleaved_buffer(interleave_address(bit_idx + 5)) <= fec_buffer(bit_idx + 5);
+                            interleaved_buffer(interleave_address(bit_idx + 6)) <= fec_buffer(bit_idx + 6);
+                            interleaved_buffer(interleave_address(bit_idx + 7)) <= fec_buffer(bit_idx + 7);
+                            bit_idx <= bit_idx + 8;
                         ELSE
                             out_idx <= 0;
                             state <= OUTPUT;
@@ -357,20 +300,24 @@ WHEN PACK_FEC =>
                         END IF;
                     
                     -- OUTPUT: Send 268 bytes via AXI-Stream
+                    -- Pack 8 bits from interleaved buffer into each output byte
                     WHEN OUTPUT =>
                         IF out_idx < ENCODED_BYTES THEN
-                            m_tdata_reg <= interleaved_buffer(out_idx);  -- Direct byte assignment!
-                            --m_tdata_reg(0) <= interleaved_buffer(out_idx * 8 + 0);
-                            --m_tdata_reg(1) <= interleaved_buffer(out_idx * 8 + 1);
-                            --m_tdata_reg(2) <= interleaved_buffer(out_idx * 8 + 2);
-                            --m_tdata_reg(3) <= interleaved_buffer(out_idx * 8 + 3);
-                            --m_tdata_reg(4) <= interleaved_buffer(out_idx * 8 + 4);
-                            --m_tdata_reg(5) <= interleaved_buffer(out_idx * 8 + 5);
-                            --m_tdata_reg(6) <= interleaved_buffer(out_idx * 8 + 6);
-                            --m_tdata_reg(7) <= interleaved_buffer(out_idx * 8 + 7);
+                            m_tdata_reg(0) <= interleaved_buffer(out_idx * 8 + 0);
+                            m_tdata_reg(1) <= interleaved_buffer(out_idx * 8 + 1);
+                            m_tdata_reg(2) <= interleaved_buffer(out_idx * 8 + 2);
+                            m_tdata_reg(3) <= interleaved_buffer(out_idx * 8 + 3);
+                            m_tdata_reg(4) <= interleaved_buffer(out_idx * 8 + 4);
+                            m_tdata_reg(5) <= interleaved_buffer(out_idx * 8 + 5);
+                            m_tdata_reg(6) <= interleaved_buffer(out_idx * 8 + 6);
+                            m_tdata_reg(7) <= interleaved_buffer(out_idx * 8 + 7);
                             
                             m_tvalid_reg <= '1';
-                            m_tlast_reg <= '1' WHEN out_idx = (ENCODED_BYTES - 1) ELSE '0';
+                            IF out_idx = (ENCODED_BYTES - 1) THEN
+                                m_tlast_reg <= '1';
+                            ELSE
+                                m_tlast_reg <= '0';
+                            END IF;
                             
                             IF m_axis_tready = '1' THEN
                                 IF out_idx = (ENCODED_BYTES - 1) THEN
