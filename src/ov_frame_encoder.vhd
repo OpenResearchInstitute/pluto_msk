@@ -5,6 +5,35 @@
 --   USE_BIT_INTERLEAVER = TRUE  : 67x32 bit-level (correct protocol, requires large FPGA)
 --   USE_BIT_INTERLEAVER = FALSE : 67x4 byte-level (fits PlutoSDR, breaks protocol compatibility)
 ------------------------------------------------------------------------------------------------------
+-- CRITICAL DESIGN PRINCIPLE: TLAST-DRIVEN FRAME COLLECTION
+------------------------------------------------------------------------------------------------------
+-- This encoder uses AXI-Stream TLAST signal to detect frame boundaries, NOT fixed byte counting!
+--
+-- WHY THIS MATTERS:
+--   When data flows continuously (e.g., FIFO buffering multiple frames), counting to a fixed
+--   number of bytes and ignoring tlast causes the encoder to "steal" bytes from the next frame.
+--   This creates cascading byte loss:
+--     Frame 3: Missing byte 0 (stolen during Frame 2 collection)
+--     Frame 4: Missing bytes 0-1 (stolen during Frame 3 collection)
+--     Frame 5: Missing bytes 0-2 (stolen during Frame 4 collection)
+--     ... continues until no more data available
+--
+-- CORRECT APPROACH (implemented here):
+--   1. IDLE state: Wait for first byte
+--   2. COLLECT state: Accept bytes until s_axis_tlast = '1' (frame boundary marker)
+--   3. Validate we got exactly PAYLOAD_BYTES (134)
+--   4. Process the complete frame through randomization, FEC, interleaving
+--   5. Pre-set s_axis_tready = '1' before returning to IDLE for next frame
+--
+-- This approach:
+--   ? Respects AXI-Stream protocol (tlast marks frame boundaries)
+--   ? Works with continuous data streams (FIFO buffering)
+--   ? Prevents byte stealing across frame boundaries
+--   ? Validates frame size for error detection
+--   ? Works for BOTH bit-level and byte-level interleaving modes
+--
+-- NEVER count to a fixed byte number and ignore tlast - this violates AXI-Stream protocol!
+------------------------------------------------------------------------------------------------------
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
@@ -14,7 +43,7 @@ ENTITY ov_frame_encoder IS
     GENERIC (
         PAYLOAD_BYTES       : NATURAL := 134;
         ENCODED_BYTES       : NATURAL := 268;
-        COLLECT_SIZE        : NATURAL := 4;
+        COLLECT_SIZE        : NATURAL := 4;      -- DEPRECATED: No longer used (kept for compatibility)
         ENCODED_BITS        : NATURAL := 2144;   -- Kept for compatibility
         BYTE_WIDTH          : NATURAL := 8;      -- Kept for compatibility
         USE_BIT_INTERLEAVER : BOOLEAN := TRUE    -- TRUE=bit-level(67x32), FALSE=byte-level(67x4)
@@ -65,15 +94,37 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
         x"9D", x"8E", x"E8", x"34", x"C9", x"59"
     );
 
+    ------------------------------------------------------------------------------
+    -- STATE MACHINE DESIGN PHILOSOPHY
+    ------------------------------------------------------------------------------
+    -- CRITICAL: This encoder uses TLAST-DRIVEN frame detection, NOT fixed byte counting!
+    --
+    -- WHY: AXI-Stream protocol uses tlast to mark frame boundaries. Ignoring tlast
+    --      causes the encoder to "steal" bytes from the next frame when data is
+    --      continuously available (e.g., from a buffering FIFO). This creates
+    --      cascading byte loss errors across multiple frames.
+    --
+    -- COLLECT state strategy:
+    --   1. Accept bytes one at a time
+    --   2. Store each byte in input_buffer[collect_idx]
+    --   3. Watch for s_axis_tlast = '1' (frame boundary)
+    --   4. When tlast seen, validate we got PAYLOAD_BYTES (134), then process
+    --
+    -- This works for BOTH byte-level and bit-level interleaving modes because:
+    --   - Collection only fills input_buffer
+    --   - Interleaving happens later (INTERLEAVE state) on FEC-encoded bits
+    --   - Interleaver type doesn't affect how we collect input bytes
+    --
+    -- NEVER count to a fixed number and ignore tlast - this violates AXI protocol!
+    ------------------------------------------------------------------------------
     TYPE state_t IS (
-        IDLE,
-        COLLECT,
-        EXTRACT,
-        RANDOMIZE,
-        PREP_FEC,
-        FEC_ENCODE,
-        INTERLEAVE,
-        OUTPUT
+        IDLE,       -- Wait for first byte of frame
+        COLLECT,    -- Gather bytes until tlast (AXI-Stream frame boundary marker)
+        RANDOMIZE,  -- XOR with randomizer sequence
+        PREP_FEC,   -- Prepare for convolutional encoding
+        FEC_ENCODE, -- Apply K=7 convolutional code
+        INTERLEAVE, -- Shuffle bits (bit-level) or bytes (byte-level) per generic
+        OUTPUT      -- Stream encoded frame to modulator
     );
     SIGNAL state : state_t := IDLE;
 
@@ -89,7 +140,7 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
     ATTRIBUTE ram_style OF interleaved_buffer : SIGNAL IS "block";
     
     -- Index counters
-    SIGNAL collect_idx : NATURAL RANGE 0 TO COLLECT_SIZE;
+    SIGNAL collect_idx : NATURAL RANGE 0 TO PAYLOAD_BYTES;  -- Now collects all bytes until tlast
     SIGNAL byte_idx    : NATURAL RANGE 0 TO PAYLOAD_BYTES;
     SIGNAL bit_idx     : NATURAL RANGE 0 TO ENCODED_BITS;
     SIGNAL out_idx     : NATURAL RANGE 0 TO ENCODED_BYTES;
@@ -317,44 +368,93 @@ BEGIN
             
             CASE state IS
                 
-                -- IDLE: Wait for input
+                ----------------------------------------------------------------------
+                -- IDLE: Wait for first byte of frame
+                ----------------------------------------------------------------------
+                -- Ready to accept data. When valid data arrives, capture first byte
+                -- and check for tlast (single-byte frame, unlikely but possible).
+                ----------------------------------------------------------------------
                 WHEN IDLE =>
-                    s_axis_tready_reg <= '1';
+                    s_axis_tready_reg <= '1';  -- Always ready in IDLE
                     m_axis_tvalid_reg <= '0';
                     m_axis_tlast_reg <= '0';
                     encoder_active_reg <= '0';
+                    
                     IF s_axis_tvalid = '1' AND s_axis_tready_reg = '1' THEN
+                        -- Capture first byte
                         input_buffer(0) <= s_axis_tdata;
                         collect_idx <= 1;
                         encoder_active_reg <= '1';
-                        state <= COLLECT;
-                    END IF;
-
-                -- COLLECT: Gather 4 bytes before proceeding
-                WHEN COLLECT =>
-                    IF s_axis_tvalid = '1' AND s_axis_tready_reg = '1' THEN
-                        input_buffer(collect_idx) <= s_axis_tdata;
-                        IF collect_idx = COLLECT_SIZE - 1 THEN
-                            collect_idx <= COLLECT_SIZE;  -- Continue from position 4, not 0
+                        
+                        -- Check for single-byte frame (shouldn't happen for 134-byte frames)
+                        IF s_axis_tlast = '1' THEN
                             s_axis_tready_reg <= '0';
-                            state <= EXTRACT;
+                            REPORT "Single-byte frame detected (unexpected)" SEVERITY WARNING;
+                            byte_idx <= 0;
+                            state <= RANDOMIZE;
                         ELSE
-                            collect_idx <= collect_idx + 1;
+                            state <= COLLECT;
                         END IF;
                     END IF;
 
-                -- EXTRACT: Continue collecting remaining bytes
-                WHEN EXTRACT =>
-                    IF collect_idx < PAYLOAD_BYTES THEN
-                        s_axis_tready_reg <= '1';
-                        IF s_axis_tvalid = '1' AND s_axis_tready_reg = '1' THEN
-                            input_buffer(collect_idx) <= s_axis_tdata;
+
+                ----------------------------------------------------------------------
+                -- COLLECT: Gather bytes until tlast (AXI-Stream frame boundary)
+                ----------------------------------------------------------------------
+                -- This is the CRITICAL state that prevents byte loss!
+                --
+                -- Strategy:
+                --   - Keep s_axis_tready = 1 (accept data)
+                --   - Capture each byte to input_buffer[collect_idx]
+                --   - Increment collect_idx
+                --   - WATCH FOR TLAST (frame boundary marker)
+                --   - When tlast seen, validate frame size and proceed to encoding
+                --
+                -- Why not count to 134 and ignore tlast?
+                --   Because when FIFO has next frame buffered, we'd keep accepting
+                --   bytes past the frame boundary, "stealing" from the next frame.
+                --   This causes cascading byte loss (Frame 3 missing byte 0, 
+                --   Frame 4 missing bytes 0-1, etc.)
+                --
+                -- TLAST is the ONLY reliable frame boundary in AXI-Stream protocol!
+                ----------------------------------------------------------------------
+                WHEN COLLECT =>
+                    s_axis_tready_reg <= '1';  -- Keep accepting data
+                    
+                    IF s_axis_tvalid = '1' AND s_axis_tready_reg = '1' THEN
+                        -- Capture byte
+                        input_buffer(collect_idx) <= s_axis_tdata;
+                        
+                        -- Check for frame boundary (tlast = end of frame)
+                        IF s_axis_tlast = '1' THEN
+                            -- Frame complete! Stop accepting data
+                            s_axis_tready_reg <= '0';
+                            
+                            -- Validate frame size (collect_idx is 0-indexed, so +1 for count)
+                            IF collect_idx + 1 /= PAYLOAD_BYTES THEN
+                                REPORT "Frame size mismatch: expected " & 
+                                       INTEGER'IMAGE(PAYLOAD_BYTES) & " bytes, got " & 
+                                       INTEGER'IMAGE(collect_idx + 1) & " bytes" 
+                                       SEVERITY WARNING;
+                            END IF;
+                            
+                            -- Proceed to randomization (even if size is wrong, try to process)
+                            byte_idx <= 0;
+                            state <= RANDOMIZE;
+                        ELSE
+                            -- Not end of frame yet, continue collecting
                             collect_idx <= collect_idx + 1;
+                            
+                            -- Safety check: prevent buffer overflow
+                            IF collect_idx >= PAYLOAD_BYTES - 1 THEN
+                                REPORT "Collected " & INTEGER'IMAGE(PAYLOAD_BYTES) & 
+                                       " bytes but tlast not seen yet! Frame too large!" 
+                                       SEVERITY ERROR;
+                                s_axis_tready_reg <= '0';
+                                byte_idx <= 0;
+                                state <= RANDOMIZE;  -- Try to process what we have
+                            END IF;
                         END IF;
-                    ELSE
-                        s_axis_tready_reg <= '0';
-                        byte_idx <= 0;
-                        state <= RANDOMIZE;
                     END IF;
 
                 -- RANDOMIZE: XOR with randomizer sequence
@@ -426,7 +526,12 @@ BEGIN
                         END IF;
                     END IF;
 
+                ----------------------------------------------------------------------
                 -- OUTPUT: Stream interleaved bytes to modulator
+                ----------------------------------------------------------------------
+                -- Send encoded frame one byte at a time via AXI-Stream.
+                -- Assert tlast on final byte to mark frame boundary.
+                ----------------------------------------------------------------------
                 WHEN OUTPUT =>
                     IF out_idx < ENCODED_BYTES THEN
                         IF m_axis_tready = '1' OR m_axis_tvalid_reg = '0' THEN
@@ -437,7 +542,7 @@ BEGIN
                             END LOOP;
                             m_axis_tvalid_reg <= '1';
                             
-                            -- Assert tlast on final byte
+                            -- Assert tlast on final byte (AXI-Stream frame boundary)
                             IF out_idx = ENCODED_BYTES - 1 THEN
                                 m_axis_tlast_reg <= '1';
                             ELSE
@@ -447,9 +552,16 @@ BEGIN
                             out_idx <= out_idx + 1;
                         END IF;
                     ELSE
+                        -- Frame output complete
                         IF m_axis_tready = '1' THEN
                             m_axis_tvalid_reg <= '0';
                             m_axis_tlast_reg <= '0';
+                            
+                            -- Pre-set ready for next frame BEFORE going to IDLE
+                            -- This ensures s_axis_tready is already high when we
+                            -- enter IDLE, preventing one-clock delay in handshake
+                            s_axis_tready_reg <= '1';
+                            
                             frames_encoded_reg <= frames_encoded_reg + 1;
                             collect_idx <= 0;
                             state <= IDLE;
