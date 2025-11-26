@@ -157,6 +157,8 @@ BEGIN
                 full_int <= '0';
                 tready_int <= '0';
                 prog_full_int <= '0';
+                rd_ptr_gray_sync1 <= (OTHERS => '0');
+                rd_ptr_gray_sync2 <= (OTHERS => '0');
                 
             ELSE
                 -- Synchronize read pointer
@@ -221,6 +223,8 @@ BEGIN
                 prog_empty_int <= '1';
                 m_axis_tdata <= (OTHERS => '0');
                 m_axis_tlast <= '0';
+                wr_ptr_gray_sync1 <= (OTHERS => '0');
+                wr_ptr_gray_sync2 <= (OTHERS => '0');
                 
             ELSE
                 -- Synchronize write pointer
