@@ -399,34 +399,34 @@ BEGIN
 	-- This will be corrected in Phase 2 when PS side is updated to send 134-byte frames
 	------------------------------------------------------------------------------------------------------
 	
---	u_ov_encoder : ENTITY work.ov_frame_encoder
---		GENERIC MAP (
---			PAYLOAD_BYTES => 134,
---			ENCODED_BYTES => 268,
---			ENCODED_BITS  => 2144,
---			BYTE_WIDTH    => 8,
---                        USE_BIT_INTERLEAVER => FALSE
---		)
---		PORT MAP (
---			clk             => clk,
---			aresetn         => NOT txinit,
---			
---			-- Input from FIFO
---			s_axis_tdata    => fifo_tdata,
---			s_axis_tvalid   => fifo_tvalid,
---			s_axis_tready   => fifo_tready,
---			s_axis_tlast    => fifo_tlast,
---			
---			-- Output to deserializer
---			m_axis_tdata    => encoder_tdata,
---			m_axis_tvalid   => encoder_tvalid,
---			m_axis_tready   => encoder_tready,
---			m_axis_tlast    => encoder_tlast,
---			
---			-- Status
---			frames_encoded  => tx_frames_encoded,
---			encoder_active  => tx_encoder_active
---		);
+	u_ov_encoder : ENTITY work.ov_frame_encoder
+		GENERIC MAP (
+			PAYLOAD_BYTES => 134,
+			ENCODED_BYTES => 268,
+			ENCODED_BITS  => 2144,
+			BYTE_WIDTH    => 8,
+                        USE_BIT_INTERLEAVER => FALSE
+		)
+		PORT MAP (
+			clk             => clk,
+			aresetn         => NOT txinit,
+			
+			-- Input from FIFO
+			s_axis_tdata    => fifo_tdata,
+			s_axis_tvalid   => fifo_tvalid,
+			s_axis_tready   => fifo_tready,
+			s_axis_tlast    => fifo_tlast,
+			
+			-- Output to deserializer
+			m_axis_tdata    => encoder_tdata,
+			m_axis_tvalid   => encoder_tvalid,
+			m_axis_tready   => encoder_tready,
+			m_axis_tlast    => encoder_tlast,
+			
+			-- Status
+			frames_encoded  => tx_frames_encoded,
+			encoder_active  => tx_encoder_active
+		);
 
 	-- Stage 4: Byte-to-Bit De-serializer (MSB-FIRST VERSION)
 	u_deserializer : ENTITY work.byte_to_bit_deserializer
@@ -438,15 +438,16 @@ BEGIN
 			init            => txinit,
 			
 			-- Input from encoder (was: from FIFO)
-			--s_axis_tdata    => encoder_tdata,
-			--s_axis_tvalid   => encoder_tvalid,
-			--s_axis_tready   => encoder_tready,
-			--s_axis_tlast    => encoder_tlast,
+			s_axis_tdata    => encoder_tdata,
+			s_axis_tvalid   => encoder_tvalid,
+			s_axis_tready   => encoder_tready,
+			s_axis_tlast    => encoder_tlast,
 
-                        s_axis_tdata    => fifo_tdata,
-                        s_axis_tvalid   => fifo_tvalid,
-                        s_axis_tready   => fifo_tready,
-                        s_axis_tlast    => fifo_tlast,
+                        -- if you want to bypass the encoder, then comment out encoder above and use this:
+                        --s_axis_tdata    => fifo_tdata,
+                        --s_axis_tvalid   => fifo_tvalid,
+                        --s_axis_tready   => fifo_tready,
+                        --s_axis_tlast    => fifo_tlast,
 
 			
 			tx_data         => tx_data_bit,

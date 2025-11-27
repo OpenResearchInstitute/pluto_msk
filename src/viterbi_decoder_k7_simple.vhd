@@ -43,8 +43,11 @@ ARCHITECTURE rtl OF viterbi_decoder_k7_simple IS
     SIGNAL state : state_t := IDLE;
     
     TYPE metric_array_t IS ARRAY(0 TO NUM_STATES-1) OF unsigned(METRIC_WIDTH-1 DOWNTO 0);
-    SIGNAL metrics_current : metric_array_t;
-    SIGNAL metrics_next : metric_array_t;
+    -- added initialization to try to get simulation to stop stalling on second frame
+    SIGNAL metrics_current : metric_array_t := (OTHERS => (OTHERS => '0'));
+    SIGNAL metrics_next : metric_array_t := (OTHERS => (OTHERS => '0'));
+    --SIGNAL metrics_current : metric_array_t;
+    --SIGNAL metrics_next : metric_array_t;
     
     --CONSTANT DECISION_DEPTH : INTEGER := NUM_SYMBOLS * NUM_STATES;
     --TYPE decision_mem_t IS ARRAY(0 TO DECISION_DEPTH-1) OF std_logic;
@@ -164,13 +167,16 @@ BEGIN
             busy <= '0';
             done <= '0';
             dec_wr_en <= '0';
+            time_step <= 0;                              
+            state_idx <= 0;                                
+            metrics_next <= (OTHERS => (OTHERS => '0')); 
             
         ELSIF rising_edge(clk) THEN
             done <= '0';
             dec_wr_en <= '0';
             
             CASE state IS
-            
+
                 WHEN IDLE =>
                     busy <= '0';
                     IF start = '1' THEN

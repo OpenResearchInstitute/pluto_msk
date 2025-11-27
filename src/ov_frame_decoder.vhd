@@ -51,6 +51,13 @@
 --                      - This handles FIFO timing issues naturally
 --                      - Never try to time the "first" byte arrival
 --
+-- VITERBI HANDSHAKE FIX (2025-11-26): Fixed race condition in PREP_FEC_DECODE
+--                      - decoder_start was only HIGH for 1 clock cycle
+--                      - If Viterbi was still in COMPLETE state, it missed the pulse
+--                      - Now holds decoder_start HIGH until decoder_busy='1'
+--                      - This ensures proper handshake regardless of Viterbi state
+--                      - Bug only appeared with back-to-back frames (no inter-frame gap)
+--
 ------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------
 
@@ -333,13 +340,25 @@ BEGIN
                         END IF;
                     
                     -- PREP_FEC_DECODE: Separate deinterleaved bits into G1 and G2 streams
+                    -- and start the Viterbi decoder with proper handshaking
                     WHEN PREP_FEC_DECODE =>
+                        -- Setup G1/G2 streams for Viterbi decoder
                         FOR i IN 0 TO ENCODED_BITS/2 - 1 LOOP
                             decoder_input_g1(i) <= deinterleaved_buffer(i*2);
                             decoder_input_g2(i) <= deinterleaved_buffer(i*2 + 1);
                         END LOOP;
+                        
+                        -- Assert start and WAIT for Viterbi to acknowledge via busy signal
+                        -- FIX: Previously decoder_start was only high for 1 clock cycle.
+                        -- If the Viterbi decoder was still in COMPLETE state (transitioning
+                        -- to IDLE), it would miss the start pulse entirely, causing the
+                        -- frame decoder to wait forever for decoder_done.
+                        -- Now we hold decoder_start high until decoder_busy confirms
+                        -- the Viterbi has accepted the request.
                         decoder_start <= '1';
-                        state <= FEC_DECODE;
+                        IF decoder_busy = '1' THEN
+                            state <= FEC_DECODE;
+                        END IF;
 
                     WHEN FEC_DECODE =>
                         decoder_start <= '0';
