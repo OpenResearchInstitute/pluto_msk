@@ -553,20 +553,19 @@ BEGIN
                         END IF;
                     ELSE
                         -- Frame output complete
-                        -- FIX: Deassert tvalid immediately, don't wait for tready!
-                        -- The last byte's handshake already completed (that's how we got here).
-                        -- Waiting for tready creates a race with the deserializer.
-                        m_axis_tvalid_reg <= '0';
-                        m_axis_tlast_reg <= '0';
-                        
-                        -- Pre-set ready for next frame BEFORE going to IDLE
-                        -- This ensures s_axis_tready is already high when we
-                        -- enter IDLE, preventing one-clock delay in handshake
-                        s_axis_tready_reg <= '1';
-                        
-                        frames_encoded_reg <= frames_encoded_reg + 1;
-                        collect_idx <= 0;
-                        state <= IDLE;
+                        IF m_axis_tready = '1' THEN
+                            m_axis_tvalid_reg <= '0';
+                            m_axis_tlast_reg <= '0';
+                            
+                            -- Pre-set ready for next frame BEFORE going to IDLE
+                            -- This ensures s_axis_tready is already high when we
+                            -- enter IDLE, preventing one-clock delay in handshake
+                            s_axis_tready_reg <= '1';
+                            
+                            frames_encoded_reg <= frames_encoded_reg + 1;
+                            collect_idx <= 0;
+                            state <= IDLE;
+                        END IF;
                     END IF;
                     
             END CASE;
