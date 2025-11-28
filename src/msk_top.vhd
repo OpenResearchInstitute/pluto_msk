@@ -328,6 +328,17 @@ ARCHITECTURE struct OF msk_top IS
         ATTRIBUTE dont_touch : STRING;
         ATTRIBUTE dont_touch OF u_async_fifo : LABEL IS "true";
         ATTRIBUTE dont_touch OF u_rx_async_fifo : LABEL IS "true";
+        ATTRIBUTE dont_touch OF u_ov_encoder : LABEL IS "true";
+        ATTRIBUTE dont_touch OF u_deserializer : LABEL IS "true";
+        ATTRIBUTE dont_touch OF tx_data_bit : SIGNAL IS "true";
+        ATTRIBUTE dont_touch OF fifo_tdata : SIGNAL IS "true";
+        ATTRIBUTE dont_touch OF fifo_tvalid : SIGNAL IS "true";
+        ATTRIBUTE dont_touch OF fifo_tready : SIGNAL IS "true";
+        ATTRIBUTE dont_touch OF fifo_tlast : SIGNAL IS "true";
+        ATTRIBUTE dont_touch OF encoder_tdata : SIGNAL IS "true";
+        ATTRIBUTE dont_touch OF encoder_tvalid : SIGNAL IS "true";
+        ATTRIBUTE dont_touch OF encoder_tready : SIGNAL IS "true";
+        ATTRIBUTE dont_touch OF encoder_tlast : SIGNAL IS "true";
 BEGIN 
 
 ------------------------------------------------------------------------------------------------------
