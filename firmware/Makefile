@@ -44,7 +44,7 @@ ifneq (1, ${PATCH})
 endif
 
 TARGET ?= pluto
-SUPPORTED_TARGETS:=pluto plutoplus e200
+SUPPORTED_TARGETS:=pluto plutoplus e200 libre
 #XSA_FILE ?= ori/bitstream/${TARGET}/system_top.xsa
 
 $(warning *** Building target $(TARGET),)
@@ -54,9 +54,9 @@ include scripts/$(TARGET).mk
 
 ifeq (, $(shell which dfu-suffix))
 $(warning "No dfu-utils in PATH consider doing: sudo apt-get install dfu-util")
-TARGETS = build/pluto.frm build/boot.frm 
+TARGETS = build/$(TARGET).frm build/boot.frm 
 else
-TARGETS = build/$(TARGET).dfu build/uboot-env.dfu build/pluto.frm  build/boot.dfu build/boot.frm 
+TARGETS = build/$(TARGET).dfu build/uboot-env.dfu build/$(TARGET).frm  build/boot.dfu build/boot.frm 
 endif
 
 ifeq ($(findstring $(TARGET),$(SUPPORTED_TARGETS)),)
@@ -199,7 +199,7 @@ else
 endif
 ### MSD update firmware file ###
 
-build/pluto.frm: build/$(TARGET).itb
+build/$(TARGET).frm: build/$(TARGET).itb
 	md5sum $< | cut -d ' ' -f 1 > $@.md5
 	cat $< $@.md5 > $@
 
@@ -235,6 +235,9 @@ endif
 ifeq ($(TARGET),e200)
 	cp build/zynq-e200.dtb 	$(SDIMGDIR)/devicetree.dtb
 endif	
+ifeq ($(TARGET),libre)
+	cp build/zynq-libre.dtb 	$(SDIMGDIR)/devicetree.dtb
+endif
 	cp build/uboot-env.txt  		$(SDIMGDIR)/uEnv.txt
 	cp build/rootfs.cpio.gz  		$(SDIMGDIR)/ramdisk.image.gz
 	mkimage -A arm -T ramdisk -C gzip -d $(SDIMGDIR)/ramdisk.image.gz $(SDIMGDIR)/uramdisk.image.gz
