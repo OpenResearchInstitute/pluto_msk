@@ -180,7 +180,18 @@ ENTITY msk_top_csr IS
 		tx_sync_f1			: out std_logic;
 		tx_sync_f2			: out std_logic;
 		pd_alpha1			: out std_logic_vector(17 DOWNTO 0);
-		pd_alpha2			: out std_logic_vector(17 DOWNTO 0)
+		pd_alpha2			: out std_logic_vector(17 DOWNTO 0);
+
+                -- Debug signals for TX path
+                tx_debug_encoder_tvalid  : IN std_logic;
+                tx_debug_encoder_tready  : IN std_logic;
+                tx_debug_fifo_tvalid     : IN std_logic;
+                tx_debug_fifo_tready     : IN std_logic;
+                tx_debug_tx_req          : IN std_logic;
+                tx_debug_encoder_tlast   : IN std_logic;
+                tx_debug_encoder_state   : IN std_logic_vector(2 DOWNTO 0)
+
+
 	);
 END ENTITY msk_top_csr;
 
@@ -363,15 +374,28 @@ BEGIN
     					  PORT MAP (clk, csr_init, frame_sync_errors_req, 	rx_frame_sync_err, 	hwif_in.rx_frame_sync_status.frame_sync_errors.next_q		);
 
     -- FIFO status reads
-	rx_async_fifo_status_req 					<= hwif_out.rx_async_fifo_rd_wr_ptr.data.swmod;
-	hwif_in.rx_async_fifo_rd_wr_ptr.data.we		<= rx_async_fifo_status_ack;
-    hwif_in.rx_async_fifo_rd_wr_ptr.data.next_q <= std_logic_vector(resize(unsigned(rx_async_fifo_wr_ptr), 16) &
-    																resize(unsigned(rx_async_fifo_rd_ptr), 16));
+	rx_async_fifo_status_req <= hwif_out.rx_async_fifo_rd_wr_ptr.data.swmod;
+	hwif_in.rx_async_fifo_rd_wr_ptr.data.we	<= rx_async_fifo_status_ack;
+    hwif_in.rx_async_fifo_rd_wr_ptr.data.next_q <= std_logic_vector(resize(unsigned(rx_async_fifo_wr_ptr), 16) & resize(unsigned(rx_async_fifo_rd_ptr), 16));
 
-	tx_async_fifo_status_req 					<= hwif_out.tx_async_fifo_rd_wr_ptr.data.swmod;
-	hwif_in.tx_async_fifo_rd_wr_ptr.data.we		<= tx_async_fifo_status_ack;
-    hwif_in.tx_async_fifo_rd_wr_ptr.data.next_q <= std_logic_vector(resize(unsigned(tx_async_fifo_wr_ptr), 16) &
-    																resize(unsigned(tx_async_fifo_rd_ptr), 16));
+	tx_async_fifo_status_req <= hwif_out.tx_async_fifo_rd_wr_ptr.data.swmod;
+	hwif_in.tx_async_fifo_rd_wr_ptr.data.we	<= tx_async_fifo_status_ack;
+    -- commented out by Abraxas3d to add more bits to the register in order to investigate transmitter stall
+    --hwif_in.tx_async_fifo_rd_wr_ptr.data.next_q <= std_logic_vector(resize(unsigned(tx_async_fifo_wr_ptr), 16) & resize(unsigned(tx_async_fifo_rd_ptr), 16));
+
+-- experimental register setup by Abraxas3d
+hwif_in.tx_async_fifo_rd_wr_ptr.data.next_q <=
+    tx_debug_encoder_tvalid &   -- bit 31
+    tx_debug_encoder_tready &   -- bit 30
+    tx_debug_fifo_tvalid &      -- bit 29
+    tx_debug_fifo_tready &      -- bit 28
+    tx_debug_tx_req &           -- bit 27
+    tx_debug_encoder_tlast &    -- bit 26
+    tx_debug_encoder_state &    -- bits 25:23
+    std_logic_vector(resize(unsigned(tx_async_fifo_wr_ptr), 10)) &  -- bits 22:13
+    "000" &                     -- bits 12:10 spare
+    std_logic_vector(resize(unsigned(tx_async_fifo_rd_ptr), 10));   -- bits 9:0
+
 
     -- Control from AXI to MDM
     u01s: cdc_resync PORT MAP (clk, csr_init, hwif_out.MSK_Init.txrxinit.value, 		  		txrxinit			);

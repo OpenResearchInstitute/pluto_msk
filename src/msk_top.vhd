@@ -190,6 +190,7 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL encoder_tlast    : std_logic;
 	SIGNAL tx_frames_encoded : std_logic_vector(31 DOWNTO 0);
 	SIGNAL tx_encoder_active : std_logic;
+        SIGNAL encoder_debug_state : std_logic_vector(2 DOWNTO 0);
 
 	SIGNAL tx_async_fifo_prog_full	: std_logic;
 	SIGNAL tx_async_fifo_prog_empty	: std_logic;
@@ -330,16 +331,35 @@ ARCHITECTURE struct OF msk_top IS
         ATTRIBUTE dont_touch OF u_rx_async_fifo : LABEL IS "true";
         ATTRIBUTE dont_touch OF u_ov_encoder : LABEL IS "true";
         ATTRIBUTE dont_touch OF u_deserializer : LABEL IS "true";
-        ATTRIBUTE dont_touch OF tx_data_bit : SIGNAL IS "true";
-        ATTRIBUTE dont_touch OF fifo_tdata : SIGNAL IS "true";
-        ATTRIBUTE dont_touch OF fifo_tvalid : SIGNAL IS "true";
-        ATTRIBUTE dont_touch OF fifo_tready : SIGNAL IS "true";
-        ATTRIBUTE dont_touch OF fifo_tlast : SIGNAL IS "true";
-        ATTRIBUTE dont_touch OF encoder_tdata : SIGNAL IS "true";
-        ATTRIBUTE dont_touch OF encoder_tvalid : SIGNAL IS "true";
-        ATTRIBUTE dont_touch OF encoder_tready : SIGNAL IS "true";
-        ATTRIBUTE dont_touch OF encoder_tlast : SIGNAL IS "true";
+        
+	--ATTRIBUTE dont_touch OF tx_data_bit : SIGNAL IS "true";
+        --ATTRIBUTE dont_touch OF fifo_tdata : SIGNAL IS "true";
+        --ATTRIBUTE dont_touch OF fifo_tvalid : SIGNAL IS "true";
+        --ATTRIBUTE dont_touch OF fifo_tready : SIGNAL IS "true";
+        --ATTRIBUTE dont_touch OF fifo_tlast : SIGNAL IS "true";
+        --ATTRIBUTE dont_touch OF encoder_tdata : SIGNAL IS "true";
+        --ATTRIBUTE dont_touch OF encoder_tvalid : SIGNAL IS "true";
+        --ATTRIBUTE dont_touch OF encoder_tready : SIGNAL IS "true";
+        --ATTRIBUTE dont_touch OF encoder_tlast : SIGNAL IS "true";
+
+        -- RX path protection (add after existing TX dont_touch attributes)
+        ATTRIBUTE dont_touch OF u_ov_decoder : LABEL IS "true";
+        ATTRIBUTE dont_touch OF u_rx_frame_sync : LABEL IS "true";
+        
+	--ATTRIBUTE dont_touch OF decoder_tdata : SIGNAL IS "true";
+        --ATTRIBUTE dont_touch OF decoder_tvalid : SIGNAL IS "true";
+        --ATTRIBUTE dont_touch OF decoder_tready : SIGNAL IS "true";
+        --ATTRIBUTE dont_touch OF decoder_tlast : SIGNAL IS "true";
+        --ATTRIBUTE dont_touch OF sync_det_tdata : SIGNAL IS "true";
+        --ATTRIBUTE dont_touch OF sync_det_tvalid : SIGNAL IS "true";
+        --ATTRIBUTE dont_touch OF sync_det_tready : SIGNAL IS "true";
+        --ATTRIBUTE dont_touch OF sync_det_tlast : SIGNAL IS "true";
+
+
+
 BEGIN 
+
+
 
 ------------------------------------------------------------------------------------------------------
 -- OPULENT VOICE TX FIFO CHAIN
@@ -436,7 +456,8 @@ BEGIN
 			
 			-- Status
 			frames_encoded  => tx_frames_encoded,
-			encoder_active  => tx_encoder_active
+			encoder_active  => tx_encoder_active,
+                        debug_state     => encoder_debug_state 
 		);
 
 	-- Stage 4: Byte-to-Bit De-serializer (MSB-FIRST VERSION)
@@ -960,7 +981,17 @@ BEGIN
 		tx_sync_f1			=> tx_sync_f1,
 		tx_sync_f2			=> tx_sync_f2,
 		pd_alpha1			=> pd_alpha1,
-		pd_alpha2			=> pd_alpha2
+		pd_alpha2			=> pd_alpha2,
+
+                -- Abraxas3d added these experimental signals for transmitter stall investigation
+                tx_debug_encoder_tvalid  => encoder_tvalid,
+                tx_debug_encoder_tready  => encoder_tready,
+                tx_debug_fifo_tvalid     => fifo_tvalid,
+                tx_debug_fifo_tready     => fifo_tready,
+                tx_debug_tx_req          => tx_req,
+                tx_debug_encoder_tlast   => encoder_tlast, 
+                tx_debug_encoder_state   => encoder_debug_state
+
 	);
 
 END ARCHITECTURE struct;
