@@ -176,8 +176,8 @@ ifeq ($(TARGET),e200)
 	unzip -l $@ | grep -q ps7_init || cp ../hdl/projects/pluto-ori-e200/e200.srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
 endif	
 ifeq ($(TARGET),libre)
-	bash -c "source $(VIVADO_SETTINGS) && make -C ../projects/libre && cp ../projects/libre/TARGETlibre/libre.sdk/system_top.xsa $@"
-	unzip -l $@ | grep -q ps7_init || cp ../projects/libre/TARGETlibre/libre.srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
+	bash -c "source $(VIVADO_SETTINGS) && make -C ../projects/libre TARGET= && cp ../projects/libre/libre.sdk/system_top.xsa $@"
+	unzip -l $@ | grep -q ps7_init || cp ../projects/libre/libre.srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
 endif
 #bash -c "source $(VIVADO_SETTINGS) && make -C ../hdl/projects/pluto-ori-plus"
 endif
