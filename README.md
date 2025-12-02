@@ -15,7 +15,7 @@ The following ORI library components are used as submodules to this repository:
 7. [Exponential Moving Average Filter](https://github.com/OpenResearchInstitute/lowpass_ema)
 
 ## Building
-In oder to build the FPGA bitstream, you first need to install Vivado. Recommended version is 2022.2. In this documentation and in the `Makefile`, the Vivado installation path is assumed to be `/opt/Xilinx/Vivado`. If it is in another directory, change the path in the steps below (for example, to `/tools/Xilinx/Vivado`) or create a symbolic link in `/opt` pointing to the actual installation directory. For example,
+In order to build the FPGA bitstream, you first need to install Vivado. Recommended version is 2022.2. In this documentation and in the `Makefile`, the Vivado installation path is assumed to be `/opt/Xilinx/Vivado`. If it is in another directory, change the path in the steps below (for example, to `/tools/Xilinx/Vivado`) or create a symbolic link in `/opt` pointing to the actual installation directory. For example,
 ```
 sudo ln -s /tools/Xilinx /opt/Xilinx
 ```
@@ -130,6 +130,8 @@ sys	39m46.236s
 | 0x84 |lowpass_ema_alpha1|               Exponential Moving Average Alpha              |
 | 0x88 |lowpass_ema_alpha2|               Exponential Moving Average Alpha              |
 | 0x8C |     rx_power     |                        Receive Power                        |
+| 0x90 |tx_async_fifo_rd_wr_ptr|            Tx async FIFO read and write pointers            |
+| 0x94 |rx_async_fifo_rd_wr_ptr|            Rx async FIFO read and write pointers            |
 
 
 See [MSK Top Regs](rdl/msk_top_regs.pdf) for detailed register definitions.
