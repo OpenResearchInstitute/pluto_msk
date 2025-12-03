@@ -176,7 +176,7 @@ ifeq ($(PLATFORM),e200)
 	unzip -l $@ | grep -q ps7_init || cp ../hdl/projects/pluto-ori-e200/e200.srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
 endif	
 ifeq ($(PLATFORM),libre)
-	bash -c "source $(VIVADO_SETTINGS) && make MAKEOVERRIDES= -C ../projects/libre && cp ../projects/libre/libre.sdk/system_top.xsa $@"
+	bash -c "source $(VIVADO_SETTINGS) && cd ../projects/libre && unset MAKEFLAGS && /usr/bin/make && cp libre.sdk/system_top.xsa ../../firmware/$@"
 	unzip -l $@ | grep -q ps7_init || cp ../projects/libre/libre.srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
 endif
 #bash -c "source $(VIVADO_SETTINGS) && make -C ../hdl/projects/pluto-ori-plus"
