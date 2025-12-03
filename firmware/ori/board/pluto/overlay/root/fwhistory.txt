@@ -1,3 +1,229 @@
+e2a45a7 - Sun Nov 30 23:20:46 2025 -0800 : transmitter stall resolved. had 134 as loop limit when needed 268.
+77336cb - Thu Nov 27 18:35:05 2025 -0800 : Prevent Vivado from optimizing away data paths. I think synthesis was tracing through the PRBS mux and determining that the entire TX data path was unused, and then removed the deserializer, the encoder_tdata buses, fifo_tadatoutputs (which gave a no routable loads warning that tipped me off) and tx_data_bit signal. Added do not touch attributes to preserve evertyhing. This may have been the reason we were stalling.
+501c991 - Thu Nov 27 16:30:10 2025 -0800 : Revert "Change the encoder to deassert tvalid unconditionally after frame completion. Don't wait for tready." because it did not work in simulation.
+44356f2 - Thu Nov 27 16:26:25 2025 -0800 : Change the encoder to deassert tvalid unconditionally after frame completion. Don't wait for tready.
+cd5f27c - Thu Nov 27 11:03:52 2025 -0800 : decoder created a stall with no gaps between frames. this is a fix for that. works in encoder-decoder testbench and end-to-end testbench.
+247bead - Wed Nov 26 08:40:30 2025 -0800 : experiment to isolate encoder as source of lab hardware transmitter stall
+2cc8fa5 - Tue Nov 25 09:56:43 2025 -0800 : simulation now working with yet again the count back from tlast method working for us. added a lot of comments about this to the source code.
+a563e0a - Mon Nov 24 19:41:21 2025 -0800 : simulation looks good for byte level interleaver. byte vs bit now optional.
+184aa7d - Mon Nov 24 18:49:17 2025 -0800 : works in simulation, comes under LUT limit for PLUTO, but doesn't route. Right before generate byte vs bit interleaver option installed.
+dbc5a1f - Mon Nov 24 17:31:36 2025 -0800 : end to end data corruption resolved. input equals output.
+af474e7 - Sun Nov 23 12:46:56 2025 -0800 : seg fault resolved. needs testing on full test bench on mymelody.
+e4ce3c2 - Thu Nov 20 22:36:48 2025 -0800 : input matches output but firmware build seg faults. Please send help.
+8ba0705 - Thu Nov 20 14:29:21 2025 -0800 : hard decision Viterbit decoder installed and input data equals output data to modem. Randomization, FEC, Interleaving all working as intended.
+eae5b60 - Wed Nov 19 23:45:26 2025 -0800 : added hard decision convolutional encoder and decoder
+f9b7ab0 - Wed Nov 19 08:04:14 2025 -0800 : new encoder and decoder files added to the list in msk_top_ip.tcl
+e0ddf29 - Tue Nov 18 22:21:07 2025 -0800 : data now good in loopback - defeated tricky FIFO to encoder timing bug
+7708fd8 - Mon Nov 17 20:03:41 2025 -0800 : encoder and decoder tested in loopback and pass. encoder and decoder then installed in msk_top.vhd. Compiles clean.
+628ca20 - Fri Nov 14 18:00:14 2025 -0800 : Improved reset of FIFO read and write pointers. Works in sim and hardware.
+6174fd3 - Fri Nov 14 14:05:07 2025 -0700 : rdl: update frame sync status register descriptions.
+19c15f1 - Wed Nov 12 22:38:44 2025 -0700 : rdl: update outputs
+cfd64ea - Wed Nov 12 21:30:12 2025 -0700 : rdl: add requested rx frame sync status register
+1c55316 - Tue Nov 11 20:42:45 2025 -0800 : Clean up signal initializations in AXIS components
+ffc877c - Tue Nov 11 20:22:32 2025 -0800 : Merge initialization cleanup from test-init-removal Clean up signal initializations following FPGA best practices. All signals now properly reset-initialized with clear documentation.
+7948a30 - Tue Nov 11 20:20:58 2025 -0800 : Remove unnecessary signal initializations and fix missing counter resets
+18ed769 - Tue Nov 11 18:49:02 2025 -0800 : Revert frame_sync_detector.vhd - initialization changes inadvertently moved byte_shift_reg shifting inside state machine, causing data corruption
+7d7a5f0 - Tue Nov 11 15:53:16 2025 -0800 : Merge branch 'peakrdl' of https://github.com/OpenResearchInstitute/pluto_msk into peakrdl
+5976835 - Tue Nov 11 15:47:33 2025 -0800 : resolved issue number 22 with comments to distinguish between signals that must be initialized and signals where the initialization can and was removed
+a767c1c - Sat Nov 8 10:12:54 2025 -0700 : rdl: output artifacts
+0cf8b61 - Sat Nov 8 10:11:11 2025 -0700 : rdl: register description improvements
+6aeaa74 - Sat Nov 8 01:39:25 2025 -0800 : SYNC_TRANSFER_START is asking for a separate external sync signal, not using TLAST as a trigger. TLAST already works automatically with the AXIS DMA. It marks frame boundaries and the DMA respects it without needing any special config. SYNC_TRANSFER_START was erroneously set to TRUE, which overrode the FALSE setting in the ADC DMA block in system_bd.tcl. Once this was fixed, rx_buffer_refill() no longer timed out and data is being seen by the processor side application.
+9eb101e - Fri Nov 7 23:00:32 2025 -0800 : Add XSim testbench support with PeakRDL compatibility
+169f9bd - Fri Nov 7 13:07:32 2025 -0800 : merging edits from main to peakrdl, resolving conflicts to include the debug registers from sync_detect, and publishing the updated branch
+0613fd1 - Fri Nov 7 12:51:55 2025 -0800 : Reset hdl submodule to match main
+1e2defc - Fri Nov 7 10:10:12 2025 -0800 : Merge pull request #21 from OpenResearchInstitute/sync_detect
+a908758 - Thu Nov 6 11:08:42 2025 -0700 : sim: add readback of power register
+eadbfcb - Thu Nov 6 11:07:54 2025 -0700 : rdl: update register descriptions, add HTML output
+4641dc5 - Tue Nov 4 20:57:11 2025 -0800 : Fix critical async FIFO bugs causing frame corruption. Remove 3-byte safety margin that prevented last bytes from being read, fix stale tvalid_int causing runaway read pointer, remove becoming_empty check that blocked last byte output, clear TLAST when FIFO becomes empty
+17471be - Tue Nov 4 19:41:07 2025 -0800 : potential fix
+fce224f - Tue Nov 4 12:22:17 2025 -0700 : rdl: update descriptions for write-to-capture registers
+e0dd889 - Tue Nov 4 11:47:28 2025 -0700 : rdl: move away from external registers to a write to capture model
+5ce1cee - Tue Nov 4 00:00:05 2025 -0800 : first byte of first frame was crushed! bug that caused it was then crushed.
+b9c4c36 - Mon Nov 3 11:29:14 2025 -0800 : set safety margin to zero without any other changes
+3df04a7 - Thu Oct 30 12:31:04 2025 -0700 : Fix hdl submodule pointer to correct stable commit 1978df298
+bc8ebdf - Thu Oct 30 12:20:26 2025 -0700 : reset the shift register to zero right before VERIFYING_SYNC
+56cce9d - Thu Oct 30 12:09:26 2025 -0700 : Merge pull request #18 from OpenResearchInstitute/fix-hdl-submodule-revert
+c150319 - Wed Oct 29 13:42:51 2025 -0700 : Update msk_demodulator to e837e29 (includes rx_dec_lbk_ena)
+39642f7 - Wed Oct 29 13:25:43 2025 -0700 : Also revert msk_demodulator to 6b3e9bd (fixes costas_loop.vhd missing file)
+3ed613c - Wed Oct 29 12:57:34 2025 -0700 : Revert hdl submodule to 1978df2 (fixes build breakage from 2c5e472 conferred with KB5MU)
+dc22efd - Wed Oct 29 00:55:10 2025 -0600 : Update regmap in README.md
+4c3e9b2 - Tue Oct 28 07:21:23 2025 -0700 : flywheel frame synchronization starting to work
+86943dd - Mon Oct 27 19:10:56 2025 -0700 : added cdc_resync.vhd pulse_detect.vhd and data_capture.vhd to add ip files list in librar/msk_top_ip.tcl
+d821407 - Mon Oct 27 18:54:16 2025 -0700 : vhdl2008 added to msk_top_regs.vhd. Should be the last one?
+cfe0a80 - Mon Oct 27 18:45:26 2025 -0700 : vhdl2008 added to reg_utils.vhd to resolve errors
+e3c30b9 - Mon Oct 27 18:38:30 2025 -0700 : cast the wrong spell but fixed it to /rdl/outputs/rtl/msk_top_regs.vhd
+5266d12 - Mon Oct 27 18:30:08 2025 -0700 : changed path from rdl/vhdl/msk_top_regs/ to rdl/outputs/rtl
+0550e64 - Mon Oct 27 18:23:37 2025 -0700 : removed desyrdl package from /library/msk_top_ip.tcl build script
+a56c29b - Mon Oct 27 18:22:41 2025 -0700 : added reg_utils.vhd to /library/msk_top_ip.tcl build script
+bdac6a3 - Mon Oct 27 18:57:00 2025 -0600 : Remove rdl/vhdl folder and contents, revert USE library to work.msk_top_regs_pkg in msk_top_csr.vhd
+86fd5cb - Mon Oct 27 17:47:19 2025 -0700 : changed sync word from concatenated Barker code with PSLR of 3:1 to an optimized 24 bit sequence that has a PSLR of 8:1
+3558ba2 - Mon Oct 27 17:16:21 2025 -0700 : there was a name mismatch so I changed it to match like this: USE work.axi4lite_intf_pkg.ALL; --USE work.msk_top_regs_pkg.ALL; USE work.pkg_msk_top_regs.ALL;
+b23e0f8 - Mon Oct 27 17:05:08 2025 -0700 : putting read_vhdl pkg_msk_top_regs.vhd up above, and making sure 2008 is called out for /axi4lite_intf_pkg.vhd
+a0e1f6f - Mon Oct 27 16:34:44 2025 -0700 : added /rdl/src/axi4lite_intf_pkg.vhd to the IP list in /pluto_msk/library/msk_top_ip.tcl
+5da15eb - Mon Oct 27 16:22:24 2025 -0700 : added = '1' to rd_status_req_sync2 test in order to gresolve implicit type cast from std_logic to boolean. Now make will work.
+ccd7b74 - Mon Oct 27 16:14:29 2025 -0700 : added the = '1' so implicit type casting from std_logic to boolean won't derail the firmware build
+4923b1f - Sun Oct 26 23:55:56 2025 -0600 : Fix fifo pointer read
+ca022b9 - Sun Oct 26 23:35:31 2025 -0600 : Add read back of async FIFO read/write pointers
+3cf82bb - Sun Oct 26 21:46:34 2025 -0600 : Resolve merge/rebase conflicts
+860deae - Sun Oct 26 20:46:59 2025 -0600 : CDC updates for CSRs and PeakRDL transition complete
+7e15c4a - Sat Oct 25 23:17:28 2025 -0600 : Switch from desyrdl to peakrdl for sysrdl
+80de180 - Fri Oct 24 18:41:43 2025 -0700 : Merge pull request #16 from OpenResearchInstitute/sync_detect
+844df58 - Fri Oct 24 17:52:32 2025 -0700 : converted from LSB to MSB because pain
+0893335 - Fri Oct 24 00:19:34 2025 -0700 : clean up m_axis interface to try to get Dialogus to notice it. Didn't seem to work. Simulation looks pretty good.
+dc55ddb - Thu Oct 23 22:22:25 2025 -0700 : m_axis_tlast at proper rate
+3e28193 - Thu Oct 23 20:17:51 2025 -0700 : new state machine instead of boolean to fix receive framing AXIS comms
+a0ea65f - Thu Oct 23 20:12:07 2025 -0700 : receiver to PS FIFO re-reading old data bug fix
+4054a0e - Thu Oct 23 18:08:18 2025 -0700 : Merge pull request #15 from OpenResearchInstitute/sync_detect
+81f762c - Thu Oct 23 17:03:10 2025 -0700 : prog_empty going high in Arizona desert fixed in sim
+64c8120 - Wed Oct 22 22:29:41 2025 -0700 : increase FIFO size temporarily to rule in or out FIFO management problem
+e522861 - Wed Oct 22 22:13:54 2025 -0700 : attempting to put the FIFOs in BRAM with block attributes
+ebc47ab - Wed Oct 22 20:18:48 2025 -0700 : output_active was being multiply driven, and with this commit, it is now acting the way we intended. This might be causing the hardware failures we are observing. It did not cause a simulation failure because the result was X, and in simulations, those propagate through the sim and don't stop anything from working.
+9712241 - Tue Oct 21 23:04:00 2025 -0700 : set up internal signals for prog_full and prog_empty to gate behavior
+a2dbdde - Tue Oct 21 22:11:19 2025 -0700 : now using prog_full instead of hard limit for FIFO backpressure
+51c60ef - Tue Oct 21 20:36:21 2025 -0700 : backpressure from msk_top to DMA controller to processor side added
+2caa3fe - Tue Oct 21 07:13:21 2025 -0700 : Frame sync detect beginning to work
+7fb9def - Fri Oct 17 23:07:52 2025 -0700 : sync word detect compiles cleanly and now we are figuring out how to manage receive buffer before the sync word is detected
+53e9e65 - Fri Oct 17 16:47:43 2025 -0700 : Merge pull request #14 from OpenResearchInstitute/axis_fifo
+72c4cfa - Thu Oct 16 22:22:02 2025 -0700 : bit order now correct and sync word visually verified in receive buffer in Dialogus
+5d60cea - Thu Oct 16 21:32:23 2025 -0700 : bit counter correctly initialized, but the bit order is reversed from what it should be.
+83b1c67 - Thu Oct 16 18:06:13 2025 -0700 : Add AXI stream frame-based transmission with continuous TVALID flow control. Implements Opulent Voice protcol support with lowest byte extraction from the DMA transfer, implements a dual-clock FIFO to handle clock domain crossing and TLAST for frame boundaries, and prepends the 3 byte sync word. Original parallel to serial converter in msk_top.vhd was replaced. The differential loopback encoder loopback ports were connected. The design was validated in tb_msk_frame_axistream_debug.vhd testbench, with continuous TVALID behavior matching DMA operation, 10 frames tested through the 2048 FIFO, backpressure and flow control validated, and verified zero data loss, proper TREADY toggling when capacity was reached. Waveforms were captured and the FIFO internal state was checked. There are some new files and the system_bd.tcl and ip files were updated. s_axis port names still need to be standardized (s_axis_valid vs s_axis_tvalid), the FIFO is kind of large. It might could be reduced in size. Differential decoder might need some checking. Frame sync word detection on RX side not yet implemented. Tested in simulation and in PLUTO SDR hardware with Dialogus.
+aa68694 - Sun Oct 12 00:45:45 2025 -0600 : Fix tx_bit_counter to count modem bit requests
+4e20ac7 - Sat Oct 11 22:37:02 2025 -0600 : Fix bug in parallel to serial converter
+8e60dd5 - Fri Oct 10 14:33:51 2025 -0700 : Merge pull request #12 from OpenResearchInstitute/thirty_two_bit
+468a599 - Fri Oct 10 14:30:24 2025 -0700 : Merge main into thirty_two_bit, use main's msk_demodulator version
+2c5e472 - Fri Oct 10 13:47:24 2025 -0700 : Update submodule references
+b38b542 - Thu Oct 9 23:41:44 2025 -0600 : New differential encoder; differential encoder loopback
+246de80 - Tue Oct 7 18:08:29 2025 -0700 : DMAC source and destination addresses changed from 64 to 32 and S_AXIS_DATA_W changed from 64 to 32, to match Dialogus, allow for TLAST without requiring TKEEP for 134 byte frame, and to match DVB-S2 encoder data width.
+1c18ff4 - Thu Mar 27 20:51:03 2025 -0600 : mod: update for sequencer
+3d8949a - Thu Feb 13 03:05:55 2025 +0000 : Update system_project.tcl to configure ILA insertion
+5400418 - Thu Feb 13 00:39:14 2025 +0000 : Set ADI CONFIG variables to leave out unused modules which should increase space for the MSK design
+96b804f - Tue Feb 11 18:39:43 2025 -0700 : EMA: Refactor code to more optimally map operations onto Zynq DSP slice
+070bdea - Tue Feb 11 10:46:58 2025 -0700 : PD: Added GENERIC to enable cascaded EMAs
+7df7081 - Mon Feb 10 16:27:40 2025 -0700 : EMA: Fix average_ena signal and remove VHDL 2008 constructs
+3f8e522 - Mon Feb 10 20:43:43 2025 +0000 : LIB: Update modules list in msk_top_ip.tcl
+34ad475 - Mon Feb 10 20:35:27 2025 +0000 : LIB: Update Makefile to build lowpass_ema and power_detector; PROJ: Connect complex I/Q inputs from DAC to msk_top
+24cfa33 - Mon Feb 10 17:55:40 2025 +0000 : Update .gitmodules
+11f3262 - Sat Feb 8 22:08:49 2025 -0700 : EMA: Update README.md contents
+cf8452b - Sat Feb 8 22:04:17 2025 -0700 : PD: add README.md contents
+229b312 - Sat Feb 8 17:39:32 2025 -0700 : Add lowpass_ema and power_detector submodules
+16f581f - Sat Feb 8 17:36:58 2025 -0700 : MOD: add tx sync transmission; TOP: integrate IQ power detector
+7a26f7b - Fri Jan 24 05:15:28 2025 +0000 : Connect tx_samples_q output to DAC Q input
+a943cbc - Tue Jan 21 20:16:57 2025 -0700 : MSK_TOP: updates for quadrature I/Q outputs
+43c3c3f - Tue Jan 21 20:14:17 2025 -0700 : DEMOD: Update block diagrams with Q-notation
+0bd4e1e - Tue Jan 21 20:12:45 2025 -0700 : MOD: Modulate both sin and cos from NCO to create quadrature I/Q outputs
+e931fa5 - Tue Jan 21 20:10:05 2025 -0700 : PI: add block diagram with Q-notation
+b182430 - Sat Dec 14 23:36:15 2024 -0700 : Replace Massey's sequencer/decoder with Hodgart's differential encoder/decoder. Other minor updates.
+5ce1507 - Tue Dec 3 20:45:31 2024 -0700 : Add observation points for F1/F2 NCO adjustment and loop error
+8ee4509 - Tue Nov 26 22:34:18 2024 -0700 : Remove merge leftovers
+112b90d - Mon Nov 25 16:54:59 2024 -0700 : Update batch_insert_ila.tcl script path
+9a69b43 - Mon Nov 25 13:25:39 2024 -0700 : Update msk_top_regs.pdf
+5ebb6ea - Mon Nov 25 13:24:44 2024 -0700 : Merge branch 'debug'
+00abec6 - Mon Nov 25 13:03:30 2024 -0700 : Update README.md
+b89fc61 - Mon Nov 25 11:53:45 2024 -0700 : Add wider PI gains and programmable shift for division by 2^-n
+954a9d8 - Mon Nov 25 11:52:03 2024 -0700 : Add wider PI gains and programmable shift for division by 2^-n
+d501758 - Tue Nov 19 14:00:51 2024 -0700 : simulation update
+2a65906 - Tue Nov 19 13:46:47 2024 -0700 : pi controller: update to scale coefficients by 1/4096 rather than 1/256
+e18061a - Tue Nov 19 13:46:21 2024 -0700 : demod and costas: update error accumulator to only accumulator on effective sample clock
+e392c9d - Tue Nov 19 13:44:43 2024 -0700 : top: update sample discard logic and sample clock generation
+56b4e23 - Tue Nov 19 13:47:01 2024 -0700 : Simulation updates
+779a939 - Tue Nov 19 13:46:47 2024 -0700 : pi controller: update to scale coefficients by 1/4096 rather than 1/256
+9991412 - Tue Nov 19 13:46:21 2024 -0700 : demod and costas: update error accumulator to only accumulator on effective sample clock
+2e50913 - Tue Nov 19 13:44:43 2024 -0700 : top: update sample discard logic and sample clock generation
+d542a97 - Tue Nov 12 12:08:25 2024 -0700 : MSK_MOD: add signals for ILA
+3a25d23 - Tue Nov 12 00:20:13 2024 -0700 : MSK_MOD: Update mark_debug* attributes
+7cecf51 - Mon Nov 11 20:11:12 2024 -0700 : Split Init into separate Tx and Rx Inits, as well as a 'global' init that asserts both Tx and Rx. Bit 0 of the MSK_Init register will still Init both Tx and Rx, so this is not a breaking change
+2f76b0f - Mon Nov 11 20:11:12 2024 -0700 : Split Init into separate Tx and Rx Inits, as well as a 'global' init that asserts both Tx and Rx. Bit 0 of the MSK_Init register will still Init both Tx and Rx, so this is not a breaking change
+19ea33e - Wed Nov 6 14:38:49 2024 -0700 : MSK_MOD: Fix mark_debug_depth  attribute
+2ec606c - Wed Nov 6 13:10:53 2024 -0700 : Add ILA script and updated msk_modulator with ILA attributes included.
+6bbf013 - Mon Nov 4 22:05:28 2024 -0700 : Fix RDL for new register width and rw setting
+96a0401 - Sun Nov 3 16:28:35 2024 -0700 : MSK_DEMOD:Add NCO sample discard capability, move tclk_dly assignment out of IF statement
+f32b4fd - Sun Nov 3 16:26:03 2024 -0700 : MSK_MOD: Set discard_nco inputs to NCO to 0.
+46fed46 - Sun Nov 3 16:25:07 2024 -0700 : PI: Updated P-gain divider from 16 to 256
+f8c6ce3 - Sun Nov 3 16:06:56 2024 -0700 : NCO: add sample discard
+634aab1 - Sun Nov 3 16:06:17 2024 -0700 : Update simulation
+5d5bbf1 - Sun Nov 3 16:05:26 2024 -0700 : MSK_TOP: update Rx sample discard logic
+c781942 - Sun Nov 3 16:04:27 2024 -0700 : Added register for Rx NCO sample discard, moved Rx sample discard to same register.
+b783e04 - Mon Oct 28 23:30:24 2024 -0600 : Simulation updates
+07de961 - Mon Oct 28 23:29:04 2024 -0600 : Update Makefile for GHDL
+05c74dc - Mon Oct 28 23:28:44 2024 -0600 : PRBS_MON: Zero LFSR at start of sync
+daae161 - Mon Oct 28 23:28:01 2024 -0600 : Remove loopback_ena OR from rx_svalid port mapping to enable sample discard mode during loopback.
+81c229c - Fri Oct 25 20:12:41 2024 -0600 : MSK_DEMOD: Remove 'signed' casting in Costas Loop low-pass filter
+f956290 - Thu Oct 24 18:55:25 2024 -0600 : Add missing initial values in RDL source
+e428057 - Thu Oct 24 18:53:49 2024 -0600 : MSK_DEMOD: Fix port mapping for Costas Loop 'enable' input.
+7acf28e - Wed Oct 23 08:31:17 2024 -0700 : Merge pull request #7 from OpenResearchInstitute/clarify-vivado-path
+362b110 - Mon Oct 21 20:32:01 2024 -0700 : Clarify Vivado path in README
+54c8952 - Thu Oct 17 09:51:35 2024 -0700 : Merge pull request #5 from OpenResearchInstitute/Makefile
+19d2716 - Wed Oct 16 20:16:58 2024 -0700 : Update MSK_CONTROL register to add reserved field between lower and upper fields.
+7737f0d - Tue Oct 15 01:38:04 2024 +0000 : Update Makefile
+6538fd6 - Wed Oct 9 15:46:07 2024 -0600 : Fix loopback operation by asserting tx_valid and rx_valid when loopback is enabled.
+10f5477 - Wed Oct 9 15:45:11 2024 -0600 : PI Controller: Fixed data scaling issue in proportional path
+a2497b6 - Sun Oct 6 23:59:22 2024 -0600 : Update simulation
+9e5c2e1 - Sun Oct 6 21:57:57 2024 -0600 : Updates for msk_demodulator to fix data scaling issue
+77b3b53 - Sat Oct 5 23:23:42 2024 -0600 : Updates for msk_modulator to allow operation at correct F1/F2
+6c4c2ea - Tue Oct 1 22:04:43 2024 -0600 : Add relevant MSK papers.
+e97e804 - Fri Sep 27 07:41:46 2024 -0600 : Update MSK Status registers so that register IDs and naming are consistent (both 0-indexed)
+ed7a35a - Wed Sep 25 23:22:35 2024 -0600 : Updated README.md register map
+0cf7298 - Wed Sep 25 23:19:09 2024 -0600 : Added and improved status/diagnostics registers
+6831b7d - Wed Sep 25 02:01:03 2024 -0600 : Simulation update
+24d96c1 - Tue Sep 24 14:11:30 2024 -0600 : Merge remote-tracking branch 'origin/dev-rdl'
+9b31d59 - Fri Sep 20 00:09:21 2024 -0600 : Update design to support PRBS toggle control and auto sync.
+e4bc1a2 - Fri Sep 20 00:07:18 2024 -0600 : Fixed issues with RDL where unused bits between fields resulted in multi-driven nets.
+bff3fa9 - Thu Sep 19 23:35:30 2024 -0600 : Minor update to PRBS.
+f8fc975 - Thu Sep 19 23:22:29 2024 -0600 : Update SystemRDL to add PRBS Auto Sync Threshold field in PRBS Control Register.
+c4349ba - Thu Sep 19 23:08:48 2024 -0600 : Simulation updates for PRBS seed.
+e8dd707 - Thu Sep 19 23:06:25 2024 -0600 : PRBS module with auto-sync and TOGGLE_ENABLE capabilities.
+c52688a - Mon Sep 16 00:47:47 2024 -0600 : Simulation updates: LPF gains and turn on Rx Invert
+9909f97 - Sun Sep 15 23:27:31 2024 -0600 : Simulations updates
+4b4df2d - Sun Sep 15 23:15:48 2024 -0600 : PRBS Updates
+90c51a9 - Tue Aug 6 16:14:18 2024 +0200 : Signed integer represenation
+a9c94a6 - Sun Aug 4 22:46:09 2024 -0600 : Update firmware pluto_msk_prbs.sh script
+7adf0ca - Sun Aug 4 22:44:27 2024 -0600 : Update to allow decimation (discarding) of Rx samples. New registers added to support separate Tx and Rx F1/F2 NCOs.
+b7cbc8d - Sun Aug 4 22:42:15 2024 -0600 : Update README with new regs and start of Theory of operation.
+0fb49cf - Sun Aug 4 20:14:39 2024 +0200 : Add register cmd
+f2a0a7b - Sun Aug 4 20:12:37 2024 +0200 : display register address in hex
+d57f778 - Sun Aug 4 11:25:43 2024 +0200 : Fix prbs and display decimal status
+f7c14af - Sat Aug 3 11:30:26 2024 +0200 : Add mqtt scripts and prbs test
+1e2fd74 - Fri Aug 2 00:07:30 2024 -0600 : Add pi controller accumulator read registers
+3cb22b1 - Thu Aug 1 21:58:13 2024 -0600 : Various RDL updates and README.md update from RDL markdown
+8e04258 - Tue Jul 30 15:03:19 2024 -0600 : Add PeakRDL artifacts for c-header and markdown
+6b01682 - Tue Jul 30 16:00:24 2024 +0000 : Update README.md
+4c6feef - Tue Jul 30 09:57:19 2024 -0600 : Rename DFU RAM load script, and add modemtest.sh. The latter needs some updates, but is useful, and portions added to the prbs script
+7368bc3 - Tue Jul 30 09:54:08 2024 -0600 : Added DFU RAM load script
+b111663 - Tue Jul 30 09:41:03 2024 -0600 : Add rx_invert section and fix PRBS configurations
+13d48e3 - Tue Jul 30 16:42:13 2024 +0200 : Update README.md with perf on building on i7
+b6b5a95 - Tue Jul 30 14:06:54 2024 +0000 : Update README.md
+6d8e4de - Tue Jul 30 12:44:28 2024 +0000 : Update README.md
+6b4faee - Tue Jul 30 11:15:55 2024 +0200 : Fix typo address and deinit in script
+95c96b8 - Tue Jul 30 05:56:41 2024 +0000 : Update README.md
+5da70a7 - Mon Jul 29 21:16:40 2024 -0600 : Add PRBS scripts for pluto
+634259b - Mon Jul 29 15:52:31 2024 -0600 : Remove unused signals from RTL
+161d0df - Mon Jul 29 15:49:43 2024 -0600 : Update library build for RDL library
+fa8e689 - Mon Jul 29 14:35:07 2024 -0600 : Updates for RDL registers
+1f24fd2 - Mon Jul 29 13:07:54 2024 -0600 : Rename library to pkg_msk_top_regs
+ac11dc5 - Mon Jul 29 12:56:53 2024 -0600 : Pull in msk_top.vhd with RDL wrapper instantiated
+8b8fbc0 - Mon Jul 29 12:45:48 2024 -0600 : Merge pull request #2 from OpenResearchInstitute/dev
+ce18bf9 - Mon Jul 29 12:36:01 2024 -0600 : Fix sim Makefile to use the submodules
+d9dccc7 - Mon Jul 29 11:22:49 2024 -0600 : Add RDL files in msk_top_ip.tcl
+5b1deb3 - Mon Jul 29 11:19:50 2024 -0600 : Update simulation files
+1bfdfc4 - Mon Jul 29 10:55:16 2024 -0600 : Add RDL doc and cocotb artifacts
+7e109e4 - Mon Jul 29 10:53:44 2024 -0600 : Add DesyRDL RTL artificacts
+4bae155 - Mon Jul 29 10:46:28 2024 -0600 : Update msk_top_ip.tcl to add RDL wrapper
+71c42e0 - Mon Jul 29 10:42:59 2024 -0600 : Add RDL wrapper
+4faaa74 - Mon Jul 29 10:40:49 2024 -0600 : Add RDL files
+56761b3 - Wed Jul 24 18:24:10 2024 +0000 : Update README.md
+5da5307 - Wed Jul 24 17:08:43 2024 +0000 : Update README.md
+28cec80 - Wed Jul 24 17:03:59 2024 +0000 : Update README.md
+352ac73 - Wed Jul 24 16:21:10 2024 +0000 : Update README.md
+133355c - Wed Jul 24 15:11:24 2024 +0000 : Update README.md
+ff762fa - Wed Jul 24 03:58:50 2024 +0000 : Update README.md
+af75a7f - Wed Jul 24 03:42:38 2024 +0000 : Update README.md
+9a67af1 - Wed Jul 24 03:39:58 2024 +0000 : Update README.md
+8e9d1c8 - Wed Jul 24 03:34:23 2024 +0000 : Update README.md
+af79961 - Wed Jul 24 03:28:45 2024 +0000 : Update README.md
+26a71d1 - Tue Jul 23 13:03:39 2024 +0200 : Instructions for vivado path
+871bd13 - Tue Jul 23 12:38:39 2024 +0200 : Update README.md for firmware instructions
+8c79132 - Tue Jul 23 12:31:01 2024 +0200 : Initial pluto-ori firmware
+75611ec - Mon Jul 22 21:57:40 2024 +0000 : Update README.md
 b3406b7 - Mon Jul 22 22:30:47 2024 +0200 : Add firmware submodules
 942aa51 - Mon Jul 22 19:35:30 2024 +0000 : Update README.md
 4c0ea7c - Mon Jul 22 19:11:04 2024 +0000 : Update README.md

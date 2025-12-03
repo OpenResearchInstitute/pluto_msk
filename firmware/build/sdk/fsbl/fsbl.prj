@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ASCII"?>
+<sdkproject:SdkProject xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sdkproject="http://www.xilinx.com/sdkproject" name="fsbl" location="/home/abraxas3d/pluto_msk/firmware/build/sdk/fsbl" platform="/home/abraxas3d/pluto_msk/firmware/build/sdk/system_top/export/system_top/system_top.xpfm" platformUID="xilinx:::0.0(custom)" systemProject="fsbl_system" sysConfig="system_top" runtime="cpp" cpu="standalone_domain" cpuInstance="ps7_cortexa9_0" os="standalone" mssSignature="d4ed6bda439678a15260f8cf735540a2">
+  <configuration name="Debug" id="xilinx.gnu.armv7.exe.debug.887324803" dirty="true">
+    <configBuildOptions xsi:type="sdkproject:SdkOptions"/>
+  </configuration>
+  <configuration name="Release" id="xilinx.gnu.armv7.exe.release.973274040" dirty="true">
+    <configBuildOptions xsi:type="sdkproject:SdkOptions"/>
+    <lastBuildOptions xsi:type="sdkproject:SdkOptions"/>
+  </configuration>
+  <template appTemplateName="zynq_fsbl" hasBspSettings="true"/>
+</sdkproject:SdkProject>

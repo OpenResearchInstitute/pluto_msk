@@ -36,27 +36,21 @@
 -- Block name and description
 ------------------------------------------------------------------------------------------------------
 --
--- Opulent Voice Protocol Frame Decoder
+-- Opulent Voice Protocol Frame Decoder - OPTIMIZED FOR RESOURCE USAGE
 --
 -- This module implements the RX path processing for OVP frames (reverse of encoder):
 --   1. Collects 268 bytes of encoded data from AXI-Stream input
---   2. Deinterleaves bits (reverse 67x32 row-column interleaver)
---   3. Applies FEC decoding (majority vote on bit pairs)
+--   2. Deinterleaves bytes (reverse 67x4 row-column byte interleaver)
+--   3. Applies FEC decoding via Viterbi decoder
 --   4. Derandomizes (XOR with same fixed sequence)
 --   5. Outputs 134 bytes of payload via AXI-Stream
 --
--- CIRCULAR BUFFER FIX (2025-11-20): Matching encoder's proven strategy
---                      - Collect ALL incoming bytes into circular buffer
---                      - When tlast arrives, count back 268 bytes
---                      - This handles FIFO timing issues naturally
---                      - Never try to time the "first" byte arrival
---
--- VITERBI HANDSHAKE FIX (2025-11-26): Fixed race condition in PREP_FEC_DECODE
---                      - decoder_start was only HIGH for 1 clock cycle
---                      - If Viterbi was still in COMPLETE state, it missed the pulse
---                      - Now holds decoder_start HIGH until decoder_busy='1'
---                      - This ensures proper handshake regardless of Viterbi state
---                      - Bug only appeared with back-to-back frames (no inter-frame gap)
+-- OPTIMIZATION (2025-12-01): Eliminated bit-level buffer to reduce LUT usage
+--   - Changed deinterleaved_buffer from 2144 bits to 268 bytes
+--   - Bit extraction to g1/g2 done with constant indexing in FOR loops
+--   - This eliminates the massive mux structures from variable bit indexing
+--   - Removed bit-level interleaver option (USE_BIT_INTERLEAVER ignored, always byte-level)
+--   - Added ram_style attribute for collect_buffer to encourage BRAM inference
 --
 ------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------
@@ -71,7 +65,7 @@ ENTITY ov_frame_decoder IS
         ENCODED_BYTES       : NATURAL := 268;   -- Input frame size
         ENCODED_BITS        : NATURAL := 2144;  -- Encoded bits (268 * 8)
         BYTE_WIDTH          : NATURAL := 8;
-        USE_BIT_INTERLEAVER : BOOLEAN := TRUE   -- Must match encoder setting
+        USE_BIT_INTERLEAVER : BOOLEAN := TRUE   -- IGNORED - always uses byte-level for resource efficiency
     );
     PORT (
         clk             : IN  std_logic;
@@ -91,36 +85,42 @@ ENTITY ov_frame_decoder IS
         
         -- Status outputs
         frames_decoded  : OUT std_logic_vector(31 DOWNTO 0);
-        decoder_active  : OUT std_logic
+        decoder_active  : OUT std_logic;
+        
+        -- Debug outputs for hardware visibility
+        debug_state         : OUT std_logic_vector(2 DOWNTO 0);
+        debug_viterbi_start : OUT std_logic;
+        debug_viterbi_busy  : OUT std_logic;
+        debug_viterbi_done  : OUT std_logic
     );
 END ENTITY ov_frame_decoder;
 
 ARCHITECTURE rtl OF ov_frame_decoder IS
 
-    -- State machine - ADDED EXTRACT STATE
+    -- State machine
     TYPE state_t IS (IDLE, COLLECT, EXTRACT, DEINTERLEAVE, PREP_FEC_DECODE, FEC_DECODE, DERANDOMIZE, OUTPUT);
     SIGNAL state : state_t := IDLE;
     
-    -- Circular collection buffer (2x encoded size for safety)
+    -- Circular collection buffer - use block RAM style
     CONSTANT COLLECT_SIZE : NATURAL := 512;
     TYPE collect_buffer_t IS ARRAY(0 TO COLLECT_SIZE-1) OF std_logic_vector(BYTE_WIDTH-1 DOWNTO 0);
     SIGNAL collect_buffer : collect_buffer_t;
+    ATTRIBUTE ram_style : STRING;
+    ATTRIBUTE ram_style OF collect_buffer : SIGNAL IS "block";
     SIGNAL collect_idx : NATURAL RANGE 0 TO COLLECT_SIZE-1;
     
-    -- Buffer types
+    -- Buffer types - ALL BYTE-LEVEL for efficient synthesis
     TYPE byte_buffer_t IS ARRAY(0 TO PAYLOAD_BYTES-1) OF std_logic_vector(BYTE_WIDTH-1 DOWNTO 0);
     TYPE encoded_byte_buffer_t IS ARRAY(0 TO ENCODED_BYTES-1) OF std_logic_vector(BYTE_WIDTH-1 DOWNTO 0);
-    TYPE bit_buffer_t IS ARRAY(0 TO ENCODED_BITS-1) OF std_logic;
     
-    -- Processing buffers
+    -- Processing buffers - all byte-level
     SIGNAL input_buffer         : encoded_byte_buffer_t;  -- 268 bytes extracted from circular buffer
-    SIGNAL deinterleaved_buffer : bit_buffer_t := (OTHERS => '0');
+    SIGNAL deinterleaved_buffer : encoded_byte_buffer_t;  -- 268 bytes after deinterleaving (WAS bit_buffer_t!)
     SIGNAL fec_decoded_buffer   : byte_buffer_t;
     SIGNAL output_buffer        : byte_buffer_t;
     
     -- Index counters
     SIGNAL byte_idx : NATURAL RANGE 0 TO ENCODED_BYTES;
-    SIGNAL bit_idx  : NATURAL RANGE 0 TO ENCODED_BITS;
     SIGNAL out_idx  : NATURAL RANGE 0 TO PAYLOAD_BYTES;
     
     -- Frame counter
@@ -160,34 +160,27 @@ ARCHITECTURE rtl OF ov_frame_decoder IS
     SIGNAL decoder_input_g1   : std_logic_vector(2143 DOWNTO 0);
     SIGNAL decoder_input_g2   : std_logic_vector(2143 DOWNTO 0);
     SIGNAL decoder_output_buf : std_logic_vector(1071 DOWNTO 0);
-
-    -- Bit-level deinterleaver address calculation (67x32 - reverse of interleaver)
-    FUNCTION deinterleave_address(addr : NATURAL) RETURN NATURAL IS
-        CONSTANT ROWS : NATURAL := 67;
-        CONSTANT COLS : NATURAL := 32;
-        VARIABLE row : NATURAL;
-        VARIABLE col : NATURAL;
-    BEGIN
-        row := addr MOD ROWS;
-        col := addr / ROWS;
-        RETURN row * COLS + col;
-    END FUNCTION;
+    -- Prevent optimization of Viterbi decoder
+    ATTRIBUTE dont_touch : STRING;
+    ATTRIBUTE dont_touch OF U_DECODER : LABEL IS "true";
     
-    -- Byte-level deinterleaver address calculation (67x4 - reverse of byte interleaver)
-    FUNCTION deinterleave_address_byte(addr : NATURAL) RETURN NATURAL IS
+    -- Byte-level deinterleaver: reverse of 67x4 interleaver
+    -- Input byte at position addr goes to position: (addr MOD 67) * 4 + (addr / 67)
+    -- Reverse: output position j needs input from: (j MOD 4) * 67 + (j / 4)
+    FUNCTION reverse_deinterleave_byte(addr : NATURAL) RETURN NATURAL IS
         CONSTANT ROWS : NATURAL := 67;
         CONSTANT COLS : NATURAL := 4;
         VARIABLE row : NATURAL;
         VARIABLE col : NATURAL;
     BEGIN
-        row := addr MOD ROWS;
-        col := addr / ROWS;
-        RETURN row * COLS + col;
+        row := addr / COLS;     -- 0-66 (output row)
+        col := addr MOD COLS;   -- 0-3  (output column)
+        RETURN col * ROWS + row;
     END FUNCTION;
 
 BEGIN
 
-    -- Viterbi Decoder Instantiation (Hard Decision)
+    -- Viterbi Decoder Instantiation
     U_DECODER : ENTITY work.viterbi_decoder_k7_simple
         GENERIC MAP (
             PAYLOAD_BITS    => PAYLOAD_BYTES * 8,
@@ -211,17 +204,31 @@ BEGIN
     m_axis_tlast  <= m_tlast_reg;
     
     frames_decoded <= std_logic_vector(frame_count);
+    
+    -- Debug output assignments
+    debug_viterbi_start <= decoder_start;
+    debug_viterbi_busy  <= decoder_busy;
+    debug_viterbi_done  <= decoder_done;
+    
+    -- State encoding for debug (3 bits for 8 states)
+    WITH state SELECT debug_state <=
+        "000" WHEN IDLE,
+        "001" WHEN COLLECT,
+        "010" WHEN EXTRACT,
+        "011" WHEN DEINTERLEAVE,
+        "100" WHEN PREP_FEC_DECODE,
+        "101" WHEN FEC_DECODE,
+        "110" WHEN DERANDOMIZE,
+        "111" WHEN OUTPUT;
 
-    -- Main FSM with Circular Buffer Collection
+    -- Main FSM
     decoder_fsm : PROCESS(clk)
         VARIABLE extract_start : INTEGER;
-        VARIABLE extract_end : INTEGER;
     BEGIN
         IF rising_edge(clk) THEN
             IF aresetn = '0' THEN
                 state <= IDLE;
                 byte_idx <= 0;
-                bit_idx <= 0;
                 out_idx <= 0;
                 collect_idx <= 0;
                 frame_count <= (OTHERS => '0');
@@ -234,127 +241,78 @@ BEGIN
             ELSE
                 CASE state IS
                 
-                    -- IDLE: Ready to start collecting
                     WHEN IDLE =>
                         decoder_active <= '0';
-                        s_axis_tready <= '0';  -- Keep tready LOW in IDLE
+                        s_axis_tready <= '0';
                         m_tvalid_reg <= '0';
                         collect_idx <= 0;
                         
                         IF s_axis_tvalid = '1' THEN
                             state <= COLLECT;
-                            s_axis_tready <= '1';  -- Set tready HIGH when entering COLLECT
+                            s_axis_tready <= '1';
                         END IF;
                     
-                    -- COLLECT: Continuously store ALL incoming bytes into circular buffer
                     WHEN COLLECT =>
-                        s_axis_tready <= '1';  -- Maintain tready HIGH during collection
+                        s_axis_tready <= '1';
                         
                         IF s_axis_tvalid = '1' THEN
-                            -- Store byte at current circular buffer position
                             collect_buffer(collect_idx) <= s_axis_tdata;
                             
-                            -- Debug: Report first few bytes
-                            IF collect_idx < 5 THEN
-                                REPORT "COLLECT: collect_idx=" & INTEGER'IMAGE(collect_idx) & 
-                                       " data=0x" & INTEGER'IMAGE(to_integer(unsigned(s_axis_tdata))) &
-                                       " tlast=" & STD_LOGIC'IMAGE(s_axis_tlast)(2);
+                            IF collect_idx < COLLECT_SIZE - 1 THEN
+                                collect_idx <= collect_idx + 1;
+                            ELSE
+                                collect_idx <= 0;
                             END IF;
                             
-                            -- Check for tlast
                             IF s_axis_tlast = '1' THEN
-                                REPORT "COLLECT: tlast at collect_idx=" & INTEGER'IMAGE(collect_idx);
-                                
-                                -- Move to EXTRACT state to count back 268 bytes
                                 s_axis_tready <= '0';
                                 byte_idx <= 0;
                                 state <= EXTRACT;
-                            ELSE
-                                -- Advance circular buffer pointer (wrap around)
-                                IF collect_idx = COLLECT_SIZE - 1 THEN
-                                    collect_idx <= 0;
-                                ELSE
-                                    collect_idx <= collect_idx + 1;
-                                END IF;
                             END IF;
                         END IF;
                     
-                    -- EXTRACT: Count back ENCODED_BYTES from where tlast arrived
                     WHEN EXTRACT =>
                         IF byte_idx < ENCODED_BYTES THEN
-                            -- Calculate which byte in collect_buffer to read
-                            -- If collect_idx = 267, we want bytes [0:267]
-                            -- If collect_idx = 300, we want bytes [33:300]
-                            extract_start := (collect_idx + 1) - ENCODED_BYTES;
-                            extract_end := collect_idx;
-                            
-                            -- Copy byte from circular buffer (with modulo wraparound)
+                            extract_start := (collect_idx - ENCODED_BYTES + COLLECT_SIZE) MOD COLLECT_SIZE;
                             input_buffer(byte_idx) <= collect_buffer((extract_start + byte_idx) MOD COLLECT_SIZE);
-                            
-                            IF byte_idx < 5 THEN
-                                REPORT "EXTRACT[" & INTEGER'IMAGE(byte_idx) & 
-                                       "] from collect_buffer[" & 
-                                       INTEGER'IMAGE((extract_start + byte_idx) MOD COLLECT_SIZE) & 
-                                       "] = 0x" & 
-                                       INTEGER'IMAGE(to_integer(unsigned(collect_buffer((extract_start + byte_idx) MOD COLLECT_SIZE))));
-                            END IF;
-                            
                             byte_idx <= byte_idx + 1;
                         ELSE
-                            REPORT "EXTRACT complete, " & INTEGER'IMAGE(ENCODED_BYTES) & " bytes copied";
                             byte_idx <= 0;
-                            bit_idx <= 0;
                             state <= DEINTERLEAVE;
                             decoder_active <= '1';
                         END IF;
                     
-                    -- DEINTERLEAVE: Reverse the row-column shuffle
+                    -- DEINTERLEAVE: Reverse the 67x4 byte-level shuffle
+                    -- Read from computed position, write to sequential position
                     WHEN DEINTERLEAVE =>
-                        IF USE_BIT_INTERLEAVER THEN
-                            -- BIT-LEVEL mode: Process 1 bit per clock (2144 clocks)
-                            IF bit_idx < ENCODED_BITS THEN
-                                -- Unpack input_buffer bytes to bits
-                                deinterleaved_buffer(deinterleave_address(bit_idx)) <= 
-                                    input_buffer(bit_idx / 8)(bit_idx MOD 8);
-                                bit_idx <= bit_idx + 1;
-                            ELSE
-                                REPORT "DEINTERLEAVE complete (bit-level)";
-                                byte_idx <= 0;
-                                bit_idx <= 0;
-                                state <= PREP_FEC_DECODE;
-                            END IF;
+                        IF byte_idx < ENCODED_BYTES THEN
+                            -- Read from reverse-computed address, write sequentially
+                            deinterleaved_buffer(byte_idx) <= input_buffer(reverse_deinterleave_byte(byte_idx));
+                            byte_idx <= byte_idx + 1;
                         ELSE
-                            -- BYTE-LEVEL mode: Process 1 byte per clock (268 clocks)
-                            IF byte_idx < ENCODED_BYTES THEN
-                                FOR j IN 0 TO 7 LOOP
-                                    deinterleaved_buffer(deinterleave_address_byte(byte_idx)*8 + j) <= 
-                                        input_buffer(byte_idx)(j);
-                                END LOOP;
-                                byte_idx <= byte_idx + 1;
-                            ELSE
-                                REPORT "DEINTERLEAVE complete (byte-level)";
-                                byte_idx <= 0;
-                                bit_idx <= 0;
-                                state <= PREP_FEC_DECODE;
-                            END IF;
+                            byte_idx <= 0;
+                            state <= PREP_FEC_DECODE;
                         END IF;
                     
-                    -- PREP_FEC_DECODE: Separate deinterleaved bits into G1 and G2 streams
-                    -- and start the Viterbi decoder with proper handshaking
+                    -- PREP_FEC_DECODE: Unpack deinterleaved bytes to G1/G2 bit streams
+                    -- Uses constant indexing in FOR loops for efficient synthesis
                     WHEN PREP_FEC_DECODE =>
-                        -- Setup G1/G2 streams for Viterbi decoder
-                        FOR i IN 0 TO ENCODED_BITS/2 - 1 LOOP
-                            decoder_input_g1(i) <= deinterleaved_buffer(i*2);
-                            decoder_input_g2(i) <= deinterleaved_buffer(i*2 + 1);
+                        -- Unpack bytes to g1/g2 streams
+                        -- Each byte contributes 4 bits to g1 (even bit positions) and 4 bits to g2 (odd bit positions)
+                        -- Byte i, bits 0,2,4,6 -> g1[i*4+0..i*4+3]
+                        -- Byte i, bits 1,3,5,7 -> g2[i*4+0..i*4+3]
+                        FOR i IN 0 TO ENCODED_BYTES - 1 LOOP
+                            decoder_input_g1(i*4 + 0) <= deinterleaved_buffer(i)(0);
+                            decoder_input_g1(i*4 + 1) <= deinterleaved_buffer(i)(2);
+                            decoder_input_g1(i*4 + 2) <= deinterleaved_buffer(i)(4);
+                            decoder_input_g1(i*4 + 3) <= deinterleaved_buffer(i)(6);
+                            decoder_input_g2(i*4 + 0) <= deinterleaved_buffer(i)(1);
+                            decoder_input_g2(i*4 + 1) <= deinterleaved_buffer(i)(3);
+                            decoder_input_g2(i*4 + 2) <= deinterleaved_buffer(i)(5);
+                            decoder_input_g2(i*4 + 3) <= deinterleaved_buffer(i)(7);
                         END LOOP;
                         
-                        -- Assert start and WAIT for Viterbi to acknowledge via busy signal
-                        -- FIX: Previously decoder_start was only high for 1 clock cycle.
-                        -- If the Viterbi decoder was still in COMPLETE state (transitioning
-                        -- to IDLE), it would miss the start pulse entirely, causing the
-                        -- frame decoder to wait forever for decoder_done.
-                        -- Now we hold decoder_start high until decoder_busy confirms
-                        -- the Viterbi has accepted the request.
+                        -- Start Viterbi and wait for busy acknowledgment
                         decoder_start <= '1';
                         IF decoder_busy = '1' THEN
                             state <= FEC_DECODE;
@@ -363,10 +321,7 @@ BEGIN
                     WHEN FEC_DECODE =>
                         decoder_start <= '0';
                         IF decoder_done = '1' THEN
-                            -- Unpack decoded bits in REVERSE order to match encoder's bit reversal
-                            -- Viterbi traceback produces bits in reverse order, compensating for
-                            -- conv encoder's MSB-first processing, but we need to reverse again
-                            -- to match how encoder packed the input
+                            -- Unpack decoded bits to bytes (reverse order for encoder compatibility)
                             FOR i IN 0 TO PAYLOAD_BYTES-1 LOOP
                                 FOR j IN 0 TO 7 LOOP
                                     fec_decoded_buffer(i)(j) <= decoder_output_buf(PAYLOAD_BYTES*8 - 1 - i*8 - j);
@@ -376,51 +331,31 @@ BEGIN
                             state <= DERANDOMIZE;
                         END IF;
 
-                    -- DERANDOMIZE: XOR with same sequence (inverse operation)
                     WHEN DERANDOMIZE =>
                         IF byte_idx < PAYLOAD_BYTES THEN
                             output_buffer(byte_idx) <= 
                                 fec_decoded_buffer(byte_idx) XOR RANDOMIZER_SEQUENCE(byte_idx);
-                            
-                            IF byte_idx < 5 THEN
-                                REPORT "DERANDOMIZE[" & INTEGER'IMAGE(byte_idx) &
-                                       "] fec=" & INTEGER'IMAGE(to_integer(unsigned(fec_decoded_buffer(byte_idx)))) &
-                                       " rand=" & INTEGER'IMAGE(to_integer(unsigned(RANDOMIZER_SEQUENCE(byte_idx)))) &
-                                       " out=" & INTEGER'IMAGE(to_integer(unsigned(fec_decoded_buffer(byte_idx) XOR RANDOMIZER_SEQUENCE(byte_idx))));
-                            END IF;
-                            
                             byte_idx <= byte_idx + 1;
                         ELSE
-                            REPORT "DERANDOMIZE complete";
                             out_idx <= 0;
                             state <= OUTPUT;
                         END IF;
                     
-                    -- OUTPUT: Send bytes to next stage (FIXED AXI-Stream handshaking)
                     WHEN OUTPUT =>
                         IF out_idx < PAYLOAD_BYTES THEN
-                            -- Present current data
                             m_tdata_reg <= output_buffer(out_idx);
                             m_tvalid_reg <= '1';
                             
-                            IF out_idx < 5 THEN
-                                REPORT "DECODER OUTPUT byte " & INTEGER'IMAGE(out_idx) & " = " &
-                                       INTEGER'IMAGE(to_integer(unsigned(output_buffer(out_idx))));
-                            END IF;
-                            
-                            -- Set tlast on final byte
                             IF out_idx = PAYLOAD_BYTES - 1 THEN
                                 m_tlast_reg <= '1';
                             ELSE
                                 m_tlast_reg <= '0';
                             END IF;
                             
-                            -- Advance on handshake OR on first presentation (tvalid was 0)
                             IF m_axis_tready = '1' OR m_tvalid_reg = '0' THEN
                                 out_idx <= out_idx + 1;
                             END IF;
                         ELSE
-                            -- Frame complete
                             m_tvalid_reg <= '0';
                             m_tlast_reg <= '0';
                             frame_count <= frame_count + 1;

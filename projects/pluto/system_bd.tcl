@@ -2,7 +2,7 @@
 
 #set_property FILE_TYPE {VHDL 2008} [get_files *.vhd] 
 source $ad_hdl_dir/projects/common/xilinx/adi_fir_filter_bd.tcl
-source $ad_hdl_dir/library/axi_tdd/scripts/axi_tdd.tcl
+#source $ad_hdl_dir/library/axi_tdd/scripts/axi_tdd.tcl  # REMOVED axi_tdd
 
 set_property ip_repo_paths [list $ad_hdl_dir/library ../../library]  [current_fileset]
 
@@ -28,16 +28,17 @@ create_bd_port -dir I -from 17 -to 0 gpio_i
 create_bd_port -dir O -from 17 -to 0 gpio_o
 create_bd_port -dir O -from 17 -to 0 gpio_t
 
-create_bd_port -dir O spi_csn_o
-create_bd_port -dir I spi_csn_i
-create_bd_port -dir I spi_clk_i
-create_bd_port -dir O spi_clk_o
-create_bd_port -dir I spi_sdo_i
-create_bd_port -dir O spi_sdo_o
-create_bd_port -dir I spi_sdi_i
+# REMOVED axi_spi - not using expansion header, need LUTs for Viterbi decoder
+#create_bd_port -dir O spi_csn_o
+#create_bd_port -dir I spi_csn_i
+#create_bd_port -dir I spi_clk_i
+#create_bd_port -dir O spi_clk_o
+#create_bd_port -dir I spi_sdo_i
+#create_bd_port -dir O spi_sdo_o
+#create_bd_port -dir I spi_sdi_i
 
 create_bd_port -dir O txdata_o
-create_bd_port -dir I tdd_ext_sync
+#create_bd_port -dir I tdd_ext_sync  # REMOVED axi_tdd
 
 # instance: sys_ps7
 
@@ -105,11 +106,11 @@ ad_ip_parameter sys_rstgen CONFIG.C_EXT_RST_WIDTH 1
 # system reset/clock definitions
 
 # add external spi
-
-ad_ip_instance axi_quad_spi axi_spi
-ad_ip_parameter axi_spi CONFIG.C_USE_STARTUP 0
-ad_ip_parameter axi_spi CONFIG.C_NUM_SS_BITS 1
-ad_ip_parameter axi_spi CONFIG.C_SCK_RATIO 8
+# REMOVED axi_spi
+#ad_ip_instance axi_quad_spi axi_spi
+#ad_ip_parameter axi_spi CONFIG.C_USE_STARTUP 0
+#ad_ip_parameter axi_spi CONFIG.C_NUM_SS_BITS 1
+#ad_ip_parameter axi_spi CONFIG.C_SCK_RATIO 8
 
 ad_connect  sys_cpu_clk sys_ps7/FCLK_CLK0
 ad_connect  sys_200m_clk sys_ps7/FCLK_CLK1
@@ -139,15 +140,15 @@ ad_connect  spi0_sdo_o sys_ps7/SPI0_MOSI_O
 ad_connect  spi0_sdi_i sys_ps7/SPI0_MISO_I
 
 # axi spi connections
-
-ad_connect  sys_cpu_clk  axi_spi/ext_spi_clk
-ad_connect  spi_csn_i  axi_spi/ss_i
-ad_connect  spi_csn_o  axi_spi/ss_o
-ad_connect  spi_clk_i  axi_spi/sck_i
-ad_connect  spi_clk_o  axi_spi/sck_o
-ad_connect  spi_sdo_i  axi_spi/io0_i
-ad_connect  spi_sdo_o  axi_spi/io0_o
-ad_connect  spi_sdi_i  axi_spi/io1_i
+# REMOVED axi_spi
+#ad_connect  sys_cpu_clk  axi_spi/ext_spi_clk
+#ad_connect  spi_csn_i  axi_spi/ss_i
+#ad_connect  spi_csn_o  axi_spi/ss_o
+#ad_connect  spi_clk_i  axi_spi/sck_i
+#ad_connect  spi_clk_o  axi_spi/sck_o
+#ad_connect  spi_sdo_i  axi_spi/io0_i
+#ad_connect  spi_sdo_o  axi_spi/io0_o
+#ad_connect  spi_sdi_i  axi_spi/io1_i
 
 # interrupts
 
@@ -170,14 +171,14 @@ ad_connect  sys_concat_intc/In1 GND
 ad_connect  sys_concat_intc/In0 GND
 
 # iic
+# REMOVED axi_iic_main - need LUTs for Viterbi decoder
+#create_bd_intf_port -mode Master -vlnv xilinx.com:interface:iic_rtl:1.0 iic_main
 
-create_bd_intf_port -mode Master -vlnv xilinx.com:interface:iic_rtl:1.0 iic_main
+#ad_ip_instance axi_iic axi_iic_main
 
-ad_ip_instance axi_iic axi_iic_main
-
-ad_connect  iic_main axi_iic_main/iic
-ad_cpu_interconnect 0x41600000 axi_iic_main
-ad_cpu_interrupt ps-15 mb-15 axi_iic_main/iic2intc_irpt
+#ad_connect  iic_main axi_iic_main/iic
+#ad_cpu_interconnect 0x41600000 axi_iic_main
+#ad_cpu_interrupt ps-15 mb-15 axi_iic_main/iic2intc_irpt
 
 # ad9361
 
@@ -336,22 +337,23 @@ ad_connect  axi_ad9361/l_clk axi_ad9361_dac_dma/m_axis_aclk
 ad_connect GND axi_ad9361/adc_dovf
 
 # External TDD
-set TDD_CHANNEL_CNT 3
-set TDD_DEFAULT_POL 0b010
-set TDD_REG_WIDTH 32
-set TDD_BURST_WIDTH 32
-set TDD_SYNC_WIDTH 0
-set TDD_SYNC_INT 0
-set TDD_SYNC_EXT 1
-set TDD_SYNC_EXT_CDC 1
-ad_tdd_gen_create axi_tdd_0 $TDD_CHANNEL_CNT \
-                            $TDD_DEFAULT_POL \
-                            $TDD_REG_WIDTH \
-                            $TDD_BURST_WIDTH \
-                            $TDD_SYNC_WIDTH \
-                            $TDD_SYNC_INT \
-                            $TDD_SYNC_EXT \
-                            $TDD_SYNC_EXT_CDC
+# REMOVED axi_tdd - not using TDD timing control
+#set TDD_CHANNEL_CNT 3
+#set TDD_DEFAULT_POL 0b010
+#set TDD_REG_WIDTH 32
+#set TDD_BURST_WIDTH 32
+#set TDD_SYNC_WIDTH 0
+#set TDD_SYNC_INT 0
+#set TDD_SYNC_EXT 1
+#set TDD_SYNC_EXT_CDC 1
+#ad_tdd_gen_create axi_tdd_0 $TDD_CHANNEL_CNT \
+#                            $TDD_DEFAULT_POL \
+#                            $TDD_REG_WIDTH \
+#                            $TDD_BURST_WIDTH \
+#                            $TDD_SYNC_WIDTH \
+#                            $TDD_SYNC_INT \
+#                            $TDD_SYNC_EXT \
+#                            $TDD_SYNC_EXT_CDC
 
 ad_ip_instance util_vector_logic logic_inv [list \
   C_OPERATION {not} \
@@ -362,10 +364,12 @@ ad_ip_instance util_vector_logic logic_or_1 [list \
   C_SIZE 1]
 
 ad_connect logic_inv/Op1  axi_ad9361/rst
-ad_connect logic_inv/Res  axi_tdd_0/resetn
-ad_connect axi_ad9361/l_clk axi_tdd_0/clk
-ad_connect axi_tdd_0/sync_in tdd_ext_sync
-ad_connect axi_tdd_0/tdd_channel_0 txdata_o
+#ad_connect logic_inv/Res  axi_tdd_0/resetn  # REMOVED axi_tdd
+#ad_connect axi_ad9361/l_clk axi_tdd_0/clk  # REMOVED axi_tdd
+#ad_connect axi_tdd_0/sync_in tdd_ext_sync  # REMOVED axi_tdd
+#ad_connect axi_tdd_0/tdd_channel_0 txdata_o  # REMOVED axi_tdd
+# Tie txdata_o low with TDD removed
+ad_connect txdata_o GND
 # remove this for FIFO to AXIS conversion
 #ad_connect axi_tdd_0/tdd_channel_1 axi_ad9361_adc_dma/fifo_wr_sync
 
@@ -375,7 +379,9 @@ ad_connect axi_tdd_0/tdd_channel_0 txdata_o
 # ad_connect axi_tdd_0/tdd_channel_1 msk_top/sync_locked
 
 ad_connect  logic_or_1/Op1  axi_ad9361/rst
-ad_connect  logic_or_1/Op2  axi_tdd_0/tdd_channel_2
+#ad_connect  logic_or_1/Op2  axi_tdd_0/tdd_channel_2  # REMOVED axi_tdd
+# Tie to GND with TDD removed
+ad_connect  logic_or_1/Op2  GND
 ad_connect  logic_or_1/Res  tx_upack/reset
 
 # interconnects
@@ -383,8 +389,8 @@ ad_connect  logic_or_1/Res  tx_upack/reset
 ad_cpu_interconnect 0x79020000 axi_ad9361
 ad_cpu_interconnect 0x7C400000 axi_ad9361_adc_dma
 ad_cpu_interconnect 0x7C420000 axi_ad9361_dac_dma
-ad_cpu_interconnect 0x7C430000 axi_spi
-ad_cpu_interconnect 0x7C440000 axi_tdd_0
+#ad_cpu_interconnect 0x7C430000 axi_spi  # REMOVED axi_spi
+#ad_cpu_interconnect 0x7C440000 axi_tdd_0  # REMOVED axi_tdd
 
 
 ad_ip_parameter sys_ps7 CONFIG.PCW_USE_S_AXI_HP1 {1}
@@ -414,7 +420,7 @@ ad_connect sys_cpu_resetn axi_ad9361_dac_dma/m_src_axi_aresetn
 
 ad_cpu_interrupt ps-13 mb-13 axi_ad9361_adc_dma/irq
 ad_cpu_interrupt ps-12 mb-12 axi_ad9361_dac_dma/irq
-ad_cpu_interrupt ps-11 mb-11 axi_spi/ip2intc_irpt
+#ad_cpu_interrupt ps-11 mb-11 axi_spi/ip2intc_irpt  # REMOVED axi_spi
 
 ## msk interpose ad_ip_instance
 ad_ip_instance msk_top msk_top

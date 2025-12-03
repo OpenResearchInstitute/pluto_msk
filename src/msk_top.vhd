@@ -237,6 +237,12 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL rx_frames_decoded : std_logic_vector(31 DOWNTO 0);
 	SIGNAL rx_decoder_active : std_logic;
 
+        -- Debug signals for RX decoder (added for hardware debugging)
+        SIGNAL decoder_debug_state   : std_logic_vector(2 DOWNTO 0);
+        SIGNAL decoder_debug_viterbi_start : std_logic;
+        SIGNAL decoder_debug_viterbi_busy  : std_logic;
+        SIGNAL decoder_debug_viterbi_done  : std_logic;
+
 	SIGNAL rx_bit   		: std_logic;
 	SIGNAL rx_bit_corr 		: std_logic;
 	SIGNAL rx_bit_valid 	: std_logic;
@@ -653,7 +659,13 @@ BEGIN
             
             -- Status
             frames_decoded  => rx_frames_decoded,
-            decoder_active  => rx_decoder_active
+            decoder_active  => rx_decoder_active, 
+
+            -- Debug outputs
+            debug_state         => decoder_debug_state,
+            debug_viterbi_start => decoder_debug_viterbi_start,
+            debug_viterbi_busy  => decoder_debug_viterbi_busy,
+            debug_viterbi_done  => decoder_debug_viterbi_done
         );
     
     ------------------------------------------------------------------------------
@@ -990,7 +1002,15 @@ BEGIN
                 tx_debug_fifo_tready     => fifo_tready,
                 tx_debug_tx_req          => tx_req,
                 tx_debug_encoder_tlast   => encoder_tlast, 
-                tx_debug_encoder_state   => encoder_debug_state
+                tx_debug_encoder_state   => encoder_debug_state,
+
+                -- RX debug signals
+                rx_debug_decoder_state   => decoder_debug_state,
+                rx_debug_viterbi_start   => decoder_debug_viterbi_start,
+                rx_debug_viterbi_busy    => decoder_debug_viterbi_busy,
+                rx_debug_viterbi_done    => decoder_debug_viterbi_done,
+                rx_debug_decoder_tvalid  => decoder_tvalid,
+                rx_debug_decoder_tready  => decoder_tready
 
 	);
 

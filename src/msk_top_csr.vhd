@@ -189,8 +189,15 @@ ENTITY msk_top_csr IS
                 tx_debug_fifo_tready     : IN std_logic;
                 tx_debug_tx_req          : IN std_logic;
                 tx_debug_encoder_tlast   : IN std_logic;
-                tx_debug_encoder_state   : IN std_logic_vector(2 DOWNTO 0)
+                tx_debug_encoder_state   : IN std_logic_vector(2 DOWNTO 0);
 
+                -- Debug signals for RX path
+                rx_debug_decoder_state   : IN std_logic_vector(2 DOWNTO 0);
+                rx_debug_viterbi_start   : IN std_logic;
+                rx_debug_viterbi_busy    : IN std_logic;
+                rx_debug_viterbi_done    : IN std_logic;
+                rx_debug_decoder_tvalid  : IN std_logic;
+                rx_debug_decoder_tready  : IN std_logic
 
 	);
 END ENTITY msk_top_csr;
@@ -375,11 +382,47 @@ BEGIN
 
     -- FIFO status reads
 	rx_async_fifo_status_req <= hwif_out.rx_async_fifo_rd_wr_ptr.data.swmod;
+
 	hwif_in.rx_async_fifo_rd_wr_ptr.data.we	<= rx_async_fifo_status_ack;
-    hwif_in.rx_async_fifo_rd_wr_ptr.data.next_q <= std_logic_vector(resize(unsigned(rx_async_fifo_wr_ptr), 16) & resize(unsigned(rx_async_fifo_rd_ptr), 16));
+
+
+    -- commented out by Abraxas3d to add more bits to the register to investigate receive failures
+    --hwif_in.rx_async_fifo_rd_wr_ptr.data.next_q <= std_logic_vector(resize(unsigned(rx_async_fifo_wr_ptr), 16) & resize(unsigned(rx_async_fifo_rd_ptr), 16));
+
+-- Experimental RX debug register setup (matching TX debug pattern)
+-- Bit layout:
+--   [31:29] decoder state (IDLE=0, COLLECT=1, EXTRACT=2, DEINTERLEAVE=3, 
+--                          PREP_FEC_DECODE=4, FEC_DECODE=5, DERANDOMIZE=6, OUTPUT=7)
+--   [28]    viterbi_start
+--   [27]    viterbi_busy
+--   [26]    viterbi_done
+--   [25]    decoder_tvalid
+--   [24]    decoder_tready
+--   [23]    spare
+--   [22:13] rx_fifo_wr_ptr (10 bits)
+--   [12:10] spare
+--   [9:0]   rx_fifo_rd_ptr (10 bits)
+hwif_in.rx_async_fifo_rd_wr_ptr.data.next_q <=
+    rx_debug_decoder_state &            -- bits 31:29 (3 bits)
+    rx_debug_viterbi_start &            -- bit 28
+    rx_debug_viterbi_busy &             -- bit 27
+    rx_debug_viterbi_done &             -- bit 26
+    rx_debug_decoder_tvalid &           -- bit 25
+    rx_debug_decoder_tready &           -- bit 24
+    '0' &                               -- bit 23 spare
+    std_logic_vector(resize(unsigned(rx_async_fifo_wr_ptr), 10)) &  -- bits 22:13
+    "000" &                             -- bits 12:10 spare
+    std_logic_vector(resize(unsigned(rx_async_fifo_rd_ptr), 10));   -- bits 9:0
+
+
 
 	tx_async_fifo_status_req <= hwif_out.tx_async_fifo_rd_wr_ptr.data.swmod;
+
 	hwif_in.tx_async_fifo_rd_wr_ptr.data.we	<= tx_async_fifo_status_ack;
+
+
+
+
     -- commented out by Abraxas3d to add more bits to the register in order to investigate transmitter stall
     --hwif_in.tx_async_fifo_rd_wr_ptr.data.next_q <= std_logic_vector(resize(unsigned(tx_async_fifo_wr_ptr), 16) & resize(unsigned(tx_async_fifo_rd_ptr), 16));
 
