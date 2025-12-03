@@ -23,13 +23,9 @@ git submodule update --init --recursive
 cd firmware/ori/libre
 ./setup_libre.sh
 
-# 3. Build HDL (requires Vivado)
-cd ../../../projects/libre
-make
-
-# 4. Build firmware
-cd ../../firmware
-make TARGET=libre
+# 3. Build firmware (auto-builds HDL)
+cd ../..
+make PLATFORM=libre
 ```
 
 ### Using Pre-built XSA
