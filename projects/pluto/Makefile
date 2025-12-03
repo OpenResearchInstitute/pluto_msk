@@ -1,3 +1,4 @@
+override TARGET :=
 ####################################################################################
 ## Copyright (c) 2018 - 2023 Analog Devices, Inc.
 ### SPDX short identifier: BSD-1-Clause
