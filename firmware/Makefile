@@ -248,11 +248,11 @@ endif
 	touch 	$(SDIMGDIR)/boot.bif
 	echo "img : {[bootloader] $(SDIMGDIR)/fsbl.elf  $(SDIMGDIR)/system_top.bit  $(SDIMGDIR)/u-boot.elf}" >  $(SDIMGDIR)/boot.bif
 	bootgen -image $(SDIMGDIR)/boot.bif -w -o i $(SDIMGDIR)/BOOT.bin
-	rm $(SDIMGDIR)/fsbl.elf
-	rm $(SDIMGDIR)/system_top.bit
-	rm $(SDIMGDIR)/u-boot.elf
-	rm $(SDIMGDIR)/ramdisk.image.gz 
-	rm $(SDIMGDIR)/boot.bif
+	#rm $(SDIMGDIR)/fsbl.elf
+	#rm $(SDIMGDIR)/system_top.bit
+	#rm $(SDIMGDIR)/u-boot.elf
+	#rm $(SDIMGDIR)/ramdisk.image.gz 
+	#rm $(SDIMGDIR)/boot.bif
 
 
 clean-build:
