@@ -23,7 +23,6 @@ VERSION=$(shell git describe --abbrev=4 --always --tags)
 PATCH=$(shell cd ori && ./applypatch.sh )
 $(shell git log --pretty=format:"%h - %ad : %s" > ori/board/pluto/overlay/root/fwhistory.txt)
 #LATEST_TAG=$(shell git describe --abbrev=0 --tags)
-UBOOT_VERSION=$(shell echo -n "PlutoSDR " && cd u-boot-xlnx && git describe --abbrev=0 --dirty --always --tags)
 HAVE_VIVADO= $(shell bash -c "source $(VIVADO_SETTINGS) > /dev/null 2>&1 && vivado -version > /dev/null 2>&1 && echo 1 || echo 0")
 #XSA_URL ?= http://github.com/maia-sdr/plutosdr-fw/releases/download/${LATEST_TAG}/system_top.xsa
 
@@ -51,6 +50,7 @@ $(warning *** Building target $(PLATFORM),)
 
 # Include target specific constants
 include scripts/$(PLATFORM).mk
+UBOOT_VERSION=$(shell echo -n "$(COMPLETE_NAME) " && cd u-boot-xlnx && git describe --abbrev=0 --dirty --always --tags)
 
 ifeq (, $(shell which dfu-suffix))
 $(warning "No dfu-utils in PATH consider doing: sudo apt-get install dfu-util")
