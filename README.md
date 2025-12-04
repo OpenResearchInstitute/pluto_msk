@@ -14,12 +14,12 @@ The following ORI library components are used as submodules to this repository:
 6. [power_detector](https://github.com/OpenResearchInstitute/power_detector)
 7. [Exponential Moving Average Filter](https://github.com/OpenResearchInstitute/lowpass_ema)
 
-## Building
+## Building Pluto Firmware
 In oder to build the FPGA bitstream, you first need to install Vivado. Recommended version is 2022.2. In this documentation and in the `Makefile`, the Vivado installation path is assumed to be `/opt/Xilinx/Vivado`. If it is in another directory, change the path in the steps below (for example, to `/tools/Xilinx/Vivado`) or create a symbolic link in `/opt` pointing to the actual installation directory. For example,
 ```
 sudo ln -s /tools/Xilinx /opt/Xilinx
 ```
-Such a symbolic link is already in place on chococat and keroppi.
+Such a symbolic link is already in place on chococat, keroppi, mymelody, etc.
 ### First, clone this repo with all submodules
 git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 ### building bitstream only
@@ -28,7 +28,16 @@ git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 <br>(See above about the Vivado installation path.)
 3. make
 
-For reference, on the chococat VM, the main branch takes:
+## Building Libre Firmware (bitfile builds automatically)
+### First, clone this repo with all submodules
+git clone --branch encoder-dev https://github.com/OpenResearchInstitute/pluto_msk.git
+cd pluto_msk
+git submodule update --init --recursive
+cd firmware/ori/libre && ./setup_libre.sh
+cd ../..
+make PLATFORM=libre
+
+For reference, on the chococat VM, the main branch for Pluto takes:
 ```
 real	128m34.908s
 user	20m41.893s
