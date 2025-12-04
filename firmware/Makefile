@@ -225,7 +225,7 @@ build/$(PLATFORM).dfu: build/$(PLATFORM).itb
 SDIMGDIR = build/sdimg
 sdimg: build | build/rootfs.cpio.gz
 	mkdir -p $(SDIMGDIR)
-	cp ori/bitstream/$(PLATFORM)/fsbl.elf 	$(SDIMGDIR)/fsbl.elf  
+	if [ "$(PLATFORM)" = "libre" ]; then cp build/fsbl.elf $(SDIMGDIR)/fsbl.elf; else cp ori/bitstream/$(PLATFORM)/fsbl.elf $(SDIMGDIR)/fsbl.elf; fi  
 	cp build/system_top.bit 	$(SDIMGDIR)/system_top.bit
 	cp build/u-boot.elf 			$(SDIMGDIR)/u-boot.elf
 	cp linux/arch/arm/boot/uImage	$(SDIMGDIR)/uImage
