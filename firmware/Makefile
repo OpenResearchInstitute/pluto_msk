@@ -50,7 +50,7 @@ $(warning *** Building target $(PLATFORM),)
 
 # Include target specific constants
 include scripts/$(PLATFORM).mk
-UBOOT_VERSION=$(shell echo -n "$(COMPLETE_NAME) " && cd u-boot-xlnx && git describe --abbrev=0 --dirty --always --tags)
+UBOOT_VERSION=$(COMPLETE_NAME) $(VERSION)
 
 ifeq (, $(shell which dfu-suffix))
 $(warning "No dfu-utils in PATH consider doing: sudo apt-get install dfu-util")
