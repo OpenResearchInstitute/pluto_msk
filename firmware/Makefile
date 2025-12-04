@@ -164,15 +164,15 @@ else ifeq (1, ${HAVE_VIVADO})
 #bash -c "source $(VIVADO_SETTINGS) && make -C maia-sdr/maia-hdl/projects/$(PLATFORM) && cp maia-sdr/maia-hdl/projects/$(PLATFORM)/$(PLATFORM).sdk/system_top.xsa $@"
 #unzip -l $@ | grep -q ps7_init || cp maia-sdr/maia-hdl/projects/$(PLATFORM)/$(PLATFORM).srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
 ifeq ($(PLATFORM),pluto)
-	bash -c "source $(VIVADO_SETTINGS) && make -C ../projects/pluto && cp ../projects/pluto/pluto.sdk/system_top.xsa $@"
+	bash -c "source $(VIVADO_SETTINGS) && cd ../projects/pluto && unset MAKEFLAGS && /usr/bin/make && cd ../../firmware && cp ../projects/pluto/pluto.sdk/system_top.xsa $@"
 	unzip -l $@ | grep -q ps7_init || cp ../projects/pluto/pluto.srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
 endif	
 ifeq ($(PLATFORM),plutoplus)
-	bash -c "source $(VIVADO_SETTINGS) && make -C ../hdl/projects/pluto-ori-plus && cp ../hdl/projects/pluto-ori-plus/pluto.sdk/system_top.xsa $@"
+	bash -c "source $(VIVADO_SETTINGS) && cd ../hdl/projects/pluto-ori-plus && unset MAKEFLAGS && /usr/bin/make && cd ../../../firmware && cp ../hdl/projects/pluto-ori-plus/pluto.sdk/system_top.xsa $@"
 	unzip -l $@ | grep -q ps7_init || cp ../hdl/projects/pluto-ori-plus/pluto.srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
 endif
 ifeq ($(PLATFORM),e200)
-	bash -c "source $(VIVADO_SETTINGS) && make -C ../hdl/projects/pluto-ori-e200 && cp ../hdl/projects/pluto-ori-e200/e200.sdk/system_top.xsa $@"
+	bash -c "source $(VIVADO_SETTINGS) && cd ../hdl/projects/pluto-ori-e200 && unset MAKEFLAGS && /usr/bin/make && cd ../../../firmware && cp ../hdl/projects/pluto-ori-e200/e200.sdk/system_top.xsa $@"
 	unzip -l $@ | grep -q ps7_init || cp ../hdl/projects/pluto-ori-e200/e200.srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
 endif	
 ifeq ($(PLATFORM),libre)
