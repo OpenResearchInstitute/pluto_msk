@@ -31,10 +31,15 @@ git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 ## Building Libre Firmware (bitfile builds automatically)
 ### First, clone this repo with all submodules
 git clone --branch encoder-dev https://github.com/OpenResearchInstitute/pluto_msk.git
+
 cd pluto_msk
+
 git submodule update --init --recursive
+
 cd firmware/ori/libre && ./setup_libre.sh
+
 cd ../..
+
 make PLATFORM=libre
 
 For reference, on the chococat VM, the main branch for Pluto takes:
