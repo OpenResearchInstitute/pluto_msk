@@ -188,6 +188,8 @@ build/fsbl.elf build/system_top.bit : build/system_top.xsa
 	rm -Rf build/sdk
 ifeq (1, ${HAVE_VIVADO})
 	bash -c "source $(VIVADO_SETTINGS) && xsct scripts/create_fsbl_project.tcl"
+	cp build/sdk/fsbl/Release/fsbl.elf build/fsbl.elf
+	unzip -o build/system_top.xsa system_top.bit -d build
 else
 	unzip -o build/system_top.xsa system_top.bit -d build
 endif
@@ -223,7 +225,7 @@ build/$(PLATFORM).dfu: build/$(PLATFORM).itb
 	mv $<.tmp $@
 
 SDIMGDIR = build/sdimg
-sdimg: build | build/rootfs.cpio.gz
+sdimg: build build/fsbl.elf build/system_top.bit build/u-boot.elf build/zynq-libre.dtb build/uboot-env.txt | build/rootfs.cpio.gz
 	mkdir -p $(SDIMGDIR)
 	if [ "$(PLATFORM)" = "libre" ]; then cp build/fsbl.elf $(SDIMGDIR)/fsbl.elf; else cp ori/bitstream/$(PLATFORM)/fsbl.elf $(SDIMGDIR)/fsbl.elf; fi  
 	cp build/system_top.bit 	$(SDIMGDIR)/system_top.bit

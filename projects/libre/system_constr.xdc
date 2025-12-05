@@ -6,7 +6,7 @@
 # =============================================================================
 
 # AD9363 LVDS RX clock (125 MHz max)
-create_clock -name rx_clk -period 8.000 [get_ports rx_clk_in_p]
+create_clock -name rx_clk -period 16.27 [get_ports rx_clk_in_p]
 
 # PS7 fabric clocks
 create_clock -name clk_fpga_0 -period 10 [get_pins "i_system_wrapper/system_i/sys_ps7/inst/PS7_i/FCLKCLK[0]"]
@@ -52,16 +52,16 @@ set_property -dict {PACKAGE_PIN Y17 IOSTANDARD LVDS_25} [get_ports tx_frame_out_
 # TX Data (differential) [5:0]
 set_property -dict {PACKAGE_PIN W14 IOSTANDARD LVDS_25} [get_ports {tx_data_out_p[0]}]
 set_property -dict {PACKAGE_PIN Y14 IOSTANDARD LVDS_25} [get_ports {tx_data_out_n[0]}]
-set_property -dict {PACKAGE_PIN W15 IOSTANDARD LVDS_25} [get_ports {tx_data_out_p[1]}]
-set_property -dict {PACKAGE_PIN W16 IOSTANDARD LVDS_25} [get_ports {tx_data_out_n[1]}]
+set_property -dict {PACKAGE_PIN T12 IOSTANDARD LVDS_25} [get_ports {tx_data_out_p[1]}]
+set_property -dict {PACKAGE_PIN U12 IOSTANDARD LVDS_25} [get_ports {tx_data_out_n[1]}]
 set_property -dict {PACKAGE_PIN U14 IOSTANDARD LVDS_25} [get_ports {tx_data_out_p[2]}]
 set_property -dict {PACKAGE_PIN U15 IOSTANDARD LVDS_25} [get_ports {tx_data_out_n[2]}]
 set_property -dict {PACKAGE_PIN T16 IOSTANDARD LVDS_25} [get_ports {tx_data_out_p[3]}]
 set_property -dict {PACKAGE_PIN U17 IOSTANDARD LVDS_25} [get_ports {tx_data_out_n[3]}]
 set_property -dict {PACKAGE_PIN V12 IOSTANDARD LVDS_25} [get_ports {tx_data_out_p[4]}]
 set_property -dict {PACKAGE_PIN W13 IOSTANDARD LVDS_25} [get_ports {tx_data_out_n[4]}]
-set_property -dict {PACKAGE_PIN T12 IOSTANDARD LVDS_25} [get_ports {tx_data_out_p[5]}]
-set_property -dict {PACKAGE_PIN U12 IOSTANDARD LVDS_25} [get_ports {tx_data_out_n[5]}]
+set_property -dict {PACKAGE_PIN V15 IOSTANDARD LVDS_25} [get_ports {tx_data_out_p[5]}]
+set_property -dict {PACKAGE_PIN W15 IOSTANDARD LVDS_25} [get_ports {tx_data_out_n[5]}]
 
 # =============================================================================
 # AD9363 Control Signals
@@ -80,13 +80,9 @@ set_property -dict {PACKAGE_PIN P16 IOSTANDARD LVCMOS25} [get_ports gpio_en_agc]
 # =============================================================================
 
 set_property -dict {PACKAGE_PIN T11 IOSTANDARD LVCMOS25} [get_ports {gpio_status[0]}]
-set_property -dict {PACKAGE_PIN T14 IOSTANDARD LVCMOS25} [get_ports {gpio_status[1]}]
-set_property -dict {PACKAGE_PIN T15 IOSTANDARD LVCMOS25} [get_ports {gpio_status[2]}]
 set_property -dict {PACKAGE_PIN T17 IOSTANDARD LVCMOS25} [get_ports {gpio_status[3]}]
 set_property -dict {PACKAGE_PIN T19 IOSTANDARD LVCMOS25} [get_ports {gpio_status[4]}]
 set_property -dict {PACKAGE_PIN G14 IOSTANDARD LVCMOS33} [get_ports {gpio_status[5]}]
-set_property -dict {PACKAGE_PIN U13 IOSTANDARD LVCMOS25} [get_ports {gpio_status[6]}]
-set_property -dict {PACKAGE_PIN V13 IOSTANDARD LVCMOS25} [get_ports {gpio_status[7]}]
 
 # =============================================================================
 # GPIO Control [3:0] - Mixed Banks
@@ -131,3 +127,10 @@ set_false_path -from [get_pins i_system_wrapper/system_i/axi_ad9361/inst/i_tdd/i
 set_false_path -from [get_pins i_system_wrapper/system_i/axi_ad9361/inst/i_tdd/i_tdd_control/tdd_rx_only_reg/C]
 set_false_path -from [get_pins i_system_wrapper/system_i/axi_ad9361/inst/i_tdd/i_tdd_control/tdd_gated_tx_dmapath_reg/C]
 set_false_path -from [get_pins i_system_wrapper/system_i/axi_ad9361/inst/i_tdd/i_tdd_control/tdd_gated_rx_dmapath_reg/C]
+
+# Asynchronous clock domain crossing - CDC handled in RTL
+set_clock_groups -asynchronous -group [get_clocks {clk_fpga_0 clk_fpga_1 spi0_clk}] -group [get_clocks {rx_clk}]
+set_property -dict {PACKAGE_PIN T14 IOSTANDARD LVCMOS25} [get_ports {gpio_status[1]}]
+set_property -dict {PACKAGE_PIN T15 IOSTANDARD LVCMOS25} [get_ports {gpio_status[2]}]
+set_property -dict {PACKAGE_PIN U13 IOSTANDARD LVCMOS25} [get_ports {gpio_status[6]}]
+set_property -dict {PACKAGE_PIN V13 IOSTANDARD LVCMOS25} [get_ports {gpio_status[7]}]
