@@ -20,7 +20,7 @@
 
 		fpga@1 {
 			description = "FPGA";
-			data = /incbin/("../build/system_top.bit");
+			data = /incbin/("/home/abraxas3d/pluto_msk/firmware/build/system_top.bit");
 			type = "fpga";
 			arch = "arm";
 			compression = "none";
