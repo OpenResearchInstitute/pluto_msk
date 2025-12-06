@@ -11,5 +11,6 @@ adi_project_files libre [list \
 
 set_property is_enabled false [get_files  *system_sys_ps7_0.xdc]
 
+set_property strategy Performance_Explore [get_runs impl_1]
 adi_project_run libre
 source $ad_hdl_dir/library/axi_ad9361/axi_ad9361_delay.tcl
