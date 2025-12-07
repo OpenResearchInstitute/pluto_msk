@@ -245,6 +245,10 @@ ifeq ($(PLATFORM),libre)
 	cp build/zynq-libre.dtb 	$(SDIMGDIR)/devicetree.dtb
 endif
 	cp build/uboot-env.txt  		$(SDIMGDIR)/uEnv.txt
+	@if [ "$(PLATFORM)" = "libre" ]; then \
+		echo 'sdboot=if mmcinfo; then run uenvboot; echo Copying Linux from SD to RAM... && load mmc 0 $${fit_load_address} $${kernel_image} && load mmc 0 $${devicetree_load_address} $${devicetree_image} && load mmc 0 $${ramdisk_load_address} $${ramdisk_image} && bootm $${fit_load_address} $${ramdisk_load_address} $${devicetree_load_address}; fi' >> $(SDIMGDIR)/uEnv.txt; \
+		sed -i 's/serial@e0001000/serial@e0000000/g' $(SDIMGDIR)/uEnv.txt; \
+	fi
 	cp build/rootfs.cpio.gz  		$(SDIMGDIR)/ramdisk.image.gz
 	mkimage -A arm -T ramdisk -C gzip -d $(SDIMGDIR)/ramdisk.image.gz $(SDIMGDIR)/uramdisk.image.gz
 	touch 	$(SDIMGDIR)/boot.bif
