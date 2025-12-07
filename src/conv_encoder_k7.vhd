@@ -61,6 +61,20 @@ ARCHITECTURE rtl OF conv_encoder_k7 IS
     -- Latched output (stable while not encoding)
     SIGNAL out_latched : std_logic_vector(OUTPUT_BITS-1 DOWNTO 0);
 
+    ATTRIBUTE dont_touch : STRING;
+    ATTRIBUTE dont_touch OF in_sr : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF out_sr : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF enc_sr : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF out_latched : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF state : SIGNAL IS "true";
+    
+    ATTRIBUTE ram_style : STRING;
+    ATTRIBUTE ram_style OF in_sr : SIGNAL IS "block";
+    ATTRIBUTE ram_style OF out_sr : SIGNAL IS "true";
+    ATTRIBUTE ram_style OF out_latched : SIGNAL IS "block";
+
+
+
 BEGIN
 
     PROCESS(clk, aresetn)

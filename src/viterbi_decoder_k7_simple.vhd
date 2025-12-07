@@ -35,6 +35,9 @@ END ENTITY viterbi_decoder_k7_simple;
 
 ARCHITECTURE rtl OF viterbi_decoder_k7_simple IS
 
+    ATTRIBUTE KEEP_HIERARCHY : STRING;
+    ATTRIBUTE KEEP_HIERARCHY OF rtl : ARCHITECTURE IS "yes";
+
     CONSTANT NUM_STATES : INTEGER := 64;
     CONSTANT METRIC_WIDTH : INTEGER := 12;
     CONSTANT INF_METRIC : INTEGER := 4095;
@@ -52,9 +55,6 @@ ARCHITECTURE rtl OF viterbi_decoder_k7_simple IS
     CONSTANT DECISION_DEPTH : INTEGER := NUM_SYMBOLS * NUM_STATES;
     TYPE decision_mem_t IS ARRAY(0 TO DECISION_DEPTH-1) OF std_logic;
     SIGNAL decision_mem : decision_mem_t;
-
-    ATTRIBUTE ram_style : STRING;
-    ATTRIBUTE ram_style OF decision_mem : SIGNAL IS "block";
    
     SIGNAL dec_wr_en : std_logic;
     SIGNAL dec_wr_addr : INTEGER RANGE 0 TO DECISION_DEPTH-1;
@@ -74,6 +74,27 @@ ARCHITECTURE rtl OF viterbi_decoder_k7_simple IS
     -- These shift left, MSB contains current symbol
     SIGNAL g1_sr : std_logic_vector(NUM_SYMBOLS-1 DOWNTO 0);
     SIGNAL g2_sr : std_logic_vector(NUM_SYMBOLS-1 DOWNTO 0);
+
+    ATTRIBUTE ram_style : STRING;
+    ATTRIBUTE ram_style OF decision_mem : SIGNAL IS "block";
+
+    ATTRIBUTE dont_touch : STRING;
+    ATTRIBUTE dont_touch OF state : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF metrics_current : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF metrics_next : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF decision_mem : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF g1_sr : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF g2_sr : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF out_buf : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF time_step : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF tb_time : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF tb_state : SIGNAL IS "true";
+
+    ATTRIBUTE ram_style OF g1_sr : SIGNAL IS "block";
+    ATTRIBUTE ram_style OF g2_sr : SIGNAL IS "block";
+    ATTRIBUTE ram_style OF out_buf : SIGNAL IS "block";
+
+
     
     FUNCTION compute_output(curr_state : INTEGER; input_bit : std_logic) 
         RETURN std_logic_vector IS

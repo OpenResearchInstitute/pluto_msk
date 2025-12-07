@@ -137,9 +137,6 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
     SIGNAL fec_buffer         : bit_buffer_t := (OTHERS => '0');
     SIGNAL interleaved_buffer : bit_buffer_t := (OTHERS => '0');
 
-    ATTRIBUTE ram_style : STRING;
-    ATTRIBUTE ram_style OF interleaved_buffer : SIGNAL IS "block";
-    
     -- Index counters
     SIGNAL collect_idx : NATURAL RANGE 0 TO PAYLOAD_BYTES;  -- Now collects all bytes until tlast
     SIGNAL byte_idx    : NATURAL RANGE 0 TO ENCODED_BYTES;
@@ -168,9 +165,23 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
     ATTRIBUTE dont_touch OF m_axis_tvalid_reg : SIGNAL IS "true";
     ATTRIBUTE dont_touch OF m_axis_tdata_reg : SIGNAL IS "true";
     ATTRIBUTE dont_touch OF m_axis_tlast_reg : SIGNAL IS "true";
-    --ATTRIBUTE dont_touch OF interleaved_buffer : SIGNAL IS "true";
-    --ATTRIBUTE dont_touch OF out_idx : SIGNAL IS "true";
     ATTRIBUTE dont_touch OF s_axis_tready_reg : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF input_buffer : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF randomized_buffer : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF fec_buffer : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF interleaved_buffer : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF encoder_input_buf : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF encoder_output_buf : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF state : SIGNAL IS "true";
+
+
+    -- Also force BRAM on the large buffers 
+    ATTRIBUTE ram_style : STRING;
+    ATTRIBUTE ram_style OF interleaved_buffer : SIGNAL IS "block";
+    ATTRIBUTE ram_style OF input_buffer : SIGNAL IS "block";
+    ATTRIBUTE ram_style OF randomized_buffer : SIGNAL IS "block";
+    ATTRIBUTE ram_style OF fec_buffer : SIGNAL IS "block";
+
 
     
     ----------------------------------------------------------------------------
