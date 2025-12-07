@@ -240,7 +240,7 @@
 		  * 1 = SKIP TX
 		  * 2 = SKIP ALL
 		  */
-		adi,digital-interface-tune-skip-mode = <0>; /* TUNE RX & TX */
+		adi,digital-interface-tune-skip-mode = <2>; /* Skip TX tuning - MSK owns TX path */
 
 		adi,pp-tx-swap-enable;
 		adi,pp-rx-swap-enable;
