@@ -51,12 +51,21 @@ git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 
 ### To Trigger HDL Rebuild
 
-`rm -f build/system_top.xsa`
-`rm -f build/system_top.bit`
-`rm -rf ../projects/libre/libre.runs/`
-`rm -rf ../projects/libre/libre.gen/`
+Go to the libre Vivado project directory
 
-Then `make PLATFORM=libre`
+`cd ~/pluto_msk/projects/libre`
+
+Clean and rebuild via make (if there's a Makefile)
+
+`make clean`
+
+`make`
+
+Then
+
+`cd ~/pluto_msk/firmware/`
+
+`make PLATFORM=libre`
 
 
 For reference, on the chococat VM, the main branch for Pluto takes:
