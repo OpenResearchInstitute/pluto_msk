@@ -15,6 +15,15 @@ M_DEPS += ../../hdl/library/common/ad_iobuf.v
 M_DEPS += ../../hdl/library/common/ad_bus_mux.v
 M_DEPS += ../../hdl/library/axi_tdd/scripts/axi_tdd.tcl
 M_DEPS += ../../hdl/library/axi_ad9361/axi_ad9361_delay.tcl
+M_DEPS += msk_top
+M_DEPS += ../../src/msk_top.vhd
+M_DEPS += ../../src/ov_frame_encoder.vhd
+M_DEPS += ../../src/conv_encoder_k7.vhd
+M_DEPS += ../../src/axis_async_fifo.vhd
+M_DEPS += ../../src/axis_dma_adapter.vhd
+M_DEPS += ../../msk_demodulator/src/msk_demodulator.vhd
+M_DEPS += system_bd.tcl
+M_DEPS += system_constr.xdc
 
 LIB_DEPS += axi_ad9361
 LIB_DEPS += axi_dmac
@@ -23,3 +32,6 @@ LIB_DEPS += util_pack/util_cpack2
 LIB_DEPS += util_pack/util_upack2
 
 include ../../hdl/projects/scripts/project-xilinx.mk
+
+msk_top:
+	make -C ../../library
