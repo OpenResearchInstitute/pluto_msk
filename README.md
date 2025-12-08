@@ -55,7 +55,9 @@ Go to the libre Vivado project directory
 
 `cd ~/pluto_msk/projects/libre`
 
-Clean and rebuild via make (if there's a Makefile)
+Make sure Vivado 2022.2 is sourced. Run vivado. Open the libre.xpr file. Reset Synthesis Runs. Run Synthesis. Run Implementation. Export bitfile. Export hardware with bitfile included. Put a copy of this .xsa file here, and also in /pluto_msk/firmware/build
+
+Or, if there is a makefile, try and use that. 
 
 `make clean`
 
