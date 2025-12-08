@@ -155,7 +155,13 @@ build/rootfs.cpio.gz: buildroot/output/images/rootfs.cpio.gz | build
 build/$(PLATFORM).itb: u-boot-xlnx/tools/mkimage build/zImage build/rootfs.cpio.gz $(TARGET_DTS_FILES) build/system_top.bit
 	u-boot-xlnx/tools/mkimage -f scripts/$(PLATFORM).its $@
 
-build/system_top.xsa:  | build
+# HDL source dependencies - rebuild if any VHDL or TCL changes
+HDL_SRCS := $(wildcard ../src/*.vhd) \
+		$(wildcard ../projects/$(PLATFORM)/*.tcl) \
+		$(wildcard ../library/*.tcl) \
+		$(wildcard ../msk_demodulator/src/*.vhd)
+
+build/system_top.xsa: $(HDL_SRCS) | build
 ifneq ($(XSA_FILE),)
 	cp $(XSA_FILE) $@
 else ifneq ($(XSA_URL),)
