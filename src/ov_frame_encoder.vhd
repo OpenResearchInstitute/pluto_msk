@@ -173,7 +173,12 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
     ATTRIBUTE dont_touch OF encoder_input_buf : SIGNAL IS "true";
     ATTRIBUTE dont_touch OF encoder_output_buf : SIGNAL IS "true";
     ATTRIBUTE dont_touch OF state : SIGNAL IS "true";
-
+    -- Protect conv_encoder_k7 interface signals (prevent optimization)
+    ATTRIBUTE dont_touch OF encoder_start : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF encoder_busy : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF encoder_done : SIGNAL IS "true";
+    -- Protect the conv_encoder_k7 instance itself
+    ATTRIBUTE dont_touch OF U_ENCODER : LABEL IS "true";
 
     -- Also force BRAM on the large buffers 
     ATTRIBUTE ram_style : STRING;

@@ -67,6 +67,7 @@ ARCHITECTURE rtl OF conv_encoder_k7 IS
     ATTRIBUTE dont_touch OF enc_sr : SIGNAL IS "true";
     ATTRIBUTE dont_touch OF out_latched : SIGNAL IS "true";
     ATTRIBUTE dont_touch OF state : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF bit_count : SIGNAL IS "true";
     
     ATTRIBUTE ram_style : STRING;
     ATTRIBUTE ram_style OF in_sr : SIGNAL IS "block";
