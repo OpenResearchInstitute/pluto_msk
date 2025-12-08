@@ -19,7 +19,7 @@ In order to build the FPGA bitstream, you first need to install Vivado. Recommen
 ```
 sudo ln -s /tools/Xilinx /opt/Xilinx
 ```
-Such a symbolic link is already in place on chococat and keroppi.
+Such a symbolic link is already in place on chococat, keroppi, mymelody, etc.
 ### First, clone this repo with all submodules
 git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 ### building bitstream only
@@ -28,7 +28,49 @@ git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 <br>(See above about the Vivado installation path.)
 3. make
 
-For reference, on the chococat VM, the main branch takes:
+## Building Libre Firmware (bitfile builds automatically)
+### First, clone this repo with all submodules
+
+`git clone --branch <name-of-branch-if-necessary> https://github.com/OpenResearchInstitute/pluto_msk.git`
+
+`cd pluto_msk`
+
+`git submodule update --init --recursive`
+
+`cd firmware/ori/libre && ./setup_libre.sh`
+
+`cd ../..`
+
+### Build Firmware
+
+`make PLATFORM=libre`
+
+### Build SD Card Image
+
+`make PLATFORM=libre sdimg`
+
+### To Trigger HDL Rebuild
+
+Go to the libre Vivado project directory
+
+`cd ~/pluto_msk/projects/libre`
+
+Make sure Vivado 2022.2 is sourced. Run vivado. Open the libre.xpr file. Reset Synthesis Runs. Run Synthesis. Run Implementation. Export bitfile. Export hardware with bitfile included. Put a copy of this .xsa file here, and also in /pluto_msk/firmware/build
+
+Or, if there is a makefile, try and use that. 
+
+`make clean`
+
+`make`
+
+Then
+
+`cd ~/pluto_msk/firmware/`
+
+`make PLATFORM=libre`
+
+
+For reference, on the chococat VM, the main branch for Pluto takes:
 ```
 real	128m34.908s
 user	20m41.893s
