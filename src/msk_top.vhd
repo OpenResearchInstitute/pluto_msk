@@ -254,6 +254,12 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL rx_data_soft		: signed(15 downto 0);
 	SIGNAL rx_data_soft_valid	: std_logic;
 
+        -- Frame sync detector correlator debug signals
+        SIGNAL rx_sync_correlation     : signed(31 DOWNTO 0);
+        SIGNAL rx_sync_corr_peak       : signed(31 DOWNTO 0);
+        SIGNAL rx_sync_soft_current    : signed(15 DOWNTO 0);
+        SIGNAL rx_sync_bit_count       : std_logic_vector(31 DOWNTO 0);
+
 	SIGNAL rx_sample_clk 	: std_logic;
 	SIGNAL discard_rxsamples: std_logic_vector(7 DOWNTO 0);
 	SIGNAL discard_rxnco  	: std_logic_vector(7 DOWNTO 0);
@@ -595,8 +601,10 @@ BEGIN
         GENERIC MAP (
             SYNC_WORD           => x"02B8DB",  -- MSB-first sync word (same as TX!)
             PAYLOAD_BYTES       => 268,
-            HUNTING_THRESHOLD   => 3,          -- Strict threshold when searching
-            LOCKED_THRESHOLD    => 5,          -- Relaxed threshold when locked
+            HUNTING_THRESHOLD   => 6000,      -- adjust after observing, soft decisions
+            -- HUNTING_THRESHOLD   => 3,          -- Strict threshold when searching, hard decisions
+            LOCKED_THRESHOLD    => 3000,      -- adjust after observing, soft decisions
+            --LOCKED_THRESHOLD    => 5,          -- Relaxed threshold when locked, hard decisions
             FLYWHEEL_TOLERANCE  => 2,          -- Tolerate 2 missed syncs
             LOCK_FRAMES         => 3,          -- Need 3 consecutive good frames
             BUFFER_DEPTH        => 11          -- 2048 bytes
@@ -607,23 +615,31 @@ BEGIN
             
             rx_bit          => rx_bit_corr,
             rx_bit_valid    => rx_bit_valid,
-            s_axis_soft_tdata => (OTHERS => '0'),  -- tied to zero for hard decisions
-            
+            --s_axis_soft_tdata => (OTHERS => '0'),  -- tied to zero for hard decisions
+            s_axis_soft_tdata => rx_data_soft,  -- Connect rx_data_soft for soft decisions            
+
             m_axis_tdata    => sync_det_tdata,
             m_axis_tvalid   => sync_det_tvalid,
             m_axis_tready   => sync_det_tready,
             m_axis_tlast    => sync_det_tlast,
 
             -- Frame synchronization signals
-	    	frame_sync_locked       => rx_frame_sync_locked,            
+	    frame_sync_locked       => rx_frame_sync_locked,            
             frames_received         => rx_frames_count,
             frame_sync_errors       => rx_frame_sync_errors,
             frame_buffer_overflow   => rx_frame_buffer_overflow,
             
-            -- Debug signals (internal only)
+            -- Debug signals for frame detector states
             debug_state             => rx_debug_state,
             debug_missed_syncs      => rx_debug_missed_syncs,
-            debug_consecutive_good  => rx_debug_consecutive_good
+            debug_consecutive_good  => rx_debug_consecutive_good,
+
+            -- Debug outputs for correlation simulation/ILA visibility
+            debug_correlation      => rx_sync_correlation,
+            debug_corr_peak        => rx_sync_corr_peak,
+            debug_soft_current     => rx_sync_soft_current,
+            debug_bit_count        => rx_sync_bit_count
+
        );
     
     ------------------------------------------------------------------------------
