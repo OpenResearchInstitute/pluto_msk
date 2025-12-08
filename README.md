@@ -51,18 +51,9 @@ git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk
 
 ### To Trigger HDL Rebuild
 
-**Option 1: Just remove the .xsa**
-
-`rm ../firmware/build/system_top.xsa`
-
-**Option 2: If that's not enough, clean Vivado project cache**
-
+`rm -f build/system_top.xsa`
+`rm -f build/system_top.bit`
 `rm -rf ../projects/libre/libre.runs/`
-
-`rm -rf ../projects/libre/libre.cache/`
-
-`rm -rf ../projects/libre/libre.hw/`
-
 `rm -rf ../projects/libre/libre.gen/`
 
 Then `make PLATFORM=libre`
