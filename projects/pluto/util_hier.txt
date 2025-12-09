@@ -1,0 +1,73 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+--------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2022.2 (lin64) Build 3671981 Fri Oct 14 04:59:54 MDT 2022
+| Date         : Sun Nov 30 20:37:58 2025
+| Host         : mymelody running 64-bit Ubuntu 22.04.5 LTS
+| Command      : report_utilization -hierarchical -hierarchical_depth 4 -file util_hier.txt
+| Design       : system_top
+| Device       : xc7z010clg225-1
+| Speed File   : -1
+| Design State : Synthesized
+--------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++--------------------------------+-------------------------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+|            Instance            |                            Module                           | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs  | RAMB36 | RAMB18 | DSP Blocks |
++--------------------------------+-------------------------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+| system_top                     |                                                       (top) |      16980 |      16294 |     602 |   84 | 20832 |      2 |      4 |         36 |
+|   (system_top)                 |                                                       (top) |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|   i_system_wrapper             |                                              system_wrapper |      16980 |      16294 |     602 |   84 | 20832 |      2 |      4 |         36 |
+|     (i_system_wrapper)         |                                              system_wrapper |          2 |          2 |       0 |    0 |     0 |      0 |      0 |          0 |
+|     system_i                   |                                                      system |      16978 |      16292 |     602 |   84 | 20832 |      2 |      4 |         36 |
+|       (system_i)               |                                                      system |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       axi_ad9361               |                                         system_axi_ad9361_0 |       2048 |       2048 |       0 |    0 |  3301 |      0 |      0 |         16 |
+|         (axi_ad9361)           |                                         system_axi_ad9361_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|         inst                   |                              system_axi_ad9361_0_axi_ad9361 |       2048 |       2048 |       0 |    0 |  3301 |      0 |      0 |         16 |
+|       axi_ad9361_adc_dma       |                                 system_axi_ad9361_adc_dma_0 |        506 |        468 |      38 |    0 |   787 |      1 |      0 |          0 |
+|         (axi_ad9361_adc_dma)   |                                 system_axi_ad9361_adc_dma_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|         inst                   |                        system_axi_ad9361_adc_dma_0_axi_dmac |        506 |        468 |      38 |    0 |   787 |      1 |      0 |          0 |
+|       axi_ad9361_dac_dma       |                                 system_axi_ad9361_dac_dma_0 |        463 |        429 |      34 |    0 |   692 |      1 |      0 |          0 |
+|         (axi_ad9361_dac_dma)   |                                 system_axi_ad9361_dac_dma_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|         inst                   |                        system_axi_ad9361_dac_dma_0_axi_dmac |        463 |        429 |      34 |    0 |   692 |      1 |      0 |          0 |
+|       axi_cpu_interconnect     |                               system_axi_cpu_interconnect_0 |        688 |        623 |       0 |   65 |   698 |      0 |      0 |          0 |
+|         (axi_cpu_interconnect) |                               system_axi_cpu_interconnect_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|         s00_couplers           |                                     s00_couplers_imp_WZLZH6 |        421 |        356 |       0 |   65 |   562 |      0 |      0 |          0 |
+|         xbar                   |                                               system_xbar_0 |        267 |        267 |       0 |    0 |   136 |      0 |      0 |          0 |
+|       axi_iic_main             |                                       system_axi_iic_main_0 |        402 |        384 |       0 |   18 |   374 |      0 |      0 |          0 |
+|         (axi_iic_main)         |                                       system_axi_iic_main_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|         U0                     |                               system_axi_iic_main_0_axi_iic |        402 |        384 |       0 |   18 |   374 |      0 |      0 |          0 |
+|       axi_spi                  |                                            system_axi_spi_0 |        438 |        422 |      16 |    0 |   633 |      0 |      0 |          0 |
+|         (axi_spi)              |                                            system_axi_spi_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|         U0                     |                               system_axi_spi_0_axi_quad_spi |        438 |        422 |      16 |    0 |   633 |      0 |      0 |          0 |
+|       axi_tdd_0                |                                        axi_tdd_0_imp_PE8F36 |        468 |        468 |       0 |    0 |   903 |      0 |      0 |          0 |
+|         (axi_tdd_0)            |                                        axi_tdd_0_imp_PE8F36 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|         tdd_ch_slice_0         |                                     system_tdd_ch_slice_0_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|         tdd_ch_slice_2         |                                     system_tdd_ch_slice_2_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|         tdd_core               |                                           system_tdd_core_0 |        468 |        468 |       0 |    0 |   903 |      0 |      0 |          0 |
+|       cpack                    |                                              system_cpack_0 |        109 |        109 |       0 |    0 |   132 |      0 |      0 |          0 |
+|         inst                   |                                  system_cpack_0_util_cpack2 |        109 |        109 |       0 |    0 |   132 |      0 |      0 |          0 |
+|       logic_inv                |                                          system_logic_inv_0 |          1 |          1 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       logic_or                 |                                           system_logic_or_0 |          1 |          1 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       logic_or_1               |                                         system_logic_or_1_0 |          1 |          1 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       msk_top                  |                                            system_msk_top_0 |      11674 |      11160 |     514 |    0 | 13147 |      0 |      4 |         20 |
+|         (msk_top)              |                                            system_msk_top_0 |          0 |          0 |       0 |    0 |     0 |      0 |      2 |          0 |
+|         U0                     |                                    system_msk_top_0_msk_top |      11674 |      11160 |     514 |    0 | 13147 |      0 |      2 |         20 |
+|       sys_concat_intc          |                                    system_sys_concat_intc_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       sys_ps7                  |                                            system_sys_ps7_0 |         46 |         46 |       0 |    0 |     0 |      0 |      0 |          0 |
+|         (sys_ps7)              |                                            system_sys_ps7_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|         inst                   | system_sys_ps7_0_processing_system7_v5_5_processing_system7 |         46 |         46 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       sys_rstgen               |                                         system_sys_rstgen_0 |         18 |         17 |       0 |    1 |    37 |      0 |      0 |          0 |
+|         U0                     |                          system_sys_rstgen_0_proc_sys_reset |         18 |         17 |       0 |    1 |    37 |      0 |      0 |          0 |
+|       tx_upack                 |                                           system_tx_upack_0 |        115 |        115 |       0 |    0 |   128 |      0 |      0 |          0 |
+|         inst                   |                               system_tx_upack_0_util_upack2 |        115 |        115 |       0 |    0 |   128 |      0 |      0 |          0 |
++--------------------------------+-------------------------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+
+

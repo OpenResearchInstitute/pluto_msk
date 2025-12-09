@@ -29,3 +29,11 @@ pluto.*/
 pluto.xpr
 component.xml
 
+firmware/build/
+projects/libre/libre.cache/
+projects/libre/libre.gen/
+projects/libre/libre.hw/
+projects/libre/libre.ip_user_files/
+projects/libre/libre.runs/
+projects/libre/libre.srcs/
+projects/libre/libre.xpr

@@ -65,7 +65,8 @@ import matplotlib.pyplot as plt
 import sys
 import inspect
 
-from desyrdl import addrmap_ch0
+from msk_top_regs.reg_model.msk_top_regs import msk_top_regs_cls
+from msk_top_regs.lib import AsyncCallbackSet, AsyncCallbackSetLegacy
 
 #------------------------------------------------------------------------------------------------------
 #  __       __  ___    __            __ ___    __        __ 
@@ -129,9 +130,11 @@ class axis_bus:
 
         self.aclk           = dut.s_axis_aclk
         self.aresetn        = dut.s_axis_aresetn
-        self.tvalid         = dut.s_axis_valid
-        self.tready         = dut.s_axis_ready
-        self.tdata          = dut.s_axis_data
+        self.tvalid         = dut.s_axis_tvalid
+        self.tready         = dut.s_axis_tready
+        self.tdata          = dut.s_axis_tdata
+        self.tlast          = dut.s_axis_tlast
+        self.tkeep          = dut.s_axis_tkeep
 
         self.aresetn.value  = 1
         self.tvalid.value   = 0 
@@ -259,8 +262,10 @@ class axi_bus:
         await self.write(addr, data[0])
 
 
-    async def read(self, addr):
+    async def read(self, addr, width, accesswidth):
 
+        await RisingEdge(self.aclk)
+        await RisingEdge(self.aclk)
         await RisingEdge(self.aclk)
 
         self.arvalid.value = 1
@@ -280,24 +285,23 @@ class axi_bus:
 
         self.rready.value = 0
 
+        read_data = self.rdata.value.integer
+
         await RisingEdge(self.aclk)
-        await RisingEdge(self.aclk)
-        await RisingEdge(self.aclk)
 
-        return self.rdata.value.integer
+        return read_data
 
 
-    async def write(self, addr, data):
+    async def write(self, addr, width, accesswidth, data):
 
+        self.dut.s_axi_awvalid.value = 1
+        self.dut.s_axi_wvalid.value = 1
         self.awaddr.value = addr
         self.wdata.value = data
         self.wstrb.value = 15
         self.bready.value = 1
 
         await RisingEdge(self.aclk)
-
-        self.dut.s_axi_awvalid.value = 1
-        self.dut.s_axi_wvalid.value = 1
 
         while self.awready.value == 0 and self.wready.value == 0:
              await RisingEdge(self.aclk)
@@ -497,7 +501,7 @@ class prbs:
 
         while self.sim_run:
             data = await self.gen()
-            print("Data: ", data)
+            self.dut._log.info("Data: %s", hex(data))
             await self.saxis.send(data)
 
         self.dut._log.info("...prbs generator - done")
@@ -670,7 +674,7 @@ async def msk_test_1(dut):
 
     print("Instantiate registers")
     axi  = axi_bus(dut)
-    regs = addrmap_ch0.Addrmap(axi)
+    regs = msk_top_regs_cls(callbacks=AsyncCallbackSet(read_callback=axi.read, write_callback=axi.write))
 
     tx_samples = []
     tx_time = []
@@ -679,8 +683,8 @@ async def msk_test_1(dut):
 
     rx_sample_rate = tx_sample_rate / tx_rx_sample_ratio
 
-    tx_data_width = 32
-    rx_data_width = 32
+    tx_data_width = 8
+    rx_data_width = 8
 
     await cocotb.start(Clock(dut.clk, tx_sample_per, units="fs").start())
 
@@ -718,110 +722,50 @@ async def msk_test_1(dut):
     dut.rx_samples_I.value = 0
     dut.rx_samples_Q.value = 0
 
-    hash_id = await regs.read("msk_top_regs", "Hash_ID_Low")
+    hash_low  = await regs.Hash_ID_Low.read()
+    hash_high = await regs.Hash_ID_High.read()
 
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "Fb_FreqWord", br_fcw)    
-    # await axi.write(20, int(f1 / sample_rate * 2.0**32))           # F1 frequency word
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "TX_F1_FreqWord", f1_fcw_tx)    
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "TX_F2_FreqWord", f2_fcw_tx)    
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "RX_F1_FreqWord", f1_fcw_rx)    
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "RX_F2_FreqWord", f2_fcw_rx)
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "Rx_Sample_Discard", (tx_rx_sample_ratio-1 << 8) + tx_rx_sample_ratio-1)
-    # await axi.write(28, (50 << 16) + 20)                             # p-gain / i-gain
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "LPF_Config_0", (lpf_alpha << 8))    
-    # await axi.write(32, (2 << 16))                                   # low-pass filter alpha
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "LPF_Config_1", (i_shift << 24) + i_gain)    
-    # await axi.write(36, 8)
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "LPF_Config_2", (p_shift << 24) + p_gain)    
-    # await axi.write(36, 8)
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "Tx_Data_Width", tx_data_width)    
-    # await axi.write(40, 8)
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "Rx_Data_Width", rx_data_width)    
-    # await axi.write(44, 1)                                          # Select PRBS data path
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "PRBS_Control", (autosync_threshold << 16) + 1)    
-    # await axi.write(48, (1 << 31) + (1 << 28))                      # Polynomial 
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "PRBS_Polynomial", (1 << 30) + (1 << 27))    
-    # await axi.write(52, 65535)                                      # initial state
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "PRBS_Initial_State", 0x8E7589FD)    
-    # await axi.write(56, 1)                                          # Error Mask
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "PRBS_Error_Mask", 1)    
-    # await axi.write(60, 0)
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "lowpass_ema_alpha1", 64)    
-    # await axi.write(60, 0)
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "lowpass_ema_alpha2", 64)    
-    # await axi.write(60, 0)
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "Tx_Sync_Ctrl", 0b0001)    
-    # await axi.write(60, 0)
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "Tx_Sync_Cnt", 192)    
-    # await axi.write(60, 0)
+    await regs.Fb_FreqWord.write(br_fcw)
+    await regs.TX_F1_FreqWord.write(f1_fcw_tx)    
+    await regs.TX_F2_FreqWord.write(f2_fcw_tx)    
+    await regs.RX_F1_FreqWord.write(f1_fcw_rx)    
+    await regs.RX_F2_FreqWord.write(f2_fcw_rx)
+    await regs.Rx_Sample_Discard.write((tx_rx_sample_ratio-1 << 8) + tx_rx_sample_ratio-1)
+    await regs.LPF_Config_0.write((lpf_alpha << 8))    
+    await regs.LPF_Config_1.write((i_shift << 24) + i_gain)    
+    await regs.LPF_Config_2.write((p_shift << 24) + p_gain)    
+    await regs.Tx_Data_Width.write(tx_data_width)    
+    await regs.Rx_Data_Width.write(rx_data_width)    
+    await regs.PRBS_Control.write((autosync_threshold << 16) + 1)    
+    await regs.PRBS_Polynomial.write((1 << 30) + (1 << 27))    
+    await regs.PRBS_Initial_State.write(0x8E7589FD)    
+    await regs.PRBS_Error_Mask.write(1)    
+    await regs.lowpass_ema_alpha1.write(64)    
+    await regs.lowpass_ema_alpha2.write(64)    
+    await regs.Tx_Sync_Ctrl.write(0b0001)    
+    await regs.Tx_Sync_Cnt.write(192)    
 
 
-    hash_id = await regs.read("msk_top_regs", "Hash_ID_Low")
-    #print("Hash ID: ", hex(hash_id))
-    hash_id = await regs.read("msk_top_regs", "Hash_ID_Low")
-    #print("Hash ID: ", hex(hash_id))
-    hash_id = await regs.read("msk_top_regs", "Hash_ID_Low")
-    #print("Hash ID: ", hex(hash_id))
-    hash_id = await regs.read("msk_top_regs", "Hash_ID_Low")
-    #print("Hash ID: ", hex(hash_id))
-    hash_id = await regs.read("msk_top_regs", "Hash_ID_Low")
+    hash_id  = await regs.Hash_ID_Low.read()
+    hash_id  = await regs.Hash_ID_Low.read()
+    hash_id  = await regs.Hash_ID_Low.read()
+    hash_id  = await regs.Hash_ID_Low.read()
+    hash_id  = await regs.Hash_ID_Low.read()
     print("Hash ID Low: ", hex(hash_id))
-    hash_id = await regs.read("msk_top_regs", "Hash_ID_High")
+    hash_id  = await regs.Hash_ID_High.read()
     print("Hash ID High: ", hex(hash_id))
 
     await Timer(100, units="ns")
 
     await RisingEdge(dut.clk)
 
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "MSK_Init", 0)    
-    dut.s_axi_wvalid.value = 1
-    dut.s_axi_awvalid.value = 1
-    await regs.write("msk_top_regs", "MSK_Control", (diff_enc_loopback << 4) + (rx_invert <<2) + ptt)    
+    await regs.MSK_Init.write(0)    
+    await regs.MSK_Control.write((diff_enc_loopback << 4) + (rx_invert <<2) + ptt)    
 
     await RisingEdge(dut.clk)
 
     msksim = msk(dut, dut.clk, dut.tx_samples_I, dut.tx_samples_Q, dut.rx_sample_clk, dut.rx_samples_dec)
-    #pn = prbs(dut, dut.clk, axis, tx_data_width, rx_data_width, dut.rx_data, dut.rx_dvalid)
+    pn = prbs(dut, dut.clk, axis, tx_data_width, rx_data_width, dut.m_axis_tdata, dut.m_axis_tvalid)
 
     ducsim = duc(dut, msksim, local_osc, tx_sample_period)
     ddcsim = ddc(dut, msksim, ducsim, local_osc, tx_sample_period)
@@ -830,8 +774,8 @@ async def msk_test_1(dut):
     await cocotb.start(msksim.rx_sample_capture())
     await cocotb.start(ducsim.upconvert())
     await cocotb.start(ddcsim.downconvert())
-    #await cocotb.start(pn.generate_data())
-    #await cocotb.start(pn.check_data())
+    await cocotb.start(pn.generate_data())
+    await cocotb.start(pn.check_data())
 
     sim_time = get_sim_time("us")
     sim_start = sim_time
@@ -841,8 +785,8 @@ async def msk_test_1(dut):
 
     msksim.sim_run = True
 
-    #pn.sim_run = True
-    #pn.sync = 100
+    pn.sim_run = True
+    pn.sync = 100
 
     while sim_time < run_time: #sim_start + run_time:
 
@@ -853,19 +797,18 @@ async def msk_test_1(dut):
         #     dut.s_axi_awvalid.value = 1
         #     await regs.write("msk_top_regs", "PRBS_Control", data)    
 
-        # if sim_time_d <= sim_start + 20000 and sim_time >= sim_start + 20000:
-        #     data = await regs.read("msk_top_regs", "PRBS_Control")
-        #     data = data ^ 0x8
-        #     dut.s_axi_wvalid.value = 1
-        #     dut.s_axi_awvalid.value = 1
-        #     await regs.write("msk_top_regs", "PRBS_Control", data)    
+        # if sim_time_d <= sim_start + 30000 and sim_time >= sim_start + 30000:
+        #     data = await regs.tx_async_fifo_rd_wr_ptr.read()
+        #     print("Tx FIFO Pointers", hex(data))
+        #     data = await regs.rx_async_fifo_rd_wr_ptr.read()
+        #     print("Rx FIFO Pointers", hex(data))
 
         if sim_time_d <= sim_start + 20000 and sim_time >= sim_start + 20000:
-            data = await regs.read("msk_top_regs", "PRBS_Control")
+            data = await regs.PRBS_Control.read()
             data = data | 0x2
             dut.s_axi_wvalid.value = 1
             dut.s_axi_awvalid.value = 1
-            await regs.write("msk_top_regs", "PRBS_Control", data)    
+            await regs.PRBS_Control.write(data)    
 
         # if sim_time_d <= sim_start + 3000 and sim_time >= sim_start + 3000:
             # await pn.resync()
@@ -885,14 +828,30 @@ async def msk_test_1(dut):
         sim_time_d = sim_time
         sim_time = get_sim_time("us")
 
-        data = await regs.read("msk_top_regs", "f1_nco_adjust")
+        await regs.f1_nco_adjust.write(0)
+        data = await regs.f1_nco_adjust.read()
         print("F1 NCO Adjust: ", hex(data))
-        data = await regs.read("msk_top_regs", "f2_nco_adjust")
+        await regs.f2_nco_adjust.write(0)
+        data = await regs.f2_nco_adjust.read()
         print("F2 NCO Adjust: ", hex(data))
-        data = await regs.read("msk_top_regs", "f1_error")
+        await regs.f1_error.write(0)
+        data = await regs.f1_error.read()
         print("F1 Error: ", hex(data))
-        data = await regs.read("msk_top_regs", "f2_error")
+        await regs.f2_error.write(0)
+        data = await regs.f2_error.read()
         print("F2 Error: ", hex(data))
+        await regs.tx_async_fifo_rd_wr_ptr.write(0)
+        data = await regs.tx_async_fifo_rd_wr_ptr.read()
+        print("Tx FIFO Pointers", hex(data))
+        await regs.rx_async_fifo_rd_wr_ptr.write(0)
+        data = await regs.rx_async_fifo_rd_wr_ptr.read()
+        print("Rx FIFO Pointers", hex(data))
+        await regs.rx_power.write(0)
+        data = await regs.rx_power.read()
+        print("Rx Power", hex(data))
+        await regs.rx_frame_sync_status.write(0xFFFF_0000)
+        data = await regs.rx_frame_sync_status.read()
+        print("Frame Sync Status", hex(data))
         #data = await regs.read("msk_top_regs", "LPF_Accum_F1")
         # print("F1 Acc: ", hex(data))
         # data = await regs.read("msk_top_regs", "LPF_Accum_F2")
@@ -929,9 +888,9 @@ async def msk_test_1(dut):
     # print("Ones: ", pn.ones_count)
     # print("Zeros: ", pn.zeros_count)
 
-    errs = await regs.read("msk_top_regs", "PRBS_Error_Count")
+    errs = await regs.PRBS_Error_Count.read()
     print("Bit errors: ", errs)
-    bits = await regs.read("msk_top_regs", "PRBS_Bit_Count")
+    bits = await regs.PRBS_Bit_Count.read()
     print("Bit count:  ", bits)
     print("BER:        ", (1.0*errs)/bits)
 
