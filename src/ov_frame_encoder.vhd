@@ -173,6 +173,11 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
     ATTRIBUTE dont_touch OF encoder_input_buf : SIGNAL IS "true";
     ATTRIBUTE dont_touch OF encoder_output_buf : SIGNAL IS "true";
     ATTRIBUTE dont_touch OF state : SIGNAL IS "true";
+    -- adding these stalled the FIFO from draining past two frames
+    --ATTRIBUTE dont_touch OF out_idx : SIGNAL IS "true";
+    --ATTRIBUTE dont_touch OF byte_idx : SIGNAL IS "true";
+    --ATTRIBUTE dont_touch OF collect_idx : SIGNAL IS "true";
+
     -- Protect conv_encoder_k7 interface signals (prevent optimization)
     ATTRIBUTE dont_touch OF encoder_start : SIGNAL IS "true";
     ATTRIBUTE dont_touch OF encoder_busy : SIGNAL IS "true";

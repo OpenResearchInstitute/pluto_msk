@@ -226,7 +226,7 @@ create_bd_port -dir I up_txnrx
 ad_ip_instance axi_ad9361 axi_ad9361
 ad_ip_parameter axi_ad9361 CONFIG.ID 0
 ad_ip_parameter axi_ad9361 CONFIG.CMOS_OR_LVDS_N 0
-ad_ip_parameter axi_ad9361 CONFIG.MODE_1R1T 0
+ad_ip_parameter axi_ad9361 CONFIG.MODE_1R1T 1
 ad_ip_parameter axi_ad9361 CONFIG.ADC_INIT_DELAY 30
 
 #ad_ip_parameter axi_ad9361 CONFIG.TDD_DISABLE 1

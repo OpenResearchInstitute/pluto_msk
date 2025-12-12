@@ -48,12 +48,12 @@ ARCHITECTURE rtl OF byte_to_bit_deserializer IS
     TYPE state_t IS (IDLE, SENDING_SYNC, SHIFTING_DATA);
     SIGNAL state             : state_t;
 
---    ATTRIBUTE dont_touch : STRING;
---    ATTRIBUTE dont_touch OF state : SIGNAL IS "true";
---    ATTRIBUTE dont_touch OF ready_int : SIGNAL IS "true";
---    ATTRIBUTE dont_touch OF last_byte : SIGNAL IS "true";
---    ATTRIBUTE dont_touch OF shift_reg : SIGNAL IS "true";
---    ATTRIBUTE dont_touch OF bit_counter : SIGNAL IS "true";
+    ATTRIBUTE dont_touch : STRING;
+    ATTRIBUTE dont_touch OF state : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF ready_int : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF last_byte : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF shift_reg : SIGNAL IS "true";
+    ATTRIBUTE dont_touch OF bit_counter : SIGNAL IS "true";
 
 
 BEGIN
