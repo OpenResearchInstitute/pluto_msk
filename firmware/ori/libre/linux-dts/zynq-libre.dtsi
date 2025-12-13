@@ -299,15 +299,20 @@
 
 		/* stock clock rates */
 		/*				BBPLL     ADC        R2CLK     R1CLK    CLKRF    RSAMPL  */
-		//adi,rx-path-clock-frequencies = <983040000 245760000 122880000 61440000 30720000 30720000>;
+		adi,rx-path-clock-frequencies = <983040000 245760000 122880000 61440000 30720000 30720000>;
 		/*				BBPLL     DAC        T2CLK     T1CLK    CLKTF    TSAMPL  */
-		//adi,tx-path-clock-frequencies = <983040000 122880000 122880000 61440000 30720000 30720000>;
+		adi,tx-path-clock-frequencies = <983040000 122880000 122880000 61440000 30720000 30720000>;
 
 		/* clocks for Opulent Voice HDL */
 		/*				BBPLL     ADC        R2CLK     R1CLK    CLKRF    RSAMPL  */
-		adi,rx-path-clock-frequencies = <983040000 245760000 122880000 61440000 61440000 61440000>;
+		//adi,rx-path-clock-frequencies = <983040000 245760000 122880000 61440000 61440000 61440000>;
 		/*				BBPLL     DAC        T2CLK     T1CLK    CLKTF    TSAMPL  */
-		adi,tx-path-clock-frequencies = <983040000 122880000 122880000 61440000 61440000 61440000>;
+		//adi,tx-path-clock-frequencies = <983040000 122880000 122880000 61440000 61440000 61440000>;
+
+		/* clocks for Opulent Voice HDL */
+		//adi,rx-path-clock-frequencies = <983040000 245760000 122880000 61440000 30720000 15360000>;
+		//adi,tx-path-clock-frequencies = <983040000 122880000 122880000 61440000 30720000 15360000>;
+
 
 		/* Gain Control */
 

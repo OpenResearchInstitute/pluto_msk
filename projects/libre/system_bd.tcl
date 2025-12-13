@@ -229,11 +229,18 @@ ad_ip_parameter axi_ad9361 CONFIG.CMOS_OR_LVDS_N 0
 ad_ip_parameter axi_ad9361 CONFIG.MODE_1R1T 1
 ad_ip_parameter axi_ad9361 CONFIG.ADC_INIT_DELAY 30
 
-#ad_ip_parameter axi_ad9361 CONFIG.TDD_DISABLE 1
-#ad_ip_parameter axi_ad9361 CONFIG.DAC_DDS_DISABLE 1
+# TDD, DDS, and more
+ad_ip_parameter axi_ad9361 CONFIG.TDD_DISABLE 1
+ad_ip_parameter axi_ad9361 CONFIG.DAC_DDS_DISABLE 1
 #ad_ip_parameter axi_ad9361 CONFIG.ADC_USERPORTS_DISABLE 1
-#ad_ip_parameter axi_ad9361 CONFIG.ADC_DCFILTER_DISABLE 1
-#ad_ip_parameter axi_ad9361 CONFIG.ADC_IQCORRECTION_DISABLE 1
+ad_ip_parameter axi_ad9361 CONFIG.ADC_DCFILTER_DISABLE 1
+ad_ip_parameter axi_ad9361 CONFIG.ADC_IQCORRECTION_DISABLE 1
+#ad_ip_parameter axi_ad9361 CONFIG.DAC_USERPORTS_DISABLE 1
+ad_ip_parameter axi_ad9361 CONFIG.DAC_IQCORRECTION_DISABLE 1
+
+# experiment to see if we can't get the NCO rate down
+ad_ip_parameter axi_ad9361 CONFIG.DAC_USERPORTS_DISABLE 0
+ad_ip_parameter axi_ad9361 CONFIG.ADC_USERPORTS_DISABLE 0
 
 # DAC DMA - TX data from PS to MSK
 ad_ip_instance axi_dmac axi_ad9361_dac_dma
@@ -353,12 +360,12 @@ ad_connect  msk_top/tx_samples_Q axi_ad9361/dac_data_q0
 ad_connect  msk_top/tx_enable axi_ad9361/dac_enable_i0
 ad_connect  msk_top/tx_valid axi_ad9361/dac_valid_i0
 
-# MSK TX AXIS from DMA - explicit signal connections
-ad_connect  axi_ad9361_dac_dma/m_axis_data  msk_top/s_axis_tdata
-ad_connect  axi_ad9361_dac_dma/m_axis_valid msk_top/s_axis_tvalid
-ad_connect  msk_top/s_axis_tready           axi_ad9361_dac_dma/m_axis_ready
-ad_connect  axi_ad9361_dac_dma/m_axis_last  msk_top/s_axis_tlast
-ad_connect  axi_ad9361_dac_dma/m_axis_keep  msk_top/s_axis_tkeep
+# With explicit connections:
+ad_connect axi_ad9361_dac_dma/m_axis_data   msk_top/s_axis_tdata
+ad_connect axi_ad9361_dac_dma/m_axis_valid  msk_top/s_axis_tvalid
+ad_connect axi_ad9361_dac_dma/m_axis_ready  msk_top/s_axis_tready
+ad_connect axi_ad9361_dac_dma/m_axis_last   msk_top/s_axis_tlast
+ad_connect axi_ad9361_dac_dma/m_axis_keep   msk_top/s_axis_tkeep
 
 # MSK RX Connects - Channel 0 I/Q from AD9361
 ad_connect  msk_top/rx_samples_I axi_ad9361/adc_data_i0
