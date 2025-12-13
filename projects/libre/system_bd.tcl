@@ -1,6 +1,22 @@
 # create board design
 # LibreSDR with MSK Modem Integration
 # Based on pluto MSK design adapted for LibreSDR LVDS interface
+#
+##############################################################################
+# CLOCK DIVIDER MODIFICATION
+##############################################################################
+# In LVDS mode, AD9361 DATA_CLK (l_clk) runs at 245.76 MHz (4x sample rate).
+# The MSK modem expects to run at the sample rate (61.44 MHz).
+# This design uses a BUFR-based clock divider to create the correct clock.
+#
+# Changes from original:
+#   1. Added clk_div_by4 module instantiation
+#   2. msk_top/clk connected to divided clock (61.44 MHz)
+#   3. msk_top/s_axis_aclk stays at l_clk (245 MHz) for DMA interface
+#   4. tx_valid and rx_svalid tied to VCC (every divided clock cycle is valid)
+#
+# To revert: Search for "CLOCK_DIVIDER" comments
+##############################################################################
 
 source $ad_hdl_dir/projects/common/xilinx/adi_fir_filter_bd.tcl
 
@@ -226,19 +242,18 @@ create_bd_port -dir I up_txnrx
 ad_ip_instance axi_ad9361 axi_ad9361
 ad_ip_parameter axi_ad9361 CONFIG.ID 0
 ad_ip_parameter axi_ad9361 CONFIG.CMOS_OR_LVDS_N 0
+# CLOCK_DIVIDER: Using 1R1T mode as required by LibreSDR device tree
 ad_ip_parameter axi_ad9361 CONFIG.MODE_1R1T 1
 ad_ip_parameter axi_ad9361 CONFIG.ADC_INIT_DELAY 30
 
 # TDD, DDS, and more
 ad_ip_parameter axi_ad9361 CONFIG.TDD_DISABLE 1
 ad_ip_parameter axi_ad9361 CONFIG.DAC_DDS_DISABLE 1
-#ad_ip_parameter axi_ad9361 CONFIG.ADC_USERPORTS_DISABLE 1
 ad_ip_parameter axi_ad9361 CONFIG.ADC_DCFILTER_DISABLE 1
 ad_ip_parameter axi_ad9361 CONFIG.ADC_IQCORRECTION_DISABLE 1
-#ad_ip_parameter axi_ad9361 CONFIG.DAC_USERPORTS_DISABLE 1
 ad_ip_parameter axi_ad9361 CONFIG.DAC_IQCORRECTION_DISABLE 1
 
-# experiment to see if we can't get the NCO rate down
+# Enable user ports for direct MSK connection
 ad_ip_parameter axi_ad9361 CONFIG.DAC_USERPORTS_DISABLE 0
 ad_ip_parameter axi_ad9361 CONFIG.ADC_USERPORTS_DISABLE 0
 
@@ -294,7 +309,7 @@ ad_ip_instance util_vector_logic logic_or_1 [list \
 ad_connect  logic_or_1/Op1  axi_ad9361/rst
 ad_connect  logic_or_1/Op2  GND
 
-# DMA clock connections
+# DMA clock connections - these stay at l_clk (245 MHz)
 ad_connect  axi_ad9361/l_clk axi_ad9361_adc_dma/s_axis_aclk
 ad_connect  axi_ad9361/l_clk axi_ad9361_dac_dma/m_axis_aclk
 
@@ -338,15 +353,35 @@ ad_cpu_interrupt ps-13 mb-13 axi_ad9361_adc_dma/irq
 ad_cpu_interrupt ps-12 mb-12 axi_ad9361_dac_dma/irq
 ad_cpu_interrupt ps-11 mb-11 axi_spi/ip2intc_irpt
 
+
+##############################################################################
+# CLOCK_DIVIDER: Clock divider for MSK modem (245.76 MHz -> 61.44 MHz)
+##############################################################################
+# The clk_div_by4 module uses a BUFR primitive to divide l_clk by 4.
+# This provides a phase-aligned 61.44 MHz clock for the MSK modem.
+# The BUFR output edges align with every 4th l_clk edge, ensuring proper
+# timing for DAC/ADC data which is stable for 4 l_clk cycles per sample.
+##############################################################################
+
+create_bd_cell -type module -reference clk_div_by4 clk_divider
+ad_connect axi_ad9361/l_clk clk_divider/clk_in
+
+
 ##############################################################################
 # MSK Modem Integration
 ##############################################################################
 
 ad_ip_instance msk_top msk_top
 
-# MSK Clock and Reset Connects
-ad_connect  msk_top/clk axi_ad9361/clk
-ad_connect  msk_top/s_axis_aclk axi_ad9361/clk
+# CLOCK_DIVIDER: MSK processing clock - use divided clock (61.44 MHz)
+# This is where the NCO, modulator, demodulator all run
+ad_connect  msk_top/clk clk_divider/clk_out
+
+# CLOCK_DIVIDER: MSK AXIS clock - keep at l_clk (245 MHz) for DMA interface
+# The async FIFO inside msk_top handles CDC between s_axis_aclk and clk
+ad_connect  msk_top/s_axis_aclk axi_ad9361/l_clk
+
+# MSK AXI-Lite register interface (100 MHz CPU clock)
 ad_connect  msk_top/s_axi_aclk sys_cpu_clk
 ad_connect  msk_top/s_axis_aresetn sys_cpu_resetn
 ad_connect  msk_top/s_axi_aresetn sys_cpu_resetn
@@ -358,9 +393,12 @@ ad_cpu_interconnect 0x43C00000 msk_top
 ad_connect  msk_top/tx_samples_I axi_ad9361/dac_data_i0
 ad_connect  msk_top/tx_samples_Q axi_ad9361/dac_data_q0
 ad_connect  msk_top/tx_enable axi_ad9361/dac_enable_i0
-ad_connect  msk_top/tx_valid axi_ad9361/dac_valid_i0
 
-# With explicit connections:
+# CLOCK_DIVIDER: tx_valid tied HIGH - every 61.44 MHz clock cycle is a valid sample
+# (Previously connected to dac_valid_i0 which pulses in l_clk domain)
+ad_connect  msk_top/tx_valid VCC
+
+# TX DMA Connections
 ad_connect axi_ad9361_dac_dma/m_axis_data   msk_top/s_axis_tdata
 ad_connect axi_ad9361_dac_dma/m_axis_valid  msk_top/s_axis_tvalid
 ad_connect axi_ad9361_dac_dma/m_axis_ready  msk_top/s_axis_tready
@@ -371,7 +409,10 @@ ad_connect axi_ad9361_dac_dma/m_axis_keep   msk_top/s_axis_tkeep
 ad_connect  msk_top/rx_samples_I axi_ad9361/adc_data_i0
 ad_connect  msk_top/rx_samples_Q axi_ad9361/adc_data_q0
 ad_connect  msk_top/rx_enable axi_ad9361/adc_enable_i0
-ad_connect  msk_top/rx_svalid axi_ad9361/adc_valid_i0
+
+# CLOCK_DIVIDER: rx_svalid tied HIGH - every 61.44 MHz clock cycle is a valid sample
+# (Previously connected to adc_valid_i0 which pulses in l_clk domain)
+ad_connect  msk_top/rx_svalid VCC
 
 # MSK RX AXIS to DMA - interface connection
 ad_connect  msk_top/m_axis axi_ad9361_adc_dma/s_axis

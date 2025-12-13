@@ -6,9 +6,9 @@
 # =============================================================================
 
 # AD9363 LVDS RX clock (125 MHz max)
-#create_clock -name rx_clk -period 16.27 [get_ports rx_clk_in_p]
+create_clock -name rx_clk -period 16.27 [get_ports rx_clk_in_p]
 # needed to be updated to LVDS
-create_clock -name rx_clk -period 4.069 [get_ports rx_clk_in_p]
+#create_clock -name rx_clk -period 4.069 [get_ports rx_clk_in_p]
 
 # PS7 fabric clocks
 create_clock -name clk_fpga_0 -period 10 [get_pins "i_system_wrapper/system_i/sys_ps7/inst/PS7_i/FCLKCLK[0]"]

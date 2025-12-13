@@ -32,6 +32,7 @@ adi_ip_files msk_top [list \
   "../src/axis_async_fifo.vhd" \
   "../src/byte_to_bit_deserializer.vhd" \
   "../src/frame_sync_detector.vhd" \
+  "../src/clk_div_by4.vhd" \
   "../nco/src/nco.vhd" \
   "../prbs/src/prbs_gen.vhd" \
   "../prbs/src/prbs_mon.vhd" \
