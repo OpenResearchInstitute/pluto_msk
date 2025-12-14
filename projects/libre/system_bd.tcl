@@ -451,3 +451,39 @@ ad_connect  msk_top/rx_svalid VCC
 
 # MSK RX AXIS to DMA - interface connection
 ad_connect  msk_top/m_axis axi_ad9361_adc_dma/s_axis
+
+##############################################################################
+# ILA Debug Core - Modulator Output Monitoring
+##############################################################################
+# Captures TX I/Q samples to verify modulator is producing correct waveforms.
+# Clock: clk_div4 (61.44 MHz) - same domain as modulator
+# Trigger: probe0 (I samples) != 0
+#
+# To use in Vivado:
+#   1. Program FPGA
+#   2. Open Hardware Manager
+#   3. Click "Refresh" to see ILA core
+#   4. Set trigger: probe0 != 0
+#   5. Click "Run Trigger" 
+#   6. Transmit a frame - ILA captures the waveforms
+##############################################################################
+
+create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_msk_tx
+set_property -dict [list \
+    CONFIG.C_PROBE0_WIDTH {16} \
+    CONFIG.C_PROBE1_WIDTH {16} \
+    CONFIG.C_NUM_OF_PROBES {2} \
+    CONFIG.C_DATA_DEPTH {16384} \
+    CONFIG.C_TRIGIN_EN {false} \
+    CONFIG.C_EN_STRG_QUAL {1} \
+    CONFIG.ALL_PROBE_SAME_MU_CNT {2} \
+] [get_bd_cells ila_msk_tx]
+
+# Clock ILA with divided clock (same as modulator)
+ad_connect clk_divider/clk_out ila_msk_tx/clk
+
+# Probe 0: TX I samples (16 bits) - also used as trigger
+ad_connect msk_top/tx_samples_I ila_msk_tx/probe0
+
+# Probe 1: TX Q samples (16 bits)
+ad_connect msk_top/tx_samples_Q ila_msk_tx/probe1
