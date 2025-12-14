@@ -1,16 +1,16 @@
 ------------------------------------------------------------------------------------------------------
--- Clock Divider by 4 using BUFR
+-- Clock Divider by 4 using counter + BUFG
 ------------------------------------------------------------------------------------------------------
--- Divides 245.76 MHz l_clk to 61.44 MHz for MSK modem
--- Uses BUFR primitive which maintains phase alignment with input clock
+-- Divides 245.76 MHz l_clk to 61.44 MHz for MSK modem on LibreSDR
+-- Uses a 2-bit counter and BUFG for global clock distribution
 --
--- CRITICAL: BUFR output is phase-aligned with l_clk, meaning the rising edge
--- of clk_out occurs at the same time as every 4th rising edge of clk_in.
--- This ensures proper timing for AD9361 DAC/ADC interface.
+-- BUFR cannot be used because it's limited to ~3200 slices in one clock region,
+-- but the MSK modem has 23,000+ flops on this clock.
 ------------------------------------------------------------------------------------------------------
 
 library IEEE;
 use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
 
 library UNISIM;
 use UNISIM.VComponents.all;
@@ -23,24 +23,37 @@ entity clk_div_by4 is
 end entity clk_div_by4;
 
 architecture rtl of clk_div_by4 is
-    -- Preserve the clock divider from optimization
+    signal counter    : unsigned(1 downto 0) := "00";
+    signal clk_div_ff : std_logic := '0';
+    signal clk_div_bufg : std_logic;
+    
     attribute DONT_TOUCH : string;
-    attribute DONT_TOUCH of U_BUFR : label is "TRUE";
+    attribute DONT_TOUCH of counter : signal is "TRUE";
+    attribute DONT_TOUCH of clk_div_ff : signal is "TRUE";
 begin
 
-    -- BUFR divides the clock by 4
-    -- BUFR is a regional clock buffer that provides low-skew distribution
-    -- The divided clock maintains phase alignment with the input
-    U_BUFR : BUFR
-        generic map (
-            BUFR_DIVIDE => "4",        -- Divide by 4: 245.76 -> 61.44 MHz
-            SIM_DEVICE  => "7SERIES"   -- Zynq 7020 is 7-series
-        )
+    -- Divide by 4 using toggle flip-flop
+    -- Counter counts 0,1,2,3,0,1,2,3...
+    -- Output toggles when counter wraps (every 4 clocks)
+    process(clk_in)
+    begin
+        if rising_edge(clk_in) then
+            counter <= counter + 1;
+            if counter = "01" then
+                clk_div_ff <= '1';
+            elsif counter = "11" then
+                clk_div_ff <= '0';
+            end if;
+        end if;
+    end process;
+
+    -- BUFG for global clock distribution
+    U_BUFG : BUFG
         port map (
-            I   => clk_in,
-            CE  => '1',                -- Always enabled
-            CLR => '0',                -- No async clear
-            O   => clk_out
+            I => clk_div_ff,
+            O => clk_div_bufg
         );
+    
+    clk_out <= clk_div_bufg;
 
 end architecture rtl;

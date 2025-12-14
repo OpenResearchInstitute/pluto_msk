@@ -357,11 +357,15 @@ ad_cpu_interrupt ps-11 mb-11 axi_spi/ip2intc_irpt
 ##############################################################################
 # CLOCK_DIVIDER: Clock divider for MSK modem (245.76 MHz -> 61.44 MHz)
 ##############################################################################
-# The clk_div_by4 module uses a BUFR primitive to divide l_clk by 4.
+# Uses BUFR primitive to divide l_clk by 4.
 # This provides a phase-aligned 61.44 MHz clock for the MSK modem.
 # The BUFR output edges align with every 4th l_clk edge, ensuring proper
 # timing for DAC/ADC data which is stable for 4 l_clk cycles per sample.
 ##############################################################################
+
+# Add the clock divider source file to the project before creating the BD cell
+add_files -norecurse ../../src/clk_div_by4.vhd
+update_compile_order -fileset sources_1
 
 create_bd_cell -type module -reference clk_div_by4 clk_divider
 ad_connect axi_ad9361/l_clk clk_divider/clk_in
@@ -390,8 +394,39 @@ ad_connect  msk_top/s_axi_aresetn sys_cpu_resetn
 ad_cpu_interconnect 0x43C00000 msk_top
 
 # MSK TX Connects - Channel 0 I/Q to AD9361
-ad_connect  msk_top/tx_samples_I axi_ad9361/dac_data_i0
-ad_connect  msk_top/tx_samples_Q axi_ad9361/dac_data_q0
+# CLOCK_DIVIDER: TX samples need to be synchronized from clk_div4 to l_clk domain
+# The msk_top outputs change on clk_div4 edges, but AD9361 samples on l_clk.
+# Without sync, the DAC might catch glitches during transitions.
+
+# Create sync registers for TX I/Q (resample clk_div4 outputs to l_clk)
+create_bd_cell -type ip -vlnv xilinx.com:ip:c_shift_ram:12.0 tx_i_sync
+set_property -dict [list \
+    CONFIG.Width {16} \
+    CONFIG.Depth {1} \
+    CONFIG.DefaultData {0000000000000000} \
+    CONFIG.AsyncInitVal {0000000000000000} \
+] [get_bd_cells tx_i_sync]
+
+create_bd_cell -type ip -vlnv xilinx.com:ip:c_shift_ram:12.0 tx_q_sync
+set_property -dict [list \
+    CONFIG.Width {16} \
+    CONFIG.Depth {1} \
+    CONFIG.DefaultData {0000000000000000} \
+    CONFIG.AsyncInitVal {0000000000000000} \
+] [get_bd_cells tx_q_sync]
+
+# Clock sync registers with l_clk (245 MHz)
+ad_connect axi_ad9361/l_clk tx_i_sync/CLK
+ad_connect axi_ad9361/l_clk tx_q_sync/CLK
+
+# MSK outputs -> sync registers
+ad_connect msk_top/tx_samples_I tx_i_sync/D
+ad_connect msk_top/tx_samples_Q tx_q_sync/D
+
+# Sync registers -> AD9361
+ad_connect tx_i_sync/Q axi_ad9361/dac_data_i0
+ad_connect tx_q_sync/Q axi_ad9361/dac_data_q0
+
 ad_connect  msk_top/tx_enable axi_ad9361/dac_enable_i0
 
 # CLOCK_DIVIDER: tx_valid tied HIGH - every 61.44 MHz clock cycle is a valid sample
