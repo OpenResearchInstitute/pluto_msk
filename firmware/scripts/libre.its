@@ -1,0 +1,70 @@
+/*
+ * U-Boot uImage source file for LibreSDR
+ */
+
+/dts-v1/;
+
+/ {
+	description = "Configuration to load fpga before Kernel";
+	magic = "ITB PlutoSDR (ADALM-PLUTO)";
+	#address-cells = <1>;
+	images {
+
+		fdt@1 {
+			description = "zynq-libre";
+			data = /incbin/("../build/zynq-libre.dtb");
+			type = "flat_dt";
+			arch = "arm";
+			compression = "none";
+		};
+
+		fpga@1 {
+			description = "FPGA";
+			data = /incbin/("/home/abraxas3d/pluto_msk/firmware/build/system_top.bit");
+			type = "fpga";
+			arch = "arm";
+			compression = "none";
+			load = <0xF000000>;
+			hash@1 {
+				algo = "md5";
+			};
+		};
+
+		linux_kernel@1 {
+			description = "Linux";
+			data = /incbin/("../build/zImage");
+			type = "kernel";
+			arch = "arm";
+			os = "linux";
+			compression = "none";
+			load = <0x8000>;
+			entry = <0x8000>;
+			hash@1 {
+				algo = "md5";
+			};
+		};
+
+		ramdisk@1 {
+			description = "Ramdisk";
+			data = /incbin/("../build/rootfs.cpio.gz");
+			type = "ramdisk";
+			arch = "arm";
+			os = "linux";
+			compression = "gzip";
+			hash@1 {
+				algo = "md5";
+			};
+		};
+	};
+
+	configurations {
+		default = "config@0";
+		config@0 {
+			description = "Linux with fpga LibreSDR";
+			fdt = "fdt@1";
+			kernel = "linux_kernel@1";
+			ramdisk = "ramdisk@1";
+			fpga = "fpga@1";
+		};
+	};
+};

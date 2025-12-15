@@ -1,0 +1,190 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+----------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2022.2 (lin64) Build 3671981 Fri Oct 14 04:59:54 MDT 2022
+| Date         : Sun Nov 30 20:41:18 2025
+| Host         : mymelody running 64-bit Ubuntu 22.04.5 LTS
+| Command      : report_utilization -cells [get_cells -hierarchical *msk_top*] -hierarchical -file util_msk.txt
+| Design       : system_top
+| Device       : xc7z010clg225-1
+| Speed File   : -1
+| Design State : Synthesized
+----------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++---------------------------------+-----------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+|             Instance            |                     Module                    | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs  | RAMB36 | RAMB18 | DSP Blocks |
++---------------------------------+-----------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+| msk_top                         |                              system_msk_top_0 |      13507 |      12993 |     514 |    0 | 14765 |      0 |      4 |         20 |
+|   msk_top                       |                              system_msk_top_0 |      11674 |      11160 |     514 |    0 | 13147 |      0 |      4 |         20 |
+|     (msk_top)                   |                              system_msk_top_0 |          0 |          0 |       0 |    0 |     0 |      0 |      2 |          0 |
+|     U0                          |                      system_msk_top_0_msk_top |      11674 |      11160 |     514 |    0 | 13147 |      0 |      2 |         20 |
+|       (U0)                      |                      system_msk_top_0_msk_top |         33 |         33 |       0 |    0 |    86 |      0 |      0 |          0 |
+|       u_async_fifo              |           system_msk_top_0_axis_async_fifo__1 |        365 |        141 |     224 |    0 |   127 |      0 |      0 |          0 |
+|       u_dem                     |              system_msk_top_0_msk_demodulator |       2215 |       2215 |       0 |    0 |  1130 |      0 |      0 |         16 |
+|         (u_dem)                 |              system_msk_top_0_msk_demodulator |         65 |         65 |       0 |    0 |    82 |      0 |      0 |          4 |
+|         U_f1                    |                  system_msk_top_0_costas_loop |       1068 |       1068 |       0 |    0 |   524 |      0 |      0 |          6 |
+|           (U_f1)                |                  system_msk_top_0_costas_loop |        329 |        329 |       0 |    0 |   280 |      0 |      0 |          2 |
+|           U_carrier_nco         |       system_msk_top_0_nco__parameterized1_56 |        111 |        111 |       0 |    0 |   114 |      0 |      0 |          0 |
+|           U_carrier_sin_cos_lut |               system_msk_top_0_sin_cos_lut_57 |        275 |        275 |       0 |    0 |     0 |      0 |      0 |          0 |
+|           u_loopfilter          |             system_msk_top_0_pi_controller_58 |        353 |        353 |       0 |    0 |   130 |      0 |      0 |          4 |
+|         U_f2                    |               system_msk_top_0_costas_loop_55 |       1082 |       1082 |       0 |    0 |   524 |      0 |      0 |          6 |
+|           (U_f2)                |               system_msk_top_0_costas_loop_55 |        346 |        346 |       0 |    0 |   280 |      0 |      0 |          2 |
+|           U_carrier_nco         |          system_msk_top_0_nco__parameterized1 |        111 |        111 |       0 |    0 |   114 |      0 |      0 |          0 |
+|           U_carrier_sin_cos_lut |                  system_msk_top_0_sin_cos_lut |        278 |        278 |       0 |    0 |     0 |      0 |      0 |          0 |
+|           u_loopfilter          |                system_msk_top_0_pi_controller |        347 |        347 |       0 |    0 |   130 |      0 |      0 |          4 |
+|       u_deserializer            |     system_msk_top_0_byte_to_bit_deserializer |         24 |         24 |       0 |    0 |    20 |      0 |      0 |          0 |
+|       u_mod                     |                system_msk_top_0_msk_modulator |        306 |        306 |       0 |    0 |   398 |      0 |      0 |          0 |
+|         (u_mod)                 |                system_msk_top_0_msk_modulator |        176 |        176 |       0 |    0 |   203 |      0 |      0 |          0 |
+|         U_f1_nco                |          system_msk_top_0_nco__parameterized0 |         32 |         32 |       0 |    0 |    64 |      0 |      0 |          0 |
+|         U_f2_nco                |       system_msk_top_0_nco__parameterized0_54 |         32 |         32 |       0 |    0 |    64 |      0 |      0 |          0 |
+|         U_tclk_nco              |                          system_msk_top_0_nco |         66 |         66 |       0 |    0 |    67 |      0 |      0 |          0 |
+|       u_msk_top_csr             |                  system_msk_top_0_msk_top_csr |       2348 |       2348 |       0 |    0 |  1618 |      0 |      0 |          0 |
+|         (u_msk_top_csr)         |                  system_msk_top_0_msk_top_csr |          9 |          9 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         u01s                    |                   system_msk_top_0_cdc_resync |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         u02s                    |                 system_msk_top_0_cdc_resync_0 |          2 |          2 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         u03s                    |                 system_msk_top_0_cdc_resync_1 |          2 |          2 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         u04s                    |                 system_msk_top_0_cdc_resync_2 |          1 |          1 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         u05s                    |                 system_msk_top_0_cdc_resync_3 |         31 |         31 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         u06s                    |                 system_msk_top_0_cdc_resync_4 |          2 |          2 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         u07s                    |                 system_msk_top_0_cdc_resync_5 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         u09s                    |                 system_msk_top_0_cdc_resync_6 |          2 |          2 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         u10s                    |                 system_msk_top_0_cdc_resync_7 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         u11s                    |                 system_msk_top_0_cdc_resync_8 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         u12s                    |                 system_msk_top_0_cdc_resync_9 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         u13s                    |                system_msk_top_0_cdc_resync_10 |          1 |          1 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         u14s                    |                system_msk_top_0_cdc_resync_11 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         u15s                    |                system_msk_top_0_cdc_resync_12 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         u16s                    |                system_msk_top_0_cdc_resync_13 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         u_msk_regs              |                 system_msk_top_0_msk_top_regs |       2215 |       2215 |       0 |    0 |  1091 |      0 |      0 |          0 |
+|         urfl_s                  |                system_msk_top_0_cdc_resync_14 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         urxe_s                  |                system_msk_top_0_cdc_resync_15 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         utatc_a                 |                 system_msk_top_0_pulse_detect |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utatc_c                 |                 system_msk_top_0_data_capture |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|         utatc_r                 |              system_msk_top_0_pulse_detect_16 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utbc_a                  |              system_msk_top_0_pulse_detect_17 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utbc_c                  |              system_msk_top_0_data_capture_18 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|         utbc_r                  |              system_msk_top_0_pulse_detect_19 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utbe_a                  |              system_msk_top_0_pulse_detect_20 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utbe_c                  |              system_msk_top_0_data_capture_21 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|         utbe_r                  |              system_msk_top_0_pulse_detect_22 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utf1a_a                 |              system_msk_top_0_pulse_detect_23 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utf1a_c                 |              system_msk_top_0_data_capture_24 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|         utf1a_r                 |              system_msk_top_0_pulse_detect_25 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utf1e_a                 |              system_msk_top_0_pulse_detect_26 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utf1e_c                 |              system_msk_top_0_data_capture_27 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|         utf1e_r                 |              system_msk_top_0_pulse_detect_28 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utf2a_a                 |              system_msk_top_0_pulse_detect_29 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utf2a_c                 |              system_msk_top_0_data_capture_30 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|         utf2a_r                 |              system_msk_top_0_pulse_detect_31 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utf2e_a                 |              system_msk_top_0_pulse_detect_32 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utf2e_c                 |              system_msk_top_0_data_capture_33 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|         utf2e_r                 |              system_msk_top_0_pulse_detect_34 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utfsc_c                 | system_msk_top_0_data_capture__parameterized4 |          0 |          0 |       0 |    0 |    24 |      0 |      0 |          0 |
+|         utfse_c                 | system_msk_top_0_data_capture__parameterized6 |          0 |          0 |       0 |    0 |     6 |      0 |      0 |          0 |
+|         utfsr_a                 |              system_msk_top_0_pulse_detect_35 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utfsr_r                 |              system_msk_top_0_pulse_detect_36 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utfss_a                 |              system_msk_top_0_pulse_detect_37 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utfss_r                 |              system_msk_top_0_pulse_detect_38 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utlp1_a                 |              system_msk_top_0_pulse_detect_39 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utlp1_c                 |              system_msk_top_0_data_capture_40 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|         utlp1_r                 |              system_msk_top_0_pulse_detect_41 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utlp2_a                 |              system_msk_top_0_pulse_detect_42 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utlp2_c                 |              system_msk_top_0_data_capture_43 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|         utlp2_r                 |              system_msk_top_0_pulse_detect_44 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utprb_a                 |              system_msk_top_0_pulse_detect_45 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utprb_c                 |              system_msk_top_0_data_capture_46 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|         utprb_r                 |              system_msk_top_0_pulse_detect_47 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utpre_a                 |              system_msk_top_0_pulse_detect_48 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utpre_c                 |              system_msk_top_0_data_capture_49 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|         utpre_r                 |              system_msk_top_0_pulse_detect_50 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utpwr_a                 |              system_msk_top_0_pulse_detect_51 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utpwr_c                 | system_msk_top_0_data_capture__parameterized2 |          0 |          0 |       0 |    0 |    23 |      0 |      0 |          0 |
+|         utpwr_r                 |              system_msk_top_0_pulse_detect_52 |          2 |          2 |       0 |    0 |     3 |      0 |      0 |          0 |
+|         utxe_s                  |                system_msk_top_0_cdc_resync_53 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|       u_ov_decoder              |             system_msk_top_0_ov_frame_decoder |       1395 |       1353 |      42 |    0 |  2693 |      0 |      1 |          0 |
+|         (u_ov_decoder)          |             system_msk_top_0_ov_frame_decoder |        151 |        109 |      42 |    0 |    70 |      0 |      1 |          0 |
+|         U_DECODER               |    system_msk_top_0_viterbi_decoder_k7_simple |       1244 |       1244 |       0 |    0 |  2623 |      0 |      0 |          0 |
+|       u_ov_encoder              |             system_msk_top_0_ov_frame_encoder |       4419 |       4395 |      24 |    0 |  6595 |      0 |      0 |          0 |
+|         (u_ov_encoder)          |             system_msk_top_0_ov_frame_encoder |       1382 |       1358 |      24 |    0 |  4393 |      0 |      0 |          0 |
+|         U_ENCODER               |              system_msk_top_0_conv_encoder_k7 |       3037 |       3037 |       0 |    0 |  2202 |      0 |      0 |          0 |
+|       u_power_det               |               system_msk_top_0_power_detector |         57 |         57 |       0 |    0 |    41 |      0 |      0 |          4 |
+|         (u_power_det)           |               system_msk_top_0_power_detector |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          2 |
+|         u_ema_1                 |                  system_msk_top_0_lowpass_ema |         57 |         57 |       0 |    0 |    41 |      0 |      0 |          2 |
+|       u_prbs_gen                |                     system_msk_top_0_prbs_gen |          2 |          2 |       0 |    0 |    34 |      0 |      0 |          0 |
+|       u_prbs_mon                |                     system_msk_top_0_prbs_mon |         26 |         26 |       0 |    0 |   105 |      0 |      0 |          0 |
+|       u_rx_async_fifo           |              system_msk_top_0_axis_async_fifo |        365 |        141 |     224 |    0 |   127 |      0 |      0 |          0 |
+|       u_rx_frame_sync           |          system_msk_top_0_frame_sync_detector |        126 |        126 |       0 |    0 |   173 |      0 |      1 |          0 |
+|   u_msk_top_csr                 |                  system_msk_top_0_msk_top_csr |       2348 |       2348 |       0 |    0 |  1618 |      0 |      0 |          0 |
+|     (u_msk_top_csr)             |                  system_msk_top_0_msk_top_csr |          9 |          9 |       0 |    0 |     2 |      0 |      0 |          0 |
+|     u01s                        |                   system_msk_top_0_cdc_resync |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|     u02s                        |                 system_msk_top_0_cdc_resync_0 |          2 |          2 |       0 |    0 |     2 |      0 |      0 |          0 |
+|     u03s                        |                 system_msk_top_0_cdc_resync_1 |          2 |          2 |       0 |    0 |     2 |      0 |      0 |          0 |
+|     u04s                        |                 system_msk_top_0_cdc_resync_2 |          1 |          1 |       0 |    0 |     2 |      0 |      0 |          0 |
+|     u05s                        |                 system_msk_top_0_cdc_resync_3 |         31 |         31 |       0 |    0 |     2 |      0 |      0 |          0 |
+|     u06s                        |                 system_msk_top_0_cdc_resync_4 |          2 |          2 |       0 |    0 |     2 |      0 |      0 |          0 |
+|     u07s                        |                 system_msk_top_0_cdc_resync_5 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|     u09s                        |                 system_msk_top_0_cdc_resync_6 |          2 |          2 |       0 |    0 |     2 |      0 |      0 |          0 |
+|     u10s                        |                 system_msk_top_0_cdc_resync_7 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|     u11s                        |                 system_msk_top_0_cdc_resync_8 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|     u12s                        |                 system_msk_top_0_cdc_resync_9 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|     u13s                        |                system_msk_top_0_cdc_resync_10 |          1 |          1 |       0 |    0 |     2 |      0 |      0 |          0 |
+|     u14s                        |                system_msk_top_0_cdc_resync_11 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|     u15s                        |                system_msk_top_0_cdc_resync_12 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|     u16s                        |                system_msk_top_0_cdc_resync_13 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|     u_msk_regs                  |                 system_msk_top_0_msk_top_regs |       2215 |       2215 |       0 |    0 |  1091 |      0 |      0 |          0 |
+|     urfl_s                      |                system_msk_top_0_cdc_resync_14 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|     urxe_s                      |                system_msk_top_0_cdc_resync_15 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
+|     utatc_a                     |                 system_msk_top_0_pulse_detect |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utatc_c                     |                 system_msk_top_0_data_capture |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|     utatc_r                     |              system_msk_top_0_pulse_detect_16 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utbc_a                      |              system_msk_top_0_pulse_detect_17 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utbc_c                      |              system_msk_top_0_data_capture_18 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|     utbc_r                      |              system_msk_top_0_pulse_detect_19 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utbe_a                      |              system_msk_top_0_pulse_detect_20 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utbe_c                      |              system_msk_top_0_data_capture_21 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|     utbe_r                      |              system_msk_top_0_pulse_detect_22 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utf1a_a                     |              system_msk_top_0_pulse_detect_23 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utf1a_c                     |              system_msk_top_0_data_capture_24 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|     utf1a_r                     |              system_msk_top_0_pulse_detect_25 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utf1e_a                     |              system_msk_top_0_pulse_detect_26 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utf1e_c                     |              system_msk_top_0_data_capture_27 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|     utf1e_r                     |              system_msk_top_0_pulse_detect_28 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utf2a_a                     |              system_msk_top_0_pulse_detect_29 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utf2a_c                     |              system_msk_top_0_data_capture_30 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|     utf2a_r                     |              system_msk_top_0_pulse_detect_31 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utf2e_a                     |              system_msk_top_0_pulse_detect_32 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utf2e_c                     |              system_msk_top_0_data_capture_33 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|     utf2e_r                     |              system_msk_top_0_pulse_detect_34 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utfsc_c                     | system_msk_top_0_data_capture__parameterized4 |          0 |          0 |       0 |    0 |    24 |      0 |      0 |          0 |
+|     utfse_c                     | system_msk_top_0_data_capture__parameterized6 |          0 |          0 |       0 |    0 |     6 |      0 |      0 |          0 |
+|     utfsr_a                     |              system_msk_top_0_pulse_detect_35 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utfsr_r                     |              system_msk_top_0_pulse_detect_36 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utfss_a                     |              system_msk_top_0_pulse_detect_37 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utfss_r                     |              system_msk_top_0_pulse_detect_38 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utlp1_a                     |              system_msk_top_0_pulse_detect_39 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utlp1_c                     |              system_msk_top_0_data_capture_40 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|     utlp1_r                     |              system_msk_top_0_pulse_detect_41 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utlp2_a                     |              system_msk_top_0_pulse_detect_42 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utlp2_c                     |              system_msk_top_0_data_capture_43 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|     utlp2_r                     |              system_msk_top_0_pulse_detect_44 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utprb_a                     |              system_msk_top_0_pulse_detect_45 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utprb_c                     |              system_msk_top_0_data_capture_46 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|     utprb_r                     |              system_msk_top_0_pulse_detect_47 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utpre_a                     |              system_msk_top_0_pulse_detect_48 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utpre_c                     |              system_msk_top_0_data_capture_49 |          0 |          0 |       0 |    0 |    32 |      0 |      0 |          0 |
+|     utpre_r                     |              system_msk_top_0_pulse_detect_50 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utpwr_a                     |              system_msk_top_0_pulse_detect_51 |          3 |          3 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utpwr_c                     | system_msk_top_0_data_capture__parameterized2 |          0 |          0 |       0 |    0 |    23 |      0 |      0 |          0 |
+|     utpwr_r                     |              system_msk_top_0_pulse_detect_52 |          2 |          2 |       0 |    0 |     3 |      0 |      0 |          0 |
+|     utxe_s                      |                system_msk_top_0_cdc_resync_53 |          0 |          0 |       0 |    0 |     2 |      0 |      0 |          0 |
++---------------------------------+-----------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+
+
