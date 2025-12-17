@@ -150,7 +150,22 @@ ENTITY msk_top IS
 		frame_sync_locked	: OUT std_logic;
 		frames_received	        : OUT std_logic_vector(31 DOWNTO 0);
 		frame_sync_errors	: OUT std_logic_vector(31 DOWNTO 0);
-		frame_buffer_overflow	: OUT std_logic
+		frame_buffer_overflow	: OUT std_logic;
+		-- Debug outputs for deserializer probing (TX)
+		dbg_tx_data_bit     : OUT std_logic;
+		dbg_tx_req          : OUT std_logic;
+		dbg_encoder_tvalid  : OUT std_logic;
+		dbg_encoder_tready  : OUT std_logic;
+		dbg_encoder_tdata   : OUT std_logic_vector(7 DOWNTO 0);
+		dbg_frame_complete  : OUT std_logic;
+		
+		-- Debug outputs for RX path probing
+		dbg_rx_bit_valid        : OUT std_logic;
+		dbg_rx_bit_corr         : OUT std_logic;
+		dbg_rx_sync_state       : OUT std_logic_vector(2 DOWNTO 0);
+		dbg_rx_sync_correlation : OUT std_logic_vector(31 DOWNTO 0);
+		dbg_rx_sync_corr_peak   : OUT std_logic_vector(31 DOWNTO 0);
+		dbg_rx_data_soft        : OUT std_logic_vector(15 DOWNTO 0)
 
 	);
 END ENTITY msk_top;
@@ -448,7 +463,7 @@ BEGIN
 			ENCODED_BYTES => 268,
 			ENCODED_BITS  => 2144,
 			BYTE_WIDTH    => 8,
-                        USE_BIT_INTERLEAVER => FALSE
+                        USE_BIT_INTERLEAVER => TRUE
 		)
 		PORT MAP (
 			clk             => clk,
@@ -506,6 +521,22 @@ BEGIN
 
 	tx_samples_I 	<= tx_samples_I_int;
 	tx_samples_Q 	<= tx_samples_Q_int;
+
+	-- Debug output assignments for ILA probing (TX)
+	dbg_tx_data_bit    <= tx_data_bit;
+	dbg_tx_req         <= tx_req;
+	dbg_encoder_tvalid <= encoder_tvalid;
+	dbg_encoder_tready <= encoder_tready;
+	dbg_encoder_tdata  <= encoder_tdata;
+	dbg_frame_complete <= frame_complete;
+
+	-- Debug output assignments for ILA probing (RX)
+	dbg_rx_bit_valid        <= rx_bit_valid;
+	dbg_rx_bit_corr         <= rx_bit_corr;
+	dbg_rx_sync_state       <= rx_debug_state;
+	dbg_rx_sync_correlation <= std_logic_vector(rx_sync_correlation);
+	dbg_rx_sync_corr_peak   <= std_logic_vector(rx_sync_corr_peak);
+	dbg_rx_data_soft        <= std_logic_vector(rx_data_soft);
 
 	rx_samples_mux <= std_logic_vector(resize(signed(tx_samples_I_int), 16)) WHEN loopback_ena = '1' ELSE rx_samples_I;
 
@@ -656,7 +687,7 @@ BEGIN
             ENCODED_BYTES => 268,
             ENCODED_BITS  => 2144,
             BYTE_WIDTH    => 8,
-            USE_BIT_INTERLEAVER => FALSE
+            USE_BIT_INTERLEAVER => TRUE
         )
         PORT MAP (
             clk             => clk,

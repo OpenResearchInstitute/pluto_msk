@@ -46,7 +46,7 @@ ENTITY ov_frame_encoder IS
         COLLECT_SIZE        : NATURAL := 4;      -- DEPRECATED: No longer used (kept for compatibility)
         ENCODED_BITS        : NATURAL := 2144;   -- Kept for compatibility
         BYTE_WIDTH          : NATURAL := 8;      -- Kept for compatibility
-        USE_BIT_INTERLEAVER : BOOLEAN := FALSE    -- TRUE=bit-level(67x32), FALSE=byte-level(67x4)
+        USE_BIT_INTERLEAVER : BOOLEAN := TRUE    -- TRUE=bit-level(67x32), FALSE=byte-level(67x4)
     );
     PORT (
         clk          : IN  std_logic;
@@ -336,6 +336,25 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
 --    );
 
     ----------------------------------------------------------------------------
+    -- BIT-LEVEL INTERLEAVER (67x4) - For LibreSDR, etc.
+    -- Consecutive input bits end up 67 positions apart in output.
+    ----------------------------------------------------------------------------
+    FUNCTION interleave_address_bit(bit_addr : NATURAL) RETURN NATURAL IS
+        -- 67 rows × 32 columns = 2144 bits
+        -- Write by rows, read by columns
+        CONSTANT NUM_ROWS : NATURAL := 67;
+        CONSTANT NUM_COLS : NATURAL := 32;
+        VARIABLE row, col : NATURAL;
+    BEGIN
+        -- Input bit_addr is linear (row-major order: row 0 bits, then row 1, etc.)
+        row := bit_addr / NUM_COLS;
+        col := bit_addr MOD NUM_COLS;
+        
+        -- Output in column-major order (column 0 bits, then column 1, etc.)
+        RETURN col * NUM_ROWS + row;
+    END FUNCTION;
+
+    ----------------------------------------------------------------------------
     -- BYTE-LEVEL INTERLEAVER (67x4) - For PlutoSDR, fits in xc7z010
     ----------------------------------------------------------------------------
     FUNCTION interleave_address_byte(addr : NATURAL) RETURN NATURAL IS
@@ -348,6 +367,10 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
         col := addr MOD COLS;
         RETURN col * ROWS + row;
     END FUNCTION;
+
+
+
+
 
 BEGIN 
 
@@ -544,17 +567,17 @@ BEGIN
                 ------------------------------------------------------------------------
 
 WHEN INTERLEAVE =>
---    IF USE_BIT_INTERLEAVER THEN
---        -- BIT-LEVEL mode: Process 1 bit per clock (2144 clocks)
---        IF bit_idx < ENCODED_BITS THEN
---            interleaved_buffer(INTERLEAVE_LUT_BIT(bit_idx)) <= fec_buffer(bit_idx);
---            bit_idx <= bit_idx + 1;
---        ELSE
---            out_idx <= 0;
---            state <= OUTPUT;
---            m_axis_tvalid_reg <= '0';
---        END IF;
---    ELSE
+    IF USE_BIT_INTERLEAVER THEN
+        -- BIT-LEVEL mode: Process 1 bit per clock (2144 clocks)
+        IF bit_idx < ENCODED_BITS THEN
+            interleaved_buffer(interleave_address_bit(bit_idx)) <= fec_buffer(bit_idx);
+            bit_idx <= bit_idx + 1;
+        ELSE
+            out_idx <= 0;
+            state <= OUTPUT;
+            m_axis_tvalid_reg <= '0';
+        END IF;
+    ELSE
         -- BYTE-LEVEL mode: Process 1 byte per clock (268 clocks)
         IF byte_idx < ENCODED_BYTES THEN
             FOR j IN 0 TO 7 LOOP
@@ -567,7 +590,7 @@ WHEN INTERLEAVE =>
             state <= OUTPUT;
             m_axis_tvalid_reg <= '0';
         END IF;
---    END IF;
+    END IF;
 
 
 

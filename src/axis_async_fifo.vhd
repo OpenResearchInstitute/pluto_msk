@@ -1,16 +1,19 @@
 ------------------------------------------------------------------------------------------------------
 -- AXIS-Compliant Asynchronous FIFO
 ------------------------------------------------------------------------------------------------------
+-- FIX v4: Pipelined Gray-to-binary conversion for 245 MHz timing closure
+-- 
+-- Change: wr_ptr_bin_sync is now a registered signal instead of a combinational variable.
+-- This adds one cycle of latency on empty detection, which is safe because:
+--   1. The write pointer is already 2+ cycles stale from the CDC synchronizer
+--   2. One extra cycle of "false not-empty" just means we check again next cycle
+--   3. The FIFO depth provides margin for this additional latency
+------------------------------------------------------------------------------------------------------
+-- Previous versions:
 -- FIX v3: Proper three-state handling
--- State A: Becoming valid (empty?non-empty): Present first byte, assert tvalid
+-- State A: Becoming valid (empty→non-empty): Present first byte, assert tvalid
 -- State B: Handshake completes (tvalid='1', tready='1'): Advance pointer, present next byte
 -- State C: Valid but not consumed (tvalid='1', tready='0'): HOLD STABLE
-------------------------------------------------------------------------------------------------------
--- SIGNAL INITIALIZATION PRACTICES:
--- Per FPGA best practices, signals are initialized via reset blocks in their respective clock
--- domains. CDC synchronizer registers intentionally have no initialization to avoid forcing
--- specific reset timing across clock domains. All control and data path signals are properly
--- reset-initialized in their corresponding clock domain processes.
 ------------------------------------------------------------------------------------------------------
 
 LIBRARY ieee;
@@ -62,12 +65,8 @@ ARCHITECTURE rtl OF axis_async_fifo IS
     CONSTANT DEPTH : NATURAL := 2**ADDR_WIDTH;
     
     -- Frame-aware programmable full threshold
-    -- Alert when only fractional frame space remains, allowing N complete frames
-    -- to buffer without backpressure while maintaining elasticity for system response
     CONSTANT FRAME_SIZE : NATURAL := 134;  -- OV frame payload size (bytes)
-    CONSTANT ALERT_THRESHOLD : NATURAL := DEPTH MOD FRAME_SIZE;  -- Remainder space
-    -- Example: 512-byte FIFO holds 3 full frames (402 bytes) + 110 bytes remainder
-    -- Alerts when ?110 bytes free, giving elasticity while protecting overflow
+    CONSTANT ALERT_THRESHOLD : NATURAL := DEPTH MOD FRAME_SIZE;
     
     -- Separate arrays for Block RAM inference
     TYPE ram_data_type IS ARRAY (0 TO DEPTH-1) OF std_logic_vector(DATA_WIDTH-1 DOWNTO 0);
@@ -75,10 +74,6 @@ ARCHITECTURE rtl OF axis_async_fifo IS
     
     SIGNAL ram_data : ram_data_type;
     SIGNAL ram_last : ram_last_type;
-    
-    --ATTRIBUTE ram_style : STRING;
-    --ATTRIBUTE ram_style OF ram_data : SIGNAL IS "auto";
-    --ATTRIBUTE ram_style OF ram_last : SIGNAL IS "auto";
     
     -- Gray code pointers (reset-initialized in respective clock domains)
     SIGNAL wr_ptr_gray      : std_logic_vector(ADDR_WIDTH DOWNTO 0);
@@ -91,6 +86,12 @@ ARCHITECTURE rtl OF axis_async_fifo IS
     SIGNAL wr_ptr_gray_sync2 : std_logic_vector(ADDR_WIDTH DOWNTO 0);
     SIGNAL rd_ptr_gray_sync1 : std_logic_vector(ADDR_WIDTH DOWNTO 0);
     SIGNAL rd_ptr_gray_sync2 : std_logic_vector(ADDR_WIDTH DOWNTO 0);
+    
+    -- FIX v4: Registered binary pointers after Gray-to-binary conversion
+    -- This breaks the critical path: sync2 -> gray_to_bin -> comparison -> output
+    -- Into: sync2 -> gray_to_bin -> REG -> comparison -> output
+    SIGNAL wr_ptr_bin_sync  : std_logic_vector(ADDR_WIDTH DOWNTO 0);  -- Now a signal, not variable
+    SIGNAL rd_ptr_bin_sync  : std_logic_vector(ADDR_WIDTH DOWNTO 0);  -- For symmetry in write domain
     
     -- Status flags (reset-initialized in respective clock domains)
     SIGNAL full_int         : std_logic;
@@ -148,7 +149,6 @@ BEGIN
     ------------------------------------------------------------------------------
     write_proc: PROCESS(wr_aclk)
         VARIABLE wr_ptr_bin_next : std_logic_vector(ADDR_WIDTH DOWNTO 0);
-        VARIABLE rd_ptr_bin_sync : std_logic_vector(ADDR_WIDTH DOWNTO 0);
     BEGIN
         IF rising_edge(wr_aclk) THEN
             IF wr_aresetn = '0' THEN
@@ -159,12 +159,16 @@ BEGIN
                 prog_full_int <= '0';
                 rd_ptr_gray_sync1 <= (OTHERS => '0');
                 rd_ptr_gray_sync2 <= (OTHERS => '0');
+                rd_ptr_bin_sync <= (OTHERS => '0');  -- FIX v4: Initialize registered signal
                 
             ELSE
-                -- Synchronize read pointer
+                -- Synchronize read pointer (2-stage synchronizer)
                 rd_ptr_gray_sync1 <= rd_ptr_gray;
                 rd_ptr_gray_sync2 <= rd_ptr_gray_sync1;
-                rd_ptr_bin_sync := gray_to_bin(rd_ptr_gray_sync2);
+                
+                -- FIX v4: Register the Gray-to-binary conversion output
+                -- This is the key timing fix - breaks the combinational path
+                rd_ptr_bin_sync <= gray_to_bin(rd_ptr_gray_sync2);
                 
                 -- AXIS write handshake
                 IF s_axis_tvalid = '1' AND tready_int = '1' THEN
@@ -176,7 +180,7 @@ BEGIN
                     wr_ptr_gray <= bin_to_gray(wr_ptr_bin_next);
                 END IF;
                 
-                -- Full detection
+                -- Full detection (now uses registered rd_ptr_bin_sync)
                 IF wr_ptr_bin(ADDR_WIDTH) /= rd_ptr_bin_sync(ADDR_WIDTH) AND
                    wr_ptr_bin(ADDR_WIDTH-1 DOWNTO 0) = rd_ptr_bin_sync(ADDR_WIDTH-1 DOWNTO 0) THEN
                     full_int <= '1';
@@ -184,8 +188,7 @@ BEGIN
                     full_int <= '0';
                 END IF;
                 
-                -- Programmable full - frame-aware threshold
-                -- Alerts when free space drops below one fractional frame
+                -- Programmable full - frame-aware threshold (now uses registered rd_ptr_bin_sync)
                 IF DEPTH - (unsigned(wr_ptr_bin) - unsigned(rd_ptr_bin_sync)) <= ALERT_THRESHOLD THEN
                     prog_full_int <= '1';
                 ELSE
@@ -205,13 +208,12 @@ BEGIN
     ------------------------------------------------------------------------------
     -- Read Clock Domain - CORRECTED THREE-STATE LOGIC
     ------------------------------------------------------------------------------
-    -- State A: Becoming valid (tvalid_int='0' ? '1'): Present first byte
+    -- State A: Becoming valid (tvalid_int='0' → '1'): Present first byte
     -- State B: Handshake completes (tvalid='1', tready='1'): Advance, present next
     -- State C: Valid but stalled (tvalid='1', tready='0'): HOLD STABLE
     ------------------------------------------------------------------------------
     read_proc: PROCESS(rd_aclk)
         VARIABLE rd_ptr_bin_next : std_logic_vector(ADDR_WIDTH DOWNTO 0);
-        VARIABLE wr_ptr_bin_sync : std_logic_vector(ADDR_WIDTH DOWNTO 0);
         VARIABLE empty_current : std_logic;
     BEGIN
         IF rising_edge(rd_aclk) THEN
@@ -225,14 +227,22 @@ BEGIN
                 m_axis_tlast <= '0';
                 wr_ptr_gray_sync1 <= (OTHERS => '0');
                 wr_ptr_gray_sync2 <= (OTHERS => '0');
+                wr_ptr_bin_sync <= (OTHERS => '0');  -- FIX v4: Initialize registered signal
                 
             ELSE
-                -- Synchronize write pointer
+                -- Synchronize write pointer (2-stage synchronizer)
                 wr_ptr_gray_sync1 <= wr_ptr_gray;
                 wr_ptr_gray_sync2 <= wr_ptr_gray_sync1;
-                wr_ptr_bin_sync := gray_to_bin(wr_ptr_gray_sync2);
                 
-                -- Check if FIFO is currently empty
+                -- FIX v4: Register the Gray-to-binary conversion output
+                -- This breaks the critical path that was failing timing:
+                --   wr_ptr_gray_sync2 -> gray_to_bin -> comparison -> m_axis_tdata
+                -- Now becomes:
+                --   wr_ptr_gray_sync2 -> gray_to_bin -> wr_ptr_bin_sync (REG)
+                --   wr_ptr_bin_sync -> comparison -> m_axis_tdata
+                wr_ptr_bin_sync <= gray_to_bin(wr_ptr_gray_sync2);
+                
+                -- Check if FIFO is currently empty (now uses registered wr_ptr_bin_sync)
                 IF wr_ptr_bin_sync = rd_ptr_bin THEN
                     empty_current := '1';
                 ELSE
@@ -259,7 +269,7 @@ BEGIN
                     rd_ptr_bin <= rd_ptr_bin_next;
                     rd_ptr_gray <= bin_to_gray(rd_ptr_bin_next);
                     
-                    -- Check if we'll be empty after this read
+                    -- Check if we'll be empty after this read (uses registered wr_ptr_bin_sync)
                     IF wr_ptr_bin_sync = rd_ptr_bin_next THEN
                         -- Going empty
                         empty_int <= '1';
@@ -289,7 +299,7 @@ BEGIN
                     m_axis_tdata <= (OTHERS => '0');
                 END IF;
                 
-                -- Programmable empty
+                -- Programmable empty (uses registered wr_ptr_bin_sync)
                 IF unsigned(wr_ptr_bin_sync) <= unsigned(rd_ptr_bin) + 271 THEN
                     prog_empty_int <= '1';
                 ELSE
@@ -310,6 +320,7 @@ BEGIN
                 fifo_overflow   <= '0';
                 fifo_underflow  <= '0';
                 status_ack      <= '0';
+                status_state    <= IDLE;
             ELSE
 
                 CASE status_state IS

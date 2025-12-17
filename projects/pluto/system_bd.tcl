@@ -1,13 +1,28 @@
 # create board design
+# LibreSDR with MSK Modem Integration
+# Based on pluto MSK design adapted for LibreSDR LVDS interface
+#
+##############################################################################
+# CLOCK DIVIDER MODIFICATION
+##############################################################################
+# In LVDS mode, AD9361 DATA_CLK (l_clk) runs at 245.76 MHz (4x sample rate).
+# The MSK modem expects to run at the sample rate (61.44 MHz).
+# This design uses a BUFR-based clock divider to create the correct clock.
+#
+# Changes from original:
+#   1. Added clk_div_by4 module instantiation
+#   2. msk_top/clk connected to divided clock (61.44 MHz)
+#   3. msk_top/s_axis_aclk stays at l_clk (245 MHz) for DMA interface
+#   4. tx_valid and rx_svalid tied to VCC (every divided clock cycle is valid)
+#
+# To revert: Search for "CLOCK_DIVIDER" comments
+##############################################################################
 
-#set_property FILE_TYPE {VHDL 2008} [get_files *.vhd] 
 source $ad_hdl_dir/projects/common/xilinx/adi_fir_filter_bd.tcl
-#source $ad_hdl_dir/library/axi_tdd/scripts/axi_tdd.tcl  # REMOVED axi_tdd
 
-set_property ip_repo_paths [list $ad_hdl_dir/library ../../library]  [current_fileset]
-
+# Add MSK IP repository
+set_property ip_repo_paths [list $ad_hdl_dir/library ../../library] [current_fileset]
 update_ip_catalog
-#source ../../library/msk_top_ip.tcl
 
 # default ports
 
@@ -24,21 +39,17 @@ create_bd_port -dir I spi0_sdo_i
 create_bd_port -dir O spi0_sdo_o
 create_bd_port -dir I spi0_sdi_i
 
-create_bd_port -dir I -from 17 -to 0 gpio_i
-create_bd_port -dir O -from 17 -to 0 gpio_o
-create_bd_port -dir O -from 17 -to 0 gpio_t
+create_bd_port -dir I -from 24 -to 0 gpio_i
+create_bd_port -dir O -from 24 -to 0 gpio_o
+create_bd_port -dir O -from 24 -to 0 gpio_t
 
-# REMOVED axi_spi - not using expansion header, need LUTs for Viterbi decoder
-#create_bd_port -dir O spi_csn_o
-#create_bd_port -dir I spi_csn_i
-#create_bd_port -dir I spi_clk_i
-#create_bd_port -dir O spi_clk_o
-#create_bd_port -dir I spi_sdo_i
-#create_bd_port -dir O spi_sdo_o
-#create_bd_port -dir I spi_sdi_i
-
-create_bd_port -dir O txdata_o
-#create_bd_port -dir I tdd_ext_sync  # REMOVED axi_tdd
+create_bd_port -dir O spi_csn_o
+create_bd_port -dir I spi_csn_i
+create_bd_port -dir I spi_clk_i
+create_bd_port -dir O spi_clk_o
+create_bd_port -dir I spi_sdo_i
+create_bd_port -dir O spi_sdo_o
+create_bd_port -dir I spi_sdi_i
 
 # instance: sys_ps7
 
@@ -46,25 +57,35 @@ ad_ip_instance processing_system7 sys_ps7
 
 # ps7 settings
 
-ad_ip_parameter sys_ps7 CONFIG.PCW_PRESET_BANK0_VOLTAGE {LVCMOS 1.8V}
-ad_ip_parameter sys_ps7 CONFIG.PCW_PRESET_BANK1_VOLTAGE {LVCMOS 1.8V}
-ad_ip_parameter sys_ps7 CONFIG.PCW_PACKAGE_NAME clg225
+ad_ip_parameter sys_ps7 CONFIG.PCW_PRESET_BANK0_VOLTAGE {LVCMOS 3.3V}
+ad_ip_parameter sys_ps7 CONFIG.PCW_PRESET_BANK1_VOLTAGE {LVCMOS 2.5V}
+ad_ip_parameter sys_ps7 CONFIG.PCW_PACKAGE_NAME clg400
+ad_ip_parameter sys_ps7 CONFIG.PCW_GPIO_MIO_GPIO_ENABLE 1
+ad_ip_parameter sys_ps7 CONFIG.PCW_ENET0_PERIPHERAL_ENABLE 1
+ad_ip_parameter sys_ps7 CONFIG.PCW_ENET0_ENET0_IO "MIO 16 .. 27"
+ad_ip_parameter sys_ps7 CONFIG.PCW_ENET0_GRP_MDIO_ENABLE 1
+ad_ip_parameter sys_ps7 CONFIG.PCW_ENET0_GRP_MDIO_IO "MIO 52 .. 53"
+ad_ip_parameter sys_ps7 CONFIG.PCW_ENET_RESET_SELECT "Separate reset pins"
+ad_ip_parameter sys_ps7 CONFIG.PCW_ENET0_RESET_ENABLE 1
+ad_ip_parameter sys_ps7 CONFIG.PCW_ENET0_RESET_IO "MIO 46"
 ad_ip_parameter sys_ps7 CONFIG.PCW_USE_S_AXI_HP1 1
 ad_ip_parameter sys_ps7 CONFIG.PCW_USE_S_AXI_HP2 1
 ad_ip_parameter sys_ps7 CONFIG.PCW_EN_CLK1_PORT 1
 ad_ip_parameter sys_ps7 CONFIG.PCW_EN_RST1_PORT 1
 ad_ip_parameter sys_ps7 CONFIG.PCW_FPGA0_PERIPHERAL_FREQMHZ 100.0
 ad_ip_parameter sys_ps7 CONFIG.PCW_FPGA1_PERIPHERAL_FREQMHZ 200.0
+ad_ip_parameter sys_ps7 CONFIG.PCW_CRYSTAL_PERIPHERAL_FREQMHZ 50
 ad_ip_parameter sys_ps7 CONFIG.PCW_GPIO_EMIO_GPIO_ENABLE 1
-ad_ip_parameter sys_ps7 CONFIG.PCW_GPIO_EMIO_GPIO_IO 18
+ad_ip_parameter sys_ps7 CONFIG.PCW_GPIO_EMIO_GPIO_IO 25
 ad_ip_parameter sys_ps7 CONFIG.PCW_SPI1_PERIPHERAL_ENABLE 0
 ad_ip_parameter sys_ps7 CONFIG.PCW_I2C0_PERIPHERAL_ENABLE 0
-ad_ip_parameter sys_ps7 CONFIG.PCW_UART1_PERIPHERAL_ENABLE 1
-ad_ip_parameter sys_ps7 CONFIG.PCW_UART1_UART1_IO {MIO 12 .. 13}
+ad_ip_parameter sys_ps7 CONFIG.PCW_SD0_PERIPHERAL_ENABLE 1
+ad_ip_parameter sys_ps7 CONFIG.PCW_SDIO_PERIPHERAL_FREQMHZ 50
+ad_ip_parameter sys_ps7 CONFIG.PCW_UART0_PERIPHERAL_ENABLE 1
+ad_ip_parameter sys_ps7 CONFIG.PCW_UART0_UART0_IO {MIO 14 .. 15}
 ad_ip_parameter sys_ps7 CONFIG.PCW_I2C1_PERIPHERAL_ENABLE 0
 ad_ip_parameter sys_ps7 CONFIG.PCW_QSPI_PERIPHERAL_ENABLE 1
 ad_ip_parameter sys_ps7 CONFIG.PCW_QSPI_GRP_SINGLE_SS_ENABLE 1
-ad_ip_parameter sys_ps7 CONFIG.PCW_SD0_PERIPHERAL_ENABLE 0
 ad_ip_parameter sys_ps7 CONFIG.PCW_SPI0_PERIPHERAL_ENABLE 1
 ad_ip_parameter sys_ps7 CONFIG.PCW_SPI0_SPI0_IO EMIO
 ad_ip_parameter sys_ps7 CONFIG.PCW_TTC0_PERIPHERAL_ENABLE 0
@@ -72,7 +93,7 @@ ad_ip_parameter sys_ps7 CONFIG.PCW_USE_FABRIC_INTERRUPT 1
 ad_ip_parameter sys_ps7 CONFIG.PCW_USB0_PERIPHERAL_ENABLE 1
 ad_ip_parameter sys_ps7 CONFIG.PCW_GPIO_MIO_GPIO_ENABLE 1
 ad_ip_parameter sys_ps7 CONFIG.PCW_GPIO_MIO_GPIO_IO MIO
-ad_ip_parameter sys_ps7 CONFIG.PCW_USB0_RESET_IO {MIO 52}
+ad_ip_parameter sys_ps7 CONFIG.PCW_USB0_RESET_IO {MIO 47}
 ad_ip_parameter sys_ps7 CONFIG.PCW_USB0_RESET_ENABLE 1
 ad_ip_parameter sys_ps7 CONFIG.PCW_IRQ_F2P_INTR 1
 ad_ip_parameter sys_ps7 CONFIG.PCW_IRQ_F2P_MODE REVERSE
@@ -83,19 +104,35 @@ ad_ip_parameter sys_ps7 CONFIG.PCW_MIO_11_PULLUP {enabled}
 ad_ip_parameter sys_ps7 CONFIG.PCW_MIO_48_PULLUP {enabled}
 ad_ip_parameter sys_ps7 CONFIG.PCW_MIO_49_PULLUP {disabled}
 ad_ip_parameter sys_ps7 CONFIG.PCW_MIO_53_PULLUP {enabled}
+ad_ip_parameter sys_ps7 CONFIG.PCW_APU_PERIPHERAL_FREQMHZ 750
 
 # DDR MT41K256M16 HA-125 (32M, 16bit, 8banks)
 
-ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_PARTNO {MT41K256M16 RE-125}
-ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_BUS_WIDTH {16 Bit}
-ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_USE_INTERNAL_VREF 0
-ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_TRAIN_WRITE_LEVEL 1
-ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_TRAIN_READ_GATE 1
-ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_TRAIN_DATA_EYE 1
-ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_DQS_TO_CLK_DELAY_0 0.048
-ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_DQS_TO_CLK_DELAY_1 0.050
-ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_BOARD_DELAY0 0.241
-ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_BOARD_DELAY1 0.240
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_ACT_DDR_FREQ_MHZ 525
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_PARTNO {Custom}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_BANK_ADDR_COUNT {3}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_ROW_ADDR_COUNT {15}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_COL_ADDR_COUNT {10}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_CL {7}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_CWL {5}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_T_RCD {7}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_T_RP {7}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_T_RC {48.91}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_T_RAS_MIN {35.0}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_T_FAW {40.0}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_DQS_TO_CLK_DELAY_0 {0.048}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_DQS_TO_CLK_DELAY_1 {0.050}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_BOARD_DELAY0 {0.241}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_BOARD_DELAY1 {0.240}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_ECC {Disabled}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_BUS_WIDTH {32 Bit}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_DRAM_WIDTH {16 Bits}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_DEVICE_CAPACITY {4096 MBits}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_SPEED_BIN {DDR3_1066F}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_TRAIN_WRITE_LEVEL {1}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_TRAIN_READ_GATE {1}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_TRAIN_DATA_EYE {1}
+ad_ip_parameter sys_ps7 CONFIG.PCW_UIPARAM_DDR_USE_INTERNAL_VREF {0}
 
 ad_ip_instance xlconcat sys_concat_intc
 ad_ip_parameter sys_concat_intc CONFIG.NUM_PORTS 16
@@ -106,11 +143,11 @@ ad_ip_parameter sys_rstgen CONFIG.C_EXT_RST_WIDTH 1
 # system reset/clock definitions
 
 # add external spi
-# REMOVED axi_spi
-#ad_ip_instance axi_quad_spi axi_spi
-#ad_ip_parameter axi_spi CONFIG.C_USE_STARTUP 0
-#ad_ip_parameter axi_spi CONFIG.C_NUM_SS_BITS 1
-#ad_ip_parameter axi_spi CONFIG.C_SCK_RATIO 8
+
+ad_ip_instance axi_quad_spi axi_spi
+ad_ip_parameter axi_spi CONFIG.C_USE_STARTUP 0
+ad_ip_parameter axi_spi CONFIG.C_NUM_SS_BITS 1
+ad_ip_parameter axi_spi CONFIG.C_SCK_RATIO 8
 
 ad_connect  sys_cpu_clk sys_ps7/FCLK_CLK0
 ad_connect  sys_200m_clk sys_ps7/FCLK_CLK1
@@ -140,15 +177,15 @@ ad_connect  spi0_sdo_o sys_ps7/SPI0_MOSI_O
 ad_connect  spi0_sdi_i sys_ps7/SPI0_MISO_I
 
 # axi spi connections
-# REMOVED axi_spi
-#ad_connect  sys_cpu_clk  axi_spi/ext_spi_clk
-#ad_connect  spi_csn_i  axi_spi/ss_i
-#ad_connect  spi_csn_o  axi_spi/ss_o
-#ad_connect  spi_clk_i  axi_spi/sck_i
-#ad_connect  spi_clk_o  axi_spi/sck_o
-#ad_connect  spi_sdo_i  axi_spi/io0_i
-#ad_connect  spi_sdo_o  axi_spi/io0_o
-#ad_connect  spi_sdi_i  axi_spi/io1_i
+
+ad_connect  sys_cpu_clk  axi_spi/ext_spi_clk
+ad_connect  spi_csn_i  axi_spi/ss_i
+ad_connect  spi_csn_o  axi_spi/ss_o
+ad_connect  spi_clk_i  axi_spi/sck_i
+ad_connect  spi_clk_o  axi_spi/sck_o
+ad_connect  spi_sdo_i  axi_spi/io0_i
+ad_connect  spi_sdo_o  axi_spi/io0_o
+ad_connect  spi_sdi_i  axi_spi/io1_i
 
 # interrupts
 
@@ -171,62 +208,66 @@ ad_connect  sys_concat_intc/In1 GND
 ad_connect  sys_concat_intc/In0 GND
 
 # iic
-# REMOVED axi_iic_main - need LUTs for Viterbi decoder
-#create_bd_intf_port -mode Master -vlnv xilinx.com:interface:iic_rtl:1.0 iic_main
 
-#ad_ip_instance axi_iic axi_iic_main
+create_bd_intf_port -mode Master -vlnv xilinx.com:interface:iic_rtl:1.0 iic_main
 
-#ad_connect  iic_main axi_iic_main/iic
-#ad_cpu_interconnect 0x41600000 axi_iic_main
-#ad_cpu_interrupt ps-15 mb-15 axi_iic_main/iic2intc_irpt
+ad_ip_instance axi_iic axi_iic_main
+
+ad_connect  iic_main axi_iic_main/iic
+ad_cpu_interconnect 0x41600000 axi_iic_main
+ad_cpu_interrupt ps-15 mb-15 axi_iic_main/iic2intc_irpt
 
 # ad9361
 
-create_bd_port -dir I rx_clk_in
-create_bd_port -dir I rx_frame_in
-create_bd_port -dir I -from 11 -to 0 rx_data_in
+create_bd_port -dir I rx_clk_in_p
+create_bd_port -dir I rx_clk_in_n
+create_bd_port -dir I rx_frame_in_p
+create_bd_port -dir I rx_frame_in_n
+create_bd_port -dir I -from 5 -to 0 rx_data_in_p
+create_bd_port -dir I -from 5 -to 0 rx_data_in_n
 
-create_bd_port -dir O tx_clk_out
-create_bd_port -dir O tx_frame_out
-create_bd_port -dir O -from 11 -to 0 tx_data_out
+create_bd_port -dir O tx_clk_out_p
+create_bd_port -dir O tx_clk_out_n
+create_bd_port -dir O tx_frame_out_p
+create_bd_port -dir O tx_frame_out_n
+create_bd_port -dir O -from 5 -to 0 tx_data_out_p
+create_bd_port -dir O -from 5 -to 0 tx_data_out_n
 
 create_bd_port -dir O enable
 create_bd_port -dir O txnrx
 create_bd_port -dir I up_enable
 create_bd_port -dir I up_txnrx
 
-# ad9361 core(s)
-
+# ad9361 core
 ad_ip_instance axi_ad9361 axi_ad9361
 ad_ip_parameter axi_ad9361 CONFIG.ID 0
-ad_ip_parameter axi_ad9361 CONFIG.CMOS_OR_LVDS_N 1
-ad_ip_parameter axi_ad9361 CONFIG.MODE_1R1T 0
-ad_ip_parameter axi_ad9361 CONFIG.ADC_INIT_DELAY 21
+ad_ip_parameter axi_ad9361 CONFIG.CMOS_OR_LVDS_N 0
+# CLOCK_DIVIDER: Using 1R1T mode as required by LibreSDR device tree
+ad_ip_parameter axi_ad9361 CONFIG.MODE_1R1T 1
+ad_ip_parameter axi_ad9361 CONFIG.ADC_INIT_DELAY 30
 
+# TDD, DDS, and more
 ad_ip_parameter axi_ad9361 CONFIG.TDD_DISABLE 1
 ad_ip_parameter axi_ad9361 CONFIG.DAC_DDS_DISABLE 1
-ad_ip_parameter axi_ad9361 CONFIG.ADC_USERPORTS_DISABLE 1
 ad_ip_parameter axi_ad9361 CONFIG.ADC_DCFILTER_DISABLE 1
 ad_ip_parameter axi_ad9361 CONFIG.ADC_IQCORRECTION_DISABLE 1
-ad_ip_parameter axi_ad9361 CONFIG.DAC_USERPORTS_DISABLE 1
 ad_ip_parameter axi_ad9361 CONFIG.DAC_IQCORRECTION_DISABLE 1
 
+# Enable user ports for direct MSK connection
+ad_ip_parameter axi_ad9361 CONFIG.DAC_USERPORTS_DISABLE 0
+ad_ip_parameter axi_ad9361 CONFIG.ADC_USERPORTS_DISABLE 0
+
+# DAC DMA - TX data from PS to MSK
 ad_ip_instance axi_dmac axi_ad9361_dac_dma
 ad_ip_parameter axi_ad9361_dac_dma CONFIG.DMA_TYPE_SRC 0
 ad_ip_parameter axi_ad9361_dac_dma CONFIG.DMA_TYPE_DEST 1
-ad_ip_parameter axi_ad9361_dac_dma CONFIG.CYCLIC 1
+ad_ip_parameter axi_ad9361_dac_dma CONFIG.CYCLIC 0
 ad_ip_parameter axi_ad9361_dac_dma CONFIG.AXI_SLICE_SRC 0
 ad_ip_parameter axi_ad9361_dac_dma CONFIG.AXI_SLICE_DEST 0
 ad_ip_parameter axi_ad9361_dac_dma CONFIG.DMA_2D_TRANSFER 0
-# Abraxas3d changed below parameter from 64 to 32
 ad_ip_parameter axi_ad9361_dac_dma CONFIG.DMA_DATA_WIDTH_DEST 32
 
-#ad_add_interpolation_filter "tx_fir_interpolator" 8 2 1 {61.44} {7.68} \
-#                             "$ad_hdl_dir/library/util_fir_int/coefile_int.coe"
-ad_ip_instance xlslice interp_slice
-ad_ip_instance util_upack2 tx_upack
-
-# changed DMA_TYPE_SRC from 2 (FIFO) to 1 (AXIS)
+# ADC DMA - RX data from MSK to PS (AXIS interface)
 ad_ip_instance axi_dmac axi_ad9361_adc_dma
 ad_ip_parameter axi_ad9361_adc_dma CONFIG.DMA_TYPE_SRC 1
 ad_ip_parameter axi_ad9361_adc_dma CONFIG.DMA_TYPE_DEST 0
@@ -235,23 +276,22 @@ ad_ip_parameter axi_ad9361_adc_dma CONFIG.SYNC_TRANSFER_START 0
 ad_ip_parameter axi_ad9361_adc_dma CONFIG.AXI_SLICE_SRC 0
 ad_ip_parameter axi_ad9361_adc_dma CONFIG.AXI_SLICE_DEST 0
 ad_ip_parameter axi_ad9361_adc_dma CONFIG.DMA_2D_TRANSFER 0
-# Abraxas3d changed below parameter from 64 to 32
 ad_ip_parameter axi_ad9361_adc_dma CONFIG.DMA_DATA_WIDTH_SRC 32
-#ad_ip_parameter axi_ad9361_adc_dma CONFIG.SYNC_TRANSFER_START {true}
-
-#ad_add_decimation_filter "rx_fir_decimator" 8 2 1 {61.44} {61.44} \
-#                         "$ad_hdl_dir/library/util_fir_int/coefile_int.coe"
-ad_ip_instance xlslice decim_slice
-ad_ip_instance util_cpack2 cpack
 
 # connections
 
-ad_connect  rx_clk_in axi_ad9361/rx_clk_in
-ad_connect  rx_frame_in axi_ad9361/rx_frame_in
-ad_connect  rx_data_in axi_ad9361/rx_data_in
-ad_connect  tx_clk_out axi_ad9361/tx_clk_out
-ad_connect  tx_frame_out axi_ad9361/tx_frame_out
-ad_connect  tx_data_out axi_ad9361/tx_data_out
+ad_connect  rx_clk_in_p axi_ad9361/rx_clk_in_p
+ad_connect  rx_clk_in_n axi_ad9361/rx_clk_in_n
+ad_connect  rx_frame_in_p axi_ad9361/rx_frame_in_p
+ad_connect  rx_frame_in_n axi_ad9361/rx_frame_in_n
+ad_connect  rx_data_in_p axi_ad9361/rx_data_in_p
+ad_connect  rx_data_in_n axi_ad9361/rx_data_in_n
+ad_connect  tx_clk_out_p axi_ad9361/tx_clk_out_p
+ad_connect  tx_clk_out_n axi_ad9361/tx_clk_out_n
+ad_connect  tx_frame_out_p axi_ad9361/tx_frame_out_p
+ad_connect  tx_frame_out_n axi_ad9361/tx_frame_out_n
+ad_connect  tx_data_out_p axi_ad9361/tx_data_out_p
+ad_connect  tx_data_out_n axi_ad9361/tx_data_out_n
 ad_connect  enable axi_ad9361/enable
 ad_connect  txnrx axi_ad9361/txnrx
 ad_connect  up_enable axi_ad9361/up_enable
@@ -261,143 +301,34 @@ ad_connect  axi_ad9361/tdd_sync GND
 ad_connect  sys_200m_clk axi_ad9361/delay_clk
 ad_connect  axi_ad9361/l_clk axi_ad9361/clk
 
-#ad_connect axi_ad9361/l_clk rx_fir_decimator/aclk
-
-#ad_connect axi_ad9361/adc_valid_i0 rx_fir_decimator/valid_in_0
-#ad_connect axi_ad9361/adc_enable_i0 rx_fir_decimator/enable_in_0
-#ad_connect axi_ad9361/adc_data_i0 rx_fir_decimator/data_in_0
-#ad_connect axi_ad9361/adc_valid_q0 rx_fir_decimator/valid_in_1
-#ad_connect axi_ad9361/adc_enable_q0 rx_fir_decimator/enable_in_1
-#ad_connect axi_ad9361/adc_data_q0 rx_fir_decimator/data_in_1
-
-ad_connect axi_ad9361/l_clk cpack/clk
-ad_connect axi_ad9361/rst cpack/reset
-
-ad_connect axi_ad9361/adc_enable_i1 cpack/enable_2
-ad_connect axi_ad9361/adc_data_i1 cpack/fifo_wr_data_2
-ad_connect axi_ad9361/adc_enable_q1 cpack/enable_3
-ad_connect axi_ad9361/adc_data_q1 cpack/fifo_wr_data_3
-
-#ad_connect cpack/enable_0 rx_fir_decimator/enable_out_0
-#ad_connect cpack/enable_1 rx_fir_decimator/enable_out_1
-#ad_connect cpack/fifo_wr_data_0 rx_fir_decimator/data_out_0
-#ad_connect cpack/fifo_wr_data_1 rx_fir_decimator/data_out_1
-#ad_connect rx_fir_decimator/valid_out_0 cpack/fifo_wr_en
-
-#ad_connect axi_ad9361_adc_dma/fifo_wr cpack/packed_fifo_wr
-ad_connect axi_ad9361/up_adc_gpio_out decim_slice/Din
-#ad_connect rx_fir_decimator/active decim_slice/Dout
-
-#ad_connect axi_ad9361/l_clk tx_fir_interpolator/aclk
-
-#ad_connect axi_ad9361/dac_enable_i0 tx_fir_interpolator/dac_enable_0
-#ad_connect axi_ad9361/dac_valid_i0 tx_fir_interpolator/dac_valid_0
-#ad_connect axi_ad9361/dac_data_i0 tx_fir_interpolator/data_out_0
-#ad_connect axi_ad9361/dac_enable_q0 tx_fir_interpolator/dac_enable_1
-#ad_connect axi_ad9361/dac_valid_q0 tx_fir_interpolator/dac_valid_1
-#ad_connect axi_ad9361/dac_data_q0 tx_fir_interpolator/data_out_1
-
-ad_connect  axi_ad9361/l_clk tx_upack/clk
-
-#ad_connect  tx_upack/fifo_rd_data_0  tx_fir_interpolator/data_in_0
-#ad_connect  tx_upack/enable_0  tx_fir_interpolator/enable_out_0
-#ad_connect  tx_upack/fifo_rd_data_1  tx_fir_interpolator/data_in_1
-#ad_connect  tx_upack/enable_1  tx_fir_interpolator/enable_out_1
-
-ad_connect axi_ad9361/dac_enable_i1 tx_upack/enable_2
-ad_connect axi_ad9361/dac_data_i1 tx_upack/fifo_rd_data_2
-ad_connect axi_ad9361/dac_enable_q1 tx_upack/enable_3
-ad_connect axi_ad9361/dac_data_q1 tx_upack/fifo_rd_data_3
-
-#ad_connect tx_upack/s_axis  axi_ad9361_dac_dma/m_axis
-
-ad_ip_instance util_vector_logic logic_or [list \
-  C_OPERATION {or} \
-  C_SIZE 1]
-
-#ad_connect  logic_or/Op1  tx_fir_interpolator/valid_out_0
-ad_connect  logic_or/Op1  axi_ad9361/dac_valid_i0
-ad_connect  logic_or/Op2  axi_ad9361/dac_valid_i1
-ad_connect  logic_or/Res  tx_upack/fifo_rd_en
-ad_connect  tx_upack/fifo_rd_underflow axi_ad9361/dac_dunf
-
-ad_connect axi_ad9361/up_dac_gpio_out interp_slice/Din
-#ad_connect  tx_fir_interpolator/active interp_slice/Dout
-
-# Old FIFO connection
-#ad_connect  axi_ad9361/l_clk axi_ad9361_adc_dma/fifo_wr_clk
-# New AXIS connection
-ad_connect  axi_ad9361/l_clk axi_ad9361_adc_dma/s_axis_aclk
-
-ad_connect  axi_ad9361/l_clk axi_ad9361_dac_dma/m_axis_aclk
-#ad_connect  sys_cpu_clk axi_ad9361_dac_dma/m_axis_aclk
-
-# removied and replaced with direct connection
-#ad_connect  cpack/fifo_wr_overflow axi_ad9361/adc_dovf
-ad_connect GND axi_ad9361/adc_dovf
-
-# External TDD
-# REMOVED axi_tdd - not using TDD timing control
-#set TDD_CHANNEL_CNT 3
-#set TDD_DEFAULT_POL 0b010
-#set TDD_REG_WIDTH 32
-#set TDD_BURST_WIDTH 32
-#set TDD_SYNC_WIDTH 0
-#set TDD_SYNC_INT 0
-#set TDD_SYNC_EXT 1
-#set TDD_SYNC_EXT_CDC 1
-#ad_tdd_gen_create axi_tdd_0 $TDD_CHANNEL_CNT \
-#                            $TDD_DEFAULT_POL \
-#                            $TDD_REG_WIDTH \
-#                            $TDD_BURST_WIDTH \
-#                            $TDD_SYNC_WIDTH \
-#                            $TDD_SYNC_INT \
-#                            $TDD_SYNC_EXT \
-#                            $TDD_SYNC_EXT_CDC
-
-ad_ip_instance util_vector_logic logic_inv [list \
-  C_OPERATION {not} \
-  C_SIZE 1]
-
+# Logic OR for reset
 ad_ip_instance util_vector_logic logic_or_1 [list \
   C_OPERATION {or} \
   C_SIZE 1]
 
-ad_connect logic_inv/Op1  axi_ad9361/rst
-#ad_connect logic_inv/Res  axi_tdd_0/resetn  # REMOVED axi_tdd
-#ad_connect axi_ad9361/l_clk axi_tdd_0/clk  # REMOVED axi_tdd
-#ad_connect axi_tdd_0/sync_in tdd_ext_sync  # REMOVED axi_tdd
-#ad_connect axi_tdd_0/tdd_channel_0 txdata_o  # REMOVED axi_tdd
-# Tie txdata_o low with TDD removed
-ad_connect txdata_o GND
-# remove this for FIFO to AXIS conversion
-#ad_connect axi_tdd_0/tdd_channel_1 axi_ad9361_adc_dma/fifo_wr_sync
-
-# Replace with (sync not needed for now)
-# ad_connect axi_tdd_0/tdd_channel_1 GND
-# Or connect to frame sync if you want TDD control:
-# ad_connect axi_tdd_0/tdd_channel_1 msk_top/sync_locked
-
 ad_connect  logic_or_1/Op1  axi_ad9361/rst
-#ad_connect  logic_or_1/Op2  axi_tdd_0/tdd_channel_2  # REMOVED axi_tdd
-# Tie to GND with TDD removed
 ad_connect  logic_or_1/Op2  GND
-ad_connect  logic_or_1/Res  tx_upack/reset
+
+# DMA clock connections - these stay at l_clk (245 MHz)
+ad_connect  axi_ad9361/l_clk axi_ad9361_adc_dma/s_axis_aclk
+ad_connect  axi_ad9361/l_clk axi_ad9361_dac_dma/m_axis_aclk
+
+# Tie off unused signals
+ad_connect GND axi_ad9361/adc_dovf
+ad_connect GND axi_ad9361/dac_dunf
 
 # interconnects
 
 ad_cpu_interconnect 0x79020000 axi_ad9361
 ad_cpu_interconnect 0x7C400000 axi_ad9361_adc_dma
 ad_cpu_interconnect 0x7C420000 axi_ad9361_dac_dma
-#ad_cpu_interconnect 0x7C430000 axi_spi  # REMOVED axi_spi
-#ad_cpu_interconnect 0x7C440000 axi_tdd_0  # REMOVED axi_tdd
-
+ad_cpu_interconnect 0x7C430000 axi_spi
 
 ad_ip_parameter sys_ps7 CONFIG.PCW_USE_S_AXI_HP1 {1}
 ad_connect sys_cpu_clk sys_ps7/S_AXI_HP1_ACLK
 ad_connect axi_ad9361_adc_dma/m_dest_axi sys_ps7/S_AXI_HP1
 
-create_bd_addr_seg -range 0x20000000 -offset 0x00000000 \
+create_bd_addr_seg -range 0x40000000 -offset 0x00000000 \
                     [get_bd_addr_spaces axi_ad9361_adc_dma/m_dest_axi] \
                     [get_bd_addr_segs sys_ps7/S_AXI_HP1/HP1_DDR_LOWOCM] \
                     SEG_sys_ps7_HP1_DDR_LOWOCM
@@ -406,7 +337,7 @@ ad_ip_parameter sys_ps7 CONFIG.PCW_USE_S_AXI_HP2 {1}
 ad_connect sys_cpu_clk sys_ps7/S_AXI_HP2_ACLK
 ad_connect axi_ad9361_dac_dma/m_src_axi sys_ps7/S_AXI_HP2
 
-create_bd_addr_seg -range 0x20000000 -offset 0x00000000 \
+create_bd_addr_seg -range 0x40000000 -offset 0x00000000 \
                     [get_bd_addr_spaces axi_ad9361_dac_dma/m_src_axi] \
                     [get_bd_addr_segs sys_ps7/S_AXI_HP2/HP2_DDR_LOWOCM] \
                     SEG_sys_ps7_HP2_DDR_LOWOCM
@@ -420,53 +351,145 @@ ad_connect sys_cpu_resetn axi_ad9361_dac_dma/m_src_axi_aresetn
 
 ad_cpu_interrupt ps-13 mb-13 axi_ad9361_adc_dma/irq
 ad_cpu_interrupt ps-12 mb-12 axi_ad9361_dac_dma/irq
-#ad_cpu_interrupt ps-11 mb-11 axi_spi/ip2intc_irpt  # REMOVED axi_spi
+ad_cpu_interrupt ps-11 mb-11 axi_spi/ip2intc_irpt
 
-## msk interpose ad_ip_instance
+
+##############################################################################
+# CLOCK_DIVIDER: Clock divider for MSK modem (245.76 MHz -> 61.44 MHz)
+##############################################################################
+# Uses BUFR primitive to divide l_clk by 4.
+# This provides a phase-aligned 61.44 MHz clock for the MSK modem.
+# The BUFR output edges align with every 4th l_clk edge, ensuring proper
+# timing for DAC/ADC data which is stable for 4 l_clk cycles per sample.
+##############################################################################
+
+# Add the clock divider source file to the project before creating the BD cell
+add_files -norecurse ../../src/clk_div_by4.vhd
+update_compile_order -fileset sources_1
+
+create_bd_cell -type module -reference clk_div_by4 clk_divider
+ad_connect axi_ad9361/l_clk clk_divider/clk_in
+
+
+##############################################################################
+# MSK Modem Integration
+##############################################################################
+
 ad_ip_instance msk_top msk_top
 
-#MSK Connects 
+# CLOCK_DIVIDER: MSK processing clock - use divided clock (61.44 MHz)
+# This is where the NCO, modulator, demodulator all run
+ad_connect  msk_top/clk clk_divider/clk_out
 
-ad_connect  msk_top/clk axi_ad9361/clk
-ad_connect  msk_top/s_axis_aclk axi_ad9361/clk
+# CLOCK_DIVIDER: MSK AXIS clock - keep at l_clk (245 MHz) for DMA interface
+# The async FIFO inside msk_top handles CDC between s_axis_aclk and clk
+ad_connect  msk_top/s_axis_aclk axi_ad9361/l_clk
+
+# MSK AXI-Lite register interface (100 MHz CPU clock)
 ad_connect  msk_top/s_axi_aclk sys_cpu_clk
+ad_connect  msk_top/s_axis_aresetn sys_cpu_resetn
+ad_connect  msk_top/s_axi_aresetn sys_cpu_resetn
 
-ad_connect msk_top/s_axis_aresetn sys_cpu_resetn 
-ad_connect msk_top/s_axi_aresetn sys_cpu_resetn 
-#ad_cpu_interconnect 0x7C450000 msk_top
+# MSK AXI-Lite register interface
 ad_cpu_interconnect 0x43C00000 msk_top
 
+# MSK TX Connects - Channel 0 I/Q to AD9361
+# CLOCK_DIVIDER: TX samples need to be synchronized from clk_div4 to l_clk domain
+# The msk_top outputs change on clk_div4 edges, but AD9361 samples on l_clk.
+# Without sync, the DAC might catch glitches during transitions.
 
-#MSK Connects TX
+# Create sync registers for TX I/Q (resample clk_div4 outputs to l_clk)
+create_bd_cell -type ip -vlnv xilinx.com:ip:c_shift_ram:12.0 tx_i_sync
+set_property -dict [list \
+    CONFIG.Width {16} \
+    CONFIG.Depth {1} \
+    CONFIG.DefaultData {0000000000000000} \
+    CONFIG.AsyncInitVal {0000000000000000} \
+] [get_bd_cells tx_i_sync]
 
-ad_connect  msk_top/tx_samples_I axi_ad9361/dac_data_i0
-ad_connect  msk_top/tx_samples_Q axi_ad9361/dac_data_q0
+create_bd_cell -type ip -vlnv xilinx.com:ip:c_shift_ram:12.0 tx_q_sync
+set_property -dict [list \
+    CONFIG.Width {16} \
+    CONFIG.Depth {1} \
+    CONFIG.DefaultData {0000000000000000} \
+    CONFIG.AsyncInitVal {0000000000000000} \
+] [get_bd_cells tx_q_sync]
+
+# Clock sync registers with l_clk (245 MHz)
+ad_connect axi_ad9361/l_clk tx_i_sync/CLK
+ad_connect axi_ad9361/l_clk tx_q_sync/CLK
+
+# MSK outputs -> sync registers
+ad_connect msk_top/tx_samples_I tx_i_sync/D
+ad_connect msk_top/tx_samples_Q tx_q_sync/D
+
+# Sync registers -> AD9361
+ad_connect tx_i_sync/Q axi_ad9361/dac_data_i0
+ad_connect tx_q_sync/Q axi_ad9361/dac_data_q0
+
 ad_connect  msk_top/tx_enable axi_ad9361/dac_enable_i0
-ad_connect  msk_top/tx_valid axi_ad9361/dac_valid_i0
 
-# instead of this command, we connect everything explicitly
-#ad_connect axi_ad9361_dac_dma/m_axis msk_top/s_axis
+# CLOCK_DIVIDER: tx_valid tied HIGH - every 61.44 MHz clock cycle is a valid sample
+# (Previously connected to dac_valid_i0 which pulses in l_clk domain)
+ad_connect  msk_top/tx_valid VCC
 
-# EXPLICIT AXIS CONNECTIONS - Wire each signal individually
-ad_connect  axi_ad9361_dac_dma/m_axis_data  msk_top/s_axis_tdata
-ad_connect  axi_ad9361_dac_dma/m_axis_valid msk_top/s_axis_tvalid
-ad_connect  msk_top/s_axis_tready           axi_ad9361_dac_dma/m_axis_ready
-ad_connect  axi_ad9361_dac_dma/m_axis_last  msk_top/s_axis_tlast
-ad_connect  axi_ad9361_dac_dma/m_axis_keep  msk_top/s_axis_tkeep
+# TX DMA Connections
+ad_connect axi_ad9361_dac_dma/m_axis_data   msk_top/s_axis_tdata
+ad_connect axi_ad9361_dac_dma/m_axis_valid  msk_top/s_axis_tvalid
+ad_connect axi_ad9361_dac_dma/m_axis_ready  msk_top/s_axis_tready
+ad_connect axi_ad9361_dac_dma/m_axis_last   msk_top/s_axis_tlast
+ad_connect axi_ad9361_dac_dma/m_axis_keep   msk_top/s_axis_tkeep
 
-
-
-#MSK Connects RX
-
+# MSK RX Connects - Channel 0 I/Q from AD9361
 ad_connect  msk_top/rx_samples_I axi_ad9361/adc_data_i0
 ad_connect  msk_top/rx_samples_Q axi_ad9361/adc_data_q0
 ad_connect  msk_top/rx_enable axi_ad9361/adc_enable_i0
-ad_connect  msk_top/rx_svalid axi_ad9361/adc_valid_i0
 
-# FIFO to AXIS conversion:
-#ad_connect msk_top/rx_data axi_ad9361_adc_dma/fifo_wr_din
-#ad_connect msk_top/rx_dvalid axi_ad9361_adc_dma/fifo_wr_en
-#ad_connect msk_top/m_axis axi_ad9361_adc_dma/s_axis
+# CLOCK_DIVIDER: rx_svalid tied HIGH - every 61.44 MHz clock cycle is a valid sample
+# (Previously connected to adc_valid_i0 which pulses in l_clk domain)
+ad_connect  msk_top/rx_svalid VCC
 
-# RX AXIS - Use interface connection (DMA doesn't expose individual pins)
+# MSK RX AXIS to DMA - interface connection
 ad_connect  msk_top/m_axis axi_ad9361_adc_dma/s_axis
+
+##############################################################################
+# ILA Debug Core - Modulator Output Monitoring
+##############################################################################
+# Captures TX I/Q samples to verify modulator is producing correct waveforms.
+# Clock: clk_div4 (61.44 MHz) - same domain as modulator
+# Trigger: probe0 (I samples) != 0
+#
+# To use in Vivado:
+#   1. Program FPGA
+#   2. Open Hardware Manager
+#   3. Click "Refresh" to see ILA core
+#   4. Set trigger: probe0 != 0
+#   5. Click "Run Trigger" 
+#   6. Transmit a frame - ILA captures the waveforms
+##############################################################################
+
+create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_msk_tx
+set_property -dict [list \
+    CONFIG.C_PROBE0_WIDTH {16} \
+    CONFIG.C_PROBE1_WIDTH {16} \
+    CONFIG.C_PROBE2_WIDTH {1} \
+    CONFIG.C_NUM_OF_PROBES {3} \
+    CONFIG.C_DATA_DEPTH {16384} \
+    CONFIG.C_TRIGIN_EN {false} \
+    CONFIG.C_EN_STRG_QUAL {1} \
+    CONFIG.ALL_PROBE_SAME_MU_CNT {2} \
+] [get_bd_cells ila_msk_tx]
+
+# Clock ILA with divided clock (same as modulator)
+ad_connect clk_divider/clk_out ila_msk_tx/clk
+
+# Probe 0: TX I samples (16 bits) - also used as trigger
+ad_connect msk_top/tx_samples_I ila_msk_tx/probe0
+
+# Probe 1: TX Q samples (16 bits)
+ad_connect msk_top/tx_samples_Q ila_msk_tx/probe1
+
+# Probe 2: dac_valid_i0 from AD9361 (in l_clk domain, sampled by clk_div4)
+# This shows when AD9361 expects new data - should pulse once per clk_div4 cycle
+ad_connect axi_ad9361/dac_valid_i0 ila_msk_tx/probe2
+

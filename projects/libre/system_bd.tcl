@@ -242,8 +242,9 @@ create_bd_port -dir I up_txnrx
 ad_ip_instance axi_ad9361 axi_ad9361
 ad_ip_parameter axi_ad9361 CONFIG.ID 0
 ad_ip_parameter axi_ad9361 CONFIG.CMOS_OR_LVDS_N 0
-# CLOCK_DIVIDER: Using 1R1T mode as required by LibreSDR device tree
-ad_ip_parameter axi_ad9361 CONFIG.MODE_1R1T 1
+
+# This place is horrible
+ad_ip_parameter axi_ad9361 CONFIG.MODE_1R1T 0
 ad_ip_parameter axi_ad9361 CONFIG.ADC_INIT_DELAY 30
 
 # TDD, DDS, and more
@@ -423,11 +424,17 @@ ad_connect axi_ad9361/l_clk tx_q_sync/CLK
 ad_connect msk_top/tx_samples_I tx_i_sync/D
 ad_connect msk_top/tx_samples_Q tx_q_sync/D
 
-# Sync registers -> AD9361
+# Sync registers -> AD9361 Channel 0
 ad_connect tx_i_sync/Q axi_ad9361/dac_data_i0
 ad_connect tx_q_sync/Q axi_ad9361/dac_data_q0
+ad_connect msk_top/tx_enable axi_ad9361/dac_enable_i0
+#ad_connect msk_top/tx_enable axi_ad9361/dac_enable_q0
 
-ad_connect  msk_top/tx_enable axi_ad9361/dac_enable_i0
+# Sync registers -> AD9361 Channel 1 (duplicate for LVDS interleaving)
+ad_connect tx_i_sync/Q axi_ad9361/dac_data_i1
+ad_connect tx_q_sync/Q axi_ad9361/dac_data_q1
+#ad_connect msk_top/tx_enable axi_ad9361/dac_enable_i1
+#ad_connect msk_top/tx_enable axi_ad9361/dac_enable_q1
 
 # CLOCK_DIVIDER: tx_valid tied HIGH - every 61.44 MHz clock cycle is a valid sample
 # (Previously connected to dac_valid_i0 which pulses in l_clk domain)
@@ -453,37 +460,91 @@ ad_connect  msk_top/rx_svalid VCC
 ad_connect  msk_top/m_axis axi_ad9361_adc_dma/s_axis
 
 ##############################################################################
-# ILA Debug Core - Modulator Output Monitoring
+# ILA Debug Core - Deserializer Monitoring
 ##############################################################################
-# Captures TX I/Q samples to verify modulator is producing correct waveforms.
-# Clock: clk_div4 (61.44 MHz) - same domain as modulator
-# Trigger: probe0 (I samples) != 0
+# Captures deserializer signals in clk_div4 domain (61 MHz).
+# 
+# Probes:
+#   probe0: tx_data_bit    - bit output to modulator
+#   probe1: tx_req         - modulator requesting next bit
+#   probe2: encoder_tvalid - encoder has data available
+#   probe3: encoder_tready - deserializer ready for byte
+#   probe4: frame_complete - end of frame marker
 #
-# To use in Vivado:
-#   1. Program FPGA
-#   2. Open Hardware Manager
-#   3. Click "Refresh" to see ILA core
-#   4. Set trigger: probe0 != 0
-#   5. Click "Run Trigger" 
-#   6. Transmit a frame - ILA captures the waveforms
+# At 61 MHz with 16384 samples, we get ~268us of capture (~6.8 frames).
+# At 61 MHz with 32768 samples, we get more time fails to place (over on BRAM)
+# Look for patterns at byte boundaries (every 8 tx_req pulses).
+##############################################################################
+#create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_msk_tx
+#set_property -dict [list \
+#    CONFIG.C_PROBE0_WIDTH {1} \
+#    CONFIG.C_PROBE1_WIDTH {1} \
+#    CONFIG.C_PROBE2_WIDTH {1} \
+#    CONFIG.C_PROBE3_WIDTH {1} \
+#    CONFIG.C_PROBE4_WIDTH {1} \
+#    CONFIG.C_PROBE5_WIDTH {8} \
+#    CONFIG.C_NUM_OF_PROBES {6} \
+#    CONFIG.C_DATA_DEPTH {16384} \
+#    CONFIG.C_TRIGIN_EN {false} \
+#    CONFIG.C_EN_STRG_QUAL {1} \
+#    CONFIG.ALL_PROBE_SAME_MU_CNT {2} \
+#] [get_bd_cells ila_msk_tx]
+## Clock ILA with clk_div4 (61 MHz) - deserializer clock domain
+#ad_connect clk_divider/clk_out ila_msk_tx/clk
+## Probe 0: tx_data_bit - the bit going to modulator
+#ad_connect msk_top/dbg_tx_data_bit ila_msk_tx/probe0
+## Probe 1: tx_req - when modulator requests a bit
+#ad_connect msk_top/dbg_tx_req ila_msk_tx/probe1
+## Probe 2: encoder_tvalid - data available from encoder
+#ad_connect msk_top/dbg_encoder_tvalid ila_msk_tx/probe2
+## Probe 3: encoder_tready - deserializer ready for data
+#ad_connect msk_top/dbg_encoder_tready ila_msk_tx/probe3
+## Probe 4: frame_complete - end of frame marker
+#ad_connect msk_top/dbg_frame_complete ila_msk_tx/probe4
+## Probe 5: encoder_tdata - 8-bit data from encoder to deserializer
+#ad_connect msk_top/dbg_encoder_tdata ila_msk_tx/probe5
+
+
+
+
+##############################################################################
+# ILA Debug Core - TX DAC Path Monitoring  
+##############################################################################
+# Add this after the existing ila_msk_tx section in system_bd.tcl
+# Probes the I/Q samples going to the AD9361
 ##############################################################################
 
-create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_msk_tx
+create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_dac_tx
 set_property -dict [list \
     CONFIG.C_PROBE0_WIDTH {16} \
     CONFIG.C_PROBE1_WIDTH {16} \
-    CONFIG.C_NUM_OF_PROBES {2} \
-    CONFIG.C_DATA_DEPTH {16384} \
+    CONFIG.C_PROBE2_WIDTH {16} \
+    CONFIG.C_PROBE3_WIDTH {16} \
+    CONFIG.C_PROBE4_WIDTH {1} \
+    CONFIG.C_NUM_OF_PROBES {5} \
+    CONFIG.C_DATA_DEPTH {4096} \
     CONFIG.C_TRIGIN_EN {false} \
     CONFIG.C_EN_STRG_QUAL {1} \
     CONFIG.ALL_PROBE_SAME_MU_CNT {2} \
-] [get_bd_cells ila_msk_tx]
+] [get_bd_cells ila_dac_tx]
 
-# Clock ILA with divided clock (same as modulator)
-ad_connect clk_divider/clk_out ila_msk_tx/clk
+# Clock with l_clk (245 MHz) - same as AD9361 DAC interface
+ad_connect axi_ad9361/l_clk ila_dac_tx/clk
 
-# Probe 0: TX I samples (16 bits) - also used as trigger
-ad_connect msk_top/tx_samples_I ila_msk_tx/probe0
+# Probe 0: TX I samples from msk_top (before CDC)
+ad_connect msk_top/tx_samples_I ila_dac_tx/probe0
 
-# Probe 1: TX Q samples (16 bits)
-ad_connect msk_top/tx_samples_Q ila_msk_tx/probe1
+# Probe 1: TX Q samples from msk_top (before CDC)  
+ad_connect msk_top/tx_samples_Q ila_dac_tx/probe1
+
+# Probe 2: TX I after CDC sync (going to AD9361)
+ad_connect tx_i_sync/Q ila_dac_tx/probe2
+
+# Probe 3: TX Q after CDC sync (going to AD9361)
+ad_connect tx_q_sync/Q ila_dac_tx/probe3
+
+# Probe 4: TX enable signal
+ad_connect msk_top/tx_enable ila_dac_tx/probe4
+
+
+

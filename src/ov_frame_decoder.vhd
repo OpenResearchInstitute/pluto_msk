@@ -36,21 +36,18 @@
 -- Block name and description
 ------------------------------------------------------------------------------------------------------
 --
--- Opulent Voice Protocol Frame Decoder - OPTIMIZED FOR RESOURCE USAGE
+-- Opulent Voice Protocol Frame Decoder - DUAL MODE (Bit-level or Byte-level Deinterleaver)
 --
 -- This module implements the RX path processing for OVP frames (reverse of encoder):
 --   1. Collects 268 bytes of encoded data from AXI-Stream input
---   2. Deinterleaves bytes (reverse 67x4 row-column byte interleaver)
+--   2. Deinterleaves using bit-level (67x32) or byte-level (67x4) based on generic
 --   3. Applies FEC decoding via Viterbi decoder
 --   4. Derandomizes (XOR with same fixed sequence)
 --   5. Outputs 134 bytes of payload via AXI-Stream
 --
--- OPTIMIZATION (2025-12-01): Eliminated bit-level buffer to reduce LUT usage
---   - Changed deinterleaved_buffer from 2144 bits to 268 bytes
---   - Bit extraction to g1/g2 done with constant indexing in FOR loops
---   - This eliminates the massive mux structures from variable bit indexing
---   - Removed bit-level interleaver option (USE_BIT_INTERLEAVER ignored, always byte-level)
---   - Added ram_style attribute for collect_buffer to encourage BRAM inference
+-- UPDATED (2025-12-16): Re-enabled bit-level deinterleaver support for protocol compliance
+--   USE_BIT_INTERLEAVER = TRUE  : 67x32 bit-level (correct protocol)
+--   USE_BIT_INTERLEAVER = FALSE : 67x4 byte-level (PlutoSDR compatibility)
 --
 ------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------
@@ -65,7 +62,7 @@ ENTITY ov_frame_decoder IS
         ENCODED_BYTES       : NATURAL := 268;   -- Input frame size
         ENCODED_BITS        : NATURAL := 2144;  -- Encoded bits (268 * 8)
         BYTE_WIDTH          : NATURAL := 8;
-        USE_BIT_INTERLEAVER : BOOLEAN := TRUE   -- IGNORED - always uses byte-level for resource efficiency
+        USE_BIT_INTERLEAVER : BOOLEAN := TRUE   -- TRUE=bit-level(67x32), FALSE=byte-level(67x4)
     );
     PORT (
         clk             : IN  std_logic;
@@ -109,18 +106,22 @@ ARCHITECTURE rtl OF ov_frame_decoder IS
     ATTRIBUTE ram_style OF collect_buffer : SIGNAL IS "block";
     SIGNAL collect_idx : NATURAL RANGE 0 TO COLLECT_SIZE-1;
     
-    -- Buffer types - ALL BYTE-LEVEL for efficient synthesis
+    -- Buffer types
     TYPE byte_buffer_t IS ARRAY(0 TO PAYLOAD_BYTES-1) OF std_logic_vector(BYTE_WIDTH-1 DOWNTO 0);
     TYPE encoded_byte_buffer_t IS ARRAY(0 TO ENCODED_BYTES-1) OF std_logic_vector(BYTE_WIDTH-1 DOWNTO 0);
+    TYPE bit_buffer_t IS ARRAY(0 TO ENCODED_BITS-1) OF std_logic;
     
-    -- Processing buffers - all byte-level
+    -- Processing buffers
     SIGNAL input_buffer         : encoded_byte_buffer_t;  -- 268 bytes extracted from circular buffer
-    SIGNAL deinterleaved_buffer : encoded_byte_buffer_t;  -- 268 bytes after deinterleaving (WAS bit_buffer_t!)
+    SIGNAL input_bits           : bit_buffer_t;           -- 2144 bits unpacked (for bit-level mode)
+    SIGNAL deinterleaved_bits   : bit_buffer_t;           -- 2144 bits after bit-level deinterleaving
+    SIGNAL deinterleaved_buffer : encoded_byte_buffer_t;  -- 268 bytes after byte-level deinterleaving
     SIGNAL fec_decoded_buffer   : byte_buffer_t;
     SIGNAL output_buffer        : byte_buffer_t;
     
     -- Index counters
     SIGNAL byte_idx : NATURAL RANGE 0 TO ENCODED_BYTES;
+    SIGNAL bit_idx  : NATURAL RANGE 0 TO ENCODED_BITS;
     SIGNAL out_idx  : NATURAL RANGE 0 TO PAYLOAD_BYTES;
     
     -- Frame counter
@@ -160,13 +161,50 @@ ARCHITECTURE rtl OF ov_frame_decoder IS
     SIGNAL decoder_input_g1   : std_logic_vector(2143 DOWNTO 0);
     SIGNAL decoder_input_g2   : std_logic_vector(2143 DOWNTO 0);
     SIGNAL decoder_output_buf : std_logic_vector(1071 DOWNTO 0);
-    -- Prevent optimization of Viterbi decoder
+    
+    -- Prevent optimization
     ATTRIBUTE dont_touch : STRING;
     ATTRIBUTE dont_touch OF U_DECODER : LABEL IS "true";
-    
-    -- Byte-level deinterleaver: reverse of 67x4 interleaver
-    -- Input byte at position addr goes to position: (addr MOD 67) * 4 + (addr / 67)
-    -- Reverse: output position j needs input from: (j MOD 4) * 67 + (j / 4)
+    ATTRIBUTE ram_style OF input_bits : SIGNAL IS "block";
+    ATTRIBUTE ram_style OF deinterleaved_bits : SIGNAL IS "block";
+
+    ----------------------------------------------------------------------------
+    -- BIT-LEVEL DEINTERLEAVER (67x32) - Reverse of encoder's bit interleave
+    ----------------------------------------------------------------------------
+    -- Encoder: output_pos = (input_pos mod 32) * 67 + (input_pos / 32)
+    -- Decoder (reverse): given output_pos j, find input_pos i
+    --   col = j / 67,  row = j mod 67
+    --   input_pos = row * 32 + col
+    ----------------------------------------------------------------------------
+    FUNCTION reverse_deinterleave_bit(addr : NATURAL) RETURN NATURAL IS
+        CONSTANT ROWS : NATURAL := 67;
+        CONSTANT COLS : NATURAL := 32;
+        VARIABLE row : NATURAL;
+        VARIABLE col : NATURAL;
+    BEGIN
+        col := addr / ROWS;      -- 0-31
+        row := addr MOD ROWS;    -- 0-66
+        RETURN row * COLS + col;
+    END FUNCTION;
+    ----------------------------------------------------------------------------
+    -- FORWARD INTERLEAVE ADDRESS (needed for correct deinterleaving)
+    -- This is the SAME function the encoder uses - we read from where it wrote
+    ----------------------------------------------------------------------------
+    FUNCTION interleave_address_bit(bit_addr : NATURAL) RETURN NATURAL IS
+        CONSTANT NUM_ROWS : NATURAL := 67;
+        CONSTANT NUM_COLS : NATURAL := 32;
+        VARIABLE row, col : NATURAL;
+    BEGIN
+        row := bit_addr / NUM_COLS;
+        col := bit_addr MOD NUM_COLS;
+        RETURN col * NUM_ROWS + row;
+    END FUNCTION;
+
+
+
+    ----------------------------------------------------------------------------
+    -- BYTE-LEVEL DEINTERLEAVER (67x4) - Reverse of encoder's byte interleave
+    ----------------------------------------------------------------------------
     FUNCTION reverse_deinterleave_byte(addr : NATURAL) RETURN NATURAL IS
         CONSTANT ROWS : NATURAL := 67;
         CONSTANT COLS : NATURAL := 4;
@@ -229,6 +267,7 @@ BEGIN
             IF aresetn = '0' THEN
                 state <= IDLE;
                 byte_idx <= 0;
+                bit_idx <= 0;
                 out_idx <= 0;
                 collect_idx <= 0;
                 frame_count <= (OTHERS => '0');
@@ -277,40 +316,67 @@ BEGIN
                             input_buffer(byte_idx) <= collect_buffer((extract_start + byte_idx) MOD COLLECT_SIZE);
                             byte_idx <= byte_idx + 1;
                         ELSE
-                            byte_idx <= 0;
+                            IF USE_BIT_INTERLEAVER THEN
+                                -- Unpack bytes to bits for bit-level deinterleaving
+                                FOR i IN 0 TO ENCODED_BYTES - 1 LOOP
+                                    FOR j IN 0 TO 7 LOOP
+                                        input_bits(i*8 + j) <= input_buffer(i)(j);
+                                    END LOOP;
+                                END LOOP;
+                                bit_idx <= 0;
+                            ELSE
+                                byte_idx <= 0;
+                            END IF;
                             state <= DEINTERLEAVE;
                             decoder_active <= '1';
                         END IF;
                     
-                    -- DEINTERLEAVE: Reverse the 67x4 byte-level shuffle
-                    -- Read from computed position, write to sequential position
+                    -- DEINTERLEAVE: Reverse the interleaving (bit-level or byte-level)
                     WHEN DEINTERLEAVE =>
-                        IF byte_idx < ENCODED_BYTES THEN
-                            -- Read from reverse-computed address, write sequentially
-                            deinterleaved_buffer(byte_idx) <= input_buffer(reverse_deinterleave_byte(byte_idx));
-                            byte_idx <= byte_idx + 1;
+                        IF USE_BIT_INTERLEAVER THEN
+                            -- BIT-LEVEL mode: Process 1 bit per clock (2144 clocks)
+                            IF bit_idx < ENCODED_BITS THEN
+                                deinterleaved_bits(bit_idx) <= input_bits(interleave_address_bit(bit_idx));
+                                bit_idx <= bit_idx + 1;
+                            ELSE
+                                byte_idx <= 0;
+                                state <= PREP_FEC_DECODE;
+                            END IF;
                         ELSE
-                            byte_idx <= 0;
-                            state <= PREP_FEC_DECODE;
+                            -- BYTE-LEVEL mode: Process 1 byte per clock (268 clocks)
+                            IF byte_idx < ENCODED_BYTES THEN
+                                -- Read from reverse-computed address, write sequentially
+                                deinterleaved_buffer(byte_idx) <= input_buffer(reverse_deinterleave_byte(byte_idx));
+                                byte_idx <= byte_idx + 1;
+                            ELSE
+                                byte_idx <= 0;
+                                state <= PREP_FEC_DECODE;
+                            END IF;
                         END IF;
                     
-                    -- PREP_FEC_DECODE: Unpack deinterleaved bytes to G1/G2 bit streams
-                    -- Uses constant indexing in FOR loops for efficient synthesis
+                    -- PREP_FEC_DECODE: Unpack deinterleaved data to G1/G2 bit streams
                     WHEN PREP_FEC_DECODE =>
-                        -- Unpack bytes to g1/g2 streams
-                        -- Each byte contributes 4 bits to g1 (even bit positions) and 4 bits to g2 (odd bit positions)
-                        -- Byte i, bits 0,2,4,6 -> g1[i*4+0..i*4+3]
-                        -- Byte i, bits 1,3,5,7 -> g2[i*4+0..i*4+3]
-                        FOR i IN 0 TO ENCODED_BYTES - 1 LOOP
-                            decoder_input_g1(i*4 + 0) <= deinterleaved_buffer(i)(0);
-                            decoder_input_g1(i*4 + 1) <= deinterleaved_buffer(i)(2);
-                            decoder_input_g1(i*4 + 2) <= deinterleaved_buffer(i)(4);
-                            decoder_input_g1(i*4 + 3) <= deinterleaved_buffer(i)(6);
-                            decoder_input_g2(i*4 + 0) <= deinterleaved_buffer(i)(1);
-                            decoder_input_g2(i*4 + 1) <= deinterleaved_buffer(i)(3);
-                            decoder_input_g2(i*4 + 2) <= deinterleaved_buffer(i)(5);
-                            decoder_input_g2(i*4 + 3) <= deinterleaved_buffer(i)(7);
-                        END LOOP;
+                        IF USE_BIT_INTERLEAVER THEN
+                            -- Bit-level mode: deinterleaved_bits already contains bit stream
+                            -- Extract G1 (even positions) and G2 (odd positions)
+                            FOR i IN 0 TO ENCODED_BITS/2 - 1 LOOP
+                                decoder_input_g1(i) <= deinterleaved_bits(i*2);
+                                decoder_input_g2(i) <= deinterleaved_bits(i*2 + 1);
+                            END LOOP;
+                        ELSE
+                            -- Byte-level mode: unpack bytes to g1/g2 streams
+                            -- Each byte contributes 4 bits to g1 (even bit positions) and 4 bits to g2 (odd bit positions)
+                            FOR i IN 0 TO ENCODED_BYTES - 1 LOOP
+                                decoder_input_g1(i*4 + 0) <= deinterleaved_buffer(i)(0);
+                                decoder_input_g1(i*4 + 1) <= deinterleaved_buffer(i)(2);
+                                decoder_input_g1(i*4 + 2) <= deinterleaved_buffer(i)(4);
+                                decoder_input_g1(i*4 + 3) <= deinterleaved_buffer(i)(6);
+                                decoder_input_g2(i*4 + 0) <= deinterleaved_buffer(i)(1);
+                                decoder_input_g2(i*4 + 1) <= deinterleaved_buffer(i)(3);
+                                decoder_input_g2(i*4 + 2) <= deinterleaved_buffer(i)(5);
+                                decoder_input_g2(i*4 + 3) <= deinterleaved_buffer(i)(7);
+                            END LOOP;
+                        END IF;
                         
                         -- Start Viterbi and wait for busy acknowledgment
                         decoder_start <= '1';

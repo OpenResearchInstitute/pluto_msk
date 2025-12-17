@@ -7,18 +7,19 @@
 -- BUFR cannot be used because it's limited to ~3200 slices in one clock region,
 -- but the MSK modem has 23,000+ flops on this clock.
 ------------------------------------------------------------------------------------------------------
-
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
-
 library UNISIM;
 use UNISIM.VComponents.all;
 
 entity clk_div_by4 is
     port (
-        clk_in  : in  std_logic;  -- 245.76 MHz from axi_ad9361/l_clk
-        clk_out : out std_logic   -- 61.44 MHz divided clock
+        clk_in      : in  std_logic;  -- 245.76 MHz from axi_ad9361/l_clk
+        clk_out     : out std_logic;  -- 61.44 MHz divided clock
+        -- Debug ports
+        dbg_counter : out std_logic_vector(1 downto 0);
+        dbg_clk_ff  : out std_logic
     );
 end entity clk_div_by4;
 
@@ -30,6 +31,10 @@ architecture rtl of clk_div_by4 is
     attribute DONT_TOUCH : string;
     attribute DONT_TOUCH of counter : signal is "TRUE";
     attribute DONT_TOUCH of clk_div_ff : signal is "TRUE";
+    
+    attribute MARK_DEBUG : string;
+    attribute MARK_DEBUG of counter : signal is "TRUE";
+    attribute MARK_DEBUG of clk_div_ff : signal is "TRUE";
 begin
 
     -- Divide by 4 using toggle flip-flop
@@ -55,5 +60,9 @@ begin
         );
     
     clk_out <= clk_div_bufg;
+    
+    -- Debug outputs
+    dbg_counter <= std_logic_vector(counter);
+    dbg_clk_ff  <= clk_div_ff;
 
 end architecture rtl;
