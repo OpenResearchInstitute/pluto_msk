@@ -258,6 +258,15 @@ ARCHITECTURE struct OF msk_top IS
         SIGNAL decoder_debug_viterbi_busy  : std_logic;
         SIGNAL decoder_debug_viterbi_done  : std_logic;
 
+        -- Soft Viterbi Decoder Signals
+        SIGNAL sync_det_soft_tdata  : std_logic_vector(2 DOWNTO 0);
+        SIGNAL sync_det_soft_tvalid : std_logic;
+        SIGNAL sync_det_soft_tready : std_logic;
+        SIGNAL sync_det_soft_tlast  : std_logic;
+        -- Debug: soft decoder path metric
+        SIGNAL decoder_debug_path_metric : std_logic_vector(15 DOWNTO 0);
+
+
 	SIGNAL rx_bit   		: std_logic;
 	SIGNAL rx_bit_corr 		: std_logic;
 	SIGNAL rx_bit_valid 	: std_logic;
@@ -352,6 +361,8 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL pd_alpha1			: std_logic_vector(17 DOWNTO 0);
 	SIGNAL pd_alpha2			: std_logic_vector(17 DOWNTO 0);
 	SIGNAL pd_power 			: std_logic_vector(22 DOWNTO 0);
+
+
 
         ATTRIBUTE dont_touch : STRING;
         ATTRIBUTE dont_touch OF u_async_fifo : LABEL IS "true";
@@ -628,7 +639,7 @@ BEGIN
     ------------------------------------------------------------------------------
     -- RX Stage 2: Frame Sync Detector (MSB-FIRST VERSION)
     ------------------------------------------------------------------------------
-    u_rx_frame_sync : ENTITY work.frame_sync_detector
+    u_rx_frame_sync : ENTITY work.frame_sync_detector_soft
         GENERIC MAP (
             SYNC_WORD           => x"02B8DB",  -- MSB-first sync word (same as TX!)
             PAYLOAD_BYTES       => 268,
@@ -638,7 +649,8 @@ BEGIN
             --LOCKED_THRESHOLD    => 5,          -- Relaxed threshold when locked, hard decisions
             FLYWHEEL_TOLERANCE  => 2,          -- Tolerate 2 missed syncs
             LOCK_FRAMES         => 3,          -- Need 3 consecutive good frames
-            BUFFER_DEPTH        => 11          -- 2048 bytes
+            BUFFER_DEPTH        => 11,         -- 2048 bytes
+            SOFT_WIDTH          => 3           -- 3-bit quantized soft values
         )
         PORT MAP (
             clk             => clk,
@@ -648,12 +660,19 @@ BEGIN
             rx_bit_valid    => rx_bit_valid,
             --s_axis_soft_tdata => (OTHERS => '0'),  -- tied to zero for hard decisions
             s_axis_soft_tdata => rx_data_soft,  -- Connect rx_data_soft for soft decisions
-            m_axis_soft_tdata => OPEN,
+            m_axis_soft_tdata => OPEN,          -- debug passthrough, unused
 
+            -- byte output
             m_axis_tdata    => sync_det_tdata,
             m_axis_tvalid   => sync_det_tvalid,
             m_axis_tready   => sync_det_tready,
             m_axis_tlast    => sync_det_tlast,
+
+            --Soft bit output (2144 x 3-bit values after bytes)
+            m_axis_soft_bit_tdata  => sync_det_soft_tdata,
+            m_axis_soft_bit_tvalid => sync_det_soft_tvalid,
+            m_axis_soft_bit_tready => sync_det_soft_tready,
+            m_axis_soft_bit_tlast  => sync_det_soft_tlast,
 
             -- Frame synchronization signals
 	    frame_sync_locked       => rx_frame_sync_locked,            
@@ -681,24 +700,31 @@ BEGIN
     -- This will be corrected in Phase 2 when PS side is updated to receive 134-byte frames
     ------------------------------------------------------------------------------
     
-    u_ov_decoder : ENTITY work.ov_frame_decoder
+    u_ov_decoder : ENTITY work.ov_frame_decoder_soft
         GENERIC MAP (
             PAYLOAD_BYTES => 134,
             ENCODED_BYTES => 268,
             ENCODED_BITS  => 2144,
             BYTE_WIDTH    => 8,
+            SOFT_WIDTH          => 3,
             USE_BIT_INTERLEAVER => TRUE
         )
         PORT MAP (
             clk             => clk,
             aresetn         => NOT rxinit,
             
-            -- Input from frame sync detector
+            -- Byte input from frame sync detector
             s_axis_tdata    => sync_det_tdata,
             s_axis_tvalid   => sync_det_tvalid,
             s_axis_tready   => sync_det_tready,
             s_axis_tlast    => sync_det_tlast,
             
+            --Soft bit input from frame sync detector
+            s_axis_soft_bit_tdata  => sync_det_soft_tdata,
+            s_axis_soft_bit_tvalid => sync_det_soft_tvalid,
+            s_axis_soft_bit_tready => sync_det_soft_tready,
+            s_axis_soft_bit_tlast  => sync_det_soft_tlast,
+
             -- Output to RX FIFO
             m_axis_tdata    => decoder_tdata,
             m_axis_tvalid   => decoder_tvalid,
