@@ -384,7 +384,11 @@ ad_connect  msk_top/clk clk_divider/clk_out
 
 # CLOCK_DIVIDER: MSK AXIS clock - keep at l_clk (245 MHz) for DMA interface
 # The async FIFO inside msk_top handles CDC between s_axis_aclk and clk
+# TX input (s_axis_aclk): stays at l_clk because TX DMA feeds through the 245 MHz domain
+# RX output (m_axis_aclk): now at sys_cpu_clk (100 MHz) because RX DMA runs there
 ad_connect  msk_top/s_axis_aclk axi_ad9361/l_clk
+ad_connect  msk_top/m_axis_aclk sys_cpu_clk
+
 
 # MSK AXI-Lite register interface (100 MHz CPU clock)
 ad_connect  msk_top/s_axi_aclk sys_cpu_clk
@@ -403,7 +407,7 @@ ad_cpu_interconnect 0x43C00000 msk_top
 create_bd_cell -type ip -vlnv xilinx.com:ip:c_shift_ram:12.0 tx_i_sync
 set_property -dict [list \
     CONFIG.Width {16} \
-    CONFIG.Depth {1} \
+    CONFIG.Depth {2} \
     CONFIG.DefaultData {0000000000000000} \
     CONFIG.AsyncInitVal {0000000000000000} \
 ] [get_bd_cells tx_i_sync]
@@ -411,7 +415,7 @@ set_property -dict [list \
 create_bd_cell -type ip -vlnv xilinx.com:ip:c_shift_ram:12.0 tx_q_sync
 set_property -dict [list \
     CONFIG.Width {16} \
-    CONFIG.Depth {1} \
+    CONFIG.Depth {2} \
     CONFIG.DefaultData {0000000000000000} \
     CONFIG.AsyncInitVal {0000000000000000} \
 ] [get_bd_cells tx_q_sync]
@@ -430,6 +434,11 @@ ad_connect tx_q_sync/Q axi_ad9361/dac_data_q0
 ad_connect msk_top/tx_enable axi_ad9361/dac_enable_i0
 #ad_connect msk_top/tx_enable axi_ad9361/dac_enable_q0
 
+#The dac_enable_* signals are outputs from axi_ad9361 indicating 
+#which channels are active (set by software). 
+#Not connecting dac_enable_q0 doesn't disable Q.
+#It just means nobody reads that status signal.
+
 # Sync registers -> AD9361 Channel 1 (duplicate for LVDS interleaving)
 ad_connect tx_i_sync/Q axi_ad9361/dac_data_i1
 ad_connect tx_q_sync/Q axi_ad9361/dac_data_q1
@@ -438,7 +447,12 @@ ad_connect tx_q_sync/Q axi_ad9361/dac_data_q1
 
 # CLOCK_DIVIDER: tx_valid tied HIGH - every 61.44 MHz clock cycle is a valid sample
 # (Previously connected to dac_valid_i0 which pulses in l_clk domain)
-ad_connect  msk_top/tx_valid VCC
+#ad_connect  msk_top/tx_valid VCC
+
+# ok that was a bad idea maybe, connect it back
+# TX side - connect to actual DAC valid, using pulse stretcher.
+ad_connect axi_ad9361/dac_valid_i0 clk_divider/dac_valid_in
+ad_connect clk_divider/dac_valid_out msk_top/tx_valid
 
 # TX DMA Connections
 ad_connect axi_ad9361_dac_dma/m_axis_data   msk_top/s_axis_tdata
@@ -454,7 +468,11 @@ ad_connect  msk_top/rx_enable axi_ad9361/adc_enable_i0
 
 # CLOCK_DIVIDER: rx_svalid tied HIGH - every 61.44 MHz clock cycle is a valid sample
 # (Previously connected to adc_valid_i0 which pulses in l_clk domain)
-ad_connect  msk_top/rx_svalid VCC
+#ad_connect  msk_top/rx_svalid VCC
+
+# Ok that might have been a bad idea. Connect it back, using pulse stretcher.
+ad_connect axi_ad9361/adc_valid_i0 clk_divider/adc_valid_in
+ad_connect clk_divider/adc_valid_out msk_top/rx_svalid
 
 # MSK RX AXIS to DMA - interface connection
 ad_connect  msk_top/m_axis axi_ad9361_adc_dma/s_axis
@@ -514,37 +532,201 @@ ad_connect  msk_top/m_axis axi_ad9361_adc_dma/s_axis
 # Probes the I/Q samples going to the AD9361
 ##############################################################################
 
-create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_dac_tx
+#create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_dac_tx
+#set_property -dict [list \
+#    CONFIG.C_MONITOR_TYPE {Native} \
+#    CONFIG.C_NUM_OF_PROBES {7} \
+#    CONFIG.C_PROBE0_WIDTH {16} \
+#    CONFIG.C_PROBE1_WIDTH {16} \
+#    CONFIG.C_PROBE2_WIDTH {16} \
+#    CONFIG.C_PROBE3_WIDTH {16} \
+#    CONFIG.C_PROBE4_WIDTH {1} \
+#    CONFIG.C_PROBE5_WIDTH {1} \
+#    CONFIG.C_PROBE6_WIDTH {1} \
+#    CONFIG.C_DATA_DEPTH {4096} \
+#    CONFIG.C_TRIGIN_EN {false} \
+#    CONFIG.C_EN_STRG_QUAL {1} \
+#    CONFIG.ALL_PROBE_SAME_MU_CNT {2} \
+#] [get_bd_cells ila_dac_tx]
+
+# Clock with l_clk (245 MHz) - same as AD9361 DAC interface
+#ad_connect axi_ad9361/l_clk ila_dac_tx/clk
+
+# Probe 0: TX I samples from msk_top (before CDC)
+#ad_connect msk_top/tx_samples_I ila_dac_tx/probe0
+
+# Probe 1: TX Q samples from msk_top (before CDC)  
+#ad_connect msk_top/tx_samples_Q ila_dac_tx/probe1
+
+# Probe 2: TX I after CDC sync (going to AD9361)
+#ad_connect tx_i_sync/Q ila_dac_tx/probe2
+
+# Probe 3: TX Q after CDC sync (going to AD9361)
+#ad_connect tx_q_sync/Q ila_dac_tx/probe3
+
+# Probe 4: TX enable signal
+#ad_connect msk_top/tx_enable ila_dac_tx/probe4
+
+# Probe 5: dac_valid_i0 - DAC valid signal from AD9361
+#ad_connect axi_ad9361/dac_valid_i0 ila_dac_tx/probe5
+
+# Probe 6: adc_valid_i0 - ADC valid signal from AD9361 (while we're at it)
+#ad_connect axi_ad9361/adc_valid_i0 ila_dac_tx/probe6
+
+##############################################################################
+# FUTURE DEBUG: Comprehensive MSK Datapath ILA
+##############################################################################
+# Uncomment this section to add a second ILA for internal datapath debugging.
+# This ILA runs at the modem clock (61.44 MHz) to capture the bit-level signals.
+#
+# OBSERVATION POINTS IN TX PATH:
+# ─────────────────────────────────────────────────────────────────────────────
+# 1. FIFO output (after CDC from PS clock to modem clock):
+#    - fifo_tdata[7:0]    : Byte from async FIFO
+#    - fifo_tvalid        : FIFO has data
+#    - fifo_tready        : Encoder ready to accept
+#    - fifo_tlast         : Frame boundary marker
+#
+# 2. Encoder output (after FEC, interleaving):
+#    - encoder_tdata[7:0] : Encoded byte to deserializer
+#    - encoder_tvalid     : Encoder has data
+#    - encoder_tready     : Deserializer ready
+#    - encoder_tlast      : Encoded frame boundary
+#    - encoder_debug_state[2:0] : Encoder FSM state
+#
+# 3. Deserializer output (byte-to-bit conversion):
+#    - tx_data_bit        : Current bit to modulator
+#    - tx_req             : Modulator requesting next bit (tclk pulse)
+#    - frame_complete     : End of frame marker
+#
+# 4. Modulator internals (if needed):
+#    - tclk               : Bit clock from NCO
+#    - tx_samples_I[15:0] : I samples (already in ila_dac_tx)
+#    - tx_samples_Q[15:0] : Q samples (already in ila_dac_tx)
+#
+# SIGNALS ACTIVE IN CURRENT ila_dac_tx (245 MHz, l_clk domain):
+#    - probe0: tx_samples_I[15:0]  - I samples before CDC
+#    - probe1: tx_samples_Q[15:0]  - Q samples before CDC
+#    - probe2: tx_i_sync/Q[15:0]   - I samples after CDC (to AD9361)
+#    - probe3: tx_q_sync/Q[15:0]   - Q samples after CDC (to AD9361)
+#    - probe4: tx_enable           - TX enable signal
+#
+# TO DEBUG 3375 Hz SPURS (16-bit periodicity):
+# If the problem is us, then it is likely to be
+# in the encoder to deserializer handshaking.
+# Enable ila_msk_tx below to capture bit-level timing.
+# ─────────────────────────────────────────────────────────────────────────────
+
+create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_msk_tx
 set_property -dict [list \
-    CONFIG.C_PROBE0_WIDTH {16} \
-    CONFIG.C_PROBE1_WIDTH {16} \
-    CONFIG.C_PROBE2_WIDTH {16} \
-    CONFIG.C_PROBE3_WIDTH {16} \
-    CONFIG.C_PROBE4_WIDTH {1} \
-    CONFIG.C_NUM_OF_PROBES {5} \
-    CONFIG.C_DATA_DEPTH {4096} \
+    CONFIG.C_MONITOR_TYPE {Native} \
+    CONFIG.C_NUM_OF_PROBES {10} \
+    CONFIG.C_PROBE0_WIDTH {1} \
+    CONFIG.C_PROBE1_WIDTH {1} \
+    CONFIG.C_PROBE2_WIDTH {1} \
+    CONFIG.C_PROBE3_WIDTH {1} \
+    CONFIG.C_PROBE4_WIDTH {8} \
+    CONFIG.C_PROBE5_WIDTH {1} \
+    CONFIG.C_PROBE6_WIDTH {8} \
+    CONFIG.C_PROBE7_WIDTH {1} \
+    CONFIG.C_PROBE8_WIDTH {1} \
+    CONFIG.C_PROBE9_WIDTH {3} \
+    CONFIG.C_DATA_DEPTH {16384} \
     CONFIG.C_TRIGIN_EN {false} \
     CONFIG.C_EN_STRG_QUAL {1} \
     CONFIG.ALL_PROBE_SAME_MU_CNT {2} \
-] [get_bd_cells ila_dac_tx]
+] [get_bd_cells ila_msk_tx]
 
-# Clock with l_clk (245 MHz) - same as AD9361 DAC interface
-ad_connect axi_ad9361/l_clk ila_dac_tx/clk
+# Clock with divided clock (61.44 MHz) - modem clock domain
+ad_connect clk_divider/clk_out ila_msk_tx/clk
 
-# Probe 0: TX I samples from msk_top (before CDC)
-ad_connect msk_top/tx_samples_I ila_dac_tx/probe0
+# Probe 0: tx_data_bit - bit output to modulator
+ad_connect msk_top/dbg_tx_data_bit ila_msk_tx/probe0
 
-# Probe 1: TX Q samples from msk_top (before CDC)  
-ad_connect msk_top/tx_samples_Q ila_dac_tx/probe1
+# Probe 1: tx_req - modulator requesting next bit (tclk)
+ad_connect msk_top/dbg_tx_req ila_msk_tx/probe1
 
-# Probe 2: TX I after CDC sync (going to AD9361)
-ad_connect tx_i_sync/Q ila_dac_tx/probe2
+# Probe 2: encoder_tvalid - encoder has data available
+ad_connect msk_top/dbg_encoder_tvalid ila_msk_tx/probe2
 
-# Probe 3: TX Q after CDC sync (going to AD9361)
-ad_connect tx_q_sync/Q ila_dac_tx/probe3
+# Probe 3: encoder_tready - deserializer ready for byte
+ad_connect msk_top/dbg_encoder_tready ila_msk_tx/probe3
 
-# Probe 4: TX enable signal
-ad_connect msk_top/tx_enable ila_dac_tx/probe4
+# Probe 4: encoder_tdata - encoded byte data
+ad_connect msk_top/dbg_encoder_tdata ila_msk_tx/probe4
+
+# Probe 5: frame_complete - end of frame marker
+ad_connect msk_top/dbg_frame_complete ila_msk_tx/probe5
+
+# Probe 6: fifo_tdata - data from async FIFO (now exposed in msk_top)
+ad_connect msk_top/dbg_fifo_tdata ila_msk_tx/probe6
+
+# Probe 7: fifo_tvalid - FIFO has data (now exposed in msk_top)
+ad_connect msk_top/dbg_fifo_tvalid ila_msk_tx/probe7
+
+# Probe 8: fifo_tready - encoder ready for FIFO data (now exposed in msk_top)
+ad_connect msk_top/dbg_fifo_tready ila_msk_tx/probe8
+
+# Probe 9: encoder_debug_state - encoder FSM state (now exposed in msk_top)
+ad_connect msk_top/dbg_encoder_state ila_msk_tx/probe9
 
 
 
+
+##############################################################################
+# ILA Debug Core - Randomizer Monitoring
+##############################################################################
+create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_randomizer
+set_property -dict [list \
+    CONFIG.C_MONITOR_TYPE {Native} \
+    CONFIG.C_NUM_OF_PROBES {5} \
+    CONFIG.C_PROBE0_WIDTH {8} \
+    CONFIG.C_PROBE1_WIDTH {8} \
+    CONFIG.C_PROBE2_WIDTH {8} \
+    CONFIG.C_PROBE3_WIDTH {1} \
+    CONFIG.C_PROBE4_WIDTH {3} \
+    CONFIG.C_DATA_DEPTH {16384} \
+    CONFIG.C_TRIGIN_EN {false} \
+    CONFIG.C_EN_STRG_QUAL {1} \
+    CONFIG.ALL_PROBE_SAME_MU_CNT {2} \
+] [get_bd_cells ila_randomizer]
+
+ad_connect clk_divider/clk_out ila_randomizer/clk
+
+# Probe 0: LFSR state (should cycle through values, NOT stuck at FF)
+ad_connect msk_top/dbg_lfsr_state ila_randomizer/probe0
+
+# Probe 1: Input byte (before XOR)
+ad_connect msk_top/dbg_input_byte ila_randomizer/probe1
+
+# Probe 2: Randomized byte (after XOR) - should be input XOR lfsr_output
+ad_connect msk_top/dbg_rand_byte ila_randomizer/probe2
+
+# Probe 3: Randomize active (trigger on rising edge to capture start)
+ad_connect msk_top/dbg_rand_active ila_randomizer/probe3
+
+# Probe 4: Encoder state
+ad_connect msk_top/dbg_encoder_state ila_randomizer/probe4
+
+
+
+
+
+
+
+
+
+
+
+
+##############################################################################
+# LVDS SIGNALS (External - requires scope/logic analyzer)
+##############################################################################
+# These are physical pins going to the AD9361 chip:
+#   tx_clk_out_p/n   : TX clock to AD9361
+#   tx_frame_out_p/n : TX frame signal
+#   tx_data_out_p/n  : TX data (6-bit DDR)
+#
+# Cannot probe with ILA - need external test equipment.
+# The axi_ad9361 IP handles the LVDS serialization internally.
+##############################################################################

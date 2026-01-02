@@ -123,9 +123,9 @@ ENTITY msk_top IS
 		s_axi_awready	: out std_logic;
 		s_axi_awprot 	: in  std_logic_vector(2 DOWNTO 0);
 		s_axi_arprot 	: in  std_logic_vector(2 DOWNTO 0);
-
 		s_axis_aresetn 	: IN  std_logic;
 		s_axis_aclk 	: IN  std_logic;
+		m_axis_aclk     : IN  std_logic;  -- Clock for RX output to DMA (sys_cpu_clk, 100 MHz)
 		s_axis_tvalid 	: IN  std_logic;
 		s_axis_tready    : OUT std_logic;
 		s_axis_tdata		: IN  std_logic_vector(S_AXIS_DATA_W -1 DOWNTO 0);
@@ -151,6 +151,7 @@ ENTITY msk_top IS
 		frames_received	        : OUT std_logic_vector(31 DOWNTO 0);
 		frame_sync_errors	: OUT std_logic_vector(31 DOWNTO 0);
 		frame_buffer_overflow	: OUT std_logic;
+
 		-- Debug outputs for deserializer probing (TX)
 		dbg_tx_data_bit     : OUT std_logic;
 		dbg_tx_req          : OUT std_logic;
@@ -158,6 +159,10 @@ ENTITY msk_top IS
 		dbg_encoder_tready  : OUT std_logic;
 		dbg_encoder_tdata   : OUT std_logic_vector(7 DOWNTO 0);
 		dbg_frame_complete  : OUT std_logic;
+		dbg_fifo_tdata      : OUT std_logic_vector(7 DOWNTO 0);
+		dbg_fifo_tvalid     : OUT std_logic;
+		dbg_fifo_tready     : OUT std_logic;
+		dbg_encoder_state   : OUT std_logic_vector(2 DOWNTO 0);
 		
 		-- Debug outputs for RX path probing
 		dbg_rx_bit_valid        : OUT std_logic;
@@ -165,7 +170,13 @@ ENTITY msk_top IS
 		dbg_rx_sync_state       : OUT std_logic_vector(2 DOWNTO 0);
 		dbg_rx_sync_correlation : OUT std_logic_vector(31 DOWNTO 0);
 		dbg_rx_sync_corr_peak   : OUT std_logic_vector(31 DOWNTO 0);
-		dbg_rx_data_soft        : OUT std_logic_vector(15 DOWNTO 0)
+		dbg_rx_data_soft        : OUT std_logic_vector(15 DOWNTO 0);
+
+		-- Randomizer debug outputs (for ILA)
+		dbg_lfsr_state    : OUT std_logic_vector(7 DOWNTO 0);
+		dbg_input_byte    : OUT std_logic_vector(7 DOWNTO 0);
+		dbg_rand_byte     : OUT std_logic_vector(7 DOWNTO 0);
+		dbg_rand_active   : OUT std_logic
 
 	);
 END ENTITY msk_top;
@@ -206,6 +217,15 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL tx_frames_encoded : std_logic_vector(31 DOWNTO 0);
 	SIGNAL tx_encoder_active : std_logic;
         SIGNAL encoder_debug_state : std_logic_vector(2 DOWNTO 0);
+
+
+
+        -- Encoder randomizer debug signals
+        SIGNAL encoder_debug_lfsr        : std_logic_vector(7 DOWNTO 0);
+        SIGNAL encoder_debug_input_byte  : std_logic_vector(7 DOWNTO 0);
+        SIGNAL encoder_debug_rand_byte   : std_logic_vector(7 DOWNTO 0);
+        SIGNAL encoder_debug_rand_active : std_logic;
+
 
 	SIGNAL tx_async_fifo_prog_full	: std_logic;
 	SIGNAL tx_async_fifo_prog_empty	: std_logic;
@@ -253,7 +273,7 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL rx_decoder_active : std_logic;
 
         -- Debug signals for RX decoder (added for hardware debugging)
-        SIGNAL decoder_debug_state   : std_logic_vector(2 DOWNTO 0);
+        SIGNAL decoder_debug_state   : std_logic_vector(3 DOWNTO 0);
         SIGNAL decoder_debug_viterbi_start : std_logic;
         SIGNAL decoder_debug_viterbi_busy  : std_logic;
         SIGNAL decoder_debug_viterbi_done  : std_logic;
@@ -474,7 +494,10 @@ BEGIN
 			ENCODED_BYTES => 268,
 			ENCODED_BITS  => 2144,
 			BYTE_WIDTH    => 8,
-                        USE_BIT_INTERLEAVER => TRUE
+			USE_BIT_INTERLEAVER => TRUE,
+			BYPASS_RANDOMIZE    => FALSE,  -- Set TRUE to test without randomization
+			BYPASS_FEC          => TRUE,  -- Set TRUE to test without FEC
+			BYPASS_INTERLEAVE   => FALSE   -- Set TRUE to test without interleaving
 		)
 		PORT MAP (
 			clk             => clk,
@@ -485,6 +508,12 @@ BEGIN
 			s_axis_tvalid   => fifo_tvalid,
 			s_axis_tready   => fifo_tready,
 			s_axis_tlast    => fifo_tlast,
+
+			-- Bypass Encoder here. Comment out above and tie off inputs below
+			--s_axis_tdata    => (others => '0'),
+			--s_axis_tvalid   => '0',
+			--s_axis_tready   => open,           -- Leave unconnected!
+			--s_axis_tlast    => '0',
 			
 			-- Output to deserializer
 			m_axis_tdata    => encoder_tdata,
@@ -495,7 +524,14 @@ BEGIN
 			-- Status
 			frames_encoded  => tx_frames_encoded,
 			encoder_active  => tx_encoder_active,
-                        debug_state     => encoder_debug_state 
+                        debug_state     => encoder_debug_state,
+
+                        -- for ILA probing
+                        debug_lfsr        => encoder_debug_lfsr,
+                        debug_input_byte  => encoder_debug_input_byte,
+                        debug_rand_byte   => encoder_debug_rand_byte,
+                        debug_rand_active => encoder_debug_rand_active
+
 		);
 
 	-- Stage 4: Byte-to-Bit De-serializer (MSB-FIRST VERSION)
@@ -513,7 +549,7 @@ BEGIN
 			s_axis_tready   => encoder_tready,
 			s_axis_tlast    => encoder_tlast,
 
-                        -- if you want to bypass the encoder, then comment out encoder above and use this:
+                        -- Bypass Encoder. Comment out encoder above and use below:
                         --s_axis_tdata    => fifo_tdata,
                         --s_axis_tvalid   => fifo_tvalid,
                         --s_axis_tready   => fifo_tready,
@@ -540,6 +576,10 @@ BEGIN
 	dbg_encoder_tready <= encoder_tready;
 	dbg_encoder_tdata  <= encoder_tdata;
 	dbg_frame_complete <= frame_complete;
+	dbg_fifo_tdata     <= fifo_tdata;
+	dbg_fifo_tvalid    <= fifo_tvalid;
+	dbg_fifo_tready    <= fifo_tready;
+	dbg_encoder_state  <= encoder_debug_state;
 
 	-- Debug output assignments for ILA probing (RX)
 	dbg_rx_bit_valid        <= rx_bit_valid;
@@ -548,6 +588,12 @@ BEGIN
 	dbg_rx_sync_correlation <= std_logic_vector(rx_sync_correlation);
 	dbg_rx_sync_corr_peak   <= std_logic_vector(rx_sync_corr_peak);
 	dbg_rx_data_soft        <= std_logic_vector(rx_data_soft);
+
+ 	-- Debug output assignments for ILA probing (Randomizer)
+	dbg_lfsr_state  <= encoder_debug_lfsr;
+	dbg_input_byte  <= encoder_debug_input_byte;
+	dbg_rand_byte   <= encoder_debug_rand_byte;
+	dbg_rand_active <= encoder_debug_rand_active;
 
 	rx_samples_mux <= std_logic_vector(resize(signed(tx_samples_I_int), 16)) WHEN loopback_ena = '1' ELSE rx_samples_I;
 
@@ -707,7 +753,10 @@ BEGIN
             ENCODED_BITS  => 2144,
             BYTE_WIDTH    => 8,
             SOFT_WIDTH          => 3,
-            USE_BIT_INTERLEAVER => TRUE
+            USE_BIT_INTERLEAVER => TRUE,
+            BYPASS_RANDOMIZE    => FALSE,  -- Set TRUE to test without randomization
+            BYPASS_FEC          => TRUE,  -- Set TRUE to test without FEC
+            BYPASS_INTERLEAVE   => FALSE   -- Set TRUE to test without interleaving
         )
         PORT MAP (
             clk             => clk,
@@ -762,8 +811,9 @@ BEGIN
             s_axis_tready   => decoder_tready,
             s_axis_tlast    => decoder_tlast,
             
-            -- Read side (AXI clock domain)
-            rd_aclk         => s_axis_aclk,  -- Use system AXI clock
+            -- Read side (AXI clock domain - 100 MHz sys_cpu_clk)
+            rd_aclk         => m_axis_aclk,  -- DMA runs at sys_cpu_clk, not l_clk
+            -- rd_aclk         => s_axis_aclk,  -- Use system AXI clock (caused timing violation)
             rd_aresetn      => s_axis_aresetn AND NOT rxinit, -- add software control
             
             m_axis_tdata    => m_axis_tdata(7 DOWNTO 0),

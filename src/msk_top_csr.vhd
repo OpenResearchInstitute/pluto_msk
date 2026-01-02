@@ -51,9 +51,9 @@
 
 
 ------------------------------------------------------------------------------------------------------
--- ╦  ┬┌┐ ┬─┐┌─┐┬─┐┬┌─┐┌─┐
--- ║  │├┴┐├┬┘├─┤├┬┘│├┤ └─┐
--- ╩═╝┴└─┘┴└─┴ ┴┴└─┴└─┘└─┘
+-- ?  ??? ????????????????
+-- ?  ???????????????? ???
+-- ??????????? ???????????
 ------------------------------------------------------------------------------------------------------
 -- Libraries
 
@@ -65,9 +65,9 @@ USE work.axi4lite_intf_pkg.ALL;
 USE work.msk_top_regs_pkg.ALL;
 
 ------------------------------------------------------------------------------------------------------
--- ╔═╗┌┐┌┌┬┐┬┌┬┐┬ ┬
--- ║╣ │││ │ │ │ └┬┘
--- ╚═╝┘└┘ ┴ ┴ ┴  ┴ 
+-- ?????????????? ?
+-- ?? ??? ? ? ? ???
+-- ?????? ? ? ?  ? 
 ------------------------------------------------------------------------------------------------------
 -- Entity
 
@@ -192,7 +192,7 @@ ENTITY msk_top_csr IS
                 tx_debug_encoder_state   : IN std_logic_vector(2 DOWNTO 0);
 
                 -- Debug signals for RX path
-                rx_debug_decoder_state   : IN std_logic_vector(2 DOWNTO 0);
+                rx_debug_decoder_state   : IN std_logic_vector(3 DOWNTO 0);
                 rx_debug_viterbi_start   : IN std_logic;
                 rx_debug_viterbi_busy    : IN std_logic;
                 rx_debug_viterbi_done    : IN std_logic;
@@ -391,25 +391,24 @@ BEGIN
 
 -- Experimental RX debug register setup (matching TX debug pattern)
 -- Bit layout:
---   [31:29] decoder state (IDLE=0, COLLECT=1, EXTRACT=2, DEINTERLEAVE=3, 
---                          PREP_FEC_DECODE=4, FEC_DECODE=5, DERANDOMIZE=6, OUTPUT=7)
---   [28]    viterbi_start
---   [27]    viterbi_busy
---   [26]    viterbi_done
---   [25]    decoder_tvalid
---   [24]    decoder_tready
---   [23]    spare
+--   [31:28] decoder state (4 bits - IDLE=0, COLLECT_BYTES=1, COLLECT_SOFT=2, EXTRACT=3,
+--                          DEDECORRELATE=4, DEINTERLEAVE=5, PREP_FEC_DECODE=6, 
+--                          FEC_DECODE=7, DERANDOMIZE=8, OUTPUT=9)
+--   [27]    viterbi_start
+--   [26]    viterbi_busy
+--   [25]    viterbi_done
+--   [24]    decoder_tvalid
+--   [23]    decoder_tready
 --   [22:13] rx_fifo_wr_ptr (10 bits)
 --   [12:10] spare
 --   [9:0]   rx_fifo_rd_ptr (10 bits)
 hwif_in.rx_async_fifo_rd_wr_ptr.data.next_q <=
-    rx_debug_decoder_state &            -- bits 31:29 (3 bits)
-    rx_debug_viterbi_start &            -- bit 28
-    rx_debug_viterbi_busy &             -- bit 27
-    rx_debug_viterbi_done &             -- bit 26
-    rx_debug_decoder_tvalid &           -- bit 25
-    rx_debug_decoder_tready &           -- bit 24
-    '0' &                               -- bit 23 spare
+    rx_debug_decoder_state &            -- bits 31:28 (4 bits)
+    rx_debug_viterbi_start &            -- bit 27
+    rx_debug_viterbi_busy &             -- bit 26
+    rx_debug_viterbi_done &             -- bit 25
+    rx_debug_decoder_tvalid &           -- bit 24
+    rx_debug_decoder_tready &           -- bit 23
     std_logic_vector(resize(unsigned(rx_async_fifo_wr_ptr), 10)) &  -- bits 22:13
     "000" &                             -- bits 12:10 spare
     std_logic_vector(resize(unsigned(rx_async_fifo_rd_ptr), 10));   -- bits 9:0

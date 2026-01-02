@@ -6,11 +6,15 @@
 -- This module decodes OV protocol frames using soft-decision Viterbi decoding
 -- for improved performance at low SNR.
 --
--- Changes from ov_frame_decoder:
---   1. Added soft input port for 3-bit quantized soft values
---   2. Added soft value buffer (2144 × 3 bits)
---   3. Soft deinterleaving
---   4. Uses viterbi_decoder_k7_soft instead of viterbi_decoder_k7_simple
+-- Processing chain (reverse of encoder):
+--   1. COLLECT_BYTES: Receive 268 bytes from frame_sync_detector
+--   2. COLLECT_SOFT: Receive 2144 3-bit soft values
+--   3. EXTRACT: Unpack bytes to bit array
+--   4. DEINTERLEAVE: Reverse 67x32 bit interleaving (hard + soft)
+--   5. PREP_FEC_DECODE: Pack soft G1/G2 streams
+--   6. FEC_DECODE: Soft-decision Viterbi decoding
+--   7. DERANDOMIZE: XOR with CCSDS LFSR (standard pre-FEC randomization)
+--   8. OUTPUT: Stream decoded bytes
 --
 -- Soft Value Convention:
 --   0 = strong '0', 7 = strong '1', 3-4 = uncertain
@@ -27,7 +31,11 @@ ENTITY ov_frame_decoder_soft IS
         ENCODED_BITS        : NATURAL := 2144;
         BYTE_WIDTH          : NATURAL := 8;
         SOFT_WIDTH          : NATURAL := 3;
-        USE_BIT_INTERLEAVER : BOOLEAN := TRUE
+        USE_BIT_INTERLEAVER : BOOLEAN := TRUE;
+        -- Debug bypass controls (must match encoder settings!)
+        BYPASS_RANDOMIZE    : BOOLEAN := FALSE;  -- TRUE=skip pre-FEC LFSR derandomization
+        BYPASS_FEC          : BOOLEAN := FALSE;  -- TRUE=skip Viterbi, take first 134 bytes
+        BYPASS_INTERLEAVE   : BOOLEAN := FALSE   -- TRUE=skip 67x32 bit deinterleaving
     );
     PORT (
         clk                 : IN  std_logic;
@@ -57,7 +65,7 @@ ENTITY ov_frame_decoder_soft IS
         decoder_active      : OUT std_logic;
         
         -- Debug
-        debug_state         : OUT std_logic_vector(2 DOWNTO 0);
+        debug_state         : OUT std_logic_vector(3 DOWNTO 0);  -- 4 bits for future expansion
         debug_viterbi_start : OUT std_logic;
         debug_viterbi_busy  : OUT std_logic;
         debug_viterbi_done  : OUT std_logic;
@@ -67,19 +75,54 @@ END ENTITY ov_frame_decoder_soft;
 
 ARCHITECTURE rtl OF ov_frame_decoder_soft IS
 
+    ------------------------------------------------------------------------------
+    -- CCSDS LFSR Functions (for DERANDOMIZE - standard pre-FEC randomization)
+    ------------------------------------------------------------------------------
+    -- Polynomial: x^8 + x^7 + x^5 + x^3 + 1 (CCSDS standard randomizer)
+    -- Period: 255 bits
+    ------------------------------------------------------------------------------
+    
+    -- Generate 8 output bits from LFSR (for byte-level XOR in DERANDOMIZE)
+    FUNCTION lfsr_output_byte(seed : std_logic_vector(7 DOWNTO 0)) 
+        RETURN std_logic_vector IS
+        VARIABLE lfsr : std_logic_vector(7 DOWNTO 0) := seed;
+        VARIABLE result : std_logic_vector(7 DOWNTO 0);
+        VARIABLE feedback : std_logic;
+    BEGIN
+        FOR i IN 7 DOWNTO 0 LOOP
+            result(i) := lfsr(7);  -- Output bit (MSB)
+            feedback := lfsr(7) XOR lfsr(6) XOR lfsr(4) XOR lfsr(2);
+            lfsr := lfsr(6 DOWNTO 0) & feedback;
+        END LOOP;
+        RETURN result;
+    END FUNCTION;
+    
+    -- Compute LFSR state after 8 advances
+    FUNCTION lfsr_advance_8(seed : std_logic_vector(7 DOWNTO 0))
+        RETURN std_logic_vector IS
+        VARIABLE lfsr : std_logic_vector(7 DOWNTO 0) := seed;
+        VARIABLE feedback : std_logic;
+    BEGIN
+        FOR i IN 0 TO 7 LOOP
+            feedback := lfsr(7) XOR lfsr(6) XOR lfsr(4) XOR lfsr(2);
+            lfsr := lfsr(6 DOWNTO 0) & feedback;
+        END LOOP;
+        RETURN lfsr;
+    END FUNCTION;
+
     -- Constants
     CONSTANT PAYLOAD_BITS : NATURAL := PAYLOAD_BYTES * 8;  -- 1072
     CONSTANT NUM_SYMBOLS  : NATURAL := ENCODED_BITS / 2;   -- 1072
     
-    -- State machine
-    TYPE state_t IS (IDLE, COLLECT_BYTES, COLLECT_SOFT, EXTRACT, DEINTERLEAVE, PREP_FEC_DECODE, FEC_DECODE, DERANDOMIZE, OUTPUT);
+    -- State machine (9 states)
+    TYPE state_t IS (IDLE, COLLECT_BYTES, COLLECT_SOFT, EXTRACT, 
+                     DEINTERLEAVE, PREP_FEC_DECODE, FEC_DECODE, DERANDOMIZE, OUTPUT);
     SIGNAL state : state_t := IDLE;
     
-    -- Circular buffer for bytes
-    CONSTANT COLLECT_SIZE : NATURAL := 512;
-    TYPE collect_buffer_t IS ARRAY(0 TO COLLECT_SIZE-1) OF std_logic_vector(BYTE_WIDTH-1 DOWNTO 0);
+    -- Linear buffer for collecting bytes (sized to exactly what we need)
+    TYPE collect_buffer_t IS ARRAY(0 TO ENCODED_BYTES-1) OF std_logic_vector(BYTE_WIDTH-1 DOWNTO 0);
     SIGNAL collect_buffer : collect_buffer_t;
-    SIGNAL collect_idx : NATURAL RANGE 0 TO COLLECT_SIZE-1;
+    SIGNAL collect_idx : NATURAL RANGE 0 TO ENCODED_BYTES;
     
     -- Soft value buffer (one 3-bit value per bit, 2144 total)
     TYPE soft_bit_buffer_t IS ARRAY(0 TO ENCODED_BITS-1) OF std_logic_vector(SOFT_WIDTH-1 DOWNTO 0);
@@ -97,6 +140,9 @@ ARCHITECTURE rtl OF ov_frame_decoder_soft IS
     SIGNAL deinterleaved_soft   : soft_bit_buffer_t;  -- Soft values after deinterleaving
     SIGNAL fec_decoded_buffer   : byte_buffer_t;
     SIGNAL output_buffer        : byte_buffer_t;
+    
+    -- CCSDS LFSR register (for DERANDOMIZE only)
+    SIGNAL lfsr_derandomize   : std_logic_vector(7 DOWNTO 0) := x"FF";
     
     -- Viterbi decoder signals
     SIGNAL decoder_start        : std_logic := '0';
@@ -173,38 +219,6 @@ ARCHITECTURE rtl OF ov_frame_decoder_soft IS
         bit_in_byte := interleaved_pos MOD 8;
         RETURN byte_num * 8 + (7 - bit_in_byte);
     END FUNCTION;
-    
-    ----------------------------------------------------------------------------
-    -- Derandomizer LFSR sequence (must match encoder!)
-    ----------------------------------------------------------------------------
-    FUNCTION get_rand_byte(byte_num : NATURAL) RETURN std_logic_vector IS
-        TYPE rand_lut_t IS ARRAY(0 TO 133) OF std_logic_vector(7 DOWNTO 0);
-        CONSTANT RAND_LUT : rand_lut_t := (
-            x"A3", x"81", x"5C", x"C4", x"C9", x"08", x"0E", x"53",
-            x"CC", x"A1", x"FB", x"29", x"9E", x"4F", x"16", x"E0",
-            x"97", x"4E", x"2B", x"57", x"12", x"A7", x"3F", x"C2",
-            x"4D", x"6B", x"0F", x"08", x"30", x"46", x"11", x"56",
-            x"0D", x"1A", x"13", x"E7", x"50", x"97", x"61", x"F3",
-            x"BE", x"E3", x"99", x"B0", x"64", x"39", x"22", x"2C",
-            x"F0", x"09", x"E1", x"86", x"CF", x"73", x"59", x"C2",
-            x"5C", x"8E", x"E3", x"D7", x"3F", x"70", x"D4", x"27",
-            x"C2", x"E0", x"81", x"92", x"DA", x"FC", x"CA", x"5A",
-            x"80", x"42", x"83", x"15", x"0F", x"A2", x"9E", x"15",
-            x"9C", x"8B", x"DB", x"A4", x"46", x"1C", x"10", x"9F",
-            x"B3", x"47", x"6C", x"5E", x"15", x"12", x"1F", x"AD",
-            x"38", x"3D", x"03", x"BA", x"90", x"8D", x"BE", x"D3",
-            x"65", x"23", x"32", x"B8", x"AB", x"10", x"62", x"7E",
-            x"C6", x"26", x"7C", x"13", x"C9", x"65", x"3D", x"15",
-            x"15", x"ED", x"35", x"F4", x"57", x"F5", x"58", x"11",
-            x"9D", x"8E", x"E8", x"34", x"C9", x"59"
-        );
-    BEGIN
-        IF byte_num < 134 THEN
-            RETURN RAND_LUT(byte_num);
-        ELSE
-            RETURN x"00";
-        END IF;
-    END FUNCTION;
 
 BEGIN
 
@@ -234,162 +248,151 @@ BEGIN
     m_axis_tlast  <= m_tlast_reg;
     
     frames_decoded <= std_logic_vector(frame_count);
-    decoder_active <= '1' WHEN state /= IDLE ELSE '0';
     
-    debug_path_metric <= decoder_path_metric;
+    -- Debug outputs
     debug_viterbi_busy <= decoder_busy;
-    
-    WITH state SELECT debug_state <=
-        "000" WHEN IDLE,
-        "001" WHEN COLLECT_BYTES,
-        "010" WHEN COLLECT_SOFT,
-        "011" WHEN EXTRACT,
-        "100" WHEN DEINTERLEAVE,
-        "101" WHEN PREP_FEC_DECODE,
-        "110" WHEN FEC_DECODE,
-        "111" WHEN DERANDOMIZE,
-        "111" WHEN OUTPUT;
+    debug_path_metric  <= decoder_path_metric;
 
-    -- Main FSM
-    decoder_fsm : PROCESS(clk)
-        VARIABLE extract_start : INTEGER;
+    -- Main state machine
+    PROCESS(clk, aresetn)
     BEGIN
-        IF rising_edge(clk) THEN
-            IF aresetn = '0' THEN
-                state <= IDLE;
-                byte_idx <= 0;
-                bit_idx <= 0;
-                out_idx <= 0;
-                collect_idx <= 0;
-                soft_idx <= 0;
-                decoder_start <= '0';
-                frame_count <= (OTHERS => '0');
-                m_tvalid_reg <= '0';
-                m_tlast_reg <= '0';
-                s_axis_tready <= '0';
-                s_axis_soft_bit_tready <= '0';
-                debug_viterbi_start <= '0';
-                debug_viterbi_done <= '0';
+        IF aresetn = '0' THEN
+            state <= IDLE;
+            collect_idx <= 0;
+            soft_idx <= 0;
+            byte_idx <= 0;
+            bit_idx <= 0;
+            out_idx <= 0;
+            m_tvalid_reg <= '0';
+            m_tlast_reg <= '0';
+            frame_count <= (OTHERS => '0');
+            decoder_start <= '0';
+            debug_viterbi_start <= '0';
+            debug_viterbi_done <= '0';
+            lfsr_derandomize <= x"FF";
+            
+        ELSIF rising_edge(clk) THEN
+            decoder_start <= '0';
+            debug_viterbi_start <= '0';
+            debug_viterbi_done <= '0';
+            
+            CASE state IS
                 
-            ELSE
-                -- Defaults
-                decoder_start <= '0';
-                debug_viterbi_start <= '0';
-                debug_viterbi_done <= '0';
-                
-                CASE state IS
-                    WHEN IDLE =>
-                        m_tvalid_reg <= '0';
-                        m_tlast_reg <= '0';
-                        s_axis_tready <= '0';
-                        s_axis_soft_bit_tready <= '0';
-                        
-                        IF s_axis_tvalid = '1' THEN
-                            collect_idx <= 0;
-                            s_axis_tready <= '1';
-                            state <= COLLECT_BYTES;
-                        END IF;
+                ----------------------------------------------------------
+                -- IDLE: Wait for frame data
+                ----------------------------------------------------------
+                WHEN IDLE =>
+                    m_tvalid_reg <= '0';
+                    m_tlast_reg <= '0';
                     
-                    ----------------------------------------------------------
-                    -- COLLECT_BYTES: Receive 268 bytes from frame_sync_detector
-                    ----------------------------------------------------------
-                    WHEN COLLECT_BYTES =>
-                        s_axis_tready <= '1';
-                        s_axis_soft_bit_tready <= '0';
-                        
-                        IF s_axis_tvalid = '1' THEN
-                            collect_buffer(collect_idx) <= s_axis_tdata;
-                            
-                            IF collect_idx < COLLECT_SIZE - 1 THEN
-                                collect_idx <= collect_idx + 1;
-                            ELSE
-                                collect_idx <= 0;
-                            END IF;
-                            
-                            IF s_axis_tlast = '1' THEN
-                                s_axis_tready <= '0';
-                                soft_idx <= 0;
-                                s_axis_soft_bit_tready <= '1';
-                                state <= COLLECT_SOFT;
-                            END IF;
-                        END IF;
+                    IF s_axis_tvalid = '1' THEN
+                        collect_buffer(0) <= s_axis_tdata;
+                        collect_idx <= 1;
+                        state <= COLLECT_BYTES;
+                    END IF;
                     
-                    ----------------------------------------------------------
-                    -- COLLECT_SOFT: Receive 2144 3-bit soft values
-                    ----------------------------------------------------------
-                    WHEN COLLECT_SOFT =>
-                        s_axis_tready <= '0';
-                        s_axis_soft_bit_tready <= '1';
+                ----------------------------------------------------------
+                -- COLLECT_BYTES: Receive 268 bytes into linear buffer
+                ----------------------------------------------------------
+                WHEN COLLECT_BYTES =>
+                    IF s_axis_tvalid = '1' THEN
+                        collect_buffer(collect_idx) <= s_axis_tdata;
                         
-                        IF s_axis_soft_bit_tvalid = '1' THEN
-                            soft_buffer(soft_idx) <= s_axis_soft_bit_tdata;
-                            
-                            IF s_axis_soft_bit_tlast = '1' OR soft_idx = ENCODED_BITS - 1 THEN
-                                s_axis_soft_bit_tready <= '0';
-                                byte_idx <= 0;
-                                state <= EXTRACT;
-                            ELSE
-                                soft_idx <= soft_idx + 1;
-                            END IF;
-                        END IF;
-                    
-                    ----------------------------------------------------------
-                    -- EXTRACT: Extract bytes from circular buffer
-                    ----------------------------------------------------------
-                    WHEN EXTRACT =>
-                        extract_start := (collect_idx - ENCODED_BYTES + COLLECT_SIZE) MOD COLLECT_SIZE;
-                        input_buffer(byte_idx) <= collect_buffer((extract_start + byte_idx) MOD COLLECT_SIZE);
-                        
-                        IF byte_idx < ENCODED_BYTES - 1 THEN
-                            byte_idx <= byte_idx + 1;
+                        IF s_axis_tlast = '1' THEN
+                            soft_idx <= 0;
+                            state <= COLLECT_SOFT;
                         ELSE
+                            collect_idx <= collect_idx + 1;
+                        END IF;
+                    END IF;
+                    
+                ----------------------------------------------------------
+                -- COLLECT_SOFT: Receive 2144 soft bit values
+                ----------------------------------------------------------
+                WHEN COLLECT_SOFT =>
+                    IF s_axis_soft_bit_tvalid = '1' THEN
+                        soft_buffer(soft_idx) <= s_axis_soft_bit_tdata;
+                        
+                        IF s_axis_soft_bit_tlast = '1' OR soft_idx = ENCODED_BITS - 1 THEN
                             byte_idx <= 0;
-                            
-                            IF USE_BIT_INTERLEAVER THEN
-                                -- Unpack bytes to bits
-                                FOR i IN 0 TO ENCODED_BYTES - 1 LOOP
-                                    FOR j IN 0 TO 7 LOOP
-                                        input_bits(i*8 + j) <= input_buffer(i)(j);
-                                    END LOOP;
-                                END LOOP;
-                            END IF;
-                            
-                            bit_idx <= 0;
-                            state <= DEINTERLEAVE;
-                        END IF;
-                    
-                    ----------------------------------------------------------
-                    -- DEINTERLEAVE: Reverse interleaving for bits and soft values
-                    ----------------------------------------------------------
-                    WHEN DEINTERLEAVE =>
-                        IF USE_BIT_INTERLEAVER THEN
-                            -- BIT-LEVEL mode: Process 1 bit per clock (2144 clocks)
-                            -- soft_buffer is in arrival order (MSB-first bytes)
-                            -- Use soft_deinterleave_address to get correct position
-                            IF bit_idx < ENCODED_BITS THEN
-                                deinterleaved_bits(bit_idx) <= input_bits(interleave_address_bit(bit_idx));
-                                deinterleaved_soft(bit_idx) <= soft_buffer(soft_deinterleave_address(bit_idx));
-                                bit_idx <= bit_idx + 1;
-                            ELSE
-                                byte_idx <= 0;
-                                state <= PREP_FEC_DECODE;
-                            END IF;
+                            state <= EXTRACT;
                         ELSE
-                            -- BYTE-LEVEL mode: Process 1 bit per clock for soft path
-                            IF bit_idx < ENCODED_BITS THEN
+                            soft_idx <= soft_idx + 1;
+                        END IF;
+                    END IF;
+                    
+                ----------------------------------------------------------
+                -- EXTRACT: Unpack bytes from collect_buffer to bit array
+                -- Data is stored linearly at indices 0 to ENCODED_BYTES-1
+                ----------------------------------------------------------
+                WHEN EXTRACT =>
+                    IF byte_idx < ENCODED_BYTES THEN
+                        -- Direct linear indexing (data stored at 0 to 267)
+                        input_buffer(byte_idx) <= collect_buffer(byte_idx);
+                        
+                        -- Also unpack to bit array (MSB-first per byte)
+                        FOR j IN 0 TO 7 LOOP
+                            input_bits(byte_idx*8 + j) <= collect_buffer(byte_idx)(7-j);
+                        END LOOP;
+                        
+                        byte_idx <= byte_idx + 1;
+                    ELSE
+                        bit_idx <= 0;
+                        state <= DEINTERLEAVE;
+                    END IF;
+                    
+                ----------------------------------------------------------
+                -- DEINTERLEAVE: Reverse 67x32 bit interleaving
+                -- Also deinterleave soft values for Viterbi
+                -- BYPASS_INTERLEAVE=TRUE: Direct copy (must match encoder!)
+                ----------------------------------------------------------
+                WHEN DEINTERLEAVE =>
+                    IF USE_BIT_INTERLEAVER THEN
+                        IF bit_idx < ENCODED_BITS THEN
+                            IF BYPASS_INTERLEAVE THEN
+                                -- BYPASS: Direct copy, no deinterleaving
                                 deinterleaved_bits(bit_idx) <= input_bits(bit_idx);
                                 deinterleaved_soft(bit_idx) <= soft_buffer(bit_idx);
-                                bit_idx <= bit_idx + 1;
                             ELSE
-                                byte_idx <= 0;
-                                state <= PREP_FEC_DECODE;
+                                -- Apply inverse 67x32 deinterleaving
+                                -- For deinterleaved position bit_idx, find the interleaved source
+                                deinterleaved_bits(bit_idx) <= 
+                                    input_bits(interleave_address_bit(bit_idx));
+                                deinterleaved_soft(bit_idx) <= 
+                                    soft_buffer(soft_deinterleave_address(bit_idx));
                             END IF;
+                            bit_idx <= bit_idx + 1;
+                        ELSE
+                            byte_idx <= 0;
+                            state <= PREP_FEC_DECODE;
                         END IF;
+                    ELSE
+                        -- Byte-level interleaver (not using soft deinterleave)
+                        IF bit_idx < ENCODED_BITS THEN
+                            IF BYPASS_INTERLEAVE THEN
+                                deinterleaved_bits(bit_idx) <= input_bits(bit_idx);
+                                deinterleaved_soft(bit_idx) <= soft_buffer(bit_idx);
+                            ELSE
+                                deinterleaved_bits(bit_idx) <= input_bits(bit_idx);
+                                deinterleaved_soft(bit_idx) <= soft_buffer(bit_idx);
+                            END IF;
+                            bit_idx <= bit_idx + 1;
+                        ELSE
+                            byte_idx <= 0;
+                            state <= PREP_FEC_DECODE;
+                        END IF;
+                    END IF;
                     
-                    ----------------------------------------------------------
-                    -- PREP_FEC_DECODE: Pack soft G1/G2 and start decoder
-                    ----------------------------------------------------------
-                    WHEN PREP_FEC_DECODE =>
+                ----------------------------------------------------------
+                -- PREP_FEC_DECODE: Pack soft G1/G2 and start decoder
+                -- BYPASS_FEC=TRUE: Skip packing, go straight to extraction
+                ----------------------------------------------------------
+                WHEN PREP_FEC_DECODE =>
+                    IF BYPASS_FEC THEN
+                        -- BYPASS: Skip Viterbi, will extract first 134 bytes in FEC_DECODE
+                        state <= FEC_DECODE;
+                    ELSE
+                        -- Real FEC: Pack soft values for Viterbi decoder
                         -- Deinterleaved stream: G1[0], G2[0], G1[1], G2[1], ...
                         FOR i IN 0 TO NUM_SYMBOLS - 1 LOOP
                             decoder_input_soft_g1((i+1)*SOFT_WIDTH-1 DOWNTO i*SOFT_WIDTH) <= 
@@ -403,60 +406,120 @@ BEGIN
                         IF decoder_busy = '1' THEN
                             state <= FEC_DECODE;
                         END IF;
+                    END IF;
                     
-                    ----------------------------------------------------------
-                    -- FEC_DECODE: Wait for Viterbi decoder
-                    ----------------------------------------------------------
-                    WHEN FEC_DECODE =>
-                        IF decoder_done = '1' THEN
-                            debug_viterbi_done <= '1';
-                            
-                            -- Pack decoded bits into bytes
-                            -- NOTE: Bit order must match hard decoder!
-                            -- decoder_output_buf is MSB-first from Viterbi traceback
-                            FOR i IN 0 TO PAYLOAD_BYTES - 1 LOOP
-                                FOR j IN 0 TO 7 LOOP
-                                    fec_decoded_buffer(i)(j) <= decoder_output_buf(PAYLOAD_BYTES*8 - 1 - i*8 - j);
-                                END LOOP;
-                            END LOOP;
-                            
-                            byte_idx <= 0;
-                            state <= DERANDOMIZE;
-                        END IF;
-                    
-                    ----------------------------------------------------------
-                    -- DERANDOMIZE: XOR with LFSR sequence
-                    ----------------------------------------------------------
-                    WHEN DERANDOMIZE =>
+                ----------------------------------------------------------
+                -- FEC_DECODE: Wait for Viterbi decoder OR extract first copy
+                -- BYPASS_FEC=TRUE: Take first 1072 bits (134 bytes) from deinterleaved stream
+                -- BYPASS_FEC=FALSE: Wait for Viterbi decoder to complete
+                ----------------------------------------------------------
+
+
+
+
+WHEN FEC_DECODE =>
+    IF BYPASS_FEC THEN
+        -- BYPASS: Extract first 134 bytes from deinterleaved stream
+        -- The encoder duplicated 134 bytes -> 268 bytes
+        -- First 1072 bits = first copy, second 1072 bits = second copy
+        -- We just use the first copy
+        --
+        -- EXTRACT packed bits MSB-first: input_bits(i*8 + j) = byte(i)(7-j)
+        -- So input_bits[0..7] = byte[0] bits 7,6,5,4,3,2,1,0
+        -- We must reverse to recover original byte order:
+        -- fec_decoded_buffer(i)(j) needs original bit j, which is at input_bits(i*8 + (7-j))
+        FOR i IN 0 TO PAYLOAD_BYTES - 1 LOOP
+            FOR j IN 0 TO 7 LOOP
+                -- Reverse bit order to undo EXTRACT's MSB-first packing
+                fec_decoded_buffer(i)(j) <= deinterleaved_bits(i*8 + (7-j));
+            END LOOP;
+        END LOOP;
+        
+        byte_idx <= 0;
+        lfsr_derandomize <= x"FF";  -- Reset LFSR for derandomization
+        state <= DERANDOMIZE;
+                        
+                    ELSIF decoder_done = '1' THEN
+                        -- Real FEC: Use Viterbi decoder output
+                        debug_viterbi_done <= '1';
+                        
+                        -- Pack decoded bits into bytes
+                        -- NOTE: Bit order must match hard decoder!
+                        -- decoder_output_buf is MSB-first from Viterbi traceback
                         FOR i IN 0 TO PAYLOAD_BYTES - 1 LOOP
-                            output_buffer(i) <= fec_decoded_buffer(i) XOR get_rand_byte(i);
+                            FOR j IN 0 TO 7 LOOP
+                                fec_decoded_buffer(i)(j) <= decoder_output_buf(PAYLOAD_BYTES*8 - 1 - i*8 - j);
+                            END LOOP;
                         END LOOP;
                         
+                        byte_idx <= 0;
+                        lfsr_derandomize <= x"FF";  -- Reset LFSR for derandomization
+                        state <= DERANDOMIZE;
+                    END IF;
+                    
+                ----------------------------------------------------------
+                -- DERANDOMIZE: XOR with CCSDS LFSR
+                -- This is the standard pre-FEC randomization reversal
+                -- BYPASS_RANDOMIZE=TRUE: Direct copy (must match encoder!)
+                ----------------------------------------------------------
+                WHEN DERANDOMIZE =>
+                    IF byte_idx < PAYLOAD_BYTES THEN
+                        IF BYPASS_RANDOMIZE THEN
+                            -- BYPASS: Direct copy, no derandomization
+                            output_buffer(byte_idx) <= fec_decoded_buffer(byte_idx);
+                        ELSE
+                            -- XOR with 8 LFSR output bits
+                            output_buffer(byte_idx) <= 
+                                fec_decoded_buffer(byte_idx) XOR lfsr_output_byte(lfsr_derandomize);
+                            -- Advance LFSR by 8 positions
+                            lfsr_derandomize <= lfsr_advance_8(lfsr_derandomize);
+                        END IF;
+                        byte_idx <= byte_idx + 1;
+                    ELSE
                         out_idx <= 0;
                         frame_count <= frame_count + 1;
                         state <= OUTPUT;
+                    END IF;
                     
-                    ----------------------------------------------------------
-                    -- OUTPUT: Stream decoded bytes
-                    ----------------------------------------------------------
-                    WHEN OUTPUT =>
-                        IF m_axis_tready = '1' OR m_tvalid_reg = '0' THEN
-                            m_tdata_reg <= output_buffer(out_idx);
-                            m_tvalid_reg <= '1';
-                            
-                            IF out_idx = PAYLOAD_BYTES - 1 THEN
-                                m_tlast_reg <= '1';
-                                out_idx <= 0;
-                                state <= IDLE;
-                            ELSE
-                                m_tlast_reg <= '0';
-                                out_idx <= out_idx + 1;
-                            END IF;
-                        END IF;
+                ----------------------------------------------------------
+                -- OUTPUT: Stream decoded bytes
+                ----------------------------------------------------------
+                WHEN OUTPUT =>
+                    IF m_axis_tready = '1' OR m_tvalid_reg = '0' THEN
+                        m_tdata_reg <= output_buffer(out_idx);
+                        m_tvalid_reg <= '1';
                         
-                END CASE;
-            END IF;
+                        IF out_idx = PAYLOAD_BYTES - 1 THEN
+                            m_tlast_reg <= '1';
+                            out_idx <= 0;
+                            state <= IDLE;
+                        ELSE
+                            m_tlast_reg <= '0';
+                            out_idx <= out_idx + 1;
+                        END IF;
+                    END IF;
+                    
+            END CASE;
         END IF;
     END PROCESS;
+    
+    -- Ready signals (directly active for these inputs)
+    s_axis_tready <= '1' WHEN state = IDLE OR state = COLLECT_BYTES ELSE '0';
+    s_axis_soft_bit_tready <= '1' WHEN state = COLLECT_SOFT ELSE '0';
+    
+    -- Decoder active when not idle
+    decoder_active <= '0' WHEN state = IDLE ELSE '1';
+    
+    -- Debug state output
+    debug_state <= "0000" WHEN state = IDLE ELSE
+                   "0001" WHEN state = COLLECT_BYTES ELSE
+                   "0010" WHEN state = COLLECT_SOFT ELSE
+                   "0011" WHEN state = EXTRACT ELSE
+                   "0100" WHEN state = DEINTERLEAVE ELSE
+                   "0101" WHEN state = PREP_FEC_DECODE ELSE
+                   "0110" WHEN state = FEC_DECODE ELSE
+                   "0111" WHEN state = DERANDOMIZE ELSE
+                   "1000" WHEN state = OUTPUT ELSE
+                   "1111";
 
 END ARCHITECTURE rtl;

@@ -137,6 +137,20 @@ BEGIN
                     -- G2 = curr_bit XOR enc_sr(5) XOR enc_sr(3) XOR enc_sr(2) XOR enc_sr(0)
                     ----------------------------------------------------------------
                     
+                    ---------------------------------------
+                    -- So You Say You Want A Duplication --
+                    -- Bypass? Set g1 and g2 to curr_bit --
+                    -- here. Uncomment this and comment  --
+                    -- out the full g1 and g2 equation   --
+                    -- to drop FEC out of the design.    --
+                    -- The interleaver etc. will then    --
+                    -- have the right number of bits,    --
+                    -- but we won't have any FEC.        --
+                    ---------------------------------------
+
+                    --g1 := curr_bit; -- for "fake" FEC
+                    --g2 := curr_bit; -- for "fake" FEC, or NOT curr_bit
+
                     g1 := curr_bit XOR enc_sr(3) XOR enc_sr(2) XOR enc_sr(1) XOR enc_sr(0);
                     g2 := curr_bit XOR enc_sr(5) XOR enc_sr(3) XOR enc_sr(2) XOR enc_sr(0);
                     
