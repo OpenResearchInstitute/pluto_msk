@@ -166,8 +166,9 @@ module system_top (
     .gpio_i (gpio_i),
     .gpio_o (gpio_o),
     .gpio_t (gpio_t),
-    .iic_main_scl_io (iic_scl),
-    .iic_main_sda_io (iic_sda),
+    // REMOVED axi_iic_main
+    //.iic_main_scl_io (iic_scl),
+    //.iic_main_sda_io (iic_sda),
     .rx_clk_in (rx_clk_in),
     .rx_data_in (rx_data_in),
     .rx_frame_in (rx_frame_in),
@@ -182,15 +183,17 @@ module system_top (
     .spi0_sdo_i (1'b0),
     .spi0_sdo_o (spi_mosi),
 
-    .spi_clk_i(1'b0),
-    .spi_clk_o(pl_spi_clk_o),
-    .spi_csn_i(1'b1),
-    .spi_csn_o(),
-    .spi_sdi_i(pl_spi_miso),
-    .spi_sdo_i(1'b0),
-    .spi_sdo_o(pl_spi_mosi),
+    // REMOVED axi_spi
+    //.spi_clk_i(1'b0),
+    //.spi_clk_o(pl_spi_clk_o),
+    //.spi_csn_i(1'b1),
+    //.spi_csn_o(),
+    //.spi_sdi_i(pl_spi_miso),
+    //.spi_sdo_i(1'b0),
+    //.spi_sdo_o(pl_spi_mosi),
 
-    .tdd_ext_sync(pl_burst),
+    // REMOVED axi_tdd
+    //.tdd_ext_sync(pl_burst),
     .txdata_o(pl_txdata),
 
     .tx_clk_out (tx_clk_out),

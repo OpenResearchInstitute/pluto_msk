@@ -23,7 +23,6 @@ VERSION=$(shell git describe --abbrev=4 --always --tags)
 PATCH=$(shell cd ori && ./applypatch.sh )
 $(shell git log --pretty=format:"%h - %ad : %s" > ori/board/pluto/overlay/root/fwhistory.txt)
 #LATEST_TAG=$(shell git describe --abbrev=0 --tags)
-UBOOT_VERSION=$(shell echo -n "PlutoSDR " && cd u-boot-xlnx && git describe --abbrev=0 --dirty --always --tags)
 HAVE_VIVADO= $(shell bash -c "source $(VIVADO_SETTINGS) > /dev/null 2>&1 && vivado -version > /dev/null 2>&1 && echo 1 || echo 0")
 #XSA_URL ?= http://github.com/maia-sdr/plutosdr-fw/releases/download/${LATEST_TAG}/system_top.xsa
 
@@ -43,25 +42,26 @@ ifneq (1, ${PATCH})
     $(warning patch granted $(PATCH))
 endif
 
-TARGET ?= pluto
-SUPPORTED_TARGETS:=pluto plutoplus e200
-#XSA_FILE ?= ori/bitstream/${TARGET}/system_top.xsa
+PLATFORM ?= pluto
+SUPPORTED_TARGETS:=pluto plutoplus e200 libre
+#XSA_FILE ?= ori/bitstream/${PLATFORM}/system_top.xsa
 
-$(warning *** Building target $(TARGET),)
+$(warning *** Building target $(PLATFORM),)
 
 # Include target specific constants
-include scripts/$(TARGET).mk
+include scripts/$(PLATFORM).mk
+UBOOT_VERSION=$(COMPLETE_NAME) $(VERSION)
 
 ifeq (, $(shell which dfu-suffix))
 $(warning "No dfu-utils in PATH consider doing: sudo apt-get install dfu-util")
-TARGETS = build/pluto.frm build/boot.frm 
+TARGETS = build/$(PLATFORM).frm build/boot.frm 
 else
-TARGETS = build/$(TARGET).dfu build/uboot-env.dfu build/pluto.frm  build/boot.dfu build/boot.frm 
+TARGETS = build/$(PLATFORM).dfu build/uboot-env.dfu build/$(PLATFORM).frm  build/boot.dfu build/boot.frm 
 endif
 
-ifeq ($(findstring $(TARGET),$(SUPPORTED_TARGETS)),)
+ifeq ($(findstring $(PLATFORM),$(SUPPORTED_TARGETS)),)
 all:
-	@echo "Invalid `TARGET variable ; valid values are: pluto, sidekiqz2, plutoplus" &&
+	@echo "Invalid `PLATFORM variable ; valid values are: pluto, sidekiqz2, plutoplus" &&
 	exit 1
 else
 all: clean-build $(TARGETS) zip-all legal-info
@@ -85,8 +85,8 @@ build:
 ### u-boot ###
 
 u-boot-xlnx/u-boot u-boot-xlnx/tools/mkimage: TOOLCHAIN
-#	$(TOOLS_PATH) make -C u-boot-xlnx ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) zynq_$(TARGET)_defconfig
-	$(TOOLS_PATH) make -C u-boot-xlnx ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) zynq_$(TARGET)_defconfig
+#	$(TOOLS_PATH) make -C u-boot-xlnx ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) zynq_$(PLATFORM)_defconfig
+	$(TOOLS_PATH) make -C u-boot-xlnx ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) zynq_$(PLATFORM)_defconfig
 	$(TOOLS_PATH) make -C u-boot-xlnx ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) UBOOTVERSION="$(UBOOT_VERSION)"
 
 .PHONY: u-boot-xlnx/u-boot
@@ -103,10 +103,10 @@ build/uboot-env.bin: build/uboot-env.txt
 ### Linux ###
 
 linux/arch/arm/boot/zImage: TOOLCHAIN
-	$(TOOLS_PATH) make -C linux -j $(NCORES) ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) zynq_$(TARGET)_linux_defconfig zImage UIMAGE_LOADADDR=0x8000
-	$(TOOLS_PATH) make -C linux -j $(NCORES) ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) zynq_$(TARGET)_linux_defconfig uImage UIMAGE_LOADADDR=0x8000
-##	$(TOOLS_PATH) make -C linux ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) defconfig zynq_$(TARGET)_defconfig
-##$(TOOLS_PATH) make BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=$(ABSOLUTE_PATH)/datv/configs/zynq_$(TARGET)datv_linux_defconfig -C linux -j $(NCORES) ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) zImage UIMAGE_LOADADDR=0x8000
+	$(TOOLS_PATH) make -C linux -j $(NCORES) ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) zynq_$(PLATFORM)_linux_defconfig zImage UIMAGE_LOADADDR=0x8000
+	$(TOOLS_PATH) make -C linux -j $(NCORES) ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) zynq_$(PLATFORM)_linux_defconfig uImage UIMAGE_LOADADDR=0x8000
+##	$(TOOLS_PATH) make -C linux ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) defconfig zynq_$(PLATFORM)_defconfig
+##$(TOOLS_PATH) make BR2_LINUX_KERNEL_CUSTOM_CONFIG_FILE=$(ABSOLUTE_PATH)/datv/configs/zynq_$(PLATFORM)datv_linux_defconfig -C linux -j $(NCORES) ARCH=arm CROSS_COMPILE=$(CROSS_COMPILE) zImage UIMAGE_LOADADDR=0x8000
 
 .PHONY: linux/arch/arm/boot/zImage
 .PHONY: linux/arch/arm/boot/uImage
@@ -134,7 +134,7 @@ buildroot/output/images/rootfs.cpio.gz:
 	@echo device-fw $(VERSION) > $(BR2_EXTERNAL)/board/pluto/VERSIONS
 	@$(foreach dir,$(VSUBDIRS),echo $(dir) $(shell cd $(dir) && git describe --abbrev=4 --dirty --always --tags) >> $(BR2_EXTERNAL)/board/pluto/VERSIONS;)
 	make BR2_EXTERNAL=$(ABSOLUTE_PATH)/ori -C buildroot ARCH=arm zynq_pluto_ori_defconfig
-##	make -C buildroot ARCH=arm zynq_$(TARGET)_defconfig
+##	make -C buildroot ARCH=arm zynq_$(PLATFORM)_defconfig
 
 ifneq (1, ${SKIP_LEGAL})
 	make -C buildroot legal-info
@@ -152,29 +152,39 @@ build/rootfs.cpio.gz: buildroot/output/images/rootfs.cpio.gz | build
 	make -C buildroot BUSYBOX_CONFIG_FILE=$(BR2_EXTERNAL)/board/pluto/busybox-1.25.0.config all
 	cp $< $@
 
-build/$(TARGET).itb: u-boot-xlnx/tools/mkimage build/zImage build/rootfs.cpio.gz $(TARGET_DTS_FILES) build/system_top.bit
-	u-boot-xlnx/tools/mkimage -f scripts/$(TARGET).its $@
+build/$(PLATFORM).itb: u-boot-xlnx/tools/mkimage build/zImage build/rootfs.cpio.gz $(TARGET_DTS_FILES) build/system_top.bit
+	u-boot-xlnx/tools/mkimage -f scripts/$(PLATFORM).its $@
 
-build/system_top.xsa:  | build
+# HDL source dependencies - rebuild if any VHDL or TCL changes
+HDL_SRCS := $(wildcard ../src/*.vhd) \
+		$(wildcard ../projects/$(PLATFORM)/*.tcl) \
+		$(wildcard ../library/*.tcl) \
+		$(wildcard ../msk_demodulator/src/*.vhd)
+
+build/system_top.xsa: $(HDL_SRCS) | build
 ifneq ($(XSA_FILE),)
 	cp $(XSA_FILE) $@
 else ifneq ($(XSA_URL),)
 	wget -T 3 -t 1 -N --directory-prefix build $(XSA_URL)
 else ifeq (1, ${HAVE_VIVADO})
-#bash -c "source $(VIVADO_SETTINGS) && make -C maia-sdr/maia-hdl/projects/$(TARGET) && cp maia-sdr/maia-hdl/projects/$(TARGET)/$(TARGET).sdk/system_top.xsa $@"
-#unzip -l $@ | grep -q ps7_init || cp maia-sdr/maia-hdl/projects/$(TARGET)/$(TARGET).srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
-ifeq ($(TARGET),pluto)
-	bash -c "source $(VIVADO_SETTINGS) && make -C ../projects/pluto && cp ../projects/pluto/pluto.sdk/system_top.xsa $@"
+#bash -c "source $(VIVADO_SETTINGS) && make -C maia-sdr/maia-hdl/projects/$(PLATFORM) && cp maia-sdr/maia-hdl/projects/$(PLATFORM)/$(PLATFORM).sdk/system_top.xsa $@"
+#unzip -l $@ | grep -q ps7_init || cp maia-sdr/maia-hdl/projects/$(PLATFORM)/$(PLATFORM).srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
+ifeq ($(PLATFORM),pluto)
+	bash -c "source $(VIVADO_SETTINGS) && cd ../projects/pluto && unset MAKEFLAGS && /usr/bin/make && cd ../../firmware && cp ../projects/pluto/pluto.sdk/system_top.xsa $@"
 	unzip -l $@ | grep -q ps7_init || cp ../projects/pluto/pluto.srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
 endif	
-ifeq ($(TARGET),plutoplus)
-	bash -c "source $(VIVADO_SETTINGS) && make -C ../hdl/projects/pluto-ori-plus && cp ../hdl/projects/pluto-ori-plus/pluto.sdk/system_top.xsa $@"
+ifeq ($(PLATFORM),plutoplus)
+	bash -c "source $(VIVADO_SETTINGS) && cd ../hdl/projects/pluto-ori-plus && unset MAKEFLAGS && /usr/bin/make && cd ../../../firmware && cp ../hdl/projects/pluto-ori-plus/pluto.sdk/system_top.xsa $@"
 	unzip -l $@ | grep -q ps7_init || cp ../hdl/projects/pluto-ori-plus/pluto.srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
 endif
-ifeq ($(TARGET),e200)
-	bash -c "source $(VIVADO_SETTINGS) && make -C ../hdl/projects/pluto-ori-e200 && cp ../hdl/projects/pluto-ori-e200/e200.sdk/system_top.xsa $@"
+ifeq ($(PLATFORM),e200)
+	bash -c "source $(VIVADO_SETTINGS) && cd ../hdl/projects/pluto-ori-e200 && unset MAKEFLAGS && /usr/bin/make && cd ../../../firmware && cp ../hdl/projects/pluto-ori-e200/e200.sdk/system_top.xsa $@"
 	unzip -l $@ | grep -q ps7_init || cp ../hdl/projects/pluto-ori-e200/e200.srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
 endif	
+ifeq ($(PLATFORM),libre)
+	bash -c "source $(VIVADO_SETTINGS) && make -C ../library && cd ../projects/libre && unset MAKEFLAGS && /usr/bin/make && cp libre.sdk/system_top.xsa ../../firmware/$@"
+	unzip -l $@ | grep -q ps7_init || cp ../projects/libre/libre.srcs/sources_1/bd/system/ip/system_sys_ps7_0/ps7_init* build/
+endif
 #bash -c "source $(VIVADO_SETTINGS) && make -C ../hdl/projects/pluto-ori-plus"
 endif
 
@@ -184,6 +194,8 @@ build/fsbl.elf build/system_top.bit : build/system_top.xsa
 	rm -Rf build/sdk
 ifeq (1, ${HAVE_VIVADO})
 	bash -c "source $(VIVADO_SETTINGS) && xsct scripts/create_fsbl_project.tcl"
+	cp build/sdk/fsbl/Release/fsbl.elf build/fsbl.elf
+	unzip -o build/system_top.xsa system_top.bit -d build
 else
 	unzip -o build/system_top.xsa system_top.bit -d build
 endif
@@ -194,12 +206,12 @@ ifeq (1, ${HAVE_VIVADO})
 	cp build/sdk/fsbl/Release/fsbl.elf build/fsbl.elf
 	bash -c "source $(VIVADO_SETTINGS) && bootgen -image build/boot.bif -w -o $@"
 else
-	cp ori/bitstream/$(TARGET)/fsbl.elf build/fsbl.elf
+	cp ori/bitstream/$(PLATFORM)/fsbl.elf build/fsbl.elf
 	bash -c "bootgen -image build/boot.bif -w -o $@"
 endif
 ### MSD update firmware file ###
 
-build/pluto.frm: build/$(TARGET).itb
+build/$(PLATFORM).frm: build/$(PLATFORM).itb
 	md5sum $< | cut -d ' ' -f 1 > $@.md5
 	cat $< $@.md5 > $@
 
@@ -213,39 +225,46 @@ build/%.dfu: build/%.bin
 	dfu-suffix -a $<.tmp -v $(DEVICE_VID) -p $(DEVICE_PID)
 	mv $<.tmp $@
 
-build/$(TARGET).dfu: build/$(TARGET).itb
+build/$(PLATFORM).dfu: build/$(PLATFORM).itb
 	cp $< $<.tmp
 	dfu-suffix -a $<.tmp -v $(DEVICE_VID) -p $(DEVICE_PID)
 	mv $<.tmp $@
 
 SDIMGDIR = build/sdimg
-sdimg: build | build/rootfs.cpio.gz
+sdimg: build build/fsbl.elf build/system_top.bit build/u-boot.elf build/zynq-libre.dtb build/uboot-env.txt | build/rootfs.cpio.gz
 	mkdir -p $(SDIMGDIR)
-	cp ori/bitstream/$(TARGET)/fsbl.elf 	$(SDIMGDIR)/fsbl.elf  
+	if [ "$(PLATFORM)" = "libre" ]; then cp build/fsbl.elf $(SDIMGDIR)/fsbl.elf; else cp ori/bitstream/$(PLATFORM)/fsbl.elf $(SDIMGDIR)/fsbl.elf; fi  
 	cp build/system_top.bit 	$(SDIMGDIR)/system_top.bit
 	cp build/u-boot.elf 			$(SDIMGDIR)/u-boot.elf
 	cp linux/arch/arm/boot/uImage	$(SDIMGDIR)/uImage
 
-ifeq ($(TARGET),pluto)
+ifeq ($(PLATFORM),pluto)
 	cp build/zynq-pluto-sdr.dtb 	$(SDIMGDIR)/devicetree.dtb
 endif	
-ifeq ($(TARGET),plutoplus)
+ifeq ($(PLATFORM),plutoplus)
 	cp build/zynq-plutoplus-maiasdr.dtb 	$(SDIMGDIR)/devicetree.dtb
 endif	
-ifeq ($(TARGET),e200)
+ifeq ($(PLATFORM),e200)
 	cp build/zynq-e200.dtb 	$(SDIMGDIR)/devicetree.dtb
 endif	
+ifeq ($(PLATFORM),libre)
+	cp build/zynq-libre.dtb 	$(SDIMGDIR)/devicetree.dtb
+endif
 	cp build/uboot-env.txt  		$(SDIMGDIR)/uEnv.txt
+	@if [ "$(PLATFORM)" = "libre" ]; then \
+		echo 'sdboot=if mmcinfo; then run uenvboot; echo Copying Linux from SD to RAM... && load mmc 0 $${fit_load_address} $${kernel_image} && load mmc 0 $${devicetree_load_address} $${devicetree_image} && load mmc 0 $${ramdisk_load_address} $${ramdisk_image} && bootm $${fit_load_address} $${ramdisk_load_address} $${devicetree_load_address}; fi' >> $(SDIMGDIR)/uEnv.txt; \
+		sed -i 's/serial@e0001000/serial@e0000000/g' $(SDIMGDIR)/uEnv.txt; \
+	fi
 	cp build/rootfs.cpio.gz  		$(SDIMGDIR)/ramdisk.image.gz
 	mkimage -A arm -T ramdisk -C gzip -d $(SDIMGDIR)/ramdisk.image.gz $(SDIMGDIR)/uramdisk.image.gz
 	touch 	$(SDIMGDIR)/boot.bif
 	echo "img : {[bootloader] $(SDIMGDIR)/fsbl.elf  $(SDIMGDIR)/system_top.bit  $(SDIMGDIR)/u-boot.elf}" >  $(SDIMGDIR)/boot.bif
 	bootgen -image $(SDIMGDIR)/boot.bif -w -o i $(SDIMGDIR)/BOOT.bin
-	rm $(SDIMGDIR)/fsbl.elf
-	rm $(SDIMGDIR)/system_top.bit
-	rm $(SDIMGDIR)/u-boot.elf
-	rm $(SDIMGDIR)/ramdisk.image.gz 
-	rm $(SDIMGDIR)/boot.bif
+	#rm $(SDIMGDIR)/fsbl.elf
+	#rm $(SDIMGDIR)/system_top.bit
+	#rm $(SDIMGDIR)/u-boot.elf
+	#rm $(SDIMGDIR)/ramdisk.image.gz 
+	#rm $(SDIMGDIR)/boot.bif
 
 
 clean-build:
@@ -262,8 +281,8 @@ clean:
 zip-all: $(TARGETS)
 	mkdir -p Release && cd build &&	zip -r ../Release/$(ZIP_ARCHIVE_PREFIX)-fw-$(VERSION).zip *.dfu *.frm 
 
-dfu-$(TARGET): build/$(TARGET).dfu
-	dfu-util -D build/$(TARGET).dfu -a firmware.dfu
+dfu-$(PLATFORM): build/$(PLATFORM).dfu
+	dfu-util -D build/$(PLATFORM).dfu -a firmware.dfu
 	dfu-util -e
 
 dfu-sf-uboot: build/boot.dfu build/uboot-env.dfu
@@ -272,17 +291,17 @@ dfu-sf-uboot: build/boot.dfu build/uboot-env.dfu
 		dfu-util -D build/uboot-env.dfu -a uboot-env.dfu
 	dfu-util -e
 
-dfu-all: build/$(TARGET).dfu build/boot.dfu build/uboot-env.dfu
+dfu-all: build/$(PLATFORM).dfu build/boot.dfu build/uboot-env.dfu
 	echo "Erasing u-boot be careful - Press Return to continue... " && read key && \
-		dfu-util -D build/$(TARGET).dfu -a firmware.dfu && \
+		dfu-util -D build/$(PLATFORM).dfu -a firmware.dfu && \
 		dfu-util -D build/boot.dfu -a boot.dfu  && \
 		dfu-util -D build/uboot-env.dfu -a uboot-env.dfu
 	dfu-util -e
 
-dfu-ram: build/$(TARGET).dfu
-	sshpass -p analog ssh root@$(TARGET) '/usr/sbin/device_reboot ram;'
+dfu-ram: build/$(PLATFORM).dfu
+	sshpass -p analog ssh root@$(PLATFORM) '/usr/sbin/device_reboot ram;'
 	sleep 7
-	dfu-util -D build/$(TARGET).dfu -a firmware.dfu
+	dfu-util -D build/$(PLATFORM).dfu -a firmware.dfu
 	dfu-util -e
 
 jtag-bootstrap: build/u-boot.elf build/ps7_init.tcl build/system_top.bit scripts/run.tcl scripts/run-xsdb.tcl

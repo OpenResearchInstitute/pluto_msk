@@ -51,9 +51,9 @@
 
 
 ------------------------------------------------------------------------------------------------------
--- ╦  ┬┌┐ ┬─┐┌─┐┬─┐┬┌─┐┌─┐
--- ║  │├┴┐├┬┘├─┤├┬┘│├┤ └─┐
--- ╩═╝┴└─┘┴└─┴ ┴┴└─┴└─┘└─┘
+-- ?  ??? ????????????????
+-- ?  ???????????????? ???
+-- ??????????? ???????????
 ------------------------------------------------------------------------------------------------------
 -- Libraries
 
@@ -61,12 +61,13 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
 
-USE work.pkg_msk_top_regs.ALL;
+USE work.axi4lite_intf_pkg.ALL;
+USE work.msk_top_regs_pkg.ALL;
 
 ------------------------------------------------------------------------------------------------------
--- ╔═╗┌┐┌┌┬┐┬┌┬┐┬ ┬
--- ║╣ │││ │ │ │ └┬┘
--- ╚═╝┘└┘ ┴ ┴ ┴  ┴ 
+-- ?????????????? ?
+-- ?? ??? ? ? ? ???
+-- ?????? ? ? ?  ? 
 ------------------------------------------------------------------------------------------------------
 -- Entity
 
@@ -83,7 +84,8 @@ ENTITY msk_top_csr IS
 		SYNC_W 				: NATURAL := 16;
 		C_S_AXI_DATA_WIDTH	: NATURAL := 32;
 		C_S_AXI_ADDR_WIDTH	: NATURAL := 32;
-		SYNC_CNT_W 			: NATURAL := 24
+		SYNC_CNT_W 			: NATURAL := 24;
+		FIFO_ADDR_WIDTH 	: NATURAL := 9
 	);
 	PORT (
 		clk 				: IN  std_logic;
@@ -126,6 +128,20 @@ ENTITY msk_top_csr IS
 		f2_nco_adjust		: IN std_logic_vector(31 DOWNTO 0);
 		f1_error			: IN std_logic_vector(31 DOWNTO 0);
 		f2_error			: IN std_logic_vector(31 DOWNTO 0);
+		pd_power			: IN std_logic_vector(22 DOWNTO 0);
+		rx_frame_sync 		: IN std_logic;
+		rx_frame_buffer_ovf : IN std_logic;
+		rx_frame_count 		: IN std_logic_vector(23 DOWNTO 0);
+		rx_frame_sync_err   : IN std_logic_vector( 5 DOWNTO 0);
+
+		tx_async_fifo_wr_ptr		: IN  std_logic_vector(FIFO_ADDR_WIDTH DOWNTO 0);
+		tx_async_fifo_rd_ptr 		: IN  std_logic_vector(FIFO_ADDR_WIDTH DOWNTO 0);
+		tx_async_fifo_status_req 	: OUT std_logic;
+		tx_async_fifo_status_ack 	: IN  std_logic;
+		rx_async_fifo_wr_ptr		: IN  std_logic_vector(FIFO_ADDR_WIDTH DOWNTO 0);
+		rx_async_fifo_rd_ptr 		: IN  std_logic_vector(FIFO_ADDR_WIDTH DOWNTO 0);
+		rx_async_fifo_status_req 	: OUT std_logic;
+		rx_async_fifo_status_ack 	: IN  std_logic;
 
 		txinit 				: out std_logic;
 		rxinit 				: out std_logic;
@@ -165,126 +181,310 @@ ENTITY msk_top_csr IS
 		tx_sync_f2			: out std_logic;
 		pd_alpha1			: out std_logic_vector(17 DOWNTO 0);
 		pd_alpha2			: out std_logic_vector(17 DOWNTO 0);
-		pd_power			: in  std_logic_vector(22 DOWNTO 0)
+
+                -- Debug signals for TX path
+                tx_debug_encoder_tvalid  : IN std_logic;
+                tx_debug_encoder_tready  : IN std_logic;
+                tx_debug_fifo_tvalid     : IN std_logic;
+                tx_debug_fifo_tready     : IN std_logic;
+                tx_debug_tx_req          : IN std_logic;
+                tx_debug_encoder_tlast   : IN std_logic;
+                tx_debug_encoder_state   : IN std_logic_vector(2 DOWNTO 0);
+
+                -- Debug signals for RX path
+                rx_debug_decoder_state   : IN std_logic_vector(3 DOWNTO 0);
+                rx_debug_viterbi_start   : IN std_logic;
+                rx_debug_viterbi_busy    : IN std_logic;
+                rx_debug_viterbi_done    : IN std_logic;
+                rx_debug_decoder_tvalid  : IN std_logic;
+                rx_debug_decoder_tready  : IN std_logic
+
 	);
 END ENTITY msk_top_csr;
 
 ARCHITECTURE rtl OF msk_top_csr IS 
 
-	SIGNAL pi_s_top 		: t_msk_top_regs_m2s;
-	SIGNAL po_s_top 		: t_msk_top_regs_s2m;
+	SIGNAL s_axil_i 		: axi4lite_slave_in_intf(
+            AWADDR(7 downto 0),
+            WDATA(31 downto 0),
+            WSTRB(3 downto 0),
+            ARADDR(7 downto 0)
+        );
+	SIGNAL s_axil_o 		: axi4lite_slave_out_intf(
+            RDATA(31 downto 0)
+     	);
 
-	SIGNAL pi_addrmap 		: t_addrmap_msk_top_regs_in;
-	SIGNAL po_addrmap 		: t_addrmap_msk_top_regs_out;
+	SIGNAL hwif_in 			: msk_top_regs_in_t;
+	SIGNAL hwif_out 		: msk_top_regs_out_t;
 
 	SIGNAL txrxinit 		: std_logic;
 
+	COMPONENT cdc_resync IS 
+		PORT (
+			clk			: IN  std_logic;
+			sync_reset	: IN  std_logic;
+	
+			di 			: IN  std_logic;
+			do 			: OUT std_logic
+		);
+	END COMPONENT cdc_resync;
+
+	COMPONENT pulse_detect IS 
+		PORT (
+			clk			: IN  std_logic;
+			sync_reset	: IN  std_logic;
+	
+			di 			: IN  std_logic;
+			do 			: OUT std_logic
+		);
+	END COMPONENT pulse_detect;
+
+	COMPONENT data_capture IS 
+		GENERIC (
+			data_width 	: natural := 32
+		);
+		PORT (
+			clk			: IN  std_logic;
+			sync_reset	: IN  std_logic;
+	
+			capture 	: IN  std_logic;
+	
+			di 			: IN  std_logic_vector(data_width -1 DOWNTO 0);
+			do 			: OUT std_logic_vector(data_width -1 DOWNTO 0)
+		);
+	END COMPONENT data_capture;
+
+	SIGNAL csr_meta 	: std_logic;
+	SIGNAL csr_init 	: std_logic;
+
+	SIGNAL tx_bit_counter_req	: std_logic;
+	SIGNAL tx_ena_counter_req	: std_logic;
+	SIGNAL f1_error_req			: std_logic;
+	SIGNAL f2_error_req			: std_logic;
+	SIGNAL f1_nco_adjust_req	: std_logic;
+	SIGNAL f2_nco_adjust_req	: std_logic;
+
+	SIGNAL prbs_bits_req		: std_logic;
+	SIGNAL prbs_errs_req		: std_logic;
+	SIGNAL lpf_accum_f1_req		: std_logic;
+	SIGNAL lpf_accum_f2_req		: std_logic;
+	SIGNAL pd_power_req			: std_logic;
+	SIGNAL axis_xfer_count_req 	: std_logic;
+
+	SIGNAL frames_received_req 	: std_logic;
+	SIGNAL frame_sync_errors_req: std_logic;
+
 BEGIN
 
-	u_msk_regs : ENTITY work.msk_top_regs(arch)
+	s_axil_i.AWVALID 	<= s_axi_awvalid;
+	s_axil_i.AWADDR 	<= s_axi_awaddr(7 DOWNTO 0);
+	s_axil_i.AWPROT  	<= s_axi_awprot;
+	s_axil_i.WVALID  	<= s_axi_wvalid;
+	s_axil_i.WDATA   	<= s_axi_wdata;
+	s_axil_i.WSTRB 		<= s_axi_wstrb;
+	s_axil_i.BREADY 	<= s_axi_bready;
+	s_axil_i.ARVALID 	<= s_axi_arvalid;
+	s_axil_i.ARADDR  	<= s_axi_araddr(7 DOWNTO 0);
+	s_axil_i.ARPROT 	<= s_axi_arprot;
+	s_axil_i.RREADY  	<= s_axi_rready;
+
+	s_axi_awready		<= s_axil_o.AWREADY;
+	s_axi_wready		<= s_axil_o.WREADY;
+	s_axi_bvalid		<= s_axil_o.BVALID;
+	s_axi_bresp			<= s_axil_o.BRESP;
+	s_axi_arready		<= s_axil_o.ARREADY;
+	s_axi_rvalid		<= s_axil_o.RVALID;
+	s_axi_rdata			<= s_axil_o.RDATA;
+	s_axi_rresp			<= s_axil_o.RRESP;
+
+	u_msk_regs : ENTITY work.msk_top_regs(rtl)
 	PORT MAP (
-    	pi_clock 	=> s_axi_aclk,
-    	pi_reset 	=> NOT s_axi_aresetn,
-    	-- TOP subordinate memory mapped interface
-    	pi_s_reset  => NOT s_axi_aresetn,
-    	pi_s_top   	=> pi_s_top,
-    	po_s_top    => po_s_top,
+    	clk 		=> s_axi_aclk,
+    	rst 		=> NOT s_axi_aresetn,
+    	s_axil_i  	=> s_axil_i,
+    	s_axil_o 	=> s_axil_o,
     	-- to logic interface
-    	pi_addrmap  => pi_addrmap,
-    	po_addrmap  => po_addrmap 
+    	hwif_in  	=> hwif_in,
+    	hwif_out	=> hwif_out 
   	);
 
-    -- write address channel signals---------------------------------------------
-  	pi_s_top.awaddr 	<= s_axi_awaddr;
-    pi_s_top.awprot		<= s_axi_awprot;
-    pi_s_top.awvalid	<= s_axi_awvalid;
-    -- write data channel signals---------------------------------------------
-    pi_s_top.wdata      <= s_axi_wdata;
-    pi_s_top.wstrb      <= s_axi_wstrb;
-    pi_s_top.wvalid     <= s_axi_wvalid;
-    -- write response channel signals
-    pi_s_top.bready     <= s_axi_bready;
-    -- read address channel signals ---------------------------------------------
-    pi_s_top.araddr     <= s_axi_araddr;
-    pi_s_top.arprot     <= s_axi_arprot;
-    pi_s_top.arvalid    <= s_axi_arvalid;
-    -- read data channel signals---------------------------------------------
-    pi_s_top.rready     <= s_axi_rready;
+    csr_init_proc : PROCESS (clk, s_axi_aresetn)
+    BEGIN
+    	IF s_axi_aresetn = '0' THEN
+    		csr_meta <= '1';
+    		csr_init <= '1';
+    	ELSIF clk'EVENT AND clk = '1' THEN
+    		csr_meta <= '0';
+    		csr_init <= csr_meta;
+    	END IF;
+    END PROCESS csr_init_proc;
 
-    -- write address channel signals---------------------------------------------
-    s_axi_awready 		<= po_s_top.awready;
-    -- write data channel signals---------------------------------------------
-    s_axi_wready 		<= po_s_top.wready;
-    -- write response channel signals ---------------------------------------------
-    s_axi_bresp			<= po_s_top.bresp;
-    s_axi_bvalid 		<= po_s_top.bvalid;
-    -- read address channel signals---------------------------------------------
-    s_axi_arready 		<= po_s_top.arready;
-    -- read data channel signals---------------------------------------------
-    s_axi_rdata 		<= po_s_top.rdata;
-    s_axi_rresp 		<= po_s_top.rresp;
-    s_axi_rvalid 		<= po_s_top.rvalid;
+    ulck_s: cdc_resync PORT MAP (s_axi_aclk, NOT s_axi_aresetn, '0',					hwif_in.MSK_Status.demod_sync_lock.next_q);
+    utxe_s: cdc_resync PORT MAP (s_axi_aclk, NOT s_axi_aresetn, tx_enable,				hwif_in.MSK_Status.tx_enable.next_q);
+    urxe_s: cdc_resync PORT MAP (s_axi_aclk, NOT s_axi_aresetn, rx_enable,				hwif_in.MSK_Status.rx_enable.next_q);
+    urfl_s: cdc_resync PORT MAP (s_axi_aclk, NOT s_axi_aresetn, rx_frame_sync,			hwif_in.rx_frame_sync_status.frame_sync_locked.next_q);
 
-    pi_addrmap.MSK_Status.demod_sync_lock.data(0) <= '0';
-    pi_addrmap.MSK_Status.tx_enable.data(0) <= tx_enable;
-    pi_addrmap.MSK_Status.rx_enable.data(0) <= rx_enable;
-    pi_addrmap.MSK_Status.tx_axis_valid.data(0) <= tx_axis_valid;
-    pi_addrmap.Tx_Bit_Count.tx_bit_counter.data <= tx_bit_counter;
-    pi_addrmap.Tx_Enable_Count.tx_ena_counter.data <= tx_ena_counter;
-    pi_addrmap.axis_xfer_count.xfer_count.data <= xfer_count;
-    pi_addrmap.PRBS_Bit_Count.status_data.data <= prbs_bits;
-    pi_addrmap.PRBS_Error_Count.status_data.data <= prbs_errs;
-    pi_addrmap.LPF_Accum_F1.status_data.data <= lpf_accum_f1;
-    pi_addrmap.LPF_Accum_F2.status_data.data <= lpf_accum_f2;
-    pi_addrmap.f1_nco_adjust.data.data 	<= f1_nco_adjust;
-    pi_addrmap.f2_nco_adjust.data.data 	<= f2_nco_adjust;
-    pi_addrmap.f1_error.data.data 		<= f1_error;
-    pi_addrmap.f2_error.data.data 		<= f2_error;
-    pi_addrmap.rx_power.rx_power.data 		<= pd_power;
+    urfo_s: cdc_resync PORT MAP (s_axi_aclk, NOT s_axi_aresetn, rx_frame_buffer_ovf,	hwif_in.rx_frame_sync_status.frame_buffer_overflow.we);
+
+    -- hwif_in.MSK_Status.rx_enable.next_q <= '1';  -- Commented out becuase handled by urxe_s CDC, by Abraxas3d
+    hwif_in.MSK_Status.tx_axis_valid.next_q	<= tx_axis_valid;
+
+    -- Status Request from AXI to MDM
+    utbc_r:  pulse_detect PORT MAP (clk, csr_init, hwif_out.Tx_Bit_Count.data.swmod, 			tx_bit_counter_req		);
+    utbe_r:  pulse_detect PORT MAP (clk, csr_init, hwif_out.Tx_Enable_Count.data.swmod,			tx_ena_counter_req		);
+    utatc_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.axis_xfer_count.data.swmod,			axis_xfer_count_req		);
+    utf1e_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.f1_error.data.swmod, 				f1_error_req			);
+    utf2e_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.f2_error.data.swmod, 				f2_error_req			);
+    utf1a_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.f1_nco_adjust.data.swmod, 			f1_nco_adjust_req		);
+    utf2a_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.f2_nco_adjust.data.swmod, 			f2_nco_adjust_req		);
+    utprb_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.PRBS_Bit_Count.data.swmod,			prbs_bits_req			);
+    utpre_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.PRBS_Error_Count.data.swmod,		prbs_errs_req			);
+    utlp1_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.LPF_Accum_F1.data.swmod, 			lpf_accum_f1_req		);
+    utlp2_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.LPF_Accum_F2.data.swmod, 			lpf_accum_f2_req		);
+    utpwr_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.rx_power.data.swmod, 				pd_power_req			);
+    utfss_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.rx_frame_sync_status.frames_received.swmod,	frames_received_req );
+    utfsr_r: pulse_detect PORT MAP (clk, csr_init, hwif_out.rx_frame_sync_status.frame_sync_errors.swmod,	frame_sync_errors_req );
+
+    -- Status acknowledge from MDM to AXI
+    utbc_a : pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, tx_bit_counter_req,		hwif_in.Tx_Bit_Count.data.we		);
+    utbe_a : pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, tx_ena_counter_req,		hwif_in.Tx_Enable_Count.data.we 	);
+    utatc_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, axis_xfer_count_req,		hwif_in.axis_xfer_count.data.we  	);
+    utf1e_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, f1_error_req,			hwif_in.f1_error.data.we 			);
+    utf2e_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, f2_error_req,			hwif_in.f2_error.data.we 			);
+    utf1a_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, f1_nco_adjust_req,		hwif_in.f1_nco_adjust.data.we		);
+    utf2a_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, f2_nco_adjust_req,		hwif_in.f2_nco_adjust.data.we		);
+    utprb_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, prbs_bits_req,			hwif_in.PRBS_Bit_Count.data.we		);
+    utpre_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, prbs_errs_req,			hwif_in.PRBS_Error_Count.data.we 	);
+    utlp1_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, lpf_accum_f1_req,		hwif_in.LPF_Accum_F1.data.we 		);
+    utlp2_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, lpf_accum_f2_req,		hwif_in.LPF_Accum_F2.data.we 		);
+    utpwr_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, pd_power_req,			hwif_in.rx_power.data.we			);
+    utfss_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, frames_received_req,		hwif_in.rx_frame_sync_status.frames_received.we   );
+    utfsr_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, frame_sync_errors_req,	hwif_in.rx_frame_sync_status.frame_sync_errors.we );
+
+    -- Status capture from MDM to AXI
+    utbc_c : data_capture PORT MAP (clk, csr_init, tx_bit_counter_req,		tx_bit_counter,		hwif_in.Tx_Bit_Count.data.next_q	);
+    utbe_c : data_capture PORT MAP (clk, csr_init, tx_ena_counter_req,		tx_ena_counter, 	hwif_in.Tx_Enable_Count.data.next_q );
+    utatc_c: data_capture PORT MAP (clk, csr_init, axis_xfer_count_req,		xfer_count, 		hwif_in.axis_xfer_count.data.next_q );
+    utf1e_c: data_capture PORT MAP (clk, csr_init, f1_error_req,			f1_error, 			hwif_in.f1_error.data.next_q		);
+    utf2e_c: data_capture PORT MAP (clk, csr_init, f2_error_req,			f2_error, 			hwif_in.f2_error.data.next_q 		);
+    utf1a_c: data_capture PORT MAP (clk, csr_init, f1_nco_adjust_req,		f1_nco_adjust, 		hwif_in.f1_nco_adjust.data.next_q	);
+    utf2a_c: data_capture PORT MAP (clk, csr_init, f2_nco_adjust_req,		f2_nco_adjust, 		hwif_in.f2_nco_adjust.data.next_q	);
+    utprb_c: data_capture PORT MAP (clk, csr_init, prbs_bits_req,			prbs_bits, 			hwif_in.PRBS_Bit_Count.data.next_q	);
+    utpre_c: data_capture PORT MAP (clk, csr_init, prbs_errs_req,			prbs_errs, 			hwif_in.PRBS_Error_Count.data.next_q);
+    utlp1_c: data_capture PORT MAP (clk, csr_init, lpf_accum_f1_req,		lpf_accum_f1, 		hwif_in.LPF_Accum_F1.data.next_q 	);
+    utlp2_c: data_capture PORT MAP (clk, csr_init, lpf_accum_f2_req,		lpf_accum_f2, 		hwif_in.LPF_Accum_F2.data.next_q 	);
+    utpwr_c: data_capture GENERIC MAP (23)
+    					  PORT MAP (clk, csr_init, pd_power_req, 			pd_power, 			hwif_in.rx_power.data.next_q		);
+    utfsc_c: data_capture GENERIC MAP (24)
+    					  PORT MAP (clk, csr_init, frames_received_req, 	rx_frame_count, 	hwif_in.rx_frame_sync_status.frames_received.next_q		);
+    utfse_c: data_capture GENERIC MAP (6)
+    					  PORT MAP (clk, csr_init, frame_sync_errors_req, 	rx_frame_sync_err, 	hwif_in.rx_frame_sync_status.frame_sync_errors.next_q		);
+
+    -- FIFO status reads
+	rx_async_fifo_status_req <= hwif_out.rx_async_fifo_rd_wr_ptr.data.swmod;
+
+	hwif_in.rx_async_fifo_rd_wr_ptr.data.we	<= rx_async_fifo_status_ack;
+
+
+    -- commented out by Abraxas3d to add more bits to the register to investigate receive failures
+    --hwif_in.rx_async_fifo_rd_wr_ptr.data.next_q <= std_logic_vector(resize(unsigned(rx_async_fifo_wr_ptr), 16) & resize(unsigned(rx_async_fifo_rd_ptr), 16));
+
+-- Experimental RX debug register setup (matching TX debug pattern)
+-- Bit layout:
+--   [31:28] decoder state (4 bits - IDLE=0, COLLECT_BYTES=1, COLLECT_SOFT=2, EXTRACT=3,
+--                          DEDECORRELATE=4, DEINTERLEAVE=5, PREP_FEC_DECODE=6, 
+--                          FEC_DECODE=7, DERANDOMIZE=8, OUTPUT=9)
+--   [27]    viterbi_start
+--   [26]    viterbi_busy
+--   [25]    viterbi_done
+--   [24]    decoder_tvalid
+--   [23]    decoder_tready
+--   [22:13] rx_fifo_wr_ptr (10 bits)
+--   [12:10] spare
+--   [9:0]   rx_fifo_rd_ptr (10 bits)
+hwif_in.rx_async_fifo_rd_wr_ptr.data.next_q <=
+    rx_debug_decoder_state &            -- bits 31:28 (4 bits)
+    rx_debug_viterbi_start &            -- bit 27
+    rx_debug_viterbi_busy &             -- bit 26
+    rx_debug_viterbi_done &             -- bit 25
+    rx_debug_decoder_tvalid &           -- bit 24
+    rx_debug_decoder_tready &           -- bit 23
+    std_logic_vector(resize(unsigned(rx_async_fifo_wr_ptr), 10)) &  -- bits 22:13
+    "000" &                             -- bits 12:10 spare
+    std_logic_vector(resize(unsigned(rx_async_fifo_rd_ptr), 10));   -- bits 9:0
 
 
 
-    txrxinit 			<= po_addrmap.MSK_Init.txrxinit.data(0);
-    txinit 				<= po_addrmap.MSK_Init.txinit.data(0) OR txrxinit;
-    rxinit 				<= po_addrmap.MSK_Init.rxinit.data(0) OR txrxinit;
-    ptt 				<= po_addrmap.MSK_Control.ptt.data(0);
-    loopback_ena 		<= po_addrmap.MSK_Control.loopback_ena.data(0);
-    diff_encdec_lbk_ena	<= po_addrmap.MSK_Control.diff_encoder_loopback.data(0);
-    rx_invert 			<= po_addrmap.MSK_Control.rx_invert.data(0);
-    clear_counts 		<= po_addrmap.MSK_Control.clear_counts.data(0);
-    freq_word_ft		<= po_addrmap.Fb_FreqWord.config_data.data;
-    freq_word_tx_f1		<= po_addrmap.TX_F1_FreqWord.config_data.data;
-    freq_word_tx_f2		<= po_addrmap.TX_F2_FreqWord.config_data.data;
-    freq_word_rx_f1		<= po_addrmap.RX_F1_FreqWord.config_data.data;
-    freq_word_rx_f2		<= po_addrmap.RX_F2_FreqWord.config_data.data;
-    lpf_freeze 			<= po_addrmap.LPF_Config_0.lpf_freeze.data(0);
-    lpf_zero 			<= po_addrmap.LPF_Config_0.lpf_zero.data(0);
-    lpf_alpha 			<= po_addrmap.LPF_Config_0.lpf_alpha.data;
-    lpf_i_gain 			<= po_addrmap.LPF_Config_1.i_gain.data;
-    lpf_i_shift 		<= po_addrmap.LPF_Config_1.i_shift.data;
-    lpf_p_gain 			<= po_addrmap.LPF_Config_2.p_gain.data;
-    lpf_p_shift 		<= po_addrmap.LPF_Config_2.p_shift.data;
-    tx_data_w 			<= po_addrmap.Tx_Data_Width.data_width.data;
-    rx_data_w 			<= po_addrmap.Rx_Data_Width.data_width.data;
-    discard_rxsamples 	<= po_addrmap.Rx_Sample_Discard.rx_sample_discard.data;
-    discard_rxnco  		<= po_addrmap.Rx_Sample_Discard.rx_nco_discard.data;
+	tx_async_fifo_status_req <= hwif_out.tx_async_fifo_rd_wr_ptr.data.swmod;
 
-	prbs_initial		<= po_addrmap.PRBS_Initial_State.config_data.data;
-	prbs_poly			<= po_addrmap.PRBS_Polynomial.config_data.data;
-	prbs_err_mask 		<= po_addrmap.PRBS_Error_Mask.config_data.data;
-	prbs_err_insert 	<= po_addrmap.PRBS_Control.prbs_error_insert.data(0);
-	prbs_sel 			<= po_addrmap.PRBS_Control.prbs_sel.data(0);
-	prbs_clear 			<= po_addrmap.PRBS_Control.prbs_clear.data(0);
-	prbs_manual_sync	<= po_addrmap.PRBS_Control.prbs_manual_sync.data(0);
-	prbs_sync_threshold <= po_addrmap.PRBS_Control.prbs_sync_threshold.data;
+	hwif_in.tx_async_fifo_rd_wr_ptr.data.we	<= tx_async_fifo_status_ack;
 
-	tx_sync_ena 		<= po_addrmap.Tx_Sync_Ctrl.tx_sync_ena.data(0);
-	tx_sync_cnt 		<= po_addrmap.Tx_Sync_Cnt.tx_sync_cnt.data;
-	tx_sync_force		<= po_addrmap.Tx_Sync_Ctrl.tx_sync_force.data(0);
-	tx_sync_f1			<= po_addrmap.Tx_Sync_Ctrl.tx_sync_f1.data(0);
-	tx_sync_f2			<= po_addrmap.Tx_Sync_Ctrl.tx_sync_f2.data(0);
 
-	pd_alpha1			<= po_addrmap.lowpass_ema_alpha1.alpha.data;
-	pd_alpha2			<= po_addrmap.lowpass_ema_alpha2.alpha.data;
+
+
+    -- commented out by Abraxas3d to add more bits to the register in order to investigate transmitter stall
+    --hwif_in.tx_async_fifo_rd_wr_ptr.data.next_q <= std_logic_vector(resize(unsigned(tx_async_fifo_wr_ptr), 16) & resize(unsigned(tx_async_fifo_rd_ptr), 16));
+
+-- experimental register setup by Abraxas3d
+hwif_in.tx_async_fifo_rd_wr_ptr.data.next_q <=
+    tx_debug_encoder_tvalid &   -- bit 31
+    tx_debug_encoder_tready &   -- bit 30
+    tx_debug_fifo_tvalid &      -- bit 29
+    tx_debug_fifo_tready &      -- bit 28
+    tx_debug_tx_req &           -- bit 27
+    tx_debug_encoder_tlast &    -- bit 26
+    tx_debug_encoder_state &    -- bits 25:23
+    std_logic_vector(resize(unsigned(tx_async_fifo_wr_ptr), 10)) &  -- bits 22:13
+    "000" &                     -- bits 12:10 spare
+    std_logic_vector(resize(unsigned(tx_async_fifo_rd_ptr), 10));   -- bits 9:0
+
+
+    -- Control from AXI to MDM
+    u01s: cdc_resync PORT MAP (clk, csr_init, hwif_out.MSK_Init.txrxinit.value, 		  		txrxinit			);
+    u02s: cdc_resync PORT MAP (clk, csr_init, hwif_out.MSK_Init.txinit.value OR txrxinit, 		txinit 				);
+    u03s: cdc_resync PORT MAP (clk, csr_init, hwif_out.MSK_Init.rxinit.value OR txrxinit, 		rxinit 				);
+    u04s: cdc_resync PORT MAP (clk, csr_init, hwif_out.MSK_Control.ptt.value, 			  		ptt 				);
+    u05s: cdc_resync PORT MAP (clk, csr_init, hwif_out.MSK_Control.loopback_ena.value, 	  		loopback_ena 		);
+    u06s: cdc_resync PORT MAP (clk, csr_init, hwif_out.MSK_Control.diff_encoder_loopback.value, diff_encdec_lbk_ena	);
+    u07s: cdc_resync PORT MAP (clk, csr_init, hwif_out.MSK_Control.rx_invert.value, 			rx_invert 			);
+    u08s: cdc_resync PORT MAP (clk, csr_init, hwif_out.MSK_Control.clear_counts.value, 			clear_counts 		);
+    u09s: cdc_resync PORT MAP (clk, csr_init, hwif_out.LPF_Config_0.lpf_freeze.value,			lpf_freeze 			);
+    u10s: cdc_resync PORT MAP (clk, csr_init, hwif_out.LPF_Config_0.lpf_zero.value, 			lpf_zero 			);
+    u11s: cdc_resync PORT MAP (clk, csr_init, hwif_out.PRBS_Control.prbs_sel.value, 			prbs_sel 			);
+    u12s: cdc_resync PORT MAP (clk, csr_init, hwif_out.PRBS_Control.prbs_clear.value, 			prbs_clear 			);
+    u13s: cdc_resync PORT MAP (clk, csr_init, hwif_out.PRBS_Control.prbs_error_insert.value, 	prbs_err_insert 	);
+    u14s: cdc_resync PORT MAP (clk, csr_init, hwif_out.PRBS_Control.prbs_manual_sync.value, 	prbs_manual_sync 	);
+    u15s: cdc_resync PORT MAP (clk, csr_init, hwif_out.Tx_Sync_Ctrl.tx_sync_ena.value, 			tx_sync_ena 		);
+    u16s: cdc_resync PORT MAP (clk, csr_init, hwif_out.Tx_Sync_Ctrl.tx_sync_force.value, 		tx_sync_force 		);
+
+    -- The remaining control signals also cross from the AXI to the local clock domain. These are static signals
+    -- that are configured while the txrxinit is active. The active txrxinit hold the destination FFs to an 
+    -- initial state preventing meta-stable conditions.
+    freq_word_ft		<= hwif_out.Fb_FreqWord.config_data.value;
+    freq_word_tx_f1		<= hwif_out.TX_F1_FreqWord.config_data.value;
+    freq_word_tx_f2		<= hwif_out.TX_F2_FreqWord.config_data.value;
+    freq_word_rx_f1		<= hwif_out.RX_F1_FreqWord.config_data.value;
+    freq_word_rx_f2		<= hwif_out.RX_F2_FreqWord.config_data.value;
+
+    lpf_alpha 			<= hwif_out.LPF_Config_0.lpf_alpha.value;
+    lpf_i_gain 			<= hwif_out.LPF_Config_1.i_gain.value;
+    lpf_i_shift 		<= hwif_out.LPF_Config_1.i_shift.value;
+    lpf_p_gain 			<= hwif_out.LPF_Config_2.p_gain.value;
+    lpf_p_shift 		<= hwif_out.LPF_Config_2.p_shift.value;
+
+    tx_data_w 			<= hwif_out.Tx_Data_Width.data_width.value;
+    rx_data_w 			<= hwif_out.Rx_Data_Width.data_width.value;
+    discard_rxsamples 	<= hwif_out.Rx_Sample_Discard.rx_sample_discard.value;
+    discard_rxnco  		<= hwif_out.Rx_Sample_Discard.rx_nco_discard.value;
+
+	prbs_initial		<= hwif_out.PRBS_Initial_State.config_data.value;
+	prbs_poly			<= hwif_out.PRBS_Polynomial.config_data.value;
+	prbs_err_mask 		<= hwif_out.PRBS_Error_Mask.config_data.value;
+	prbs_sync_threshold <= hwif_out.PRBS_Control.prbs_sync_threshold.value;
+
+	tx_sync_cnt 		<= hwif_out.Tx_Sync_Cnt.tx_sync_cnt.value;
+
+	pd_alpha1			<= hwif_out.lowpass_ema_alpha1.alpha.value;
+	pd_alpha2			<= hwif_out.lowpass_ema_alpha2.alpha.value;
 
 END ARCHITECTURE rtl;
