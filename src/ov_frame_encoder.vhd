@@ -77,7 +77,13 @@ ENTITY ov_frame_encoder IS
         debug_lfsr        : OUT std_logic_vector(7 DOWNTO 0);
         debug_input_byte  : OUT std_logic_vector(7 DOWNTO 0);
         debug_rand_byte   : OUT std_logic_vector(7 DOWNTO 0);
-        debug_rand_active : OUT std_logic  -- HIGH during RANDOMIZE state
+        debug_rand_active : OUT std_logic;  -- HIGH during RANDOMIZE state
+
+        -- FEC encoder debug outputs (for ILA verification)
+        debug_conv_start  : OUT std_logic;
+        debug_conv_busy   : OUT std_logic;
+        debug_conv_done   : OUT std_logic
+
     );
 END ENTITY ov_frame_encoder;
 
@@ -277,6 +283,11 @@ BEGIN
         debug_input_byte  <= input_buffer(byte_idx) WHEN byte_idx < PAYLOAD_BYTES ELSE x"00";
         debug_rand_byte   <= randomized_buffer(byte_idx) WHEN byte_idx < PAYLOAD_BYTES ELSE x"00";
         debug_rand_active <= '1' WHEN state = RANDOMIZE ELSE '0';
+
+    -- FEC encoder debug
+        debug_conv_start <= encoder_start;
+        debug_conv_busy  <= encoder_busy;
+        debug_conv_done  <= encoder_done;
 
 
     -- Convolutional Encoder Instantiation

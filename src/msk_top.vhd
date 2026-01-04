@@ -163,7 +163,7 @@ ENTITY msk_top IS
 		dbg_fifo_tvalid     : OUT std_logic;
 		dbg_fifo_tready     : OUT std_logic;
 		dbg_encoder_state   : OUT std_logic_vector(2 DOWNTO 0);
-		
+
 		-- Debug outputs for RX path probing
 		dbg_rx_bit_valid        : OUT std_logic;
 		dbg_rx_bit_corr         : OUT std_logic;
@@ -171,12 +171,22 @@ ENTITY msk_top IS
 		dbg_rx_sync_correlation : OUT std_logic_vector(31 DOWNTO 0);
 		dbg_rx_sync_corr_peak   : OUT std_logic_vector(31 DOWNTO 0);
 		dbg_rx_data_soft        : OUT std_logic_vector(15 DOWNTO 0);
+		dbg_rx_svalid_in   : OUT std_logic;  -- external input from ADC
+		dbg_rx_sample_clk  : OUT std_logic;  -- to demodulator to drive sample bit time
+		dbg_rx_samples_dec : OUT std_logic_vector(11 DOWNTO 0);  -- our actual samples
+		dbg_rx_samples_I_raw : OUT std_logic_vector(15 DOWNTO 0); -- samples before we get them
+
 
 		-- Randomizer debug outputs (for ILA)
 		dbg_lfsr_state    : OUT std_logic_vector(7 DOWNTO 0);
 		dbg_input_byte    : OUT std_logic_vector(7 DOWNTO 0);
 		dbg_rand_byte     : OUT std_logic_vector(7 DOWNTO 0);
-		dbg_rand_active   : OUT std_logic
+		dbg_rand_active   : OUT std_logic;
+
+		-- FEC convolutional encoder debug (for ILA)
+		dbg_conv_start  : OUT std_logic;
+		dbg_conv_busy   : OUT std_logic;
+		dbg_conv_done   : OUT std_logic
 
 	);
 END ENTITY msk_top;
@@ -218,14 +228,16 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL tx_encoder_active : std_logic;
         SIGNAL encoder_debug_state : std_logic_vector(2 DOWNTO 0);
 
-
-
         -- Encoder randomizer debug signals
         SIGNAL encoder_debug_lfsr        : std_logic_vector(7 DOWNTO 0);
         SIGNAL encoder_debug_input_byte  : std_logic_vector(7 DOWNTO 0);
         SIGNAL encoder_debug_rand_byte   : std_logic_vector(7 DOWNTO 0);
         SIGNAL encoder_debug_rand_active : std_logic;
 
+	-- FEC encoder debug signals
+	SIGNAL conv_start_sig : std_logic;
+	SIGNAL conv_busy_sig  : std_logic;
+	SIGNAL conv_done_sig  : std_logic;
 
 	SIGNAL tx_async_fifo_prog_full	: std_logic;
 	SIGNAL tx_async_fifo_prog_empty	: std_logic;
@@ -496,7 +508,7 @@ BEGIN
 			BYTE_WIDTH    => 8,
 			USE_BIT_INTERLEAVER => TRUE,
 			BYPASS_RANDOMIZE    => FALSE,  -- Set TRUE to test without randomization
-			BYPASS_FEC          => TRUE,  -- Set TRUE to test without FEC
+			BYPASS_FEC          => FALSE,  -- Set TRUE to test without FEC
 			BYPASS_INTERLEAVE   => FALSE   -- Set TRUE to test without interleaving
 		)
 		PORT MAP (
@@ -526,11 +538,16 @@ BEGIN
 			encoder_active  => tx_encoder_active,
                         debug_state     => encoder_debug_state,
 
-                        -- for ILA probing
+                        -- for ILA probing for randomizer
                         debug_lfsr        => encoder_debug_lfsr,
                         debug_input_byte  => encoder_debug_input_byte,
                         debug_rand_byte   => encoder_debug_rand_byte,
-                        debug_rand_active => encoder_debug_rand_active
+                        debug_rand_active => encoder_debug_rand_active,
+
+                        -- for ILA probing for FEC
+                        debug_conv_start  => conv_start_sig,
+                        debug_conv_busy   => conv_busy_sig,
+                        debug_conv_done   => conv_done_sig
 
 		);
 
@@ -588,12 +605,22 @@ BEGIN
 	dbg_rx_sync_correlation <= std_logic_vector(rx_sync_correlation);
 	dbg_rx_sync_corr_peak   <= std_logic_vector(rx_sync_corr_peak);
 	dbg_rx_data_soft        <= std_logic_vector(rx_data_soft);
+	dbg_rx_svalid_in        <= rx_svalid;
+	dbg_rx_sample_clk       <= rx_sample_clk;
+	dbg_rx_samples_dec      <= rx_samples_dec;
+	dbg_rx_samples_I_raw    <= rx_samples_I;
 
- 	-- Debug output assignments for ILA probing (Randomizer)
+
+	-- Debug output assignments for ILA probing (Randomizer)
 	dbg_lfsr_state  <= encoder_debug_lfsr;
 	dbg_input_byte  <= encoder_debug_input_byte;
 	dbg_rand_byte   <= encoder_debug_rand_byte;
 	dbg_rand_active <= encoder_debug_rand_active;
+
+	-- Debug output assignments for ILA probing (FEC)
+	dbg_conv_start <= conv_start_sig;  -- or wire directly from instance
+	dbg_conv_busy  <= conv_busy_sig;
+	dbg_conv_done  <= conv_done_sig;
 
 	rx_samples_mux <= std_logic_vector(resize(signed(tx_samples_I_int), 16)) WHEN loopback_ena = '1' ELSE rx_samples_I;
 
@@ -755,7 +782,7 @@ BEGIN
             SOFT_WIDTH          => 3,
             USE_BIT_INTERLEAVER => TRUE,
             BYPASS_RANDOMIZE    => FALSE,  -- Set TRUE to test without randomization
-            BYPASS_FEC          => TRUE,  -- Set TRUE to test without FEC
+            BYPASS_FEC          => FALSE,  -- Set TRUE to test without FEC
             BYPASS_INTERLEAVE   => FALSE   -- Set TRUE to test without interleaving
         )
         PORT MAP (
