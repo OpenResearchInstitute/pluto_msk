@@ -186,7 +186,15 @@ ENTITY msk_top IS
 		-- FEC convolutional encoder debug (for ILA)
 		dbg_conv_start  : OUT std_logic;
 		dbg_conv_busy   : OUT std_logic;
-		dbg_conv_done   : OUT std_logic
+		dbg_conv_done   : OUT std_logic;
+
+		-- Receiver investigation debug (for ILA)
+		dbg_rx_missed_syncs     : OUT std_logic_vector(3 DOWNTO 0);
+		dbg_rx_consecutive_good : OUT std_logic_vector(3 DOWNTO 0);
+		dbg_rx_soft_current     : OUT std_logic_vector(15 DOWNTO 0);
+		dbg_rx_bit_count        : OUT std_logic_vector(31 DOWNTO 0);
+		dbg_rx_output_byte      : OUT std_logic_vector(7 DOWNTO 0);
+		dbg_rx_output_valid     : OUT std_logic
 
 	);
 END ENTITY msk_top;
@@ -622,6 +630,15 @@ BEGIN
 	dbg_conv_busy  <= conv_busy_sig;
 	dbg_conv_done  <= conv_done_sig;
 
+	-- Debug output assignments for ILA probing (RX)
+	dbg_rx_missed_syncs     <= rx_debug_missed_syncs;
+	dbg_rx_consecutive_good <= rx_debug_consecutive_good;
+	dbg_rx_soft_current     <= std_logic_vector(rx_sync_soft_current);
+	dbg_rx_bit_count        <= rx_sync_bit_count;
+	dbg_rx_output_byte      <= sync_det_tdata;
+	dbg_rx_output_valid     <= sync_det_tvalid;
+
+
 	rx_samples_mux <= std_logic_vector(resize(signed(tx_samples_I_int), 16)) WHEN loopback_ena = '1' ELSE rx_samples_I;
 
 	-- Delay pipeline for tx_data_bit
@@ -716,9 +733,9 @@ BEGIN
         GENERIC MAP (
             SYNC_WORD           => x"02B8DB",  -- MSB-first sync word (same as TX!)
             PAYLOAD_BYTES       => 268,
-            HUNTING_THRESHOLD   => 6000,      -- adjust after observing, soft decisions
+            HUNTING_THRESHOLD   => 3500,      -- adjust after observing, soft decisions
             -- HUNTING_THRESHOLD   => 3,          -- Strict threshold when searching, hard decisions
-            LOCKED_THRESHOLD    => 3000,      -- adjust after observing, soft decisions
+            LOCKED_THRESHOLD    => 1500,      -- adjust after observing, soft decisions
             --LOCKED_THRESHOLD    => 5,          -- Relaxed threshold when locked, hard decisions
             FLYWHEEL_TOLERANCE  => 2,          -- Tolerate 2 missed syncs
             LOCK_FRAMES         => 3,          -- Need 3 consecutive good frames

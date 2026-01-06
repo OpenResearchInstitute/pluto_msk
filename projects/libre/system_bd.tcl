@@ -524,6 +524,8 @@ ad_connect  msk_top/m_axis axi_ad9361_adc_dma/s_axis
 
 
 
+if {0} {
+
 
 ##############################################################################
 # ILA Debug Core - TX DAC Path Monitoring  
@@ -986,6 +988,11 @@ ad_connect msk_top/dbg_rx_samples_dec ila_rx_soft/probe9
 # Probe 10: sample data from the ADC before it gets to msk_top
 ad_connect msk_top/dbg_rx_samples_I_raw ila_rx_soft/probe10
 
+}
+
+
+
+
 ##############################################################################
 # THRESHOLD CALIBRATION QUICK REFERENCE
 ##############################################################################
@@ -1045,6 +1052,105 @@ ad_connect msk_top/dbg_rx_samples_I_raw ila_rx_soft/probe10
 
 
 
+
+create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_msk_rx
+set_property -dict [list \
+    CONFIG.C_MONITOR_TYPE {Native} \
+    CONFIG.C_NUM_OF_PROBES {13} \
+    CONFIG.C_PROBE0_WIDTH {3} \
+    CONFIG.C_PROBE1_WIDTH {4} \
+    CONFIG.C_PROBE2_WIDTH {4} \
+    CONFIG.C_PROBE3_WIDTH {32} \
+    CONFIG.C_PROBE4_WIDTH {32} \
+    CONFIG.C_PROBE5_WIDTH {16} \
+    CONFIG.C_PROBE6_WIDTH {32} \
+    CONFIG.C_PROBE7_WIDTH {8} \
+    CONFIG.C_PROBE8_WIDTH {1} \
+    CONFIG.C_PROBE9_WIDTH {32} \
+    CONFIG.C_PROBE10_WIDTH {1} \
+    CONFIG.C_PROBE11_WIDTH {16} \
+    CONFIG.C_PROBE12_WIDTH {1} \
+    CONFIG.C_DATA_DEPTH {16384} \
+    CONFIG.C_TRIGIN_EN {false} \
+    CONFIG.C_EN_STRG_QUAL {1} \
+    CONFIG.ALL_PROBE_SAME_MU_CNT {2} \
+] [get_bd_cells ila_msk_rx]
+
+# Clock with divided clock (61.44 MHz) - modem clock domain
+ad_connect clk_divider/clk_out ila_msk_rx/clk
+
+# Probe 0: Frame sync state (3 bits) - HUNTING=1, LOCKED=2, VERIFYING=3
+ad_connect msk_top/dbg_rx_sync_state ila_msk_rx/probe0
+
+# Probe 1: Missed sync count (4 bits) - flywheel counter
+ad_connect msk_top/dbg_rx_missed_syncs ila_msk_rx/probe1
+
+# Probe 2: Consecutive good frames (4 bits) - lock acquisition counter
+ad_connect msk_top/dbg_rx_consecutive_good ila_msk_rx/probe2
+
+# Probe 3: Current correlation (32 bits signed)
+ad_connect msk_top/dbg_rx_sync_correlation ila_msk_rx/probe3
+
+# Probe 4: Peak correlation (32 bits)
+ad_connect msk_top/dbg_rx_sync_corr_peak ila_msk_rx/probe4
+
+# Probe 5: Current soft value input (16 bits signed)
+ad_connect msk_top/dbg_rx_soft_current ila_msk_rx/probe5
+
+# Probe 6: Bit counter (32 bits) - total bits received
+ad_connect msk_top/dbg_rx_bit_count ila_msk_rx/probe6
+
+# Probe 7: Output byte from frame sync (8 bits)
+ad_connect msk_top/dbg_rx_output_byte ila_msk_rx/probe7
+
+# Probe 8: Output byte valid
+ad_connect msk_top/dbg_rx_output_valid ila_msk_rx/probe8
+
+# Probe 9: Frame sync errors (32 bits)
+ad_connect msk_top/frame_sync_errors ila_msk_rx/probe9
+
+# Probe 10: rx_bit_valid from demodulator
+ad_connect msk_top/dbg_rx_bit_valid ila_msk_rx/probe10
+
+# Probe 11: rx_data_soft from demodulator (16 bits)
+ad_connect msk_top/dbg_rx_data_soft ila_msk_rx/probe11
+
+# Probe 12: rx_bit_corr hard decision bit
+ad_connect msk_top/dbg_rx_bit_corr ila_msk_rx/probe12
+
+
+
+
+
+
+if {0} {
+
+create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_msk_rx
+set_property -dict [list \
+    CONFIG.C_MONITOR_TYPE {Native} \
+    CONFIG.C_NUM_OF_PROBES {6} \
+    CONFIG.C_PROBE0_WIDTH {3} \
+    CONFIG.C_PROBE1_WIDTH {32} \
+    CONFIG.C_PROBE2_WIDTH {32} \
+    CONFIG.C_PROBE3_WIDTH {32} \
+    CONFIG.C_PROBE4_WIDTH {1} \
+    CONFIG.C_PROBE5_WIDTH {16} \
+    CONFIG.C_DATA_DEPTH {16384} \
+    CONFIG.C_TRIGIN_EN {false} \
+    CONFIG.C_EN_STRG_QUAL {1} \
+    CONFIG.ALL_PROBE_SAME_MU_CNT {2} \
+] [get_bd_cells ila_msk_rx]
+
+ad_connect clk_divider/clk_out ila_msk_rx/clk
+
+ad_connect msk_top/dbg_rx_sync_state ila_msk_rx/probe0
+ad_connect msk_top/dbg_rx_sync_correlation ila_msk_rx/probe1
+ad_connect msk_top/dbg_rx_sync_corr_peak ila_msk_rx/probe2
+ad_connect msk_top/frame_sync_errors ila_msk_rx/probe3
+ad_connect msk_top/dbg_rx_bit_valid ila_msk_rx/probe4
+ad_connect msk_top/dbg_rx_data_soft ila_msk_rx/probe5
+
+}
 
 
 
