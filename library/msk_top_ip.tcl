@@ -74,6 +74,10 @@ adi_add_bus "m_axis" "master" \
     {"m_axis_tdata" "TDATA"} \
     {"m_axis_tlast" "TLAST"}]
 
-adi_add_bus_clock "s_axis_aclk" "m_axis" "s_axis_aresetn"
+# when DMA was clocked by 254 MHz clock
+#adi_add_bus_clock "s_axis_aclk" "m_axis" "s_axis_aresetn"
+
+# To clock DMA at 100 MHz so that our dual clock rx FIFO works
+adi_add_bus_clock "m_axis_aclk" "m_axis"
 
 ipx::save_core [ipx::current_core]

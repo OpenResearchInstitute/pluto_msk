@@ -310,9 +310,22 @@ ad_ip_instance util_vector_logic logic_or_1 [list \
 ad_connect  logic_or_1/Op1  axi_ad9361/rst
 ad_connect  logic_or_1/Op2  GND
 
-# DMA clock connections - these stay at l_clk (245 MHz)
-ad_connect  axi_ad9361/l_clk axi_ad9361_adc_dma/s_axis_aclk
+# DMA clock connections
+#
+# TX path (DAC DMA): DMA outputs at l_clk (245 MHz) to msk_top/s_axis.
+# msk_top's internal async FIFO crosses from 245 MHz to 61 MHz modem clock.
+# This works - keep as is.
 ad_connect  axi_ad9361/l_clk axi_ad9361_dac_dma/m_axis_aclk
+
+# RX path (ADC DMA): msk_top/m_axis outputs at sys_cpu_clk (100 MHz).
+# The rx_async_fifo inside msk_top crosses from 61 MHz modem to 100 MHz.
+# Originally this was l_clk (245 MHz), causing clock domain violation:
+#   msk_top outputs at 100 MHz, DMA sampled at 245 MHz -> metastability -> crash
+# Fix: match DMA input clock to msk_top output clock.
+# WRONG - clock mismatch:
+#ad_connect  axi_ad9361/l_clk axi_ad9361_adc_dma/s_axis_aclk
+# CORRECT - matches m_axis_aclk:
+ad_connect  sys_cpu_clk axi_ad9361_adc_dma/s_axis_aclk
 
 # Tie off unused signals
 ad_connect GND axi_ad9361/adc_dovf
@@ -378,6 +391,12 @@ ad_connect axi_ad9361/l_clk clk_divider/clk_in
 
 ad_ip_instance msk_top msk_top
 
+# Override clock domain for m_axis BEFORE connections are made
+# msk_top is a module reference, so Vivado infers wrong clock domain
+# Tell Vivado that m_axis interface uses m_axis_aclk clock domain
+# This is needed because msk_top is a module reference, not packaged IP
+set_property CONFIG.CLK_DOMAIN system_sys_ps7_0_FCLK_CLK0 [get_bd_intf_pins msk_top/m_axis]
+
 # CLOCK_DIVIDER: MSK processing clock - use divided clock (61.44 MHz)
 # This is where the NCO, modulator, demodulator all run
 ad_connect  msk_top/clk clk_divider/clk_out
@@ -388,7 +407,6 @@ ad_connect  msk_top/clk clk_divider/clk_out
 # RX output (m_axis_aclk): now at sys_cpu_clk (100 MHz) because RX DMA runs there
 ad_connect  msk_top/s_axis_aclk axi_ad9361/l_clk
 ad_connect  msk_top/m_axis_aclk sys_cpu_clk
-
 
 # MSK AXI-Lite register interface (100 MHz CPU clock)
 ad_connect  msk_top/s_axi_aclk sys_cpu_clk

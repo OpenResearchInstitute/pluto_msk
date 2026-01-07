@@ -197,7 +197,29 @@ ENTITY msk_top IS
 		dbg_rx_output_valid     : OUT std_logic
 
 	);
+
+
+
+    -- AXI-Stream interface clock associations for block design
+    ATTRIBUTE X_INTERFACE_INFO : STRING;
+    ATTRIBUTE X_INTERFACE_PARAMETER : STRING;
+    
+    ATTRIBUTE X_INTERFACE_INFO OF m_axis_aclk: SIGNAL IS "xilinx.com:signal:clock:1.0 m_axis_aclk CLK";
+    ATTRIBUTE X_INTERFACE_PARAMETER OF m_axis_aclk: SIGNAL IS "ASSOCIATED_BUSIF m_axis, FREQ_HZ 100000000";
+    
+    ATTRIBUTE X_INTERFACE_INFO OF s_axis_aclk: SIGNAL IS "xilinx.com:signal:clock:1.0 s_axis_aclk CLK";
+    ATTRIBUTE X_INTERFACE_PARAMETER OF s_axis_aclk: SIGNAL IS "ASSOCIATED_BUSIF s_axis, ASSOCIATED_RESET s_axis_aresetn, FREQ_HZ 245760000";
+    
+    ATTRIBUTE X_INTERFACE_INFO OF s_axis_aresetn: SIGNAL IS "xilinx.com:signal:reset:1.0 s_axis_aresetn RST";
+    ATTRIBUTE X_INTERFACE_PARAMETER OF s_axis_aresetn: SIGNAL IS "POLARITY ACTIVE_LOW";
+
+
 END ENTITY msk_top;
+
+
+
+
+
 
 ARCHITECTURE struct OF msk_top IS 
 
@@ -432,7 +454,6 @@ ARCHITECTURE struct OF msk_top IS
         --ATTRIBUTE dont_touch OF sync_det_tvalid : SIGNAL IS "true";
         --ATTRIBUTE dont_touch OF sync_det_tready : SIGNAL IS "true";
         --ATTRIBUTE dont_touch OF sync_det_tlast : SIGNAL IS "true";
-
 
 
 BEGIN 
