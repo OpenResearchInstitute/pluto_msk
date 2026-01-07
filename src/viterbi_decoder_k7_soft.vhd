@@ -84,7 +84,7 @@ ARCHITECTURE rtl OF viterbi_decoder_k7_soft IS
     SIGNAL dec_rd_data : std_logic;
     
     SIGNAL time_step : INTEGER RANGE 0 TO NUM_SYMBOLS;
-    SIGNAL state_idx : INTEGER RANGE 0 TO NUM_STATES-1;
+    SIGNAL state_idx : INTEGER RANGE 0 TO NUM_STATES;
     SIGNAL tb_time : INTEGER RANGE -1 TO NUM_SYMBOLS;
     SIGNAL tb_state : INTEGER RANGE 0 TO NUM_STATES-1;
     SIGNAL best_metric : unsigned(METRIC_WIDTH-1 DOWNTO 0);
