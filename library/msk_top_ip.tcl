@@ -11,10 +11,8 @@ read_vhdl -vhdl2008 "../rdl/src/reg_utils.vhd"
 read_vhdl "../rdl/outputs/rtl/msk_top_regs_pkg.vhd"
 read_vhdl -vhdl2008 "../rdl/outputs/rtl/msk_top_regs.vhd"
 read_vhdl -vhdl2008 "../src/conv_encoder_k7.vhd"
-read_vhdl -vhdl2008 "../src/viterbi_decoder_k7_simple.vhd"
 read_vhdl -vhdl2008 "../src/viterbi_decoder_k7_soft.vhd"
 read_vhdl -vhdl2008 "../src/ov_frame_encoder.vhd"
-read_vhdl -vhdl2008 "../src/ov_frame_decoder.vhd"
 read_vhdl -vhdl2008 "../src/ov_frame_decoder_soft.vhd"
 
 # Register all non-VHDL-2008 files
@@ -33,7 +31,6 @@ adi_ip_files msk_top [list \
   "../src/axis_dma_adapter.vhd" \
   "../src/axis_async_fifo.vhd" \
   "../src/byte_to_bit_deserializer.vhd" \
-  "../src/frame_sync_detector.vhd" \
   "../src/frame_sync_detector_soft.vhd" \
   "../nco/src/nco.vhd" \
   "../prbs/src/prbs_gen.vhd" \
