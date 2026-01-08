@@ -337,7 +337,8 @@ ENTITY frame_sync_detector_soft IS
         
         -- Additional debug for troubleshooting
         debug_soft_current    : OUT signed(15 DOWNTO 0);  -- Current soft input value
-        debug_bit_count       : OUT std_logic_vector(31 DOWNTO 0)  -- Total bits received
+        debug_bit_count       : OUT std_logic_vector(31 DOWNTO 0);  -- Total bits received
+        debug_soft_quantized  : OUT std_logic_vector(SOFT_WIDTH-1 DOWNTO 0)  -- Current 3-bit quantized value
     );
 END ENTITY frame_sync_detector_soft;
 
@@ -416,6 +417,9 @@ ARCHITECTURE rtl OF frame_sync_detector_soft IS
     
     -- Debug: count total bits received (to verify data is flowing)
     SIGNAL debug_bits_received : unsigned(31 DOWNTO 0);
+
+   -- Debug: current quantized soft value (for threshold calibration via ILA)
+    SIGNAL debug_quantized_reg : std_logic_vector(SOFT_WIDTH-1 DOWNTO 0);
     
     ----------------------------------------------------------------------------
     -- Correlation Calculator
@@ -570,6 +574,7 @@ BEGIN
     debug_corr_peak <= correlation_peak;
     debug_soft_current <= s_axis_soft_tdata;  -- See what soft values look like
     debug_bit_count <= std_logic_vector(debug_bits_received);  -- Verify bits flowing
+    debug_soft_quantized <= debug_quantized_reg;
 
     ------------------------------------------------------------------------------
     -- Main Process: Frame Tracking with Flywheel (Correlator Version)
@@ -684,6 +689,7 @@ BEGIN
                             IF frame_soft_idx < PAYLOAD_BITS THEN
                                 soft_frame_buffer(frame_soft_idx) <= 
                                     quantize_soft(s_axis_soft_tdata);
+                                debug_quantized_reg <= quantize_soft(s_axis_soft_tdata);
                                 frame_soft_idx <= frame_soft_idx + 1;
                             END IF;
                             

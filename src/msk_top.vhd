@@ -192,6 +192,7 @@ ENTITY msk_top IS
 		dbg_rx_missed_syncs     : OUT std_logic_vector(3 DOWNTO 0);
 		dbg_rx_consecutive_good : OUT std_logic_vector(3 DOWNTO 0);
 		dbg_rx_soft_current     : OUT std_logic_vector(15 DOWNTO 0);
+		dbg_rx_soft_quantized   : OUT std_logic_vector(2 DOWNTO 0);
 		dbg_rx_bit_count        : OUT std_logic_vector(31 DOWNTO 0);
 		dbg_rx_output_byte      : OUT std_logic_vector(7 DOWNTO 0);
 		dbg_rx_output_valid     : OUT std_logic
@@ -341,6 +342,7 @@ ARCHITECTURE struct OF msk_top IS
         SIGNAL rx_sync_corr_peak       : signed(31 DOWNTO 0);
         SIGNAL rx_sync_soft_current    : signed(15 DOWNTO 0);
         SIGNAL rx_sync_bit_count       : std_logic_vector(31 DOWNTO 0);
+        SIGNAL rx_sync_soft_quantized  : std_logic_vector(2 DOWNTO 0);
 
 	SIGNAL rx_sample_clk 	: std_logic;
 	SIGNAL discard_rxsamples: std_logic_vector(7 DOWNTO 0);
@@ -652,6 +654,7 @@ BEGIN
 	dbg_rx_bit_count        <= rx_sync_bit_count;
 	dbg_rx_output_byte      <= sync_det_tdata;
 	dbg_rx_output_valid     <= sync_det_tvalid;
+	dbg_rx_soft_quantized <= rx_sync_soft_quantized;
 
 
 	rx_samples_mux <= std_logic_vector(resize(signed(tx_samples_I_int), 16)) WHEN loopback_ena = '1' ELSE rx_samples_I;
@@ -793,8 +796,8 @@ BEGIN
             debug_correlation      => rx_sync_correlation,
             debug_corr_peak        => rx_sync_corr_peak,
             debug_soft_current     => rx_sync_soft_current,
-            debug_bit_count        => rx_sync_bit_count
-
+            debug_bit_count        => rx_sync_bit_count,
+            debug_soft_quantized   => rx_sync_soft_quantized
        );
     
     ------------------------------------------------------------------------------
