@@ -1,2 +1,0 @@
-source /opt/Xilinx/Vivado/2023.1/settings64.sh
-export ADI_IGNORE_VERSION_CHECK=1
