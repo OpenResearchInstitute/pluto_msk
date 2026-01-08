@@ -353,8 +353,7 @@ ARCHITECTURE rtl OF frame_sync_detector_soft IS
     TYPE soft_shift_array_t IS ARRAY(0 TO 23) OF signed(15 DOWNTO 0);
     SIGNAL soft_shift_reg : soft_shift_array_t;
 
-    -- Bit-level shift for hard decisions (still needed for byte assembly)
-    SIGNAL sync_shift_bits : std_logic_vector(23 DOWNTO 0);
+    -- Counts the 24 sync bits in VERIFYING_SYNC state
     SIGNAL sync_bit_count  : unsigned(4 DOWNTO 0);  -- Counts 0-23
     
     -- Byte assembly for output (MSB shifts in from left)
@@ -591,7 +590,6 @@ BEGIN
                     soft_shift_reg(i) <= (OTHERS => '0');
                 END LOOP;
                 
-                sync_shift_bits <= (OTHERS => '0');
                 sync_bit_count <= (OTHERS => '0');
                 byte_shift_reg <= (OTHERS => '0');
                 bit_count <= (OTHERS => '0');
@@ -633,7 +631,6 @@ BEGIN
                     soft_shift_reg(0) <= s_axis_soft_tdata;
                     
                     -- Also shift hard decision bits (for byte assembly)
-                    sync_shift_bits <= sync_shift_bits(22 DOWNTO 0) & rx_bit;
                     byte_shift_reg <= byte_shift_reg(6 DOWNTO 0) & rx_bit;
                 END IF;
                 
