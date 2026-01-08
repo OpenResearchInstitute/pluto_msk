@@ -1074,7 +1074,7 @@ ad_connect msk_top/dbg_rx_samples_I_raw ila_rx_soft/probe10
 create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_msk_rx
 set_property -dict [list \
     CONFIG.C_MONITOR_TYPE {Native} \
-    CONFIG.C_NUM_OF_PROBES {13} \
+    CONFIG.C_NUM_OF_PROBES {14} \
     CONFIG.C_PROBE0_WIDTH {3} \
     CONFIG.C_PROBE1_WIDTH {4} \
     CONFIG.C_PROBE2_WIDTH {4} \
@@ -1088,6 +1088,7 @@ set_property -dict [list \
     CONFIG.C_PROBE10_WIDTH {1} \
     CONFIG.C_PROBE11_WIDTH {16} \
     CONFIG.C_PROBE12_WIDTH {1} \
+    CONFIG.C_PROBE13_WIDTH {3} \
     CONFIG.C_DATA_DEPTH {16384} \
     CONFIG.C_TRIGIN_EN {false} \
     CONFIG.C_EN_STRG_QUAL {1} \
@@ -1136,7 +1137,11 @@ ad_connect msk_top/dbg_rx_data_soft ila_msk_rx/probe11
 # Probe 12: rx_bit_corr hard decision bit
 ad_connect msk_top/dbg_rx_bit_corr ila_msk_rx/probe12
 
-
+# Probe 13: Quantized soft value (3 bits) - verify threshold calibration
+#   Watch distribution: should see mix of 000-111 codes
+#   Too many 011 (erasure)? -> Signal weak or thresholds too tight
+#   All 000/111 (strong)? -> Thresholds may be too loose
+ad_connect msk_top/dbg_rx_soft_quantized ila_msk_rx/probe13
 
 
 
