@@ -47,6 +47,194 @@
 -- by Open Research Institute
 -- Enhanced with soft-decision correlation and soft Viterbi support
 ------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------
+-- Frame Sync Detector with Soft Decision Support
+-- frame_sync_detector_soft.vhd
+------------------------------------------------------------------------------------------------------
+-- Open Research Institute - Opulent Voice Protocol
+-- 
+-- ROLE IN RECEIVE CHAIN:
+--   This module sits between the MSK demodulator and the OV frame decoder. Inputs are a stream of
+--   hard decision bits along with the soft decision data. There is a soft correlator, formed by a
+--   24-tap finite impulse response filter. There is a byte buffer, a state machine, a soft quantizer,
+--   and handshaking for frame delivery. The frame sync word is discarded after detection. 
+--
+------------------------------------------------------------------------------------------------------
+-- WHY SOFT DECISIONS MATTER:
+--
+--   Hard decision:  Each bit is '0' or '1' - confidence information discarded
+--   Soft decision:  Each bit carries magnitude (how sure are we of the value?)
+--
+--   The MSK demodulator outputs rx_data_soft = F1_energy - F2_energy:
+--     - Large positive is confident '0'
+--     - Large negative is confident '1'  
+--     - Near zero is an uncertain value (this is often set to be an erasure)
+--
+--   By preserving this confidence through to the Viterbi decoder, we gain
+--   approximately 2-3 dB in effective SNR. In D&D terms: instead of the
+--   demodulator making a DC 15 check and accepting the result as a success
+--   or a failure, the Viterbi gets to see the die roll in advance of the decision
+--   and can use additional information from other characters in order to decide 
+--   what to do in battle.
+--
+------------------------------------------------------------------------------------------------------
+-- SOFT CORRELATION (the clever part):
+--
+--   Traditional sync detection counts bit mismatches (Hamming distance)
+--   Soft correlation uses a weighted sum using confidence values
+--
+--   For sync word 0x02B8DB (24 bits), we compute:
+--
+--     correlation = sum over all values of i of (soft_sample[i] x bipolar_sync[i])
+--
+--   Where bipolar_sync[i] = +1 if sync bit is '0', and -1 if sync bit is '1'
+--   (accounting for demodulator polarity: negative soft is '1')
+--
+--   Result: Sharp correlation peak when sync word aligns, with sidelobes
+--   suppressed by 8:1 ratio. The Opulent Voice sync word was exhaustively searched for 
+--   and has an optimal Peak-to-Sidelobe Ratio. Much better detection at low SNR than hard decision.
+--
+------------------------------------------------------------------------------------------------------
+-- DUAL OUTPUT STREAMS
+--
+--   Stream 1: m_axis_* (bytes)
+--     - 268 bytes per frame
+--     - Hard decision data for backwards compatibility
+--     - This stream is output first, followed by Stream 2
+--
+--   Stream 2: m_axis_soft_bit_* (quantized soft values)  
+--     - 2144 values per frame (268 bytes × 8 bits)
+--     - 3-bit quantization: 000=strong '0' ... 111=strong '1'
+--     - Output immediately after Stream 1 completes
+--     - Used by soft Viterbi decoder for FEC
+--
+--   The downstream decoder receives both streams and uses the soft values
+--   for Viterbi decoding, falling back to hard decisions if needed.
+--
+------------------------------------------------------------------------------------------------------
+-- 3-BIT SOFT QUANTIZATION:
+--
+--   Input:  16-bit signed from demodulator (typically ±300-400 range)
+--   Output: 3-bit code representing confidence level
+--
+--     Code  | Meaning        | Soft Value Range
+--     ------|----------------|------------------
+--     000   | Strong '0'     | soft > +300
+--     001   | Medium '0'     | +150 < soft ≤ +300
+--     010   | Weak '0'       | +50 < soft ≤ +150
+--     011   | Uncertain      | -50 < soft ≤ +50 (erasure zone)
+--     100   | Weak '1'       | -150 < soft ≤ -50
+--     101   | Medium '1'     | -300 < soft ≤ -150
+--     110   | (mapped to 101)| 
+--     111   | Strong '1'     | soft ≤ -300
+--
+--   These thresholds are calibrated for loopback simulation. Hardware
+--   deployment may require adjustment based on observed soft value distribution.
+--
+------------------------------------------------------------------------------------------------------
+-- STATE MACHINE:
+--
+--   HUNTING:        Correlate every bit, looking for sync word until correlation 
+--                   result is  greater than or equal to HUNT_THRESH.
+--   LOCKED:         Collecting 268 payload bytes + 2144 soft values
+--   VERIFYING_SYNC: At expected sync position, verify correlation. go to LOCKED
+--                   if we saw the sync word. If we did not, record a  missed sync. 
+--                   If the number of missed syncs is more than our FLYWHEEL limit, 
+--                   then go back to hunting.
+--
+------------------------------------------------------------------------------------------------------
+-- FLYWHEEL MECHANISM:
+--
+--   Once locked, brief interference shouldn't cause immediate loss of sync.
+--   The "flywheel" continues at the expected frame rate:
+--
+--   - FLYWHEEL_TOLERANCE = 2 (default): Can miss 2 consecutive syncs
+--   - If sync found where expected: missed_sync_count resets to 0
+--   - If sync missed: increment missed_sync_count
+--   - If missed_sync_count > FLYWHEEL_TOLERANCE: declare lock lost
+--
+--   This prevents momentary noise bursts from causing re-acquisition delays.
+--
+------------------------------------------------------------------------------------------------------
+-- LOCK ACQUISITION:
+--
+--   To declare stable lock (not just a lucky correlation):
+--
+--   - LOCK_FRAMES = 3 (default): Need 3 consecutive good frames
+--   - HUNTING_THRESHOLD: Higher bar when searching (avoid false positives)
+--   - LOCKED_THRESHOLD: Lower bar when locked (flywheel tolerance)
+--
+--   The acquiring_lock flag tracks whether we're building confidence or
+--   have achieved stable lock. Any miss during acquisition restarts count.
+--
+------------------------------------------------------------------------------------------------------
+-- THRESHOLD CALIBRATION:
+--
+--   The correlation thresholds depend on actual soft value magnitudes.
+--   
+--   CALIBRATION PROCEDURE:
+--   1. Monitor debug_corr_peak via ILA or CSR
+--   2. Transmit known frames and observe peak correlation  
+--   3. Set HUNTING_THRESHOLD ≈ 70-80% of peak (conservative)
+--   4. Set LOCKED_THRESHOLD ≈ 40-50% of peak (allow flywheel margin)
+--
+------------------------------------------------------------------------------------------------------
+-- SYNC WORD: 0x02B8DB (24 bits, MSB-first transmission)
+--
+--   This sync word was selected via exhaustive search for optimal
+--   autocorrelation properties
+--
+--   - Peak-to-Sidelobe Ratio (PSLR): 8:1
+--   - Balanced 0/1 count for DC neutrality
+--
+--   The 24-bit length provides:
+--   - 2^24 = 16M possible patterns (low false positive rate)
+--   - Reasonable correlation computation (24 multiply-adds)
+--   - Fits in single clock cycle with pipelined arithmetic
+--
+------------------------------------------------------------------------------------------------------
+-- GENERICS:
+--   SYNC_WORD          : 24-bit sync pattern (default 0x02B8DB)
+--   PAYLOAD_BYTES      : Bytes per frame after sync (default 268 for OV)
+--   HUNTING_THRESHOLD  : Correlation threshold when searching
+--   LOCKED_THRESHOLD   : Correlation threshold when locked (lower = more tolerant)
+--   FLYWHEEL_TOLERANCE : Consecutive missed syncs before lock lost
+--   LOCK_FRAMES        : Consecutive good frames to declare stable lock
+--   BUFFER_DEPTH       : log2 of circular buffer size (default 11 = 2KB)
+--   SOFT_WIDTH         : Bits per quantized soft value (default 3)
+--
+------------------------------------------------------------------------------------------------------
+-- RESOURCE USAGE:
+--   - 1× Block RAM (2KB byte circular buffer)
+--   - 1× Block RAM (~6KB soft frame buffer: 2144 × 3 bits)
+--   - 24× 16-bit soft sample registers (shift register)
+--   - 32-bit correlation accumulator
+--   - Modest LUT usage for state machine and quantization
+--
+------------------------------------------------------------------------------------------------------
+-- DEBUG OUTPUTS:
+--   debug_state           : Current state (001=HUNT, 010=LOCK, 011=VERIFY)
+--   debug_missed_syncs    : Flywheel miss counter
+--   debug_consecutive_good: Lock acquisition counter
+--   debug_correlation     : Current correlation value
+--   debug_corr_peak       : Maximum correlation seen (for threshold tuning)
+--   debug_soft_current    : Current soft input (verify demodulator output)
+--   debug_bit_count       : Total bits received (verify data flow)
+--
+------------------------------------------------------------------------------------------------------
+-- VERSION HISTORY:
+--   v1: Initial soft correlation implementation (from frame_sync_detector.vhd)
+--   v2: Added soft value buffering and m_axis_soft_bit output stream
+--   v3: Calibrated quantization thresholds for loopback simulation
+--
+------------------------------------------------------------------------------------------------------
+
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
