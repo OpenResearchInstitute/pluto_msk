@@ -765,7 +765,6 @@ BEGIN
             rx_bit_valid    => rx_bit_valid,
             --s_axis_soft_tdata => (OTHERS => '0'),  -- tied to zero for hard decisions
             s_axis_soft_tdata => rx_data_soft,  -- Connect rx_data_soft for soft decisions
-            m_axis_soft_tdata => OPEN,          -- debug passthrough, unused
 
             -- byte output
             m_axis_tdata    => sync_det_tdata,

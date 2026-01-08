@@ -224,7 +224,7 @@
 --   debug_consecutive_good: Lock acquisition counter
 --   debug_correlation     : Current correlation value
 --   debug_corr_peak       : Maximum correlation seen (for threshold tuning)
---   debug_soft_current    : Current soft input (verify demodulator output)
+--   debug_soft_current    : Raw 16-bit soft input from demodulator (for ILA/threshold tuning)
 --   debug_bit_count       : Total bits received (verify data flow)
 --
 ------------------------------------------------------------------------------------------------------
@@ -306,7 +306,6 @@ ENTITY frame_sync_detector_soft IS
         -- Magnitude = confidence (larger |value| = stronger decision)
         ------------------------------------------------------------------------
         s_axis_soft_tdata  : IN  signed(15 DOWNTO 0);  -- Soft decision input
-        m_axis_soft_tdata  : OUT signed(15 DOWNTO 0);  -- Soft decision passthrough
         
         -- AXIS Master Interface - Bytes (to decoder)
         m_axis_tdata    : OUT std_logic_vector(7 DOWNTO 0);
@@ -557,9 +556,6 @@ BEGIN
     frame_sync_errors <= std_logic_vector(errors_count);
     m_axis_tvalid <= tvalid_int;
     m_axis_tlast <= tlast_int;
-    
-    -- Passthrough soft decisions (for downstream use)
-    m_axis_soft_tdata <= s_axis_soft_tdata;
     
     -- Debug outputs
     WITH state SELECT debug_state <=
