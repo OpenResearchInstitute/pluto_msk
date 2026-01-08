@@ -1,20 +1,113 @@
 ------------------------------------------------------------------------------------------------------
 -- AXIS-Compliant Asynchronous FIFO
 ------------------------------------------------------------------------------------------------------
--- FIX v4: Pipelined Gray-to-binary conversion for 245 MHz timing closure
--- 
--- Change: wr_ptr_bin_sync is now a registered signal instead of a combinational variable.
--- This adds one cycle of latency on empty detection, which is safe because:
---   1. The write pointer is already 2+ cycles stale from the CDC synchronizer
---   2. One extra cycle of "false not-empty" just means we check again next cycle
---   3. The FIFO depth provides margin for this additional latency
+-- Role in the Data Path:
+--   Clock domain crossing buffer between the PS/DMA clock domain and the symbol
+--   clock domain. Absorbs timing differences and provides elasticity between
+--   bursty DMA transfers and steady symbol-rate consumption by the modulator (TX)
+--   or bursty decoder output and steady DMA consumption (RX).
+--
+--   Think of it as a dimensional portal between two parts of the D&D dungeon that
+--   run on different initiative counts. Data goes in on one clock, comes out on
+--   another, and the FIFO keeps everyone synchronized.
+--
+-- Clock Domains:
+--   wr_aclk     - Write side (e.g., PS AXI clock at 245 MHz for TX path)
+--   rd_aclk     - Read side (e.g., symbol clock derived from sample rate)
+--   status_aclk - Status capture domain for debug/monitoring (typically AXI clock)
+--
+-- CDC Strategy:
+--   Gray-coded pointers with 2-stage synchronizers provide metastability protection
+--   when passing pointer values between clock domains. Gray code ensures only one
+--   bit changes per increment, so a metastable sample can only be off by one.
+--
+--   FIX v4 adds a registered stage AFTER Gray-to-binary conversion to break
+--   critical timing paths at high frequencies. This adds one cycle of latency
+--   to empty/full detection, which is safe given FIFO depth and inherent CDC
+--   latency (pointers are already 2+ cycles stale from synchronizers).
+--
+-- Memory Structure:
+--   Dual-port Block RAM inferred from separate arrays:
+--     ram_data[DEPTH] - Payload bytes (DATA_WIDTH bits each)
+--     ram_last[DEPTH] - TLAST flags (1 bit each, stored alongside data)
+--
+--   TLAST is stored per-entry to preserve frame boundaries through the FIFO.
+--   When a byte with TLAST='1' is written, that flag travels with it and
+--   emerges on m_axis_tlast when that byte is read.
+--
+-- Write Side Behavior:
+--   Accepts data via AXI-Stream slave interface (s_axis_*).
+--   Backpressure via s_axis_tready:
+--     - tready='1': FIFO can accept data
+--     - tready='0': FIFO is full or nearly full (prog_full asserted)
+--
+--   If upstream respects tready, overflow cannot occur. The design relies on
+--   AXI-Stream flow control rather than overflow detection flags.
+--
+-- Read Side Behavior (AXI-Stream Compliant Three-State Logic):
+--   The read side implements proper AXI-Stream handshaking with three states:
+--
+--   State A - Becoming Valid:
+--     Condition: tvalid_int='0' AND FIFO not empty
+--     Action: Present first byte on m_axis_tdata, assert m_axis_tvalid
+--     Key: Do NOT advance read pointer—data not yet consumed
+--
+--   State B - Handshake Complete:
+--     Condition: m_axis_tvalid='1' AND m_axis_tready='1'
+--     Action: Advance read pointer, present next byte (or deassert tvalid if empty)
+--     Key: This is the only state where the pointer advances
+--
+--   State C - Stalled:
+--     Condition: m_axis_tvalid='1' AND m_axis_tready='0'
+--     Action: HOLD EVERYTHING STABLE (tdata, tlast, tvalid, pointer)
+--     Key: Critical for AXI-Stream compliance—data must not change while valid
+--
+--   State D - Invalid:
+--     Condition: tvalid_int='0' AND FIFO empty
+--     Action: Wait for data to arrive, output held at zero
+--
+-- Frame-Aware Programmable Thresholds:
+--   FRAME_SIZE generic allows threshold tuning for different protocols.
+--
+--   prog_full:  Asserted when remaining space < PROG_FULL_THRESHOLD (one frame)
+--               Gives upstream early warning to stop sending before hard full.
+--
+--   prog_empty: Asserted when fill level < PROG_EMPTY_THRESHOLD (two frames)
+--               Gives downstream warning that starvation is approaching.
+--               Two frames provides margin for DMA latency to refill.
+--
+-- Status Capture Interface:
+--   A third clock domain (status_aclk) can request synchronized snapshots of
+--   wr_ptr and rd_ptr via a request/acknowledge handshake:
+--     1. Assert status_req
+--     2. State machine synchronizes request to both write and read domains
+--     3. Each domain captures its pointer and acknowledges
+--     4. When both acknowledge, status_ack pulses and pointers are valid
+--
+--   This provides a consistent view for debug registers without corrupting
+--   the pointers with CDC artifacts.
+--
+-- Overflow/Underflow Philosophy:
+--   This FIFO does NOT implement overflow/underflow detection flags.
+--   The design relies entirely on AXI-Stream backpressure:
+--     - Overflow prevented by: upstream respecting s_axis_tready
+--     - Underflow prevented by: only asserting m_axis_tvalid when data exists
+--   If the system is well-behaved (honors flow control), these conditions
+--   cannot occur. This is a deliberate design choice, not an omission.
+--
+-- Generics:
+--   DATA_WIDTH - Width of data bus (default 8 for byte-oriented)
+--   ADDR_WIDTH - Pointer width; FIFO depth is 2^ADDR_WIDTH (default 11 = 2048)
+--   FRAME_SIZE - Frame size in bytes for threshold calculation (default 134 for OV)
+--
+-- Version History:
+--   v4: Pipelined Gray-to-binary conversion for 245 MHz timing closure
+--   v3: Three-state read logic for AXI-Stream compliance
+--   v2: Added TLAST storage for frame boundary preservation
+--   v1: Basic async FIFO with Gray-coded pointers
+--
 ------------------------------------------------------------------------------------------------------
--- Previous versions:
--- FIX v3: Proper three-state handling
--- State A: Becoming valid (empty→non-empty): Present first byte, assert tvalid
--- State B: Handshake completes (tvalid='1', tready='1'): Advance pointer, present next byte
--- State C: Valid but not consumed (tvalid='1', tready='0'): HOLD STABLE
-------------------------------------------------------------------------------------------------------
+
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
@@ -23,7 +116,8 @@ USE ieee.numeric_std.ALL;
 ENTITY axis_async_fifo IS
     GENERIC (
         DATA_WIDTH  : NATURAL := 8;
-        ADDR_WIDTH  : NATURAL := 11  -- 2^11 = 2048 bytes
+        ADDR_WIDTH  : NATURAL := 11;  -- 2^11 = 2048 bytes default
+        FRAME_SIZE  : NATURAL := 134  -- Frame size for threshold calculation (bytes)
     );
     PORT (
         -- Write clock domain (DMA side)
@@ -53,8 +147,6 @@ ENTITY axis_async_fifo IS
         status_aresetn  : IN  std_logic;
         status_req      : IN  std_logic;
         status_ack      : OUT std_logic;
-        fifo_overflow   : OUT std_logic;
-        fifo_underflow  : OUT std_logic;
         fifo_wr_ptr     : OUT std_logic_vector(ADDR_WIDTH DOWNTO 0);
         fifo_rd_ptr     : OUT std_logic_vector(ADDR_WIDTH DOWNTO 0)
     );
@@ -63,11 +155,38 @@ END ENTITY axis_async_fifo;
 ARCHITECTURE rtl OF axis_async_fifo IS
 
     CONSTANT DEPTH : NATURAL := 2**ADDR_WIDTH;
+
+    ---------------------------------------------------------------------------
+    -- Frame-Aware Threshold Configuration
+    ---------------------------------------------------------------------------
+    -- Thresholds provide early warning before the FIFO starves or overflows,
+    -- giving upstream/downstream time to react.
+    --
+    -- FRAME_SIZE is set via generic to support different protocols:
+    --   - Opulent Voice 16 kbps OPUS: 134 bytes
+    --   - Custom protocols: set at instantiation
+    --
+    -- If FRAME_SIZE is left at default or set to 0, thresholds will be
+    -- conservative (one byte of margin for full, two bytes for empty).
+    ---------------------------------------------------------------------------
+
+    -- Resolve frame size: use 1 if FRAME_SIZE is 0 to avoid zero thresholds
+    CONSTANT FRAME_SIZE_RESOLVED : NATURAL := maximum(FRAME_SIZE, 1);
+
+    -- Programmable Full Threshold
+    -- Asserts prog_full when remaining space drops below one frame.
+    -- Clamped to DEPTH for edge case where DEPTH < FRAME_SIZE.
+    CONSTANT PROG_FULL_THRESHOLD : NATURAL := minimum(FRAME_SIZE_RESOLVED, DEPTH);
     
-    -- Frame-aware programmable full threshold
-    CONSTANT FRAME_SIZE : NATURAL := 134;  -- OV frame payload size (bytes)
-    CONSTANT ALERT_THRESHOLD : NATURAL := DEPTH MOD FRAME_SIZE;
-    
+    -- Programmable Empty Threshold  
+    -- Asserts prog_empty when fill level drops below two frames.
+    -- Provides margin for upstream latency to refill before starvation.
+    CONSTANT FRAMES_UNTIL_EMPTY_ALERT : NATURAL := 2;
+    CONSTANT PROG_EMPTY_THRESHOLD : NATURAL := minimum(
+        FRAMES_UNTIL_EMPTY_ALERT * FRAME_SIZE_RESOLVED,
+        DEPTH  -- Can't alert for more than the FIFO holds
+    );
+
     -- Separate arrays for Block RAM inference
     TYPE ram_data_type IS ARRAY (0 TO DEPTH-1) OF std_logic_vector(DATA_WIDTH-1 DOWNTO 0);
     TYPE ram_last_type IS ARRAY (0 TO DEPTH-1) OF std_logic;
@@ -95,7 +214,6 @@ ARCHITECTURE rtl OF axis_async_fifo IS
     
     -- Status flags (reset-initialized in respective clock domains)
     SIGNAL full_int         : std_logic;
-    SIGNAL empty_int        : std_logic;
     SIGNAL tready_int       : std_logic;
     SIGNAL tvalid_int       : std_logic;
     SIGNAL prog_full_int    : std_logic;
@@ -189,7 +307,7 @@ BEGIN
                 END IF;
                 
                 -- Programmable full - frame-aware threshold (now uses registered rd_ptr_bin_sync)
-                IF DEPTH - (unsigned(wr_ptr_bin) - unsigned(rd_ptr_bin_sync)) <= ALERT_THRESHOLD THEN
+                IF DEPTH - (unsigned(wr_ptr_bin) - unsigned(rd_ptr_bin_sync)) <= PROG_FULL_THRESHOLD THEN
                     prog_full_int <= '1';
                 ELSE
                     prog_full_int <= '0';
@@ -220,7 +338,6 @@ BEGIN
             IF rd_aresetn = '0' THEN
                 rd_ptr_bin <= (OTHERS => '0');
                 rd_ptr_gray <= (OTHERS => '0');
-                empty_int <= '1';
                 tvalid_int <= '0';
                 prog_empty_int <= '1';
                 m_axis_tdata <= (OTHERS => '0');
@@ -259,7 +376,6 @@ BEGIN
                     m_axis_tdata <= ram_data(to_integer(unsigned(rd_ptr_bin(ADDR_WIDTH-1 DOWNTO 0))));
                     m_axis_tlast <= ram_last(to_integer(unsigned(rd_ptr_bin(ADDR_WIDTH-1 DOWNTO 0))));
                     tvalid_int <= '1';
-                    empty_int <= '0';
                     -- rd_ptr_bin stays same! This is the first presentation
                 
                 -- STATE B: Handshake completes (valid and ready)
@@ -272,13 +388,11 @@ BEGIN
                     -- Check if we'll be empty after this read (uses registered wr_ptr_bin_sync)
                     IF wr_ptr_bin_sync = rd_ptr_bin_next THEN
                         -- Going empty
-                        empty_int <= '1';
                         tvalid_int <= '0';
                         m_axis_tlast <= '0';
                         m_axis_tdata <= (OTHERS => '0');
                     ELSE
                         -- More data available - present next byte
-                        empty_int <= '0';
                         tvalid_int <= '1';
                         m_axis_tdata <= ram_data(to_integer(unsigned(rd_ptr_bin_next(ADDR_WIDTH-1 DOWNTO 0))));
                         m_axis_tlast <= ram_last(to_integer(unsigned(rd_ptr_bin_next(ADDR_WIDTH-1 DOWNTO 0))));
@@ -289,18 +403,16 @@ BEGIN
                 ELSIF tvalid_int = '1' AND m_axis_tready = '0' THEN
                     -- Explicitly do nothing - all signals hold their values
                     -- This is the critical fix: maintain protocol compliance
-                    empty_int <= '0';  -- We know we're not empty if tvalid='1'
                     
                 -- All other cases: remain invalid
                 ELSE
-                    empty_int <= '1';
                     tvalid_int <= '0';
                     m_axis_tlast <= '0';
                     m_axis_tdata <= (OTHERS => '0');
                 END IF;
                 
                 -- Programmable empty (uses registered wr_ptr_bin_sync)
-                IF unsigned(wr_ptr_bin_sync) <= unsigned(rd_ptr_bin) + 271 THEN
+                IF unsigned(wr_ptr_bin_sync) <= unsigned(rd_ptr_bin) + PROG_EMPTY_THRESHOLD THEN
                     prog_empty_int <= '1';
                 ELSE
                     prog_empty_int <= '0';
@@ -317,8 +429,6 @@ BEGIN
     BEGIN
         IF rising_edge(status_aclk) THEN
             IF status_aresetn = '0' THEN
-                fifo_overflow   <= '0';
-                fifo_underflow  <= '0';
                 status_ack      <= '0';
                 status_state    <= IDLE;
             ELSE
