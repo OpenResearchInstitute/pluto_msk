@@ -1,23 +1,179 @@
 --------------------------------------------------------------------------------
+-- OV Frame Decoder with Soft-Decision Viterbi
 -- ov_frame_decoder_soft.vhd
+--------------------------------------------------------------------------------
+-- Open Research Institute - Opulent Voice Protocol
 --
--- Opulent Voice Frame Decoder with Soft-Decision Viterbi Decoding
+-- ROLE IN RECEIVE CHAIN:
+--   This module reverses the encoding performed by ov_frame_encoder.
+--   frame_sync_detector_soft provides 268 bytes of data, or hard values,
+--   and 2144 bits of soft decision information, or soft values. These
+--   two streams of data are used to produce 134 bytes of baseband frame
+--   data (Opulent Voice Frame) to the rx_async_fifo, which then 
+--   delivers it to the processor side through a buffer refill call.
 --
--- This module decodes OV protocol frames using soft-decision Viterbi decoding
--- for improved performance at low SNR.
+--------------------------------------------------------------------------------
+-- PROCESSING PIPELINE (9 states):
 --
--- Processing chain (reverse of encoder):
---   1. COLLECT_BYTES: Receive 268 bytes from frame_sync_detector
---   2. COLLECT_SOFT: Receive 2144 3-bit soft values
---   3. EXTRACT: Unpack bytes to bit array
---   4. DEINTERLEAVE: Reverse 67x32 bit interleaving (hard + soft)
---   5. PREP_FEC_DECODE: Pack soft G1/G2 streams
---   6. FEC_DECODE: Soft-decision Viterbi decoding
---   7. DERANDOMIZE: XOR with CCSDS LFSR (standard pre-FEC randomization)
---   8. OUTPUT: Stream decoded bytes
+--   State            │ Description                           │ Cycles
+--   ─────────────────┼───────────────────────────────────────┼─────────
+--   IDLE             │ Wait for frame data                   │ 1
+--   COLLECT_BYTES    │ Receive 268 bytes                     │ 268
+--   COLLECT_SOFT     │ Receive 2144 3-bit soft values        │ 2144
+--   EXTRACT          │ Unpack bytes to 2144-bit array        │ 268
+--   DEINTERLEAVE     │ Reverse 67×32 bit shuffle             │ 2144
+--   PREP_FEC_DECODE  │ Pack G1/G2 soft streams, start Viterbi│ 1
+--   FEC_DECODE       │ Wait for Viterbi completion           │ ~2000
+--   DERANDOMIZE      │ XOR with CCSDS LFSR                   │ 134
+--   OUTPUT           │ Stream 134 decoded bytes              │ 134
 --
--- Soft Value Convention:
---   0 = strong '0', 7 = strong '1', 3-4 = uncertain
+--   Total: ~5000 cycles per frame at 61.44 MHz ≈ 81 µs
+--   Frame period: 40 ms (plenty of margin)
+--
+--------------------------------------------------------------------------------
+-- 67×32 BIT DEINTERLEAVING:
+--
+--   The encoder writes bits column-wise into a 67-row × 32-column matrix,
+--   then reads row-wise. We reverse this. Given linear output position,
+--   we find the interleaved source position.
+--
+--   For deinterleaved position p:
+--     row = p / 32
+--     col = p MOD 32
+--     interleaved_source = col * 67 + row
+--
+--   This spreads burst errors across 67 bits in the deinterleaved stream,
+--   well within the Viterbi decoder's correction capability.
+--
+--   SOFT VALUE HANDLING:
+--   Soft values arrive in MSB-first byte order (matching transmission).
+--   The soft_deinterleave_address function combines interleave position lookup
+--   and MSB-first byte-to-bit correction.
+--
+--------------------------------------------------------------------------------
+-- SOFT VITERBI DECODER:
+--
+--   Constraint length: K=7 (64 states)
+--   Code rate: r=1/2 (G1=171 octal, G2=133 octal)
+--   Traceback depth: 35 (5 * constraint length)
+--   Soft width: 3 bits per symbol
+--
+--   Input format (after deinterleaving):
+--     Bit 0: G1[0], Bit 1: G2[0], Bit 2: G1[1], Bit 3: G2[1], ...
+--     Packed into separate G1 and G2 vectors for the decoder
+--
+--   Coding gain: ~2-3 dB over hard decision at BER=10^-5
+--
+--------------------------------------------------------------------------------
+-- CCSDS LFSR DERANDOMIZATION:
+--
+--   Polynomial: x^8 + x^7 + x^5 + x^3 + 1 (CCSDS standard)
+--   Initial state: 0xFF (all ones)
+--   Period: 255 bits
+--
+--   Applied AFTER FEC decoding (reverses encoder's pre-FEC randomization).
+--   Purpose: Ensure bit transitions even with constant input data,
+--   preventing spectral spurs from repetitive patterns.
+--
+--   Each byte: output_byte = fec_decoded_byte XOR lfsr_output_byte
+--
+--------------------------------------------------------------------------------
+-- DUAL INPUT STREAMS:
+--
+--   Stream 1 is on s_axis_* and is 268 bytes long.
+--     This is hard decision bytes from frame_sync_detector.
+--     It is used for BYPASS_FEC mode and bit extraction.
+--     It arrives first.
+--
+--   Stream 2 is on s_axis_soft_bit_* and is 2144 × 3-bit values long.
+--     This is quantized soft decisions from frame_sync_detector.
+--     It arrives immediately after Stream 1 completes.
+--     000 = strong 0, 111 = strong 1, 011 = erasure
+--
+--   Both streams must arrive for each frame. The decoder waits for
+--   s_axis_tlast on bytes, then collects soft values until
+--   s_axis_soft_bit_tlast or count reaches 2144.
+--
+--------------------------------------------------------------------------------
+-- BYPASS MODES (for debugging):
+--
+--   BYPASS_RANDOMIZE: Skip LFSR derandomization
+--     Use when encoder has BYPASS_RANDOMIZE=TRUE
+--     Direct copy from FEC output to final output
+--
+--   BYPASS_FEC: Skip Viterbi decoding
+--     Takes first 134 bytes (1072 bits) from deinterleaved stream
+--     Useful for testing interleaver without FEC complexity
+--     Must match encoder's BYPASS_FEC setting
+--
+--   BYPASS_INTERLEAVE: Skip 67×32 deinterleaving
+--     Direct copy of bits (no matrix transpose)
+--     Must match encoder's BYPASS_INTERLEAVE setting
+--
+--   CRITICAL: Bypass settings MUST match between encoder and decoder!
+--
+--------------------------------------------------------------------------------
+-- RESOURCE USAGE:
+--
+--   Block RAM:
+--     collect_buffer: 268 × 8 bits
+--     soft_buffer: 2144 × 3 bits
+--     input_bits: 2144 × 1 bit
+--     deinterleaved_bits: 2144 × 1 bit
+--     deinterleaved_soft: 2144 × 3 bits
+--     Viterbi path memory: 64 states × 35 depth × ~7 bits
+--
+--   DSP: None (all logic-based)
+--   LUTs: ~2000 (dominated by Viterbi ACS units)
+--
+--------------------------------------------------------------------------------
+-- GENERICS:
+--
+--   PAYLOAD_BYTES    : Decoded output size (134 for Opulent Voice)
+--   ENCODED_BYTES    : Input frame size (268 = 134 × 2)
+--   ENCODED_BITS     : Total bits (2144 = 268 × 8)
+--   BYTE_WIDTH       : Always 8
+--   SOFT_WIDTH       : Bits per soft value (3)
+--   BYPASS_RANDOMIZE : Skip LFSR (must match encoder)
+--   BYPASS_FEC       : Skip Viterbi (must match encoder)
+--   BYPASS_INTERLEAVE: Skip deinterleaver (must match encoder)
+--
+--------------------------------------------------------------------------------
+-- DEBUG OUTPUTS:
+--
+--   debug_state        : Current state (0-8, see state encoding below)
+--   debug_viterbi_start: Pulses when Viterbi decoder starts
+--   debug_viterbi_busy : High while Viterbi is processing
+--   debug_viterbi_done : Pulses when Viterbi completes
+--   debug_path_metric  : Final path metric (lower = more confident decode)
+--
+--   State encoding:
+--     0000 = IDLE
+--     0001 = COLLECT_BYTES
+--     0010 = COLLECT_SOFT
+--     0011 = EXTRACT
+--     0100 = DEINTERLEAVE
+--     0101 = PREP_FEC_DECODE
+--     0110 = FEC_DECODE
+--     0111 = DERANDOMIZE
+--     1000 = OUTPUT
+--
+--------------------------------------------------------------------------------
+-- TIMING:
+--
+--   Clock: 61.44 MHz (PlutoSDR modem clock)
+--   Reset: Active-low asynchronous (aresetn)
+--   Latency: ~5000 cycles from first input byte to first output byte
+--   Throughput: One 134-byte frame per ~81 µs (frame period is 40 ms)
+--
+--------------------------------------------------------------------------------
+-- VERSION HISTORY:
+--
+--   v1: Initial implementation with hard-decision Viterbi
+--   v2: Added soft-decision Viterbi support
+--   v3: Removed byte-level interleaver (unused, bit-level only)
+--   v4: Cleaned up dead code, improved documentation
+--
 --------------------------------------------------------------------------------
 
 LIBRARY ieee;
@@ -31,7 +187,6 @@ ENTITY ov_frame_decoder_soft IS
         ENCODED_BITS        : NATURAL := 2144;
         BYTE_WIDTH          : NATURAL := 8;
         SOFT_WIDTH          : NATURAL := 3;
-        USE_BIT_INTERLEAVER : BOOLEAN := TRUE;
         -- Debug bypass controls (must match encoder settings!)
         BYPASS_RANDOMIZE    : BOOLEAN := FALSE;  -- TRUE=skip pre-FEC LFSR derandomization
         BYPASS_FEC          : BOOLEAN := FALSE;  -- TRUE=skip Viterbi, take first 134 bytes
@@ -131,10 +286,8 @@ ARCHITECTURE rtl OF ov_frame_decoder_soft IS
     
     -- Extracted data buffers
     TYPE byte_buffer_t IS ARRAY(0 TO PAYLOAD_BYTES-1) OF std_logic_vector(BYTE_WIDTH-1 DOWNTO 0);
-    TYPE encoded_byte_buffer_t IS ARRAY(0 TO ENCODED_BYTES-1) OF std_logic_vector(BYTE_WIDTH-1 DOWNTO 0);
     TYPE bit_buffer_t IS ARRAY(0 TO ENCODED_BITS-1) OF std_logic;
     
-    SIGNAL input_buffer         : encoded_byte_buffer_t;
     SIGNAL input_bits           : bit_buffer_t;
     SIGNAL deinterleaved_bits   : bit_buffer_t;
     SIGNAL deinterleaved_soft   : soft_bit_buffer_t;  -- Soft values after deinterleaving
@@ -327,10 +480,7 @@ BEGIN
                 ----------------------------------------------------------
                 WHEN EXTRACT =>
                     IF byte_idx < ENCODED_BYTES THEN
-                        -- Direct linear indexing (data stored at 0 to 267)
-                        input_buffer(byte_idx) <= collect_buffer(byte_idx);
-                        
-                        -- Also unpack to bit array (MSB-first per byte)
+                        -- Unpack to bit array (MSB-first per byte)
                         FOR j IN 0 TO 7 LOOP
                             input_bits(byte_idx*8 + j) <= collect_buffer(byte_idx)(7-j);
                         END LOOP;
@@ -346,43 +496,24 @@ BEGIN
                 -- Also deinterleave soft values for Viterbi
                 -- BYPASS_INTERLEAVE=TRUE: Direct copy (must match encoder!)
                 ----------------------------------------------------------
-                WHEN DEINTERLEAVE =>
-                    IF USE_BIT_INTERLEAVER THEN
-                        IF bit_idx < ENCODED_BITS THEN
-                            IF BYPASS_INTERLEAVE THEN
-                                -- BYPASS: Direct copy, no deinterleaving
-                                deinterleaved_bits(bit_idx) <= input_bits(bit_idx);
-                                deinterleaved_soft(bit_idx) <= soft_buffer(bit_idx);
-                            ELSE
-                                -- Apply inverse 67x32 deinterleaving
-                                -- For deinterleaved position bit_idx, find the interleaved source
-                                deinterleaved_bits(bit_idx) <= 
-                                    input_bits(interleave_address_bit(bit_idx));
-                                deinterleaved_soft(bit_idx) <= 
-                                    soft_buffer(soft_deinterleave_address(bit_idx));
-                            END IF;
-                            bit_idx <= bit_idx + 1;
-                        ELSE
-                            byte_idx <= 0;
-                            state <= PREP_FEC_DECODE;
-                        END IF;
-                    ELSE
-                        -- Byte-level interleaver (not using soft deinterleave)
-                        IF bit_idx < ENCODED_BITS THEN
-                            IF BYPASS_INTERLEAVE THEN
-                                deinterleaved_bits(bit_idx) <= input_bits(bit_idx);
-                                deinterleaved_soft(bit_idx) <= soft_buffer(bit_idx);
-                            ELSE
-                                deinterleaved_bits(bit_idx) <= input_bits(bit_idx);
-                                deinterleaved_soft(bit_idx) <= soft_buffer(bit_idx);
-                            END IF;
-                            bit_idx <= bit_idx + 1;
-                        ELSE
-                            byte_idx <= 0;
-                            state <= PREP_FEC_DECODE;
-                        END IF;
-                    END IF;
-                    
+WHEN DEINTERLEAVE =>
+    IF bit_idx < ENCODED_BITS THEN
+        IF BYPASS_INTERLEAVE THEN
+            -- BYPASS: Direct copy, no deinterleaving
+            deinterleaved_bits(bit_idx) <= input_bits(bit_idx);
+            deinterleaved_soft(bit_idx) <= soft_buffer(bit_idx);
+        ELSE
+            -- Apply inverse 67x32 bit deinterleaving
+            deinterleaved_bits(bit_idx) <= 
+                input_bits(interleave_address_bit(bit_idx));
+            deinterleaved_soft(bit_idx) <= 
+                soft_buffer(soft_deinterleave_address(bit_idx));
+        END IF;
+        bit_idx <= bit_idx + 1;
+    ELSE
+        byte_idx <= 0;
+        state <= PREP_FEC_DECODE;
+    END IF;                    
                 ----------------------------------------------------------
                 -- PREP_FEC_DECODE: Pack soft G1/G2 and start decoder
                 -- BYPASS_FEC=TRUE: Skip packing, go straight to extraction
