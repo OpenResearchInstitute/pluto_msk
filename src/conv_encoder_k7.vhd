@@ -1,18 +1,114 @@
 ------------------------------------------------------------------------------------------------------
--- K=7 Convolutional Encoder - Shift Register Version (Corrected Polynomials)
+-- conv_encoder_k7.vhd
+-- K=7 Rate-1/2 Convolutional Encoder (NASA/CCSDS Standard)
 ------------------------------------------------------------------------------------------------------
--- Rate 1/2, constraint length K=7
--- Generator polynomials: G1 = 171 octal, G2 = 133 octal
+-- POSITION IN TRANSMIT CHAIN:
 --
--- CRITICAL: The polynomial tap interpretation must match the original!
---   G1_POLY = "1111001" with loop using full_state(6-i) means:
---     G1 = curr_bit XOR sr(3) XOR sr(2) XOR sr(1) XOR sr(0)
---   G2_POLY = "1011011" means:
---     G2 = curr_bit XOR sr(5) XOR sr(3) XOR sr(2) XOR sr(0)
+--   [ov_frame_encoder]
+--        |
+--        v
+--   +-----------+     +-------------+     +-------------+
+--   | PREP_FEC  | --> | THIS MODULE | --> | INTERLEAVE  |
+--   | (pack     |     | 1072 bits   |     | (67×32 bit  |
+--   |  bytes)   |     | → 2144 bits |     |  shuffle)   |
+--   +-----------+     +-------------+     +-------------+
 --
--- RESOURCE OPTIMIZATION:
---   Original version: ~3000 LUTs (variable bit indexing creates massive mux/demux)
---   This version: ~200-400 LUTs (shift registers, fixed-position access only)
+--   Instantiated within ov_frame_encoder as U_ENCODER.
+--   Receives packed bit buffer, outputs FEC-encoded bits.
+--
+------------------------------------------------------------------------------------------------------
+-- CONVOLUTIONAL CODE PARAMETERS
+------------------------------------------------------------------------------------------------------
+--   Constraint length: K = 7 (6 memory elements, 64-state trellis)
+--   Code rate: 1/2 (each input bit produces 2 output bits)
+--   
+--   Generator polynomials (NASA/CCSDS standard, also used in 802.11):
+--     G1 = 171 octal = 0x79 = 1111001 binary = x^6 + x^5 + x^4 + x^3 + 1
+--     G2 = 133 octal = 0x5B = 1011011 binary = x^6 + x^4 + x^3 + x + 1
+--
+--   In terms of shift register taps (enc_sr[5:0], newest bit at [0]):
+--     G1 = input XOR sr[3] XOR sr[2] XOR sr[1] XOR sr[0]
+--     G2 = input XOR sr[5] XOR sr[3] XOR sr[2] XOR sr[0]
+--
+--   Output order: G1 first (MSB), then G2 (LSB) for each input bit
+--
+------------------------------------------------------------------------------------------------------
+-- TIMING AND INTERFACE
+------------------------------------------------------------------------------------------------------
+--   Operation:
+--     1. Assert 'start' for one clock with input_buffer valid
+--     2. 'busy' goes HIGH, encoding begins
+--     3. One input bit processed per clock (1072 clocks for full frame)
+--     4. 'done' pulses HIGH for one clock when complete
+--     5. 'output_buffer' holds result (stable until next encoding!)
+--
+--   Latency: 1074 clocks (1 to load, 1072 to encode, 1 to complete)
+--   Throughput: One frame per 1074 clocks
+--
+--   At 61.44 MHz (PlutoSDR and LibreSDR): ~17.5 µs per frame
+--   Frame period at 40 ms: Encoder is idle 99.96% of the time
+--
+------------------------------------------------------------------------------------------------------
+-- IMPLEMENTATION: SHIFT REGISTER ARCHITECTURE
+------------------------------------------------------------------------------------------------------
+--   This implementation uses shift registers instead of indexed array access:
+--
+--   ORIGINAL APPROACH (resource-heavy):
+--     for i in 0 to INPUT_BITS-1 loop
+--       out_buf(i*2) := ...; out_buf(i*2+1) := ...;  -- Variable indexing!
+--     end loop;
+--   Result: ~3000 LUTs (synthesis creates massive mux/demux trees)
+--
+--   THIS APPROACH (resource-efficient):
+--     in_sr  <= in_sr(N-2 downto 0) & '0';           -- Fixed shift
+--     out_sr <= out_sr(M-3 downto 0) & g1 & g2;      -- Fixed shift
+--   Result: ~200-400 LUTs (shift registers map to SRLs or BRAM)
+--
+--   The key insight: variable bit indexing in VHDL synthesizes to huge
+--   multiplexers. Shift registers with fixed-position access are free.
+--
+------------------------------------------------------------------------------------------------------
+-- TRELLIS TERMINATION NOTE
+------------------------------------------------------------------------------------------------------
+--   This encoder does NOT add explicit tail bits (6 zeros to flush the
+--   encoder to the all-zeros state). The trellis is left unterminated.
+--
+--   For Opulent Voice, this is acceptable because:
+--     1. Soft Viterbi decoder handles unterminated trellis gracefully
+--     2. High SNR expected in typical amateur radio conditions
+--     3. Last ~6 bits have slightly reduced protection, not guaranteed errors
+--     4. Interleaver spreads any edge errors across the frame
+--     5. Avoids 6-bit overhead per frame (0.5% efficiency gain)
+--
+--   If strict CCSDS compliance is needed, tail bits could be added by
+--   padding the input buffer with 6 zeros and adjusting frame sizes,
+--   but this is tricky. Adding 6 tail bits would improve FER by ~40% at
+--   marginal SNR (reduces frame errors from ~1.7% to ~1.1% at BER=10^-5).
+--   Requires interleaver resize (67×32 → 68×32) and frame size changes, blech.
+--
+------------------------------------------------------------------------------------------------------
+-- RESOURCE USAGE
+------------------------------------------------------------------------------------------------------
+--   Shift registers: in_sr (1072 bits), out_sr (2144 bits), enc_sr (6 bits)
+--   BRAM: in_sr and out_latched forced to block RAM via ram_style
+--   Logic: ~200-400 LUTs for control and XOR trees (double check this)
+--   
+--   dont_touch attributes preserve signals for ILA debugging.
+--
+------------------------------------------------------------------------------------------------------
+-- DEBUGGING BYPASS
+------------------------------------------------------------------------------------------------------
+--   For testing without FEC, uncomment lines 151-152:
+--     g1 := curr_bit;
+--     g2 := curr_bit;
+--   This duplicates bits instead of encoding (maintains frame structure).
+--   Prefer using BYPASS_FEC generic in ov_frame_encoder instead.
+--
+------------------------------------------------------------------------------------------------------
+-- ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE
+-- Actively developed and tested. Part of the Opulent Voice FPGA reference design.
+-- Author: Abraxas3d
+-- License: CERN-OHL-S v2
 ------------------------------------------------------------------------------------------------------
 
 LIBRARY ieee;
