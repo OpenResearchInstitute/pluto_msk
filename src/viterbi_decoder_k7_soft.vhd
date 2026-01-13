@@ -1,21 +1,175 @@
 ------------------------------------------------------------------------------------------------------
--- Soft Decision Viterbi Decoder - K=7, Rate 1/2
+-- viterbi_decoder_k7_soft.vhd
+-- Soft-Decision Viterbi Decoder - K=7, Rate 1/2 (NASA/CCSDS Standard)
 ------------------------------------------------------------------------------------------------------
--- Accepts quantized soft decisions instead of hard bits for ~2 dB coding gain.
+-- POSITION IN RECEIVE CHAIN:
 --
--- SOFT_WIDTH generic controls quantization:
---   3-bit: 8 levels, ~1.5-2 dB gain, minimal resources
---   4-bit: 16 levels, ~2 dB gain
---   8-bit: 256 levels, ~2.5 dB gain (full soft)
+--   [ov_frame_decoder_soft]
+--        |
+--        v
+--   +-------------------+     +--------------+     +--------------+
+--   | DEINTERLEAVE      | --> | THIS MODULE  | --> | DERANDOMIZE  |
+--   | (67×32 unshuffle) |     | 2144 soft    |     | (LFSR XOR)   |
+--   |                   |     | to 1072 bits |     |              |
+--   +-------------------+     +--------------+     +--------------+
 --
--- Soft value convention (signed, two's complement interpretation):
---   Most negative = highest confidence '0'
---   Most positive = highest confidence '1'
---   Zero = erasure/no information
+--   Instantiated within ov_frame_decoder_soft as U_DECODER.
+--   Receives deinterleaved soft G1/G2 streams, outputs decoded bits.
 --
--- For 3-bit unsigned (current default):
---   0 = strong '0', 7 = strong '1', 3-4 = uncertain
 ------------------------------------------------------------------------------------------------------
+-- SOFT VITERBI: THE 2 dB ADVANTAGE
+------------------------------------------------------------------------------------------------------
+--   Hard decision: Demodulator decides '0' or '1', confidence discarded
+--   Soft decision: 3-bit confidence preserved through to decoder
+--
+--   Instead of Hamming distance (count bit mismatches), we compute
+--   weighted distance using soft values. Strong match to expected bit
+--   gives low metric (good). Weak match or mismatch gives high metric (bad).
+--
+--   Result: ~2 dB gain over hard Viterbi, ~7 dB total coding gain
+--
+--   In D&D terms: Hard Viterbi sees "hit or miss." Soft Viterbi sees
+--   "rolled 19 vs rolled 2" and makes better path decisions.
+--
+------------------------------------------------------------------------------------------------------
+-- CONVOLUTIONAL CODE PARAMETERS
+------------------------------------------------------------------------------------------------------
+--   Constraint length: K = 7 (6 memory elements, 64-state trellis)
+--   Code rate: r = 1/2 (2 encoded bits per data bit)
+--   Generator polynomials: G1 = 171 octal, G2 = 133 octal
+--   Traceback depth: 35 (5*K, standard rule of thumb)
+--
+--   These parameters match conv_encoder_k7.vhd exactly.
+--
+------------------------------------------------------------------------------------------------------
+-- ALGORITHM OVERVIEW: ADD-COMPARE-SELECT (ACS)
+------------------------------------------------------------------------------------------------------
+--   The Viterbi algorithm finds the maximum-likelihood path through
+--   a trellis of 64 states over 1072 time steps.
+--
+--   For each state at time t, two paths arrive (the "butterfly"):
+--     Path 0: From state s/2, with input bit = s mod 2
+--     Path 1: From state s/2 + 32, with input bit = s mod 2
+--
+--   ACS operation:
+--     1. ADD: Compute branch metric (soft distance to expected G1/G2)
+--     2. COMPARE: Which predecessor path has lower total metric?
+--     3. SELECT: Keep the survivor, store decision bit for traceback
+--
+--   After processing all symbols, traceback from best final state
+--   recovers the decoded bit sequence.
+--
+------------------------------------------------------------------------------------------------------
+-- STATE MACHINE (7 states)
+------------------------------------------------------------------------------------------------------
+--   State        │ Description                              │ Cycles
+--   ─────────────┼──────────────────────────────────────────┼─────────
+--   IDLE         │ Wait for start pulse                     │ 1
+--   INITIALIZE   │ Set state 0 metric=0, others=INF         │ 64
+--   ACS_COMPUTE  │ Process all states for all symbols       │ 64×1072
+--   FIND_BEST    │ Search 64 states for minimum metric      │ 64
+--   TB_FETCH     │ Issue BRAM read for decision bit         │ 1
+--   TB_USE       │ Use decision, compute next address       │ 1
+--   COMPLETE     │ Assert done, return to IDLE              │ 1
+--
+--   Traceback: TB_FETCH/TB_USE alternate for 1072 symbols = 2144 cycles
+--
+--   Total: ~64 + 68608 + 64 + 2144 + 1 ≈ 70,881 cycles
+--   At 61.44 MHz: ~1.15 ms per frame
+--   Frame period: 40 ms (plenty of time)
+--
+------------------------------------------------------------------------------------------------------
+-- SOFT BRANCH METRIC CALCULATION
+------------------------------------------------------------------------------------------------------
+--   Soft value convention (3-bit unsigned, matching frame_sync_detector):
+--     0 = strong '0' (high confidence)
+--     7 = strong '1' (high confidence)
+--     3-4 = uncertain (erasure zone)
+--
+--   Branch metric formula:
+--     If expected = '0': metric = soft_value      (low soft = good match)
+--     If expected = '1': metric = 7 - soft_value  (high soft = good match)
+--
+--   Total branch metric = metric_G1 + metric_G2 (range 0-14 for 3-bit)
+--
+--   Path metric accumulates over 1072 symbols:
+--     Worst case: 14 × 1072 = 15,008 → needs 14 bits
+--     METRIC_WIDTH = SOFT_WIDTH + 12 = 15 bits (with margin)
+--
+------------------------------------------------------------------------------------------------------
+-- UNTERMINATED TRELLIS HANDLING
+------------------------------------------------------------------------------------------------------
+--   The encoder does NOT add tail bits, so we don't know the final state.
+--
+--   Solution: FIND_BEST state searches all 64 states for minimum metric.
+--   The best final state becomes the traceback starting point.
+--
+--   Cost: Slight degradation in last ~6 decoded bits (see conv_encoder_k7.vhd)
+--   Benefit: No frame size overhead, simpler encoder
+--
+------------------------------------------------------------------------------------------------------
+-- SOFT WIDTH OPTIONS
+------------------------------------------------------------------------------------------------------
+--   SOFT_WIDTH │ Levels │ Gain vs Hard │ Resource Impact
+--   ───────────┼────────┼──────────────┼─────────────────
+--   3 (default)│ 8      │ ~1.5-2 dB    │ Minimal
+--   4          │ 16     │ ~2 dB        │ Moderate
+--   8          │ 256    │ ~2.5 dB      │ Significant
+--
+--   Diminishing returns beyond 3-4 bits. The 3-bit default balances
+--   performance and resources well for Opulent Voice.
+--
+------------------------------------------------------------------------------------------------------
+-- RESOURCE USAGE
+------------------------------------------------------------------------------------------------------
+--   Decision memory: 64 states × 1072 symbols × 1 bit = 68,608 bits
+--     this is forced to Block RAM via ram_style attribute
+--
+--   Soft input shift registers: 2 × (1072 × 3) = 6,432 bits
+--     this is forced to Block RAM
+--
+--   Path metrics: 64 states × 15 bits = 960 bits (distributed RAM)
+--
+--   Total BRAM: ~10 BRAM18 equivalent
+--   LUTs: ~800-1000 (ACS logic, metric comparisons)
+--   (this needs to be checked in the utilization report and updated)
+--
+------------------------------------------------------------------------------------------------------
+-- INTERFACE
+------------------------------------------------------------------------------------------------------
+--   Inputs:
+--     start           : Pulse to begin decoding
+--     input_soft_g1   : 1072 × SOFT_WIDTH bits (G1 soft symbols)
+--     input_soft_g2   : 1072 × SOFT_WIDTH bits (G2 soft symbols)
+--
+--   Outputs:
+--     busy            : HIGH during decoding
+--     done            : Single-cycle pulse when complete
+--     output_bits     : 1072 decoded bits
+--     debug_path_metric: Final path metric (lower = more confident)
+--
+--   Timing: Assert start with valid soft inputs. Wait for done pulse.
+--   Output remains stable until next start.
+--
+------------------------------------------------------------------------------------------------------
+-- DEBUG: PATH METRIC INTERPRETATION
+------------------------------------------------------------------------------------------------------
+--   debug_path_metric indicates decode confidence:
+--     Low value (e.g., < 1000): Clean channel, high confidence
+--     High value (e.g., > 5000): Noisy channel, marginal decode
+--
+--   Can be used for:
+--     - Channel quality monitoring
+--     - Adaptive threshold adjustment
+--     - Frame quality indication to higher layers
+--
+------------------------------------------------------------------------------------------------------
+-- ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE
+-- Actively developed and tested. Part of the Opulent Voice FPGA reference design.
+-- Author: Abraxas3d
+-- License: CERN-OHL-S v2
+------------------------------------------------------------------------------------------------------
+
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
