@@ -531,7 +531,6 @@ BEGIN
 			ENCODED_BYTES => 268,
 			ENCODED_BITS  => 2144,
 			BYTE_WIDTH    => 8,
-			USE_BIT_INTERLEAVER => TRUE,
 			BYPASS_RANDOMIZE    => FALSE,  -- Set TRUE to test without randomization
 			BYPASS_FEC          => FALSE,  -- Set TRUE to test without FEC
 			BYPASS_INTERLEAVE   => FALSE   -- Set TRUE to test without interleaving
@@ -814,7 +813,6 @@ BEGIN
             ENCODED_BITS  => 2144,
             BYTE_WIDTH    => 8,
             SOFT_WIDTH          => 3,
-            USE_BIT_INTERLEAVER => TRUE,
             BYPASS_RANDOMIZE    => FALSE,  -- Set TRUE to test without randomization
             BYPASS_FEC          => FALSE,  -- Set TRUE to test without FEC
             BYPASS_INTERLEAVE   => FALSE   -- Set TRUE to test without interleaving

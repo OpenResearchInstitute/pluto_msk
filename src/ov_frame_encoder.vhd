@@ -1,38 +1,152 @@
 ------------------------------------------------------------------------------------------------------
--- Opulent Voice Protocol Frame Encoder - DUAL MODE (Bit-level or Byte-level Interleaver)
+-- ov_frame_encoder.vhd
+-- Opulent Voice Protocol Frame Encoder
 ------------------------------------------------------------------------------------------------------
--- Supports both interleaver modes via generic parameter:
---   USE_BIT_INTERLEAVER = TRUE  : 67x32 bit-level (correct protocol, requires large FPGA)
---   USE_BIT_INTERLEAVER = FALSE : 67x4 byte-level (fits PlutoSDR, breaks protocol compatibility)
-------------------------------------------------------------------------------------------------------
--- CRITICAL DESIGN PRINCIPLE: TLAST-DRIVEN FRAME COLLECTION
-------------------------------------------------------------------------------------------------------
--- This encoder uses AXI-Stream TLAST signal to detect frame boundaries, NOT fixed byte counting!
+-- POSITION IN TRANSMIT CHAIN:
 --
--- WHY THIS MATTERS:
---   When data flows continuously (e.g., FIFO buffering multiple frames), counting to a fixed
---   number of bytes and ignoring tlast causes the encoder to "steal" bytes from the next frame.
---   This creates cascading byte loss:
+--   [Opus]        [DMA]      [FIFO]     [THIS]          [byte_to_bit      [MSK Mod]
+--   16kbps  -->  AXI-S  -->  CDC   -->  OV ENCODER -->  deserializer] -->  I/Q out
+--   OPUS         adapter     async      134→268 bytes      sync word
+--                            FIFO       FEC + interleave   insertion
+--
+-- OVERVIEW:
+--   Transforms 134-byte Opus/text/data payload frames into 268-byte FEC-protected frames
+--   with interleaving for burst error resistance. This is the heart of the Opulent
+--   Voice forward error correction system.
+--
+-- PROCESSING PIPELINE (7 states):
+--   IDLE        Wait for first byte
+--   COLLECT     Gather 134 bytes (TLAST-driven frame boundary detection)
+--   RANDOMIZE   XOR with CCSDS LFSR (decorrelates FEC output)
+--   PREP_FEC    Pack bytes into bit buffer for encoder
+--   FEC_ENCODE  K=7 convolutional code (rate 1/2, 1072 to 2144 bits)
+--   INTERLEAVE  67×32 bit shuffler for burst error resistance
+--   OUTPUT      268 byte burst with TLAST on final byte
+--
+------------------------------------------------------------------------------------------------------
+-- FEC DETAILS: K=7 Convolutional Code
+------------------------------------------------------------------------------------------------------
+--   Constraint length: K=7 (64-state trellis)
+--   Code rate 1/2 so each input bit produces 2 output bits)
+--   Generator polynomials: G1=0x6D (109), G2=0x4F (79) this is the NASA code
+--   Input:  1072 bits (134 bytes)
+--   Output: 2144 bits (268 bytes)
+--   Coding gain: ~7 dB (soft decision Viterbi) at BER=10^-5
+--
+--   Note: No tail bits are added. The soft Viterbi decoder handles
+--   the unterminated trellis gracefully. See conv_encoder_k7.vhd.
+--
+------------------------------------------------------------------------------------------------------
+-- CCSDS LFSR RANDOMIZATION (Pre-FEC Decorrelation)
+------------------------------------------------------------------------------------------------------
+--   Polynomial: x^8 + x^7 + x^5 + x^3 + 1 (CCSDS standard)
+--   Seed: 0xFF (reset at start of each frame)
+--   Period: 255 bits
+--
+--   WHY RANDOMIZE BEFORE FEC?
+--   The convolutional encoder's G1/G2 polynomials create correlation between
+--   output bits. When the input has patterns (like long runs of 0x00 or 0xFF),
+--   this correlation can create spectral spurs in MSK modulation. The LFSR
+--   whitens the data before FEC, breaking up patterns and eliminating spurs.
+--
+--   The decoder applies the same LFSR after Viterbi decoding to recover
+--   the original data.
+--
+------------------------------------------------------------------------------------------------------
+-- 67×32 BIT-LEVEL INTERLEAVER
+------------------------------------------------------------------------------------------------------
+--   Matrix dimensions: 67 rows × 32 columns = 2144 bits
+--   Write order: Row-major (fill row 0, then row 1, ...)
+--   Read order:  Column-major (read column 0, then column 1, ...)
+--
+--   ADDRESS CALCULATION:
+--     Input bit position:  bit_addr (0 to 2143, linear)
+--     Row = bit_addr / 32
+--     Col = bit_addr MOD 32
+--     Output position = Col × 67 + Row
+--
+--   EFFECT: Consecutive input bits are separated by 67 positions in output.
+--     Bits 0,1,2,3... map to output positions 0,67,134,201...
+--
+--   BURST ERROR RESISTANCE:
+--     A burst error corrupting N consecutive bits in the channel will be
+--     spread across N different positions in the deinterleaved data, each
+--     separated by 32 bits. The Viterbi decoder can correct scattered
+--     errors much more effectively than clustered ones. This helps us.
+--
+--     Example: 64-bit burst error is 64 single-bit errors spread across
+--     64x32 = 2048 bit span, easily correctable by Viterbi.
+--
+------------------------------------------------------------------------------------------------------
+-- CRITICAL DESIGN: TLAST-DRIVEN FRAME COLLECTION
+------------------------------------------------------------------------------------------------------
+--   This encoder uses AXI-Stream TLAST to detect frame boundaries, NOT fixed
+--   byte counting! This is essential for correct operation with buffered data.
+--
+--   THE PROBLEM WITH FIXED COUNTING:
+--   When the upstream FIFO buffers multiple frames, counting to 134 bytes and
+--   ignoring TLAST causes the encoder to "steal" bytes from the next frame.
+--   This creates cascading byte loss that destroyed our early prototypes:
 --     Frame 3: Missing byte 0 (stolen during Frame 2 collection)
 --     Frame 4: Missing bytes 0-1 (stolen during Frame 3 collection)
---     Frame 5: Missing bytes 0-2 (stolen during Frame 4 collection)
---     ... continues until no more data available
+--     Frame 5: Missing bytes 0-2 ...and so on
 --
--- CORRECT APPROACH (implemented here):
---   1. IDLE state: Wait for first byte
---   2. COLLECT state: Accept bytes until s_axis_tlast = '1' (frame boundary marker)
---   3. Validate we got exactly PAYLOAD_BYTES (134)
---   4. Process the complete frame through randomization, FEC, interleaving
---   5. Pre-set s_axis_tready = '1' before returning to IDLE for next frame
+--   THE SOLUTION (implemented here):
+--   COLLECT state watches for s_axis_tlast = '1' to detect frame boundaries.
+--   When TLAST is seen, collection stops regardless of byte count. The count
+--   is validated (should be 134) and any mismatch is reported as a warning.
 --
--- This approach:
---   Respects AXI-Stream protocol (tlast marks frame boundaries)
---   Works with continuous data streams (FIFO buffering)
---   Prevents byte stealing across frame boundaries
---   Validates frame size for error detection
---   Works for BOTH bit-level and byte-level interleaving modes
+--   This approach:
+--     Respects AXI-Stream protocol semantics
+--     Works correctly with continuous data streams
+--     Prevents byte stealing across frame boundaries
+--     Provides error detection via size validation
 --
--- NEVER count to a fixed byte number and ignore tlast - this violates AXI-Stream protocol!
+--   RULE: NEVER count to a fixed number and ignore TLAST!
+--
+------------------------------------------------------------------------------------------------------
+-- DEBUG BYPASS MODES (compile-time generics)
+------------------------------------------------------------------------------------------------------
+--   BYPASS_RANDOMIZE  = TRUE means Skip LFSR XOR (data passes through unchanged)
+--   BYPASS_FEC        = TRUE means Duplicate bytes instead of convolutional encode
+--   BYPASS_INTERLEAVE = TRUE means Skip bit shuffle (linear output)
+--
+--   These generics isolate subsystem behavior during development and testing.
+--   Production builds should have all bypasses FALSE.
+--   IMPORTANT: Decoder bypass settings must match encoder settings!
+--
+------------------------------------------------------------------------------------------------------
+-- RESOURCE USAGE 
+------------------------------------------------------------------------------------------------------
+--   Large buffers are forced to BRAM via ram_style attribute
+--     input_buffer, randomized_buffer, fec_buffer, interleaved_buffer
+--   State machine and counters: ~200 LUTs
+--   Convolutional encoder (U_ENCODER): ~150 LUTs, 64 FFs
+--   Total estimate: ~4 BRAM, ~350 LUTs, ~300 FFs
+--
+--   The dont_touch attributes prevent synthesis from optimizing away debug
+--   signals and critical paths. Some index counters (out_idx, byte_idx,
+--   collect_idx) must NOT have dont_touch. This caused FIFO stalls.
+--   More work here is needed. dont_touch might be preventing optimizations.
+--
+------------------------------------------------------------------------------------------------------
+-- PORT SUMMARY
+------------------------------------------------------------------------------------------------------
+--   s_axis_*        : AXI-Stream input (134 bytes per frame)
+--   m_axis_*        : AXI-Stream output (268 bytes per frame)
+--   frames_encoded  : Running count of completed frames
+--   encoder_active  : HIGH while processing a frame
+--   debug_*         : ILA probe points for LFSR and FEC verification
+--
+------------------------------------------------------------------------------------------------------
+-- DEPENDENCIES
+------------------------------------------------------------------------------------------------------
+--   conv_encoder_k7 : K=7 rate-1/2 convolutional encoder (instantiated as U_ENCODER)
+--
+-- ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE ACTIVE
+-- Actively developed and tested. Part of the Opulent Voice FPGA reference design.
+-- Author: Abraxas3d
+-- License: CERN-OHL-S v2
 ------------------------------------------------------------------------------------------------------
 
 LIBRARY ieee;
@@ -43,10 +157,8 @@ ENTITY ov_frame_encoder IS
     GENERIC (
         PAYLOAD_BYTES       : NATURAL := 134;
         ENCODED_BYTES       : NATURAL := 268;
-        COLLECT_SIZE        : NATURAL := 4;      -- DEPRECATED: No longer used (kept for compatibility)
         ENCODED_BITS        : NATURAL := 2144;   -- Kept for compatibility
         BYTE_WIDTH          : NATURAL := 8;      -- Kept for compatibility
-        USE_BIT_INTERLEAVER : BOOLEAN := TRUE;   -- TRUE=bit-level(67x32), FALSE=byte-level(67x4)
         -- Debug bypass controls (must match decoder settings!)
         BYPASS_RANDOMIZE    : BOOLEAN := FALSE;  -- TRUE=skip pre-FEC LFSR randomization
         BYPASS_FEC          : BOOLEAN := FALSE;  -- TRUE=duplicate bytes instead of convolutional encode
@@ -143,10 +255,7 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
     --   3. Watch for s_axis_tlast = '1' (frame boundary)
     --   4. When tlast seen, validate we got PAYLOAD_BYTES (134), then process
     --
-    -- This works for BOTH byte-level and bit-level interleaving modes because:
-    --   - Collection only fills input_buffer
-    --   - Interleaving happens later (INTERLEAVE state) on FEC-encoded bits
-    --   - Interleaver type doesn't affect how we collect input bytes
+    -- Collection fills input_buffer; interleaving happens later in INTERLEAVE state.
     --
     -- NEVER count to a fixed number and ignore tlast - this violates AXI protocol!
     ------------------------------------------------------------------------------
@@ -156,7 +265,7 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
         RANDOMIZE,  -- XOR with randomizer sequence
         PREP_FEC,   -- Prepare for convolutional encoding
         FEC_ENCODE, -- Apply K=7 convolutional code
-        INTERLEAVE, -- Shuffle bits (bit-level) or bytes (byte-level) per generic
+        INTERLEAVE, -- 67×32 bit shuffle for burst error resistance
         OUTPUT      -- Stream encoded frame to modulator
     );
     SIGNAL state : state_t := IDLE;
@@ -230,7 +339,7 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
 
     
     ----------------------------------------------------------------------------
-    -- BIT-LEVEL INTERLEAVER (67x4) - For LibreSDR, etc.
+    -- BIT-LEVEL INTERLEAVER (67x32) - For LibreSDR, etc.
     -- Consecutive input bits end up 67 positions apart in output.
     ----------------------------------------------------------------------------
     FUNCTION interleave_address_bit(bit_addr : NATURAL) RETURN NATURAL IS
@@ -247,21 +356,6 @@ ARCHITECTURE rtl OF ov_frame_encoder IS
         -- Output in column-major order (column 0 bits, then column 1, etc.)
         RETURN col * NUM_ROWS + row;
     END FUNCTION;
-
-    ----------------------------------------------------------------------------
-    -- BYTE-LEVEL INTERLEAVER (67x4) - For PlutoSDR, fits in xc7z010
-    ----------------------------------------------------------------------------
-    FUNCTION interleave_address_byte(addr : NATURAL) RETURN NATURAL IS
-        CONSTANT ROWS : NATURAL := 67;
-        CONSTANT COLS : NATURAL := 4;
-        VARIABLE row : NATURAL;
-        VARIABLE col : NATURAL;
-    BEGIN
-        row := addr / COLS;
-        col := addr MOD COLS;
-        RETURN col * ROWS + row;
-    END FUNCTION;
-
 
 
 
@@ -478,7 +572,6 @@ BEGIN
                 ----------------------------------------------------------------------
                 WHEN FEC_ENCODE =>
                     encoder_start <= '0';
-                    
                     IF BYPASS_FEC THEN
                         -- BYPASS: Duplicate input bits without encoding
                         -- Output format: [copy1(1072 bits)][copy2(1072 bits)] = 2144 bits
@@ -487,73 +580,40 @@ BEGIN
                         FOR i IN 0 TO 1071 LOOP
                             fec_buffer(i) <= encoder_input_buf(i);           -- First copy, NOT reversed
                             fec_buffer(i + 1072) <= encoder_input_buf(i);    -- Second copy, NOT reversed
-                        END LOOP;
-                        
-                        IF USE_BIT_INTERLEAVER THEN
-                            bit_idx <= 0;
-                        ELSE
-                            byte_idx <= 0;
-                        END IF;
-                        state <= INTERLEAVE;
-                        
+                        END LOOP;                        
+			bit_idx <= 0;
+			state <= INTERLEAVE; 
                     ELSIF encoder_done = '1' THEN
                         -- Real FEC: Copy encoder output to fec_buffer (MSB-first to bit-buffer)
                         FOR i IN 0 TO ENCODED_BITS-1 LOOP
                             fec_buffer(i) <= encoder_output_buf(ENCODED_BITS - 1 - i);
                         END LOOP;
-                        
-                        IF USE_BIT_INTERLEAVER THEN
-                            bit_idx <= 0;
-                        ELSE
-                            byte_idx <= 0;
-                        END IF;
+			bit_idx <= 0;
                         state <= INTERLEAVE;
                     END IF;
 
+
+
                 ------------------------------------------------------------------------
-                -- INTERLEAVE: Dual-mode implementation
+                -- INTERLEAVE: 67×32 bit-level interleaver
                 -- BYPASS_INTERLEAVE=TRUE: Direct copy (for testing)
                 ------------------------------------------------------------------------
                 WHEN INTERLEAVE =>
-                    IF USE_BIT_INTERLEAVER THEN
-                        -- BIT-LEVEL mode: Process 1 bit per clock (2144 clocks)
-                        IF bit_idx < ENCODED_BITS THEN
-                            IF BYPASS_INTERLEAVE THEN
-                                -- BYPASS: Direct copy, no interleaving
-                                interleaved_buffer(bit_idx) <= fec_buffer(bit_idx);
-                            ELSE
-                                -- Apply 67x32 bit interleaving
-                                interleaved_buffer(interleave_address_bit(bit_idx)) <= fec_buffer(bit_idx);
-                            END IF;
-                            bit_idx <= bit_idx + 1;
+                    -- Process 1 bit per clock (2144 clocks)
+                    IF bit_idx < ENCODED_BITS THEN
+                        IF BYPASS_INTERLEAVE THEN
+                            -- BYPASS: Direct copy, no interleaving
+                            interleaved_buffer(bit_idx) <= fec_buffer(bit_idx);
                         ELSE
-                            out_idx <= 0;
-                            state <= OUTPUT;
-                            m_axis_tvalid_reg <= '0';
+                            -- Apply 67x32 bit interleaving
+                            interleaved_buffer(interleave_address_bit(bit_idx)) <= fec_buffer(bit_idx);
                         END IF;
+                        bit_idx <= bit_idx + 1;
                     ELSE
-                        -- BYTE-LEVEL mode: Process 1 byte per clock (268 clocks)
-                        IF byte_idx < ENCODED_BYTES THEN
-                            IF BYPASS_INTERLEAVE THEN
-                                -- BYPASS: Direct copy, no interleaving
-                                FOR j IN 0 TO 7 LOOP
-                                    interleaved_buffer(byte_idx*8 + j) <= fec_buffer(byte_idx*8 + j);
-                                END LOOP;
-                            ELSE
-                                -- Apply 67x4 byte interleaving
-                                FOR j IN 0 TO 7 LOOP
-                                    interleaved_buffer(interleave_address_byte(byte_idx)*8 + j) <= 
-                                        fec_buffer(byte_idx*8 + j);
-                                END LOOP;
-                            END IF;
-                            byte_idx <= byte_idx + 1;
-                        ELSE
-                            out_idx <= 0;
-                            state <= OUTPUT;
-                            m_axis_tvalid_reg <= '0';
-                        END IF;
+                        out_idx <= 0;
+                        state <= OUTPUT;
+                        m_axis_tvalid_reg <= '0';
                     END IF;
-
 
 
 
