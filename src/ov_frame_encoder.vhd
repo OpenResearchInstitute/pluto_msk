@@ -28,7 +28,7 @@
 ------------------------------------------------------------------------------------------------------
 --   Constraint length: K=7 (64-state trellis)
 --   Code rate 1/2 so each input bit produces 2 output bits)
---   Generator polynomials: G1=0x6D (109), G2=0x4F (79) this is the NASA code
+--   Generator polynomials: G1=171 octal (0x79), G2=133 octal (0x5B) - NASA/Voyager standard
 --   Input:  1072 bits (134 bytes)
 --   Output: 2144 bits (268 bytes)
 --   Coding gain: ~7 dB (soft decision Viterbi) at BER=10^-5
