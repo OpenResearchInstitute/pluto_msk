@@ -146,8 +146,10 @@ class axis_bus:
 
     async def _clock(self):
 
-        self.dut._log.info("starting aclk with period %d %s" % (self.aclk_per, self.aclk_per_units))
-        await cocotb.start(Clock(self.aclk, self.aclk_per, units=self.aclk_per_units).start())
+        self.dut._log.info("starting aclk with period %d %s ..." % (self.aclk_per, self.aclk_per_units))
+        self.aclk_clk = Clock(self.aclk, self.aclk_per, unit=self.aclk_per_units)
+        self.aclk_clk.start()
+        self.dut._log.info("...aclk started")
 
     async def _reset(self):
 
@@ -241,8 +243,10 @@ class axi_bus:
 
     async def _clock(self):
 
-        self.dut._log.info("starting aclk with period %d %s" % (self.aclk_per, self.aclk_per_units))
-        await cocotb.start(Clock(self.aclk, self.aclk_per, units=self.aclk_per_units).start())
+        self.dut._log.info("starting aclk with period %d %s ..." % (self.aclk_per, self.aclk_per_units))
+        self.aclk_clk = Clock(self.aclk, self.aclk_per, unit=self.aclk_per_units)
+        self.aclk_clk.start()
+        self.dut._log.info("...aclk started")
 
     async def _reset(self):
 
@@ -285,7 +289,7 @@ class axi_bus:
 
         self.rready.value = 0
 
-        read_data = self.rdata.value.integer
+        read_data = self.rdata.value
 
         await RisingEdge(self.aclk)
 
@@ -371,7 +375,7 @@ class msk:
         self.dut._log.info("rx sample capture - starting...")
 
         while self.sim_run:
-            if self.rx_sample_clk.value.integer == 1:
+            if self.rx_sample_clk.value == 1:
                 self.rx_samples_arr.append(int(self.rx_samples.value.signed_integer))
             await RisingEdge(self.clk)
 
@@ -518,7 +522,7 @@ class prbs:
 
         while self.sim_run:
             if self.rx_dvalid.value == 1:
-                rx_data = self.rx_data.value.integer
+                rx_data = self.rx_data.value
                 await self.mon(rx_data)
             await RisingEdge(self.clk)
 
@@ -625,6 +629,8 @@ class ddc:
 @cocotb.test()
 async def msk_test_1(dut):
 
+    dut._log.info("msk_test_1 starting...")
+
     plot = True
 
     run_time = 35000 # microseconds
@@ -672,7 +678,7 @@ async def msk_test_1(dut):
     digital_loopback = 1
     diff_enc_loopback = 0
 
-    print("Instantiate registers")
+    print("Instantiate registers...")
     axi  = axi_bus(dut)
     regs = msk_top_regs_cls(callbacks=AsyncCallbackSet(read_callback=axi.read, write_callback=axi.write))
 
@@ -686,7 +692,10 @@ async def msk_test_1(dut):
     tx_data_width = 8
     rx_data_width = 8
 
-    await cocotb.start(Clock(dut.clk, tx_sample_per, units="fs").start())
+    dut._log.info("starting clock...")
+    clk_mdm = Clock(dut.clk, tx_sample_per, unit="fs")
+    clk_mdm.start()
+    dut._log.info("... clock started")
 
     delta_f = bitrate/4
 
@@ -710,11 +719,13 @@ async def msk_test_1(dut):
 
     await RisingEdge(dut.clk)
 
+    dut._log.info("instantiating AXI bus...")
     axis = axis_bus(dut)
 
     await axi.init()
     await axis.init()
     
+    dut._log.info("configuring...")
     dut.tx_enable.value = 1
     dut.rx_enable.value = 1
     dut.rx_svalid.value = 1
@@ -755,11 +766,13 @@ async def msk_test_1(dut):
     hash_id  = await regs.Hash_ID_High.read()
     print("Hash ID High: ", hex(hash_id))
 
-    await Timer(100, units="ns")
+    await Timer(100, unit="ns")
 
     await RisingEdge(dut.clk)
 
+    dut._log.info("releasing init...")
     await regs.MSK_Init.write(0)    
+    dut._log.info("asserting ptt...")
     await regs.MSK_Control.write((diff_enc_loopback << 4) + (rx_invert <<2) + ptt)    
 
     await RisingEdge(dut.clk)
@@ -805,7 +818,7 @@ async def msk_test_1(dut):
 
         if sim_time_d <= sim_start + 20000 and sim_time >= sim_start + 20000:
             data = await regs.PRBS_Control.read()
-            data = data | 0x2
+            data = data.to_unsigned() | 0x2
             dut.s_axi_wvalid.value = 1
             dut.s_axi_awvalid.value = 1
             await regs.PRBS_Control.write(data)    
@@ -889,10 +902,10 @@ async def msk_test_1(dut):
     # print("Zeros: ", pn.zeros_count)
 
     errs = await regs.PRBS_Error_Count.read()
-    print("Bit errors: ", errs)
+    print("Bit errors: ", errs.to_unsigned())
     bits = await regs.PRBS_Bit_Count.read()
-    print("Bit count:  ", bits)
-    print("BER:        ", (1.0*errs)/bits)
+    print("Bit count:  ", bits.to_unsigned())
+    print("BER:        ", (1.0*errs.to_unsigned())/bits.to_unsigned())
 
     # print("Bit errors: ", pn.err_count)
     # print("Bit count:  ", pn.data_count)
