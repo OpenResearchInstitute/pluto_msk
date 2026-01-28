@@ -767,6 +767,10 @@ async def msk_test_1(dut):
     hash_id  = await regs.Hash_ID_High.read()
     print("Hash ID High: ", hex(hash_id))
 
+    ltf1f2 = await regs.symbol_lock_time.read()
+    print("F1 lock time: ", ltf1f2[15:0].to_unsigned())
+    print("f2 lock time: ", ltf1f2[31:15].to_unsigned())
+
     await Timer(100, unit="ns")
 
     await RisingEdge(dut.clk)
@@ -914,10 +918,9 @@ async def msk_test_1(dut):
     bits = await regs.PRBS_Bit_Count.read()
     print("Bit count:  ", bits.to_unsigned())
     print("BER:        ", (1.0*errs.to_unsigned())/bits.to_unsigned())
-    ltf1 = await regs.symbol_lock_time.f1.read()
-    ltf2 = await regs.symbol_lock_time.f2.read()
-    print("F1 lock time: ", ltf1.to_unsigned())
-    print("f2 lock time: ", ltd2.to_unsigned())
+    ltf1f2 = await regs.symbol_lock_time.read()
+    print("F1 lock time: ", ltf1f2[15:0].to_unsigned())
+    print("f2 lock time: ", ltf1f2[31:16].to_unsigned())
 
     # print("Bit errors: ", pn.err_count)
     # print("Bit count:  ", pn.data_count)
