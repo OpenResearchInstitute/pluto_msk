@@ -4,8 +4,13 @@
 """
 Unit Tests for the msk_top_regs register model Python Wrapper
 
-This code was generated from the PeakRDL-python package version 1.4.0
+This code was generated from the PeakRDL-python package version 2.3.0
 """
+
+
+
+
+
 from typing import Union,Iterable
 from array import array as Array
 
@@ -21,9 +26,8 @@ import math
 
 from ..lib import RegisterWriteVerifyError, UnsupportedWidthError
 
-from ..reg_model.msk_top_regs import msk_top_regs_cls
-
-
+from ..reg_model import RegModel
+from ..reg_model.msk_top_regs_property_enums import *
 
 
 from ..lib import FieldAsyncReadOnly, FieldAsyncWriteOnly, FieldAsyncReadWrite
@@ -37,7 +41,7 @@ from ..lib import AsyncAddressMapArray, AsyncRegFileArray
 from ..lib import AsyncMemory
 
 
-
+from ..lib import NodeArray
 from ..lib import Field
 from ..lib import Reg
 
@@ -173,6 +177,15 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status'):
             self.assertEqual(self.dut.rx_frame_sync_status.inst_name, 'rx_frame_sync_status') # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_frame_sync_status.full_inst_name, 'msk_top_regs.rx_frame_sync_status')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_control'):
+            self.assertEqual(self.dut.symbol_lock_control.inst_name, 'symbol_lock_control') # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_control.full_inst_name, 'msk_top_regs.symbol_lock_control')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status'):
+            self.assertEqual(self.dut.symbol_lock_status.inst_name, 'symbol_lock_status') # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_status.full_inst_name, 'msk_top_regs.symbol_lock_status')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_time'):
+            self.assertEqual(self.dut.symbol_lock_time.inst_name, 'symbol_lock_time') # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_time.full_inst_name, 'msk_top_regs.symbol_lock_time')  # type: ignore[union-attr]
         with self.subTest(msg='node: msk_top_regs.Hash_ID_Low.hash_id_lo'):
             self.assertEqual(self.dut.Hash_ID_Low.hash_id_lo.inst_name, 'hash_id_lo') # type: ignore[union-attr]
             self.assertEqual(self.dut.Hash_ID_Low.hash_id_lo.full_inst_name, 'msk_top_regs.Hash_ID_Low.hash_id_lo')  # type: ignore[union-attr]
@@ -362,6 +375,33 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frame_sync_errors'):
             self.assertEqual(self.dut.rx_frame_sync_status.frame_sync_errors.inst_name, 'frame_sync_errors') # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_frame_sync_status.frame_sync_errors.full_inst_name, 'msk_top_regs.rx_frame_sync_status.frame_sync_errors')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_control.symbol_lock_count'):
+            self.assertEqual(self.dut.symbol_lock_control.symbol_lock_count.inst_name, 'symbol_lock_count') # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_control.symbol_lock_count.full_inst_name, 'msk_top_regs.symbol_lock_control.symbol_lock_count')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_control.symbol_lock_threshold'):
+            self.assertEqual(self.dut.symbol_lock_control.symbol_lock_threshold.inst_name, 'symbol_lock_threshold') # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_control.symbol_lock_threshold.full_inst_name, 'msk_top_regs.symbol_lock_control.symbol_lock_threshold')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.f1f2'):
+            self.assertEqual(self.dut.symbol_lock_status.f1f2.inst_name, 'f1f2') # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_status.f1f2.full_inst_name, 'msk_top_regs.symbol_lock_status.f1f2')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.f1'):
+            self.assertEqual(self.dut.symbol_lock_status.f1.inst_name, 'f1') # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_status.f1.full_inst_name, 'msk_top_regs.symbol_lock_status.f1')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.f2'):
+            self.assertEqual(self.dut.symbol_lock_status.f2.inst_name, 'f2') # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_status.f2.full_inst_name, 'msk_top_regs.symbol_lock_status.f2')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.unlock_f1'):
+            self.assertEqual(self.dut.symbol_lock_status.unlock_f1.inst_name, 'unlock_f1') # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_status.unlock_f1.full_inst_name, 'msk_top_regs.symbol_lock_status.unlock_f1')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.unlock_f2'):
+            self.assertEqual(self.dut.symbol_lock_status.unlock_f2.inst_name, 'unlock_f2') # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_status.unlock_f2.full_inst_name, 'msk_top_regs.symbol_lock_status.unlock_f2')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_time.f1'):
+            self.assertEqual(self.dut.symbol_lock_time.f1.inst_name, 'f1') # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_time.f1.full_inst_name, 'msk_top_regs.symbol_lock_time.f1')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_time.f2'):
+            self.assertEqual(self.dut.symbol_lock_time.f2.inst_name, 'f2') # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_time.f2.full_inst_name, 'msk_top_regs.symbol_lock_time.f2')  # type: ignore[union-attr]
         
 
     def test_name_property(self)  -> None:
@@ -638,6 +678,27 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             
                 
             self.assertEqual(self.dut.rx_frame_sync_status.rdl_name, "Frame Sync Status") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_control'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_control.rdl_name, "Symbol Lock Control") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_status.rdl_name, "Symbol Lock Status") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_time'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_time.rdl_name, "Symbol Lock Time") # type: ignore[union-attr]
                 
             
 
@@ -1082,6 +1143,69 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
             
 
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_control.symbol_lock_count'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_control.symbol_lock_count.rdl_name, "Symbol Lock Integration Count") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_control.symbol_lock_threshold'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_control.symbol_lock_threshold.rdl_name, "Symbol Lock Threshold") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.f1f2'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_status.f1f2.rdl_name, "Symbol Lock F1 and F2") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.f1'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_status.f1.rdl_name, "Symbol Lock F1") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.f2'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_status.f2.rdl_name, "Symbol Lock F2") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.unlock_f1'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_status.unlock_f1.rdl_name, "F1 unlocked since last read") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.unlock_f2'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_status.unlock_f2.rdl_name, "F2 unlocked since last read") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_time.f1'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_time.f1.rdl_name, "F1 Symbol Lock Time") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_time.f2'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_time.f2.rdl_name, "F2 Symbol Lock Time") # type: ignore[union-attr]
+                
+            
+
         
 
     def test_desc(self)  -> None:
@@ -1358,6 +1482,27 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             
                 
             self.assertIsNone(self.dut.rx_frame_sync_status.rdl_desc)  # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_control'):
+            
+                
+            self.assertIsNone(self.dut.symbol_lock_control.rdl_desc)  # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status'):
+            
+                
+            self.assertIsNone(self.dut.symbol_lock_status.rdl_desc)  # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_time'):
+            
+                
+            self.assertIsNone(self.dut.symbol_lock_time.rdl_desc)  # type: ignore[union-attr]
                 
             
 
@@ -1791,14 +1936,77 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frames_received'):
             
                 
-            self.assertEqual(self.dut.rx_frame_sync_status.frames_received.rdl_desc, "Count of frames received since last read. Value is 0x00_0000 to 0xFF_FFFF") # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_frame_sync_status.frames_received.rdl_desc, "Count of frames received. Value is 0x00_0000 to 0xFF_FFFF. Counter rolls over when max count is reached.") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frame_sync_errors'):
             
                 
-            self.assertEqual(self.dut.rx_frame_sync_status.frame_sync_errors.rdl_desc, "Count of frame sync errors since last read. Value is 0 to 63. This field will saturate at 63 if more than 63 occur.") # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_frame_sync_status.frame_sync_errors.rdl_desc, "Count of frame sync errors. Value is 0 to 63. Counter rolls over when max count is reached.") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_control.symbol_lock_count'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_control.symbol_lock_count.rdl_desc, "Sets the integration period in symbols. Value is from 0 to 1023.") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_control.symbol_lock_threshold'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_control.symbol_lock_threshold.rdl_desc, "Sets the threshold value on which to declare symbol sync") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.f1f2'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_status.f1f2.rdl_desc, "0 - Unlocked\n1 - F1 and F2 locked") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.f1'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_status.f1.rdl_desc, "0 - Unlocked\n1 - F1 locked") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.f2'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_status.f2.rdl_desc, "0 - Unlocked\n1 - F2 locked") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.unlock_f1'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_status.unlock_f1.rdl_desc, "0 - No unlock since last read\n1 - One or mode unlocks since last read") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.unlock_f2'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_status.unlock_f2.rdl_desc, "0 - No unlock since last read\n1 - One or mode unlocks since last read") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_time.f1'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_time.f1.rdl_desc, "Number of symbols for F1 lock since init released") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_time.f2'):
+            
+                
+            self.assertEqual(self.dut.symbol_lock_time.f2.rdl_desc, "Number of symbols for F2 lock since init released") # type: ignore[union-attr]
                 
             
 
@@ -1886,12 +2094,18 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.size, 4) # type: ignore[union-attr]
         with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status'):
             self.assertEqual(self.dut.rx_frame_sync_status.size, 4) # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_control'):
+            self.assertEqual(self.dut.symbol_lock_control.size, 4) # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status'):
+            self.assertEqual(self.dut.symbol_lock_status.size, 4) # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_time'):
+            self.assertEqual(self.dut.symbol_lock_time.size, 4) # type: ignore[union-attr]
         
 
         # check the size of the address map itself
         
         with self.subTest(msg='node: msk_top_regs'):
-            self.assertEqual(self.dut.size, 156) # type: ignore[union-attr]
+            self.assertEqual(self.dut.size, 168) # type: ignore[union-attr]
         
 
 
@@ -2095,6 +2309,21 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(self.dut.rx_frame_sync_status.width, 32) # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_frame_sync_status.size, 4) # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_frame_sync_status.accesswidth, 32) # type: ignore[union-attr]
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_control'):
+            self.assertEqual(self.dut.symbol_lock_control.address, 156) # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_control.width, 32) # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_control.size, 4) # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_control.accesswidth, 32) # type: ignore[union-attr]
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_status'):
+            self.assertEqual(self.dut.symbol_lock_status.address, 160) # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_status.width, 32) # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_status.size, 4) # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_status.accesswidth, 32) # type: ignore[union-attr]
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_time'):
+            self.assertEqual(self.dut.symbol_lock_time.address, 164) # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_time.width, 32) # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_time.size, 4) # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_time.accesswidth, 32) # type: ignore[union-attr]
         
 
     def test_memory_properties(self)  -> None:
@@ -3120,12 +3349,165 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(fut.default,0)
                 
             self.assertEqual(fut.is_volatile,True)
+        with self.subTest(msg='field: msk_top_regs.symbol_lock_control.symbol_lock_count'):
+            # test properties of field: msk_top_regs.symbol_lock_control.symbol_lock_count
+            fut = self.dut.symbol_lock_control.symbol_lock_count # type: ignore[union-attr]
+            if not isinstance(fut, Field):
+                raise TypeError('This test relies on node being of type Field')
+            self.assertEqual(fut.lsb,0)
+            self.assertEqual(fut.msb,9)
+            self.assertEqual(fut.low,0)
+            self.assertEqual(fut.high,9)
+            self.assertEqual(fut.bitmask,0x3FF)
+            self.assertEqual(fut.inverse_bitmask,0xFFFFFC00)
+            self.assertEqual(fut.max_value,0x3FF)
+                
+            self.assertEqual(fut.default,128)
+                
+            self.assertEqual(fut.is_volatile,False)
+        with self.subTest(msg='field: msk_top_regs.symbol_lock_control.symbol_lock_threshold'):
+            # test properties of field: msk_top_regs.symbol_lock_control.symbol_lock_threshold
+            fut = self.dut.symbol_lock_control.symbol_lock_threshold # type: ignore[union-attr]
+            if not isinstance(fut, Field):
+                raise TypeError('This test relies on node being of type Field')
+            self.assertEqual(fut.lsb,10)
+            self.assertEqual(fut.msb,25)
+            self.assertEqual(fut.low,10)
+            self.assertEqual(fut.high,25)
+            self.assertEqual(fut.bitmask,0x3FFFC00)
+            self.assertEqual(fut.inverse_bitmask,0xFC0003FF)
+            self.assertEqual(fut.max_value,0xFFFF)
+                
+            self.assertEqual(fut.default,10000)
+                
+            self.assertEqual(fut.is_volatile,False)
+        with self.subTest(msg='field: msk_top_regs.symbol_lock_status.f1f2'):
+            # test properties of field: msk_top_regs.symbol_lock_status.f1f2
+            fut = self.dut.symbol_lock_status.f1f2 # type: ignore[union-attr]
+            if not isinstance(fut, Field):
+                raise TypeError('This test relies on node being of type Field')
+            self.assertEqual(fut.lsb,0)
+            self.assertEqual(fut.msb,0)
+            self.assertEqual(fut.low,0)
+            self.assertEqual(fut.high,0)
+            self.assertEqual(fut.bitmask,0x1)
+            self.assertEqual(fut.inverse_bitmask,0xFFFFFFFE)
+            self.assertEqual(fut.max_value,0x1)
+                
+            self.assertEqual(fut.default,0)
+                
+            self.assertEqual(fut.is_volatile,True)
+        with self.subTest(msg='field: msk_top_regs.symbol_lock_status.f1'):
+            # test properties of field: msk_top_regs.symbol_lock_status.f1
+            fut = self.dut.symbol_lock_status.f1 # type: ignore[union-attr]
+            if not isinstance(fut, Field):
+                raise TypeError('This test relies on node being of type Field')
+            self.assertEqual(fut.lsb,1)
+            self.assertEqual(fut.msb,1)
+            self.assertEqual(fut.low,1)
+            self.assertEqual(fut.high,1)
+            self.assertEqual(fut.bitmask,0x2)
+            self.assertEqual(fut.inverse_bitmask,0xFFFFFFFD)
+            self.assertEqual(fut.max_value,0x1)
+                
+            self.assertEqual(fut.default,0)
+                
+            self.assertEqual(fut.is_volatile,True)
+        with self.subTest(msg='field: msk_top_regs.symbol_lock_status.f2'):
+            # test properties of field: msk_top_regs.symbol_lock_status.f2
+            fut = self.dut.symbol_lock_status.f2 # type: ignore[union-attr]
+            if not isinstance(fut, Field):
+                raise TypeError('This test relies on node being of type Field')
+            self.assertEqual(fut.lsb,2)
+            self.assertEqual(fut.msb,2)
+            self.assertEqual(fut.low,2)
+            self.assertEqual(fut.high,2)
+            self.assertEqual(fut.bitmask,0x4)
+            self.assertEqual(fut.inverse_bitmask,0xFFFFFFFB)
+            self.assertEqual(fut.max_value,0x1)
+                
+            self.assertEqual(fut.default,0)
+                
+            self.assertEqual(fut.is_volatile,True)
+        with self.subTest(msg='field: msk_top_regs.symbol_lock_status.unlock_f1'):
+            # test properties of field: msk_top_regs.symbol_lock_status.unlock_f1
+            fut = self.dut.symbol_lock_status.unlock_f1 # type: ignore[union-attr]
+            if not isinstance(fut, Field):
+                raise TypeError('This test relies on node being of type Field')
+            self.assertEqual(fut.lsb,3)
+            self.assertEqual(fut.msb,3)
+            self.assertEqual(fut.low,3)
+            self.assertEqual(fut.high,3)
+            self.assertEqual(fut.bitmask,0x8)
+            self.assertEqual(fut.inverse_bitmask,0xFFFFFFF7)
+            self.assertEqual(fut.max_value,0x1)
+                
+            self.assertEqual(fut.default,0)
+                
+            self.assertEqual(fut.is_volatile,True)
+        with self.subTest(msg='field: msk_top_regs.symbol_lock_status.unlock_f2'):
+            # test properties of field: msk_top_regs.symbol_lock_status.unlock_f2
+            fut = self.dut.symbol_lock_status.unlock_f2 # type: ignore[union-attr]
+            if not isinstance(fut, Field):
+                raise TypeError('This test relies on node being of type Field')
+            self.assertEqual(fut.lsb,4)
+            self.assertEqual(fut.msb,4)
+            self.assertEqual(fut.low,4)
+            self.assertEqual(fut.high,4)
+            self.assertEqual(fut.bitmask,0x10)
+            self.assertEqual(fut.inverse_bitmask,0xFFFFFFEF)
+            self.assertEqual(fut.max_value,0x1)
+                
+            self.assertEqual(fut.default,0)
+                
+            self.assertEqual(fut.is_volatile,True)
+        with self.subTest(msg='field: msk_top_regs.symbol_lock_time.f1'):
+            # test properties of field: msk_top_regs.symbol_lock_time.f1
+            fut = self.dut.symbol_lock_time.f1 # type: ignore[union-attr]
+            if not isinstance(fut, Field):
+                raise TypeError('This test relies on node being of type Field')
+            self.assertEqual(fut.lsb,0)
+            self.assertEqual(fut.msb,15)
+            self.assertEqual(fut.low,0)
+            self.assertEqual(fut.high,15)
+            self.assertEqual(fut.bitmask,0xFFFF)
+            self.assertEqual(fut.inverse_bitmask,0xFFFF0000)
+            self.assertEqual(fut.max_value,0xFFFF)
+                
+            self.assertEqual(fut.default,0)
+                
+            self.assertEqual(fut.is_volatile,True)
+        with self.subTest(msg='field: msk_top_regs.symbol_lock_time.f2'):
+            # test properties of field: msk_top_regs.symbol_lock_time.f2
+            fut = self.dut.symbol_lock_time.f2 # type: ignore[union-attr]
+            if not isinstance(fut, Field):
+                raise TypeError('This test relies on node being of type Field')
+            self.assertEqual(fut.lsb,16)
+            self.assertEqual(fut.msb,31)
+            self.assertEqual(fut.low,16)
+            self.assertEqual(fut.high,31)
+            self.assertEqual(fut.bitmask,0xFFFF0000)
+            self.assertEqual(fut.inverse_bitmask,0xFFFF)
+            self.assertEqual(fut.max_value,0xFFFF)
+                
+            self.assertEqual(fut.default,0)
+                
+            self.assertEqual(fut.is_volatile,True)
         
 
     def test_field_encoding_properties(self)  -> None:
         """
         Check that enumeration has the name and desc meta data from the systemRDL
         """
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -3197,411 +3579,573 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         """
         with self.subTest(msg='register: msk_top_regs.Hash_ID_Low'):
             
+            
             self.assertDictEqual(self.dut.Hash_ID_Low.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Hash_ID_High'):
+            
             
             self.assertDictEqual(self.dut.Hash_ID_High.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Init'):
             
+            
             self.assertDictEqual(self.dut.MSK_Init.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Control'):
+            
             
             self.assertDictEqual(self.dut.MSK_Control.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Status'):
             
+            
             self.assertDictEqual(self.dut.MSK_Status.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Bit_Count'):
+            
             
             self.assertDictEqual(self.dut.Tx_Bit_Count.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Enable_Count'):
             
+            
             self.assertDictEqual(self.dut.Tx_Enable_Count.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Fb_FreqWord'):
+            
             
             self.assertDictEqual(self.dut.Fb_FreqWord.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.TX_F1_FreqWord'):
             
+            
             self.assertDictEqual(self.dut.TX_F1_FreqWord.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.TX_F2_FreqWord'):
+            
             
             self.assertDictEqual(self.dut.TX_F2_FreqWord.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.RX_F1_FreqWord'):
             
+            
             self.assertDictEqual(self.dut.RX_F1_FreqWord.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.RX_F2_FreqWord'):
+            
             
             self.assertDictEqual(self.dut.RX_F2_FreqWord.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_0'):
             
+            
             self.assertDictEqual(self.dut.LPF_Config_0.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_1'):
+            
             
             self.assertDictEqual(self.dut.LPF_Config_1.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Data_Width'):
             
+            
             self.assertDictEqual(self.dut.Tx_Data_Width.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Rx_Data_Width'):
+            
             
             self.assertDictEqual(self.dut.Rx_Data_Width.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Control'):
             
+            
             self.assertDictEqual(self.dut.PRBS_Control.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Initial_State'):
+            
             
             self.assertDictEqual(self.dut.PRBS_Initial_State.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Polynomial'):
             
+            
             self.assertDictEqual(self.dut.PRBS_Polynomial.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Error_Mask'):
+            
             
             self.assertDictEqual(self.dut.PRBS_Error_Mask.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Bit_Count'):
             
+            
             self.assertDictEqual(self.dut.PRBS_Bit_Count.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Error_Count'):
+            
             
             self.assertDictEqual(self.dut.PRBS_Error_Count.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Accum_F1'):
             
+            
             self.assertDictEqual(self.dut.LPF_Accum_F1.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Accum_F2'):
+            
             
             self.assertDictEqual(self.dut.LPF_Accum_F2.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.axis_xfer_count'):
             
+            
             self.assertDictEqual(self.dut.axis_xfer_count.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Rx_Sample_Discard'):
+            
             
             self.assertDictEqual(self.dut.Rx_Sample_Discard.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_2'):
             
+            
             self.assertDictEqual(self.dut.LPF_Config_2.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.f1_nco_adjust'):
+            
             
             self.assertDictEqual(self.dut.f1_nco_adjust.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.f2_nco_adjust'):
             
+            
             self.assertDictEqual(self.dut.f2_nco_adjust.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.f1_error'):
+            
             
             self.assertDictEqual(self.dut.f1_error.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.f2_error'):
             
+            
             self.assertDictEqual(self.dut.f2_error.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Sync_Ctrl'):
+            
             
             self.assertDictEqual(self.dut.Tx_Sync_Ctrl.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Sync_Cnt'):
             
+            
             self.assertDictEqual(self.dut.Tx_Sync_Cnt.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.lowpass_ema_alpha1'):
+            
             
             self.assertDictEqual(self.dut.lowpass_ema_alpha1.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.lowpass_ema_alpha2'):
             
+            
             self.assertDictEqual(self.dut.lowpass_ema_alpha2.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.rx_power'):
+            
             
             self.assertDictEqual(self.dut.rx_power.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.tx_async_fifo_rd_wr_ptr'):
             
+            
             self.assertDictEqual(self.dut.tx_async_fifo_rd_wr_ptr.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
+            
             
             self.assertDictEqual(self.dut.rx_async_fifo_rd_wr_ptr.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status'):
             
+            
             self.assertDictEqual(self.dut.rx_frame_sync_status.udp,{})
             
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_control'):
+            
+            
+            self.assertDictEqual(self.dut.symbol_lock_control.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_status'):
+            
+            
+            self.assertDictEqual(self.dut.symbol_lock_status.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_time'):
+            
+            
+            self.assertDictEqual(self.dut.symbol_lock_time.udp,{})
+            
         with self.subTest(msg='register: msk_top_regs.Hash_ID_Low.hash_id_lo'):
+            
             
             self.assertDictEqual(self.dut.Hash_ID_Low.hash_id_lo.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Hash_ID_High.hash_id_hi'):
             
+            
             self.assertDictEqual(self.dut.Hash_ID_High.hash_id_hi.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Init.txrxinit'):
+            
             
             self.assertDictEqual(self.dut.MSK_Init.txrxinit.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Init.txinit'):
             
+            
             self.assertDictEqual(self.dut.MSK_Init.txinit.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Init.rxinit'):
+            
             
             self.assertDictEqual(self.dut.MSK_Init.rxinit.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Control.ptt'):
             
+            
             self.assertDictEqual(self.dut.MSK_Control.ptt.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Control.loopback_ena'):
+            
             
             self.assertDictEqual(self.dut.MSK_Control.loopback_ena.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Control.rx_invert'):
             
+            
             self.assertDictEqual(self.dut.MSK_Control.rx_invert.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Control.clear_counts'):
+            
             
             self.assertDictEqual(self.dut.MSK_Control.clear_counts.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Control.diff_encoder_loopback'):
             
+            
             self.assertDictEqual(self.dut.MSK_Control.diff_encoder_loopback.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Status.demod_sync_lock'):
+            
             
             self.assertDictEqual(self.dut.MSK_Status.demod_sync_lock.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Status.tx_enable'):
             
+            
             self.assertDictEqual(self.dut.MSK_Status.tx_enable.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Status.rx_enable'):
+            
             
             self.assertDictEqual(self.dut.MSK_Status.rx_enable.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Status.tx_axis_valid'):
             
+            
             self.assertDictEqual(self.dut.MSK_Status.tx_axis_valid.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Bit_Count.data'):
+            
             
             self.assertDictEqual(self.dut.Tx_Bit_Count.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Enable_Count.data'):
             
+            
             self.assertDictEqual(self.dut.Tx_Enable_Count.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Fb_FreqWord.config_data'):
+            
             
             self.assertDictEqual(self.dut.Fb_FreqWord.config_data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.TX_F1_FreqWord.config_data'):
             
+            
             self.assertDictEqual(self.dut.TX_F1_FreqWord.config_data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.TX_F2_FreqWord.config_data'):
+            
             
             self.assertDictEqual(self.dut.TX_F2_FreqWord.config_data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.RX_F1_FreqWord.config_data'):
             
+            
             self.assertDictEqual(self.dut.RX_F1_FreqWord.config_data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.RX_F2_FreqWord.config_data'):
+            
             
             self.assertDictEqual(self.dut.RX_F2_FreqWord.config_data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_0.lpf_freeze'):
             
+            
             self.assertDictEqual(self.dut.LPF_Config_0.lpf_freeze.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_0.lpf_zero'):
+            
             
             self.assertDictEqual(self.dut.LPF_Config_0.lpf_zero.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_0.prbs_reserved'):
             
+            
             self.assertDictEqual(self.dut.LPF_Config_0.prbs_reserved.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_0.lpf_alpha'):
+            
             
             self.assertDictEqual(self.dut.LPF_Config_0.lpf_alpha.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_1.i_gain'):
             
+            
             self.assertDictEqual(self.dut.LPF_Config_1.i_gain.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_1.i_shift'):
+            
             
             self.assertDictEqual(self.dut.LPF_Config_1.i_shift.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Data_Width.data_width'):
             
+            
             self.assertDictEqual(self.dut.Tx_Data_Width.data_width.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Rx_Data_Width.data_width'):
+            
             
             self.assertDictEqual(self.dut.Rx_Data_Width.data_width.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Control.prbs_sel'):
             
+            
             self.assertDictEqual(self.dut.PRBS_Control.prbs_sel.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Control.prbs_error_insert'):
+            
             
             self.assertDictEqual(self.dut.PRBS_Control.prbs_error_insert.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Control.prbs_clear'):
             
+            
             self.assertDictEqual(self.dut.PRBS_Control.prbs_clear.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Control.prbs_manual_sync'):
+            
             
             self.assertDictEqual(self.dut.PRBS_Control.prbs_manual_sync.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Control.prbs_reserved'):
             
+            
             self.assertDictEqual(self.dut.PRBS_Control.prbs_reserved.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Control.prbs_sync_threshold'):
+            
             
             self.assertDictEqual(self.dut.PRBS_Control.prbs_sync_threshold.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Initial_State.config_data'):
             
+            
             self.assertDictEqual(self.dut.PRBS_Initial_State.config_data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Polynomial.config_data'):
+            
             
             self.assertDictEqual(self.dut.PRBS_Polynomial.config_data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Error_Mask.config_data'):
             
+            
             self.assertDictEqual(self.dut.PRBS_Error_Mask.config_data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Bit_Count.data'):
+            
             
             self.assertDictEqual(self.dut.PRBS_Bit_Count.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Error_Count.data'):
             
+            
             self.assertDictEqual(self.dut.PRBS_Error_Count.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Accum_F1.data'):
+            
             
             self.assertDictEqual(self.dut.LPF_Accum_F1.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Accum_F2.data'):
             
+            
             self.assertDictEqual(self.dut.LPF_Accum_F2.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.axis_xfer_count.data'):
+            
             
             self.assertDictEqual(self.dut.axis_xfer_count.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Rx_Sample_Discard.rx_sample_discard'):
             
+            
             self.assertDictEqual(self.dut.Rx_Sample_Discard.rx_sample_discard.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Rx_Sample_Discard.rx_nco_discard'):
+            
             
             self.assertDictEqual(self.dut.Rx_Sample_Discard.rx_nco_discard.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_2.p_gain'):
             
+            
             self.assertDictEqual(self.dut.LPF_Config_2.p_gain.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_2.p_shift'):
+            
             
             self.assertDictEqual(self.dut.LPF_Config_2.p_shift.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.f1_nco_adjust.data'):
             
+            
             self.assertDictEqual(self.dut.f1_nco_adjust.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.f2_nco_adjust.data'):
+            
             
             self.assertDictEqual(self.dut.f2_nco_adjust.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.f1_error.data'):
             
+            
             self.assertDictEqual(self.dut.f1_error.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.f2_error.data'):
+            
             
             self.assertDictEqual(self.dut.f2_error.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Sync_Ctrl.tx_sync_ena'):
             
+            
             self.assertDictEqual(self.dut.Tx_Sync_Ctrl.tx_sync_ena.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Sync_Ctrl.tx_sync_force'):
+            
             
             self.assertDictEqual(self.dut.Tx_Sync_Ctrl.tx_sync_force.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Sync_Cnt.tx_sync_cnt'):
             
+            
             self.assertDictEqual(self.dut.Tx_Sync_Cnt.tx_sync_cnt.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.lowpass_ema_alpha1.alpha'):
+            
             
             self.assertDictEqual(self.dut.lowpass_ema_alpha1.alpha.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.lowpass_ema_alpha2.alpha'):
             
+            
             self.assertDictEqual(self.dut.lowpass_ema_alpha2.alpha.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.rx_power.data'):
+            
             
             self.assertDictEqual(self.dut.rx_power.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.tx_async_fifo_rd_wr_ptr.data'):
             
+            
             self.assertDictEqual(self.dut.tx_async_fifo_rd_wr_ptr.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.rx_async_fifo_rd_wr_ptr.data'):
+            
             
             self.assertDictEqual(self.dut.rx_async_fifo_rd_wr_ptr.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status.frame_sync_locked'):
             
+            
             self.assertDictEqual(self.dut.rx_frame_sync_status.frame_sync_locked.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status.frame_buffer_overflow'):
+            
             
             self.assertDictEqual(self.dut.rx_frame_sync_status.frame_buffer_overflow.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status.frames_received'):
             
+            
             self.assertDictEqual(self.dut.rx_frame_sync_status.frames_received.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status.frame_sync_errors'):
             
+            
             self.assertDictEqual(self.dut.rx_frame_sync_status.frame_sync_errors.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_control.symbol_lock_count'):
+            
+            
+            self.assertDictEqual(self.dut.symbol_lock_control.symbol_lock_count.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_control.symbol_lock_threshold'):
+            
+            
+            self.assertDictEqual(self.dut.symbol_lock_control.symbol_lock_threshold.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_status.f1f2'):
+            
+            
+            self.assertDictEqual(self.dut.symbol_lock_status.f1f2.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_status.f1'):
+            
+            
+            self.assertDictEqual(self.dut.symbol_lock_status.f1.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_status.f2'):
+            
+            
+            self.assertDictEqual(self.dut.symbol_lock_status.f2.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_status.unlock_f1'):
+            
+            
+            self.assertDictEqual(self.dut.symbol_lock_status.unlock_f1.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_status.unlock_f2'):
+            
+            
+            self.assertDictEqual(self.dut.symbol_lock_status.unlock_f2.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_time.f1'):
+            
+            
+            self.assertDictEqual(self.dut.symbol_lock_time.f1.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_time.f2'):
+            
+            
+            self.assertDictEqual(self.dut.symbol_lock_time.f2.udp,{})
             
         
 
@@ -7093,6 +7637,214 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
 
                 with self.assertRaises(ValueError):
                     await rut.write(0xFFFFFFFF+1)
+
+                # check the read has not been called in the write test
+                read_callback_mock.assert_not_called()
+        # test access operations (read and/or write) to register:
+        # msk_top_regs.symbol_lock_control
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_control'):
+            rut=self.dut.symbol_lock_control # type: ignore[union-attr,assignment]
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                patch(base_name + '.read_addr_space', return_value=1) as read_callback_mock:
+
+                
+                if not isinstance(rut, (RegAsyncReadOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Readable Async Type')
+                
+                # test reading back 1 (the unpatched version returns 0 so this confirms the patch works)
+                self.assertEqual(await rut.read(), 1)
+                read_callback_mock.assert_called_once_with(
+                                    addr=156,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read check with high value
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0xFFFFFFFF
+                self.assertEqual(await rut.read(), 0xFFFFFFFF)
+                read_callback_mock.assert_called_once_with(
+                                    addr=156,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read of the low value
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0
+                self.assertEqual(await rut.read(), 0x0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=156,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read of a random value
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = random_value
+                self.assertEqual(await rut.read(), random_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=156,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+                
+
+                
+                if not isinstance(rut, (RegAsyncWriteOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Writeable Async Type')
+                
+                # test the write with high value
+                await rut.write(0xFFFFFFFF)
+                write_callback_mock.assert_called_once_with(
+                                    addr=156,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0xFFFFFFFF)
+                write_callback_mock.reset_mock()
+
+                # test the write of a low value
+                await rut.write(0)
+                write_callback_mock.assert_called_once_with(
+                                    addr=156,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0)
+                write_callback_mock.reset_mock()
+
+                # test the write of a random
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                await rut.write(random_value)  # type: ignore[union-attr]
+                write_callback_mock.assert_called_once_with(
+                                    addr=156,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=random_value)
+                write_callback_mock.reset_mock()
+
+                # test writing a value beyond the register range is blocked with an exception being raised
+                with self.assertRaises(ValueError):
+                    await rut.write(-1)
+
+                with self.assertRaises(ValueError):
+                    await rut.write(0xFFFFFFFF+1)
+
+                # check the read has not been called in the write test
+                read_callback_mock.assert_not_called()
+        # test access operations (read and/or write) to register:
+        # msk_top_regs.symbol_lock_status
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_status'):
+            rut=self.dut.symbol_lock_status # type: ignore[union-attr,assignment]
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                patch(base_name + '.read_addr_space', return_value=1) as read_callback_mock:
+
+                
+                if not isinstance(rut, (RegAsyncReadOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Readable Async Type')
+                
+                # test reading back 1 (the unpatched version returns 0 so this confirms the patch works)
+                self.assertEqual(await rut.read(), 1)
+                read_callback_mock.assert_called_once_with(
+                                    addr=160,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read check with high value
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0xFFFFFFFF
+                self.assertEqual(await rut.read(), 0xFFFFFFFF)
+                read_callback_mock.assert_called_once_with(
+                                    addr=160,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read of the low value
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0
+                self.assertEqual(await rut.read(), 0x0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=160,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read of a random value
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = random_value
+                self.assertEqual(await rut.read(), random_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=160,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+                
+
+                
+                # test that a non-writable register has no write method and attempting one generates and error
+                with self.assertRaises(AttributeError):
+                    await rut.write(0) # type: ignore[attr-defined]
+
+                # check the read has not been called in the write test
+                read_callback_mock.assert_not_called()
+        # test access operations (read and/or write) to register:
+        # msk_top_regs.symbol_lock_time
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_time'):
+            rut=self.dut.symbol_lock_time # type: ignore[union-attr,assignment]
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                patch(base_name + '.read_addr_space', return_value=1) as read_callback_mock:
+
+                
+                if not isinstance(rut, (RegAsyncReadOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Readable Async Type')
+                
+                # test reading back 1 (the unpatched version returns 0 so this confirms the patch works)
+                self.assertEqual(await rut.read(), 1)
+                read_callback_mock.assert_called_once_with(
+                                    addr=164,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read check with high value
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0xFFFFFFFF
+                self.assertEqual(await rut.read(), 0xFFFFFFFF)
+                read_callback_mock.assert_called_once_with(
+                                    addr=164,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read of the low value
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0
+                self.assertEqual(await rut.read(), 0x0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=164,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read of a random value
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = random_value
+                self.assertEqual(await rut.read(), random_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=164,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+                
+
+                
+                # test that a non-writable register has no write method and attempting one generates and error
+                with self.assertRaises(AttributeError):
+                    await rut.write(0) # type: ignore[attr-defined]
 
                 # check the read has not been called in the write test
                 read_callback_mock.assert_not_called()
@@ -11908,6 +12660,510 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 with self.assertRaises(ValueError):
                     await fut.write(-1)
 
+        # test access operations (read and/or write) to field:
+        # msk_top_regs.symbol_lock_control.symbol_lock_count
+        with self.subTest(msg='field: msk_top_regs.symbol_lock_control.symbol_lock_count'):
+            fut = self.dut.symbol_lock_control.symbol_lock_count # type: ignore[union-attr]
+            with patch(base_name + '.write_addr_space') as write_callback_mock,\
+                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
+
+                
+                
+                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a readable async field')
+                
+
+                # read back - zero, this is achieved by setting the register to inverse bitmask
+                read_callback_mock.return_value = 0xFFFFFC00
+                self.assertEqual(await fut.read(),
+                                 0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=156,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - max_value, this is achieved by setting the register to bitmask
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0x3FF
+                self.assertEqual(await fut.read(),
+                                 0x3FF)
+                read_callback_mock.assert_called_once_with(
+                                    addr=156,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - random value
+                read_callback_mock.reset_mock()
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.return_value = random_value
+                random_field_value = (random_value & 0x3FF) >> 0
+                self.assertEqual(await fut.read(),
+                                 random_field_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=156,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0x3FF + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0x3FF, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.symbol_lock_control.symbol_lock_count.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_called_once_with(
+                                    addr=156,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+                        
+                        write_callback_mock.assert_called_once_with(
+                                    addr=156,
+                                    width=32,
+                                    accesswidth=self.dut.symbol_lock_control.symbol_lock_count.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0xFFFFFC00) | \
+                                         (0x3FF & (field_value << 0)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0x3FF + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
+
+        # test access operations (read and/or write) to field:
+        # msk_top_regs.symbol_lock_control.symbol_lock_threshold
+        with self.subTest(msg='field: msk_top_regs.symbol_lock_control.symbol_lock_threshold'):
+            fut = self.dut.symbol_lock_control.symbol_lock_threshold # type: ignore[union-attr]
+            with patch(base_name + '.write_addr_space') as write_callback_mock,\
+                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
+
+                
+                
+                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a readable async field')
+                
+
+                # read back - zero, this is achieved by setting the register to inverse bitmask
+                read_callback_mock.return_value = 0xFC0003FF
+                self.assertEqual(await fut.read(),
+                                 0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=156,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - max_value, this is achieved by setting the register to bitmask
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0x3FFFC00
+                self.assertEqual(await fut.read(),
+                                 0xFFFF)
+                read_callback_mock.assert_called_once_with(
+                                    addr=156,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - random value
+                read_callback_mock.reset_mock()
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.return_value = random_value
+                random_field_value = (random_value & 0x3FFFC00) >> 10
+                self.assertEqual(await fut.read(),
+                                 random_field_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=156,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0xFFFF + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0xFFFF, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.symbol_lock_control.symbol_lock_threshold.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_called_once_with(
+                                    addr=156,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+                        
+                        write_callback_mock.assert_called_once_with(
+                                    addr=156,
+                                    width=32,
+                                    accesswidth=self.dut.symbol_lock_control.symbol_lock_threshold.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0xFC0003FF) | \
+                                         (0x3FFFC00 & (field_value << 10)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0xFFFF + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
+
+        # test access operations (read and/or write) to field:
+        # msk_top_regs.symbol_lock_status.f1f2
+        with self.subTest(msg='field: msk_top_regs.symbol_lock_status.f1f2'):
+            fut = self.dut.symbol_lock_status.f1f2 # type: ignore[union-attr]
+            with patch(base_name + '.write_addr_space') as write_callback_mock,\
+                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
+
+                
+                
+                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a readable async field')
+                
+
+                # read back - zero, this is achieved by setting the register to inverse bitmask
+                read_callback_mock.return_value = 0xFFFFFFFE
+                self.assertEqual(await fut.read(),
+                                 0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=160,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - max_value, this is achieved by setting the register to bitmask
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0x1
+                self.assertEqual(await fut.read(),
+                                 0x1)
+                read_callback_mock.assert_called_once_with(
+                                    addr=160,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - random value
+                read_callback_mock.reset_mock()
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.return_value = random_value
+                random_field_value = (random_value & 0x1) >> 0
+                self.assertEqual(await fut.read(),
+                                 random_field_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=160,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+
+        # test access operations (read and/or write) to field:
+        # msk_top_regs.symbol_lock_status.f1
+        with self.subTest(msg='field: msk_top_regs.symbol_lock_status.f1'):
+            fut = self.dut.symbol_lock_status.f1 # type: ignore[union-attr]
+            with patch(base_name + '.write_addr_space') as write_callback_mock,\
+                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
+
+                
+                
+                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a readable async field')
+                
+
+                # read back - zero, this is achieved by setting the register to inverse bitmask
+                read_callback_mock.return_value = 0xFFFFFFFD
+                self.assertEqual(await fut.read(),
+                                 0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=160,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - max_value, this is achieved by setting the register to bitmask
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0x2
+                self.assertEqual(await fut.read(),
+                                 0x1)
+                read_callback_mock.assert_called_once_with(
+                                    addr=160,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - random value
+                read_callback_mock.reset_mock()
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.return_value = random_value
+                random_field_value = (random_value & 0x2) >> 1
+                self.assertEqual(await fut.read(),
+                                 random_field_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=160,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+
+        # test access operations (read and/or write) to field:
+        # msk_top_regs.symbol_lock_status.f2
+        with self.subTest(msg='field: msk_top_regs.symbol_lock_status.f2'):
+            fut = self.dut.symbol_lock_status.f2 # type: ignore[union-attr]
+            with patch(base_name + '.write_addr_space') as write_callback_mock,\
+                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
+
+                
+                
+                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a readable async field')
+                
+
+                # read back - zero, this is achieved by setting the register to inverse bitmask
+                read_callback_mock.return_value = 0xFFFFFFFB
+                self.assertEqual(await fut.read(),
+                                 0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=160,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - max_value, this is achieved by setting the register to bitmask
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0x4
+                self.assertEqual(await fut.read(),
+                                 0x1)
+                read_callback_mock.assert_called_once_with(
+                                    addr=160,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - random value
+                read_callback_mock.reset_mock()
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.return_value = random_value
+                random_field_value = (random_value & 0x4) >> 2
+                self.assertEqual(await fut.read(),
+                                 random_field_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=160,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+
+        # test access operations (read and/or write) to field:
+        # msk_top_regs.symbol_lock_status.unlock_f1
+        with self.subTest(msg='field: msk_top_regs.symbol_lock_status.unlock_f1'):
+            fut = self.dut.symbol_lock_status.unlock_f1 # type: ignore[union-attr]
+            with patch(base_name + '.write_addr_space') as write_callback_mock,\
+                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
+
+                
+                
+                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a readable async field')
+                
+
+                # read back - zero, this is achieved by setting the register to inverse bitmask
+                read_callback_mock.return_value = 0xFFFFFFF7
+                self.assertEqual(await fut.read(),
+                                 0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=160,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - max_value, this is achieved by setting the register to bitmask
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0x8
+                self.assertEqual(await fut.read(),
+                                 0x1)
+                read_callback_mock.assert_called_once_with(
+                                    addr=160,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - random value
+                read_callback_mock.reset_mock()
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.return_value = random_value
+                random_field_value = (random_value & 0x8) >> 3
+                self.assertEqual(await fut.read(),
+                                 random_field_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=160,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+
+        # test access operations (read and/or write) to field:
+        # msk_top_regs.symbol_lock_status.unlock_f2
+        with self.subTest(msg='field: msk_top_regs.symbol_lock_status.unlock_f2'):
+            fut = self.dut.symbol_lock_status.unlock_f2 # type: ignore[union-attr]
+            with patch(base_name + '.write_addr_space') as write_callback_mock,\
+                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
+
+                
+                
+                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a readable async field')
+                
+
+                # read back - zero, this is achieved by setting the register to inverse bitmask
+                read_callback_mock.return_value = 0xFFFFFFEF
+                self.assertEqual(await fut.read(),
+                                 0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=160,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - max_value, this is achieved by setting the register to bitmask
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0x10
+                self.assertEqual(await fut.read(),
+                                 0x1)
+                read_callback_mock.assert_called_once_with(
+                                    addr=160,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - random value
+                read_callback_mock.reset_mock()
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.return_value = random_value
+                random_field_value = (random_value & 0x10) >> 4
+                self.assertEqual(await fut.read(),
+                                 random_field_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=160,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+
+        # test access operations (read and/or write) to field:
+        # msk_top_regs.symbol_lock_time.f1
+        with self.subTest(msg='field: msk_top_regs.symbol_lock_time.f1'):
+            fut = self.dut.symbol_lock_time.f1 # type: ignore[union-attr]
+            with patch(base_name + '.write_addr_space') as write_callback_mock,\
+                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
+
+                
+                
+                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a readable async field')
+                
+
+                # read back - zero, this is achieved by setting the register to inverse bitmask
+                read_callback_mock.return_value = 0xFFFF0000
+                self.assertEqual(await fut.read(),
+                                 0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=164,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - max_value, this is achieved by setting the register to bitmask
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0xFFFF
+                self.assertEqual(await fut.read(),
+                                 0xFFFF)
+                read_callback_mock.assert_called_once_with(
+                                    addr=164,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - random value
+                read_callback_mock.reset_mock()
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.return_value = random_value
+                random_field_value = (random_value & 0xFFFF) >> 0
+                self.assertEqual(await fut.read(),
+                                 random_field_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=164,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+
+        # test access operations (read and/or write) to field:
+        # msk_top_regs.symbol_lock_time.f2
+        with self.subTest(msg='field: msk_top_regs.symbol_lock_time.f2'):
+            fut = self.dut.symbol_lock_time.f2 # type: ignore[union-attr]
+            with patch(base_name + '.write_addr_space') as write_callback_mock,\
+                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
+
+                
+                
+                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a readable async field')
+                
+
+                # read back - zero, this is achieved by setting the register to inverse bitmask
+                read_callback_mock.return_value = 0xFFFF
+                self.assertEqual(await fut.read(),
+                                 0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=164,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - max_value, this is achieved by setting the register to bitmask
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0xFFFF0000
+                self.assertEqual(await fut.read(),
+                                 0xFFFF)
+                read_callback_mock.assert_called_once_with(
+                                    addr=164,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - random value
+                read_callback_mock.reset_mock()
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.return_value = random_value
+                random_field_value = (random_value & 0xFFFF0000) >> 16
+                self.assertEqual(await fut.read(),
+                                 random_field_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=164,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+
     
 
     async def test_register_read_fields(self) -> None:
@@ -13425,6 +14681,174 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.reset_mock()
 
                 self.assertDictEqual(await self.dut.rx_frame_sync_status.read_fields(),
+                                     reference_read_fields)
+                read_callback_mock.assert_called_once()
+                write_callback_mock.assert_not_called()
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_control'):
+            # test read_fields to register:
+            # msk_top_regs.symbol_lock_control
+            # build up the register value with a random base value, overlaid with
+            # a random value for each field
+            rand_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x3FF + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFFC00) | (rand_field_value << 0)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0xFFFF + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFC0003FF) | (rand_field_value << 10)
+                        
+                    
+                
+            
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                 patch(base_name + '.read_addr_space', return_value=rand_reg_value) as read_callback_mock:
+                # the read_fields method gets a dictionary back
+                # from the object with all the read back field
+                # values
+                reference_read_fields = { 
+                                          'symbol_lock_count' : await self.dut.symbol_lock_control.symbol_lock_count.read(),
+                                          'symbol_lock_threshold' : await self.dut.symbol_lock_control.symbol_lock_threshold.read()
+                                        }
+
+                read_callback_mock.reset_mock()
+
+                self.assertDictEqual(await self.dut.symbol_lock_control.read_fields(),
+                                     reference_read_fields)
+                read_callback_mock.assert_called_once()
+                write_callback_mock.assert_not_called()
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_status'):
+            # test read_fields to register:
+            # msk_top_regs.symbol_lock_status
+            # build up the register value with a random base value, overlaid with
+            # a random value for each field
+            rand_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x1 + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFFFFE) | (rand_field_value << 0)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x1 + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFFFFD) | (rand_field_value << 1)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x1 + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFFFFB) | (rand_field_value << 2)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x1 + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFFFF7) | (rand_field_value << 3)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x1 + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFFFEF) | (rand_field_value << 4)
+                        
+                    
+                
+            
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                 patch(base_name + '.read_addr_space', return_value=rand_reg_value) as read_callback_mock:
+                # the read_fields method gets a dictionary back
+                # from the object with all the read back field
+                # values
+                reference_read_fields = { 
+                                          'f1f2' : await self.dut.symbol_lock_status.f1f2.read(),
+                                          'f1' : await self.dut.symbol_lock_status.f1.read(),
+                                          'f2' : await self.dut.symbol_lock_status.f2.read(),
+                                          'unlock_f1' : await self.dut.symbol_lock_status.unlock_f1.read(),
+                                          'unlock_f2' : await self.dut.symbol_lock_status.unlock_f2.read()
+                                        }
+
+                read_callback_mock.reset_mock()
+
+                self.assertDictEqual(await self.dut.symbol_lock_status.read_fields(),
+                                     reference_read_fields)
+                read_callback_mock.assert_called_once()
+                write_callback_mock.assert_not_called()
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_time'):
+            # test read_fields to register:
+            # msk_top_regs.symbol_lock_time
+            # build up the register value with a random base value, overlaid with
+            # a random value for each field
+            rand_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0xFFFF + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFF0000) | (rand_field_value << 0)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0xFFFF + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFF) | (rand_field_value << 16)
+                        
+                    
+                
+            
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                 patch(base_name + '.read_addr_space', return_value=rand_reg_value) as read_callback_mock:
+                # the read_fields method gets a dictionary back
+                # from the object with all the read back field
+                # values
+                reference_read_fields = { 
+                                          'f1' : await self.dut.symbol_lock_time.f1.read(),
+                                          'f2' : await self.dut.symbol_lock_time.f2.read()
+                                        }
+
+                read_callback_mock.reset_mock()
+
+                self.assertDictEqual(await self.dut.symbol_lock_time.read_fields(),
                                      reference_read_fields)
                 read_callback_mock.assert_called_once()
                 write_callback_mock.assert_not_called()
@@ -15202,6 +16626,205 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
 
                 read_callback_mock.assert_called_once()
                 write_callback_mock.assert_not_called()
+        # test context manager to register:
+        # msk_top_regs.symbol_lock_control
+        # build up the register value with a random base value, overlaid with
+        # a random value for each field
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_control'):
+            rand_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x3FF + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFFC00) | (rand_field_value << 0)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0xFFFF + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFC0003FF) | (rand_field_value << 10)
+                        
+                    
+                
+            
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                 patch(base_name + '.read_addr_space', return_value=rand_reg_value) as read_callback_mock:
+
+                # first read the fields using the "normal" method, then compare the result to reading
+                # via the context manager
+                reference_read_fields = { 
+                                          'symbol_lock_count' : await self.dut.symbol_lock_control.symbol_lock_count.read(),  # type: ignore[union-attr]
+                                          'symbol_lock_threshold' : await self.dut.symbol_lock_control.symbol_lock_threshold.read()  # type: ignore[union-attr]
+                                        }
+                read_callback_mock.reset_mock()
+
+                
+                async with self.dut.symbol_lock_control.single_read_modify_write(skip_write=True) as reg_context: # type: ignore[union-attr]
+                
+                    self.assertEqual(reference_read_fields['symbol_lock_count'],
+                                      await reg_context.get_child_by_system_rdl_name('symbol_lock_count').read()
+                                     )
+                    self.assertEqual(reference_read_fields['symbol_lock_threshold'],
+                                      await reg_context.get_child_by_system_rdl_name('symbol_lock_threshold').read()
+                                     )
+                    pass
+
+                read_callback_mock.assert_called_once()
+                write_callback_mock.assert_not_called()
+        # test context manager to register:
+        # msk_top_regs.symbol_lock_status
+        # build up the register value with a random base value, overlaid with
+        # a random value for each field
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_status'):
+            rand_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x1 + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFFFFE) | (rand_field_value << 0)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x1 + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFFFFD) | (rand_field_value << 1)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x1 + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFFFFB) | (rand_field_value << 2)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x1 + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFFFF7) | (rand_field_value << 3)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x1 + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFFFEF) | (rand_field_value << 4)
+                        
+                    
+                
+            
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                 patch(base_name + '.read_addr_space', return_value=rand_reg_value) as read_callback_mock:
+
+                # first read the fields using the "normal" method, then compare the result to reading
+                # via the context manager
+                reference_read_fields = { 
+                                          'f1f2' : await self.dut.symbol_lock_status.f1f2.read(),  # type: ignore[union-attr]
+                                          'f1' : await self.dut.symbol_lock_status.f1.read(),  # type: ignore[union-attr]
+                                          'f2' : await self.dut.symbol_lock_status.f2.read(),  # type: ignore[union-attr]
+                                          'unlock_f1' : await self.dut.symbol_lock_status.unlock_f1.read(),  # type: ignore[union-attr]
+                                          'unlock_f2' : await self.dut.symbol_lock_status.unlock_f2.read()  # type: ignore[union-attr]
+                                        }
+                read_callback_mock.reset_mock()
+
+                
+                async with self.dut.symbol_lock_status.single_read() as reg_context: # type: ignore[union-attr]
+                    self.assertEqual(reference_read_fields['f1f2'],
+                                      await reg_context.get_child_by_system_rdl_name('f1f2').read()
+                                     )
+                    self.assertEqual(reference_read_fields['f1'],
+                                      await reg_context.get_child_by_system_rdl_name('f1').read()
+                                     )
+                    self.assertEqual(reference_read_fields['f2'],
+                                      await reg_context.get_child_by_system_rdl_name('f2').read()
+                                     )
+                    self.assertEqual(reference_read_fields['unlock_f1'],
+                                      await reg_context.get_child_by_system_rdl_name('unlock_f1').read()
+                                     )
+                    self.assertEqual(reference_read_fields['unlock_f2'],
+                                      await reg_context.get_child_by_system_rdl_name('unlock_f2').read()
+                                     )
+                    pass
+
+                read_callback_mock.assert_called_once()
+                write_callback_mock.assert_not_called()
+        # test context manager to register:
+        # msk_top_regs.symbol_lock_time
+        # build up the register value with a random base value, overlaid with
+        # a random value for each field
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_time'):
+            rand_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0xFFFF + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFF0000) | (rand_field_value << 0)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0xFFFF + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFF) | (rand_field_value << 16)
+                        
+                    
+                
+            
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                 patch(base_name + '.read_addr_space', return_value=rand_reg_value) as read_callback_mock:
+
+                # first read the fields using the "normal" method, then compare the result to reading
+                # via the context manager
+                reference_read_fields = { 
+                                          'f1' : await self.dut.symbol_lock_time.f1.read(),  # type: ignore[union-attr]
+                                          'f2' : await self.dut.symbol_lock_time.f2.read()  # type: ignore[union-attr]
+                                        }
+                read_callback_mock.reset_mock()
+
+                
+                async with self.dut.symbol_lock_time.single_read() as reg_context: # type: ignore[union-attr]
+                    self.assertEqual(reference_read_fields['f1'],
+                                      await reg_context.get_child_by_system_rdl_name('f1').read()
+                                     )
+                    self.assertEqual(reference_read_fields['f2'],
+                                      await reg_context.get_child_by_system_rdl_name('f2').read()
+                                     )
+                    pass
+
+                read_callback_mock.assert_called_once()
+                write_callback_mock.assert_not_called()
 
     async def test_register_write_context_manager(self) -> None:
         """
@@ -15443,6 +17066,11 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             await write_field_combinations(reg=self.dut.rx_frame_sync_status,
                                writable_fields = [ 'frames_received',
                                                    'frame_sync_errors'
+                                                   ])
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_control'):
+            await write_field_combinations(reg=self.dut.symbol_lock_control,
+                               writable_fields = [ 'symbol_lock_count',
+                                                   'symbol_lock_threshold'
                                                    ])
 
     async def test_register_write_fields(self) -> None:
@@ -15764,6 +17392,14 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                                            'frame_sync_errors'
                                                            ])
             
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_control'):
+            # test read_fields to register:
+            # msk_top_regs.symbol_lock_control
+            await write_field_combinations(reg=self.dut.symbol_lock_control,
+                                       writable_fields = [ 'symbol_lock_count',
+                                                           'symbol_lock_threshold'
+                                                           ])
+            
 
     
 
@@ -15970,6 +17606,21 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
                 self.dut.rx_frame_sync_status.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_control'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.symbol_lock_control.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.symbol_lock_status.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_time'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.symbol_lock_time.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
         with self.subTest(msg='node: msk_top_regs.Hash_ID_Low.hash_id_lo'):
             with self.assertRaises(AttributeError):
                 # this line is trying to set an illegal value so by definition should fail the type
@@ -16285,6 +17936,51 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
                 self.dut.rx_frame_sync_status.frame_sync_errors.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_control.symbol_lock_count'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.symbol_lock_control.symbol_lock_count.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_control.symbol_lock_threshold'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.symbol_lock_control.symbol_lock_threshold.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.f1f2'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.symbol_lock_status.f1f2.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.f1'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.symbol_lock_status.f1.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.f2'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.symbol_lock_status.f2.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.unlock_f1'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.symbol_lock_status.unlock_f1.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_status.unlock_f2'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.symbol_lock_status.unlock_f2.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_time.f1'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.symbol_lock_time.f1.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.symbol_lock_time.f2'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.symbol_lock_time.f2.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
         
 
     
@@ -16376,6 +18072,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                         
                                     self.dut.rx_frame_sync_status, # type: ignore[union-attr,list-item] 
                                         
+                                    self.dut.symbol_lock_control, # type: ignore[union-attr,list-item] 
+                                        
+                                    self.dut.symbol_lock_status, # type: ignore[union-attr,list-item] 
+                                        
+                                    self.dut.symbol_lock_time, # type: ignore[union-attr,list-item] 
+                                        
                                      ]
         readable_regs = []
         for readable_reg in self.dut.get_readable_registers(unroll=True):  # type: ignore[union-attr]
@@ -16460,6 +18162,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                    self.dut.rx_async_fifo_rd_wr_ptr, # type: ignore[union-attr,list-item] 
                                        
                                    self.dut.rx_frame_sync_status, # type: ignore[union-attr,list-item] 
+                                       
+                                   self.dut.symbol_lock_control, # type: ignore[union-attr,list-item] 
+                                       
+                                   self.dut.symbol_lock_status, # type: ignore[union-attr,list-item] 
+                                       
+                                   self.dut.symbol_lock_time, # type: ignore[union-attr,list-item] 
                                        
                                     ]
         readable_regs = []
@@ -16546,6 +18254,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                        
                                    self.dut.rx_frame_sync_status, # type: ignore[union-attr,list-item] 
                                        
+                                   self.dut.symbol_lock_control, # type: ignore[union-attr,list-item] 
+                                       
+                                   
+                                       
+                                   
+                                       
                                     ]
         writable_regs = []
         for writable_reg in self.dut.get_writable_registers(unroll=True):  # type: ignore[union-attr]
@@ -16631,6 +18345,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                        
                                    self.dut.rx_frame_sync_status, # type: ignore[union-attr,list-item] 
                                        
+                                   self.dut.symbol_lock_control, # type: ignore[union-attr,list-item] 
+                                       
+                                   
+                                       
+                                   
+                                       
                                     ]
         writable_regs = []
         for writable_reg in self.dut.get_writable_registers(unroll=False):  # type: ignore[union-attr]
@@ -16639,6 +18359,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
 
         # check the sections
         expected_sections = [
+                                  
+                              
+                                  
+                              
+                                  
+                              
                                   
                               
                                   
@@ -16801,6 +18527,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                   
                               
                                   
+                              
+                                  
+                              
+                                  
+                              
+                                  
                                ]
         sections = []
         for section in self.dut.get_sections(unroll=False):  # type: ignore[union-attr]
@@ -16886,6 +18618,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                   
                               
                                   
+                              
+                                  
+                              
+                                  
+                              
+                                  
                                ]
         memories = []
         for memory in self.dut.get_memories(unroll=True):  # type: ignore[union-attr]
@@ -16894,6 +18632,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         self.assertCountEqual(expected_memories, memories)
         
         expected_memories = [
+                                  
+                              
+                                  
+                              
+                                  
+                              
                                   
                               
                                   
@@ -18357,6 +20101,119 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 readable_fields.append(readable_field)
             self.assertCountEqual(expected_readable_fields, readable_fields)
                     
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_control'):
+                
+            expected_fields = [self.dut.symbol_lock_control.symbol_lock_count, # type: ignore[union-attr,list-item]
+                                        
+                                    
+                                 self.dut.symbol_lock_control.symbol_lock_threshold, # type: ignore[union-attr,list-item]
+                                        
+                                    
+                                 
+                                         ]
+            fields = []
+            for field in self.dut.symbol_lock_control.fields:  # type: ignore[union-attr]
+                fields.append(field)
+            self.assertCountEqual(expected_fields, fields)
+                
+            expected_writable_fields = [self.dut.symbol_lock_control.symbol_lock_count, # type: ignore[union-attr,list-item] 
+                                            
+                                         self.dut.symbol_lock_control.symbol_lock_threshold, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            writable_fields = []
+            for writable_field in self.dut.symbol_lock_control.writable_fields:  # type: ignore[union-attr]
+                writable_fields.append(writable_field)
+            self.assertCountEqual(expected_writable_fields, writable_fields)
+                    
+                    
+            expected_readable_fields = [self.dut.symbol_lock_control.symbol_lock_count, # type: ignore[union-attr,list-item] 
+                                            
+                                         self.dut.symbol_lock_control.symbol_lock_threshold, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            readable_fields = []
+            for readable_field in self.dut.symbol_lock_control.readable_fields: # type: ignore[union-attr]
+                readable_fields.append(readable_field)
+            self.assertCountEqual(expected_readable_fields, readable_fields)
+                    
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_status'):
+                
+            expected_fields = [self.dut.symbol_lock_status.f1f2, # type: ignore[union-attr,list-item]
+                                        
+                                    
+                                 self.dut.symbol_lock_status.f1, # type: ignore[union-attr,list-item]
+                                        
+                                    
+                                 self.dut.symbol_lock_status.f2, # type: ignore[union-attr,list-item]
+                                        
+                                    
+                                 self.dut.symbol_lock_status.unlock_f1, # type: ignore[union-attr,list-item]
+                                        
+                                    
+                                 self.dut.symbol_lock_status.unlock_f2, # type: ignore[union-attr,list-item]
+                                        
+                                    
+                                 
+                                         ]
+            fields = []
+            for field in self.dut.symbol_lock_status.fields:  # type: ignore[union-attr]
+                fields.append(field)
+            self.assertCountEqual(expected_fields, fields)
+                
+            # register should not have writable_fields attribute
+            self.assertFalse(hasattr(self.dut.symbol_lock_status, 'writable_fields')) # type: ignore[union-attr]
+                    
+                    
+            expected_readable_fields = [self.dut.symbol_lock_status.f1f2, # type: ignore[union-attr,list-item] 
+                                            
+                                         self.dut.symbol_lock_status.f1, # type: ignore[union-attr,list-item] 
+                                            
+                                         self.dut.symbol_lock_status.f2, # type: ignore[union-attr,list-item] 
+                                            
+                                         self.dut.symbol_lock_status.unlock_f1, # type: ignore[union-attr,list-item] 
+                                            
+                                         self.dut.symbol_lock_status.unlock_f2, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            readable_fields = []
+            for readable_field in self.dut.symbol_lock_status.readable_fields: # type: ignore[union-attr]
+                readable_fields.append(readable_field)
+            self.assertCountEqual(expected_readable_fields, readable_fields)
+                    
+        with self.subTest(msg='register: msk_top_regs.symbol_lock_time'):
+                
+            expected_fields = [self.dut.symbol_lock_time.f1, # type: ignore[union-attr,list-item]
+                                        
+                                    
+                                 self.dut.symbol_lock_time.f2, # type: ignore[union-attr,list-item]
+                                        
+                                    
+                                 
+                                         ]
+            fields = []
+            for field in self.dut.symbol_lock_time.fields:  # type: ignore[union-attr]
+                fields.append(field)
+            self.assertCountEqual(expected_fields, fields)
+                
+            # register should not have writable_fields attribute
+            self.assertFalse(hasattr(self.dut.symbol_lock_time, 'writable_fields')) # type: ignore[union-attr]
+                    
+                    
+            expected_readable_fields = [self.dut.symbol_lock_time.f1, # type: ignore[union-attr,list-item] 
+                                            
+                                         self.dut.symbol_lock_time.f2, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            readable_fields = []
+            for readable_field in self.dut.symbol_lock_time.readable_fields: # type: ignore[union-attr]
+                readable_fields.append(readable_field)
+            self.assertCountEqual(expected_readable_fields, readable_fields)
+                    
         
         # test all the memories
         
@@ -18725,6 +20582,63 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         
         
         
+        self.assertEqual(self.dut.symbol_lock_control.get_child_by_system_rdl_name('symbol_lock_count').inst_name, 'symbol_lock_count')
+        
+        
+        
+        
+        self.assertEqual(self.dut.symbol_lock_control.get_child_by_system_rdl_name('symbol_lock_threshold').inst_name, 'symbol_lock_threshold')
+        
+        
+        
+        
+        
+        self.assertEqual(self.dut.symbol_lock_status.get_child_by_system_rdl_name('f1f2').inst_name, 'f1f2')
+        
+        
+        
+        
+        self.assertEqual(self.dut.symbol_lock_status.get_child_by_system_rdl_name('f1').inst_name, 'f1')
+        
+        
+        
+        
+        self.assertEqual(self.dut.symbol_lock_status.get_child_by_system_rdl_name('f2').inst_name, 'f2')
+        
+        
+        
+        
+        self.assertEqual(self.dut.symbol_lock_status.get_child_by_system_rdl_name('unlock_f1').inst_name, 'unlock_f1')
+        
+        
+        
+        
+        self.assertEqual(self.dut.symbol_lock_status.get_child_by_system_rdl_name('unlock_f2').inst_name, 'unlock_f2')
+        
+        
+        
+        
+        
+        self.assertEqual(self.dut.symbol_lock_time.get_child_by_system_rdl_name('f1').inst_name, 'f1')
+        
+        
+        
+        
+        self.assertEqual(self.dut.symbol_lock_time.get_child_by_system_rdl_name('f2').inst_name, 'f2')
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -18789,6 +20703,13 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         
 
     
+
+    def test_array_slicing(self) -> None:
+        """
+        Check slicing into array
+        """
+        full_slice:NodeArray
+        
 
 
 

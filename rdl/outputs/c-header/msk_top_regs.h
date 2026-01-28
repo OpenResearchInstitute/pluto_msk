@@ -335,6 +335,48 @@ extern "C" {
 #define MSK_TOP_REGS__FRAME_SYNC_STATUS__FRAME_SYNC_ERRORS_bw 6
 #define MSK_TOP_REGS__FRAME_SYNC_STATUS__FRAME_SYNC_ERRORS_reset 0x0
 
+// Reg - msk_top_regs::symbol_lock_control
+#define MSK_TOP_REGS__SYMBOL_LOCK_CONTROL__SYMBOL_LOCK_COUNT_bm 0x3ff
+#define MSK_TOP_REGS__SYMBOL_LOCK_CONTROL__SYMBOL_LOCK_COUNT_bp 0
+#define MSK_TOP_REGS__SYMBOL_LOCK_CONTROL__SYMBOL_LOCK_COUNT_bw 10
+#define MSK_TOP_REGS__SYMBOL_LOCK_CONTROL__SYMBOL_LOCK_COUNT_reset 0x80
+#define MSK_TOP_REGS__SYMBOL_LOCK_CONTROL__SYMBOL_LOCK_THRESHOLD_bm 0x3fffc00
+#define MSK_TOP_REGS__SYMBOL_LOCK_CONTROL__SYMBOL_LOCK_THRESHOLD_bp 10
+#define MSK_TOP_REGS__SYMBOL_LOCK_CONTROL__SYMBOL_LOCK_THRESHOLD_bw 16
+#define MSK_TOP_REGS__SYMBOL_LOCK_CONTROL__SYMBOL_LOCK_THRESHOLD_reset 0x2710
+
+// Reg - msk_top_regs::symbol_lock_status
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__F1F2_bm 0x1
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__F1F2_bp 0
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__F1F2_bw 1
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__F1F2_reset 0x0
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__F1_bm 0x2
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__F1_bp 1
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__F1_bw 1
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__F1_reset 0x0
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__F2_bm 0x4
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__F2_bp 2
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__F2_bw 1
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__F2_reset 0x0
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__UNLOCK_F1_bm 0x8
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__UNLOCK_F1_bp 3
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__UNLOCK_F1_bw 1
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__UNLOCK_F1_reset 0x0
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__UNLOCK_F2_bm 0x10
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__UNLOCK_F2_bp 4
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__UNLOCK_F2_bw 1
+#define MSK_TOP_REGS__SYMBOL_LOCK_STATUS__UNLOCK_F2_reset 0x0
+
+// Reg - msk_top_regs::symbol_lock_time
+#define MSK_TOP_REGS__SYMBOL_LOCK_TIME__F1_bm 0xffff
+#define MSK_TOP_REGS__SYMBOL_LOCK_TIME__F1_bp 0
+#define MSK_TOP_REGS__SYMBOL_LOCK_TIME__F1_bw 16
+#define MSK_TOP_REGS__SYMBOL_LOCK_TIME__F1_reset 0x0
+#define MSK_TOP_REGS__SYMBOL_LOCK_TIME__F2_bm 0xffff0000
+#define MSK_TOP_REGS__SYMBOL_LOCK_TIME__F2_bp 16
+#define MSK_TOP_REGS__SYMBOL_LOCK_TIME__F2_bw 16
+#define MSK_TOP_REGS__SYMBOL_LOCK_TIME__F2_reset 0x0
+
 // Addrmap - msk_top_regs
 typedef struct __attribute__ ((__packed__)) {
     uint32_t Hash_ID_Low;
@@ -376,10 +418,13 @@ typedef struct __attribute__ ((__packed__)) {
     uint32_t tx_async_fifo_rd_wr_ptr;
     uint32_t rx_async_fifo_rd_wr_ptr;
     uint32_t rx_frame_sync_status;
+    uint32_t symbol_lock_control;
+    uint32_t symbol_lock_status;
+    uint32_t symbol_lock_time;
 } msk_top_regs_t;
 
 
-static_assert(sizeof(msk_top_regs_t) == 0x9c, "Packing error");
+static_assert(sizeof(msk_top_regs_t) == 0xa8, "Packing error");
 
 #ifdef __cplusplus
 }

@@ -197,7 +197,17 @@ ENTITY msk_top_csr IS
                 rx_debug_viterbi_busy    : IN std_logic;
                 rx_debug_viterbi_done    : IN std_logic;
                 rx_debug_decoder_tvalid  : IN std_logic;
-                rx_debug_decoder_tready  : IN std_logic
+                rx_debug_decoder_tready  : IN std_logic;
+
+        symbol_lock_count		: OUT std_logic_vector(9 DOWNTO 0);
+        symbol_lock_threshold	: OUT std_logic_vector(15 DOWNTO 0);
+
+        cst_lock_f1 			: IN  std_logic;
+        cst_lock_f2				: IN  std_logic;
+        cst_lock_time_f1  		: IN  std_logic_vector(15 DOWNTO 0);
+        cst_lock_time_f2  		: IN  std_logic_vector(15 DOWNTO 0);
+        cst_unlock_f1 			: IN  std_logic;
+        cst_unlock_f2 			: IN  std_logic
 
 	);
 END ENTITY msk_top_csr;
@@ -385,6 +395,17 @@ BEGIN
 
 	hwif_in.rx_async_fifo_rd_wr_ptr.data.we	<= rx_async_fifo_status_ack;
 
+	-- Lock status
+
+    usls1_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, cst_unlock_f1, hwif_in.symbol_lock_status.unlock_f1.we);
+    usls2_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, cst_unlock_f2, hwif_in.symbol_lock_status.unlock_f2.we);
+	hwif_in.symbol_lock_status.f1f2.next_q 		<= cst_lock_f1 AND cst_lock_f2;
+	hwif_in.symbol_lock_status.f1.next_q 		<= cst_lock_f1;
+	hwif_in.symbol_lock_status.f2.next_q 		<= cst_lock_f2;
+	hwif_in.symbol_lock_status.unlock_f1.next_q	<= '1';
+	hwif_in.symbol_lock_status.unlock_f2.next_q	<= '1';
+	hwif_in.symbol_lock_time.f1.next_q			<= cst_lock_time_f1;
+	hwif_in.symbol_lock_time.f2.next_q			<= cst_lock_time_f2;
 
     -- commented out by Abraxas3d to add more bits to the register to investigate receive failures
     --hwif_in.rx_async_fifo_rd_wr_ptr.data.next_q <= std_logic_vector(resize(unsigned(rx_async_fifo_wr_ptr), 16) & resize(unsigned(rx_async_fifo_rd_ptr), 16));
@@ -486,5 +507,9 @@ hwif_in.tx_async_fifo_rd_wr_ptr.data.next_q <=
 
 	pd_alpha1			<= hwif_out.lowpass_ema_alpha1.alpha.value;
 	pd_alpha2			<= hwif_out.lowpass_ema_alpha2.alpha.value;
+
+	symbol_lock_count 		<= hwif_out.symbol_lock_control.symbol_lock_count.value;
+	symbol_lock_threshold 	<= hwif_out.symbol_lock_control.symbol_lock_threshold.value;
+
 
 END ARCHITECTURE rtl;

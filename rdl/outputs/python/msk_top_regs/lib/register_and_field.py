@@ -1,18 +1,18 @@
 """
 peakrdl-python is a tool to generate Python Register Access Layer (RAL) from SystemRDL
-Copyright (C) 2021 - 2023
+Copyright (C) 2021 - 2025
 
 This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Lesser General Public License as 
+published by the Free Software Foundation, either version 3 of 
+the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Lesser General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 This module is intended to distributed as part of automatically generated code by the
@@ -21,14 +21,14 @@ registers and fields
 """
 from enum import Enum
 from typing import Union, cast, Optional, TypeVar
-from collections.abc import Generator, Iterator
+from collections.abc import Generator, Iterator, Iterable
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
 from array import array as Array
 import sys
 from warnings import warn
 
-from .base import AddressMap, RegFile
+from .sections import AddressMap, RegFile
 from .utility_functions import get_array_typecode
 from .memory import  MemoryReadOnly, MemoryWriteOnly, MemoryReadWrite, Memory, \
     ReadableMemory, WritableMemory
@@ -57,7 +57,7 @@ else:
 # pylint: disable=redefined-slots-in-subclass,too-many-lines
 
 
-class Reg(BaseReg, ABC):
+class Reg(BaseReg, Iterable[Union['FieldReadOnly', 'FieldWriteOnly', 'FieldReadWrite']], ABC):
     """
         base class of non-async register wrappers
 
@@ -71,8 +71,6 @@ class Reg(BaseReg, ABC):
     # pylint: disable=too-many-arguments,duplicate-code
     def __init__(self, *,
                  address: int,
-                 width: int,
-                 accesswidth: int,
                  logger_handle: str,
                  inst_name: str,
                  parent: Union[AddressMap, RegFile, Memory, 'RegArray']):
@@ -86,8 +84,8 @@ class Reg(BaseReg, ABC):
         if not isinstance(parent._callbacks, (NormalCallbackSet, NormalCallbackSetLegacy)):
             raise TypeError(f'callback set type is wrong, got {type(parent._callbacks)}')
 
-        super().__init__(address=address, width=width, accesswidth=accesswidth,
-                         logger_handle=logger_handle, inst_name=inst_name, parent=parent)
+        super().__init__(address=address, logger_handle=logger_handle,
+                         inst_name=inst_name, parent=parent)
 
     @property
     def _callbacks(self) -> Union[NormalCallbackSet, NormalCallbackSetLegacy]:
@@ -101,18 +99,18 @@ class Reg(BaseReg, ABC):
         raise TypeError(f'unhandled parent callback type: {type(self.parent._callbacks)}')
 
     @property
-    @abstractmethod
     def fields(self) -> Iterator[Union['FieldReadOnly', 'FieldWriteOnly', 'FieldReadWrite']]:
         """
         generator that produces has all the fields within the register
         """
+        yield from iter(self)
 
 
 # pylint: disable-next=invalid-name
 RegArrayElementType= TypeVar('RegArrayElementType', bound=BaseReg)
 
 
-class RegArray(BaseRegArray, ABC):
+class RegArray(BaseRegArray[RegArrayElementType], ABC):
     """
     base class of register array wrappers
 
@@ -128,12 +126,11 @@ class RegArray(BaseRegArray, ABC):
     def __init__(self, *,
                  logger_handle: str, inst_name: str,
                  parent: Union[AddressMap, RegFile, Memory],
-                 width: int,
-                 accesswidth: int,
                  address: int,
                  stride: int,
                  dimensions: tuple[int, ...],
-                 elements: Optional[dict[tuple[int, ...], RegArrayElementType]] = None):
+                 elements: Optional[tuple[tuple[tuple[int, ...], ...],
+                                          tuple[RegArrayElementType, ...]]] = None):
 
         self.__in_context_manager: bool = False
         self.__register_cache: Optional[Union[Array, list[int]]] = None
@@ -143,7 +140,7 @@ class RegArray(BaseRegArray, ABC):
             raise TypeError(f'callback set type is wrong, got {type(parent._callbacks)}')
 
         super().__init__(logger_handle=logger_handle, inst_name=inst_name,
-                         parent=parent, address=address, width=width, accesswidth=accesswidth,
+                         parent=parent, address=address,
                          stride=stride, dimensions=dimensions, elements=elements)
 
     @property
@@ -470,8 +467,6 @@ class RegReadOnly(Reg, ABC):
     # pylint: disable=too-many-arguments, duplicate-code
     def __init__(self, *,
                  address: int,
-                 width: int,
-                 accesswidth: int,
                  logger_handle: str,
                  inst_name: str,
                  parent: Union[AddressMap, RegFile, ReadableMemory, ReadableMemoryLegacy ]):
@@ -479,7 +474,7 @@ class RegReadOnly(Reg, ABC):
         super().__init__(address=address,
                          logger_handle=logger_handle,
                          inst_name=inst_name,
-                         parent=parent, width=width, accesswidth=accesswidth)
+                         parent=parent)
 
         self.__in_context_manager: bool = False
         self.__register_state: int = 0
@@ -567,8 +562,6 @@ class RegWriteOnly(Reg, ABC):
     # pylint: disable=too-many-arguments, duplicate-code, useless-parent-delegation
     def __init__(self, *,
                  address: int,
-                 width: int,
-                 accesswidth: int,
                  logger_handle: str,
                  inst_name: str,
                  parent: Union[AddressMap, RegFile, WritableMemory, WritableMemoryLegacy]):
@@ -576,7 +569,7 @@ class RegWriteOnly(Reg, ABC):
         super().__init__(address=address,
                          logger_handle=logger_handle,
                          inst_name=inst_name,
-                         parent=parent, width=width, accesswidth=accesswidth)
+                         parent=parent)
     # pylint: enable=too-many-arguments, duplicate-code
 
     def write(self, data: int) -> None:
@@ -593,7 +586,7 @@ class RegWriteOnly(Reg, ABC):
         # this method check the types and range checks the data
         self._validate_data(data=data)
 
-        self._logger.info('Writing data:%X to %X', data, self.address)
+        self._logger.info(f'Writing data:0x{data:X} to 0x{self.address:X}')
 
         if self._callbacks.write_callback is not None:
             self._callbacks.write_callback(addr=self.address,
@@ -658,8 +651,6 @@ class RegReadWrite(RegReadOnly, RegWriteOnly, ABC):
     # pylint: disable=too-many-arguments, duplicate-code
     def __init__(self, *,
                  address: int,
-                 width: int,
-                 accesswidth: int,
                  logger_handle: str,
                  inst_name: str,
                  parent: Union[AddressMap, RegFile, MemoryReadWrite, MemoryReadWriteLegacy]):
@@ -667,7 +658,7 @@ class RegReadWrite(RegReadOnly, RegWriteOnly, ABC):
         super().__init__(address=address,
                          logger_handle=logger_handle,
                          inst_name=inst_name,
-                         parent=parent, width=width, accesswidth=accesswidth)
+                         parent=parent)
 
         self.__in_read_write_context_manager: bool = False
         self.__in_read_context_manager: bool = False
@@ -815,7 +806,7 @@ ReadableRegister = Union[RegReadOnly, RegReadWrite]
 WritableRegister = Union[RegWriteOnly, RegReadWrite]
 
 
-class RegReadOnlyArray(RegArray, ABC):
+class RegReadOnlyArray(RegArray[RegReadOnly], ABC):
     """
     base class for a array of read only registers
     """
@@ -826,11 +817,10 @@ class RegReadOnlyArray(RegArray, ABC):
                  logger_handle: str, inst_name: str,
                  parent: Union[RegFile, AddressMap, ReadableMemory, ReadableMemoryLegacy],
                  address: int,
-                 width: int,
-                 accesswidth: int,
                  stride: int,
                  dimensions: tuple[int, ...],
-                 elements: Optional[dict[tuple[int, ...], RegReadOnly]] = None):
+                 elements: Optional[tuple[tuple[tuple[int, ...], ...],
+                                    tuple[RegReadOnly, ...]]] = None):
 
         if not isinstance(parent, (RegFile, AddressMap, MemoryReadOnly, MemoryReadWrite,
                                    MemoryReadOnlyLegacy, MemoryReadWriteLegacy)):
@@ -842,7 +832,7 @@ class RegReadOnlyArray(RegArray, ABC):
             raise TypeError(f'callback set type is wrong, got {type(parent._callbacks)}')
 
         super().__init__(logger_handle=logger_handle, inst_name=inst_name,
-                         parent=parent, address=address, width=width, accesswidth=accesswidth,
+                         parent=parent, address=address,
                          stride=stride, dimensions=dimensions, elements=elements)
     # pylint: enable=too-many-arguments,duplicate-code
 
@@ -868,7 +858,7 @@ class RegReadOnlyArray(RegArray, ABC):
         return False
 
 
-class RegWriteOnlyArray(RegArray, ABC):
+class RegWriteOnlyArray(RegArray[RegWriteOnly], ABC):
     """
     base class for a array of write only registers
     """
@@ -879,11 +869,10 @@ class RegWriteOnlyArray(RegArray, ABC):
                  logger_handle: str, inst_name: str,
                  parent: Union[RegFile, AddressMap, WritableMemory, WritableMemoryLegacy],
                  address: int,
-                 width: int,
-                 accesswidth: int,
                  stride: int,
                  dimensions: tuple[int, ...],
-                 elements: Optional[dict[tuple[int, ...], RegWriteOnly]] = None):
+                 elements: Optional[tuple[tuple[tuple[int, ...], ...],
+                                          tuple[RegWriteOnly, ...]]] = None):
 
         if not isinstance(parent, (RegFile, AddressMap, MemoryWriteOnly, MemoryReadWrite,
                                    MemoryWriteOnlyLegacy, MemoryReadWriteLegacy)):
@@ -895,7 +884,7 @@ class RegWriteOnlyArray(RegArray, ABC):
             raise TypeError(f'callback set type is wrong, got {type(parent._callbacks)}')
 
         super().__init__(logger_handle=logger_handle, inst_name=inst_name,
-                         parent=parent, address=address, width=width, accesswidth=accesswidth,
+                         parent=parent, address=address,
                          stride=stride, dimensions=dimensions, elements=elements)
     # pylint: enable=too-many-arguments,duplicate-code
 
@@ -921,7 +910,7 @@ class RegWriteOnlyArray(RegArray, ABC):
         return True
 
 
-class RegReadWriteArray(RegArray, ABC):
+class RegReadWriteArray(RegArray[RegReadWrite], ABC):
     """
     base class for a array of read and write registers
     """
@@ -932,11 +921,10 @@ class RegReadWriteArray(RegArray, ABC):
                  logger_handle: str, inst_name: str,
                  parent: Union[RegFile, AddressMap, MemoryReadWrite, MemoryReadWriteLegacy],
                  address: int,
-                 width: int,
-                 accesswidth: int,
                  stride: int,
                  dimensions: tuple[int, ...],
-                 elements: Optional[dict[tuple[int, ...], RegReadWrite]] = None):
+                 elements: Optional[tuple[tuple[tuple[int, ...], ...],
+                                          tuple[RegReadWrite, ...]]] = None):
 
         if not isinstance(parent, (RegFile, AddressMap, MemoryReadWrite, MemoryReadWriteLegacy)):
             raise TypeError('parent should be either RegFile, AddressMap, MemoryReadWrite '
@@ -946,7 +934,7 @@ class RegReadWriteArray(RegArray, ABC):
             raise TypeError(f'callback set type is wrong, got {type(parent._callbacks)}')
 
         super().__init__(logger_handle=logger_handle, inst_name=inst_name,
-                         parent=parent, address=address, width=width, accesswidth=accesswidth,
+                         parent=parent, address=address,
                          stride=stride, dimensions=dimensions, elements=elements)
 
     # pylint: enable=too-many-arguments,duplicate-code

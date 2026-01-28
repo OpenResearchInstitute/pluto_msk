@@ -422,6 +422,14 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL pd_alpha2			: std_logic_vector(17 DOWNTO 0);
 	SIGNAL pd_power 			: std_logic_vector(22 DOWNTO 0);
 
+	SIGNAL symbol_lock_count	: std_logic_vector(9 DOWNTO 0);
+	SIGNAL symbol_lock_threshold: std_logic_vector(15 DOWNTO 0);
+	SIGNAL cst_lock_f1 			: std_logic;
+	SIGNAL cst_lock_f2			: std_logic;
+	SIGNAL cst_lock_time_f1  	: std_logic_vector(15 DOWNTO 0);
+	SIGNAL cst_lock_time_f2  	: std_logic_vector(15 DOWNTO 0);
+	SIGNAL cst_unlock_f1 		: std_logic;
+	SIGNAL cst_unlock_f2 		: std_logic;
 
 
         ATTRIBUTE dont_touch : STRING;
@@ -987,8 +995,18 @@ BEGIN
 			rx_samples 		=> rx_samples_dec(11 DOWNTO 0),
 
 			rx_data 		=> rx_bit, -- hard decision
-			rx_data_soft 		=> rx_data_soft,     -- soft decision
-			rx_dvalid 		=> rx_bit_valid
+			rx_data_soft 	=> rx_data_soft,     -- soft decision
+			rx_dvalid 		=> rx_bit_valid,
+
+			symbol_lock_count		=> symbol_lock_count,
+		 	symbol_lock_threshold	=> symbol_lock_threshold,
+			cst_lock_f1 			=> cst_lock_f1,
+			cst_lock_f2				=> cst_lock_f2,
+			cst_lock_time_f1  		=> cst_lock_time_f1,
+			cst_lock_time_f2  		=> cst_lock_time_f2,
+			cst_unlock_f1 			=> cst_unlock_f1,
+			cst_unlock_f2 			=> cst_unlock_f2
+
 		);
 
 ------------------------------------------------------------------------------------------------------
@@ -1191,8 +1209,16 @@ BEGIN
                 rx_debug_viterbi_busy    => decoder_debug_viterbi_busy,
                 rx_debug_viterbi_done    => decoder_debug_viterbi_done,
                 rx_debug_decoder_tvalid  => decoder_tvalid,
-                rx_debug_decoder_tready  => decoder_tready
+                rx_debug_decoder_tready  => decoder_tready,
 
+			symbol_lock_count		=> symbol_lock_count,
+		 	symbol_lock_threshold	=> symbol_lock_threshold,
+			cst_lock_f1 			=> cst_lock_f1,
+			cst_lock_f2				=> cst_lock_f2,
+			cst_lock_time_f1  		=> cst_lock_time_f1,
+			cst_lock_time_f2  		=> cst_lock_time_f2,
+			cst_unlock_f1 			=> cst_unlock_f1,
+			cst_unlock_f2 			=> cst_unlock_f2
 	);
 
 END ARCHITECTURE struct;

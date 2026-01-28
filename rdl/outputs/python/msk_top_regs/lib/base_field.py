@@ -1,18 +1,18 @@
 """
 peakrdl-python is a tool to generate Python Register Access Layer (RAL) from SystemRDL
-Copyright (C) 2021 - 2023
+Copyright (C) 2021 - 2025
 
 This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Lesser General Public License as 
+published by the Free Software Foundation, either version 3 of 
+the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Lesser General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 This module is intended to distributed as part of automatically generated code by the
@@ -25,7 +25,7 @@ from abc import ABC
 import warnings
 
 from .base import Base
-from .utility_functions import swap_msb_lsb_ordering
+from .utility_functions import swap_msb_lsb_ordering, calculate_bitmask
 from .base_register import BaseReg
 from .field_encoding import SystemRDLEnum
 
@@ -46,6 +46,10 @@ class FieldSizeProps:
 
         if self.width < 1:
             raise ValueError('width must be greater than 0')
+
+        if self.high - self.low + 1 != self.width:
+            raise ValueError('field width defined by lsb and msb does not match'
+                             ' specified width')
 
         if self.high < self.low:
             raise ValueError('field high bit position can not be less than the '
@@ -166,7 +170,7 @@ class Field(Generic[FieldType], Base, ABC):
     """
 
     __slots__ = ['__size_props', '__misc_props',
-                 '__bitmask', '__msb0', '__lsb0', '__field_type']
+                 '__bitmask', '__lsb0', '__field_type']
 
     # pylint: disable-next=too-many-arguments
     def __init__(self, *,
@@ -201,22 +205,14 @@ class Field(Generic[FieldType], Base, ABC):
             raise ValueError('field lsb must be less than the parent '
                              'register width')
 
-        if self.high - self.low + 1 != self.width:
-            raise ValueError('field width defined by lsb and msb does not match'
-                             ' specified width')
-
         if (self.msb == self.high) and (self.lsb == self.low):
             self.__lsb0 = True
-            self.__msb0 = False
         elif (self.msb == self.low) and (self.lsb == self.high):
             self.__lsb0 = False
-            self.__msb0 = True
         else:
             raise ValueError('msb/lsb are inconsistent with low/high')
 
-        self.__bitmask = 0
-        for bit_position in range(self.low, self.high+1):
-            self.__bitmask |= (1 << bit_position)
+        self.__bitmask = calculate_bitmask(high=self.high, low=self.low)
 
         if not issubclass(field_type, (int, IntEnum, SystemRDLEnum)):
             raise TypeError(f'Unsupported field type: {field_type}')
@@ -253,7 +249,8 @@ class Field(Generic[FieldType], Base, ABC):
 
     @property
     def max_value(self) -> int:
-        """maximum unsigned integer value that can be stored in the field
+        """
+        maximum unsigned integer value that can be stored in the field
 
         For example:
 
@@ -310,7 +307,7 @@ class Field(Generic[FieldType], Base, ABC):
         register
 
         For example a register field occupying bits 7 to 4 in a 16-bit register
-        will have a inverse bit mask of 0xFF0F
+        will have an inverse bit mask of 0xFF0F
         """
         return self.__parent_register.max_value ^ self.bitmask
 
@@ -322,7 +319,7 @@ class Field(Generic[FieldType], Base, ABC):
         Returns: true if msb0
 
         """
-        return self.__msb0
+        return not self.lsb0
 
     @property
     def lsb0(self) -> bool:
