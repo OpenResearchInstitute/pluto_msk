@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
-[*] Tue Jan 27 19:04:35 2026
+[*] Wed Jan 28 05:12:34 2026
 [*]
 [dumpfile] "/home/nonlinear/Projects/ORI/pluto_msk/sim/msk_top.ghw"
-[dumpfile_mtime] "Tue Jan 27 19:04:33 2026"
-[dumpfile_size] 22639655
+[dumpfile_mtime] "Wed Jan 28 04:49:42 2026"
+[dumpfile_size] 218129422
 [savefile] "/home/nonlinear/Projects/ORI/pluto_msk/sim/msk_top_lock_nvc.gtkw"
 [timestart] 0
 [size] 1920 1106
 [pos] -1 -1
-*-42.300945 5330000000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-42.169701 11030000000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] msk_top.
 [treeopen] msk_top.u_dem.
 [treeopen] msk_top.u_dem.u_f1.
@@ -17,141 +17,32 @@
 [signals_width] 324
 [sst_expanded] 1
 [sst_vpaned_height] 371
-@22
-msk_top.u_dem.u_f1.car_cos[11:0]
-msk_top.u_dem.u_f1.car_cos_d[11:0]
-msk_top.u_dem.u_f1.car_phase[31:0]
-msk_top.u_dem.u_f1.car_sin[11:0]
-msk_top.u_dem.u_f1.car_sin_d[11:0]
-@28
-msk_top.u_dem.u_f1.clk
-@22
-msk_top.u_dem.u_f1.cos_samples[11:0]
-msk_top.u_dem.u_f1.data_out[15:0]
-msk_top.u_dem.u_f1.discard_rxnco[7:0]
-@28
-msk_top.u_dem.u_f1.enable
-msk_top.u_dem.u_f1.error_valid
-@22
-msk_top.u_dem.u_f1.freq_word[31:0]
-@28
-msk_top.u_dem.u_f1.init
-@22
-msk_top.u_dem.u_f1.loop_error[31:0]
-@18420
-msk_top.u_dem.u_f1.lpf_accum[31:0]
-@28
-msk_top.u_dem.u_f1.lpf_adj_valid
-@22
-msk_top.u_dem.u_f1.lpf_adjust[31:0]
-msk_top.u_dem.u_f1.lpf_alpha[23:0]
-@28
-msk_top.u_dem.u_f1.lpf_freeze
-@22
-msk_top.u_dem.u_f1.lpf_i_gain[23:0]
-msk_top.u_dem.u_f1.lpf_i_shift[7:0]
-msk_top.u_dem.u_f1.lpf_p_gain[23:0]
-msk_top.u_dem.u_f1.lpf_p_shift[7:0]
-@28
-msk_top.u_dem.u_f1.lpf_zero
-@22
-msk_top.u_dem.u_f1.nco_adjust[31:0]
-msk_top.u_dem.u_f1.rx_cos[23:0]
-msk_top.u_dem.u_f1.rx_cos_acc[31:0]
-msk_top.u_dem.u_f1.rx_cos_acc_sat[31:0]
-msk_top.u_dem.u_f1.rx_cos_acc_sum[31:0]
-@18420
-msk_top.u_dem.u_f1.rx_cos_dump[31:0]
-@22
-msk_top.u_dem.u_f1.rx_cos_filt_acc[31:0]
-msk_top.u_dem.u_f1.rx_cos_filt_sat[31:0]
-msk_top.u_dem.u_f1.rx_cos_filt_sum[31:0]
-@28
-msk_top.u_dem.u_f1.rx_cos_slice
-@22
-msk_top.u_dem.u_f1.rx_cos_sum[31:0]
-@18420
-msk_top.u_dem.u_f1.rx_cos_t[31:0]
-@22
-msk_top.u_dem.u_f1.rx_error[31:0]
-msk_top.u_dem.u_f1.rx_error_w[31:0]
-msk_top.u_dem.u_f1.rx_samples[11:0]
-msk_top.u_dem.u_f1.rx_samples_d[11:0]
-msk_top.u_dem.u_f1.rx_sin[23:0]
-msk_top.u_dem.u_f1.rx_sin_acc[31:0]
-msk_top.u_dem.u_f1.rx_sin_acc_sat[31:0]
-msk_top.u_dem.u_f1.rx_sin_acc_sum[31:0]
-@18420
-msk_top.u_dem.u_f1.rx_sin_dump[31:0]
-@22
-msk_top.u_dem.u_f1.rx_sin_filt_acc[31:0]
-msk_top.u_dem.u_f1.rx_sin_filt_sat[31:0]
-msk_top.u_dem.u_f1.rx_sin_filt_sum[31:0]
-msk_top.u_dem.u_f1.rx_sin_sum[31:0]
-@18420
-msk_top.u_dem.u_f1.rx_sin_t[31:0]
-@22
-msk_top.u_dem.u_f1.rx_sin_t_neg[31:0]
-@28
-msk_top.u_dem.u_f1.rx_svalid
-@22
-msk_top.u_dem.u_f1.sin_samples[11:0]
-@28
-msk_top.u_dem.u_f1.tclk
-msk_top.u_dem.u_f1.u_carrier_nco.clk
-@22
-msk_top.u_dem.u_f1.u_carrier_nco.discard_count[7:0]
-msk_top.u_dem.u_f1.u_carrier_nco.discard_nco[7:0]
-@28
-msk_top.u_dem.u_f1.u_carrier_nco.enable
-msk_top.u_dem.u_f1.u_carrier_nco.freq_adj_valid
-msk_top.u_dem.u_f1.u_carrier_nco.freq_adj_zero
-@22
-msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust[31:0]
-msk_top.u_dem.u_f1.u_carrier_nco.freq_adjust_q[31:0]
-msk_top.u_dem.u_f1.u_carrier_nco.freq_word[31:0]
-@28
-msk_top.u_dem.u_f1.u_carrier_nco.init
-@22
-msk_top.u_dem.u_f1.u_carrier_nco.phase[31:0]
-msk_top.u_dem.u_f1.u_carrier_nco.phase_acc[31:0]
-@28
-msk_top.u_dem.u_f1.u_carrier_nco.phase_acc_msbs[1:0]
-@22
-msk_top.u_dem.u_f1.u_carrier_nco.phase_delta_adjusted[31:0]
-msk_top.u_dem.u_f1.u_carrier_nco.phase_sum[31:0]
-@28
-msk_top.u_dem.u_f1.u_carrier_nco.rollover_2pi
-msk_top.u_dem.u_f1.u_carrier_nco.rollover_3pi2
-msk_top.u_dem.u_f1.u_carrier_nco.rollover_pi
-msk_top.u_dem.u_f1.u_carrier_nco.rollover_pi2
-msk_top.u_dem.u_f1.u_carrier_nco.tclk_even
-msk_top.u_dem.u_f1.u_carrier_nco.tclk_odd
-msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.clk
-@22
-msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.cos_out[11:0]
-msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.cos_phase[11:0]
-@28
-msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.init
-@22
-msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.phase[9:0]
-msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.sin_out[11:0]
-msk_top.u_dem.u_f1.u_carrier_sin_cos_lut.sin_phase[11:0]
-msk_top.u_dem.u_f1.u_lock_detect.acc_i[31:0]
-msk_top.u_dem.u_f1.u_lock_detect.acc_q[31:0]
 @28
 msk_top.u_dem.u_f1.u_lock_detect.clk
-@22
-msk_top.u_dem.u_f1.u_lock_detect.cntr[15:0]
-msk_top.u_dem.u_f1.u_lock_detect.cst_lock_count[15:0]
-msk_top.u_dem.u_f1.u_lock_detect.cst_lock_thresh[31:0]
+@18420
+msk_top.u_dem.u_f1.u_loopfilter.lpf_accum[31:0]
+@20000
+-
+-
 @28
-msk_top.u_dem.u_f1.u_lock_detect.cst_lock
+msk_top.u_dem.u_f1.u_lock_detect.acc_valid
 @10420
 msk_top.u_dem.u_f1.u_lock_detect.cst_i_acc[15:0]
-msk_top.u_dem.u_f1.u_lock_detect.cst_q_acc[15:0]
+@20000
+-
+-
 @18024
 msk_top.u_dem.u_f1.u_lock_detect.i_sqr[31:0]
+@20000
+-
+-
+@18420
+msk_top.u_dem.u_f1.u_lock_detect.acc_i[31:0]
+@20000
+-
+-
+@10420
+msk_top.u_dem.u_f1.u_lock_detect.cst_q_acc[15:0]
 @20000
 -
 -
@@ -160,49 +51,25 @@ msk_top.u_dem.u_f1.u_lock_detect.q_sqr[31:0]
 @20000
 -
 -
-@28
-msk_top.u_dem.u_f1.u_lock_detect.init
-msk_top.u_dem.u_f1.u_lock_detect.acc_valid
-@420
-msk_top.u_dem.u_f1.u_lock_detect.iq_delta[31:0]
-msk_top.u_dem.u_f1.u_lock_detect.acc_i[31:0]
-@421
+@18420
 msk_top.u_dem.u_f1.u_lock_detect.acc_q[31:0]
-@420
-msk_top.u_dem.u_f1.u_lock_detect.iq_delta[31:0]
+@20000
+-
+-
+@18421
+msk_top.u_dem.u_f1.u_lock_detect.acc_iq_delta[31:0]
+@20000
+-
+-
 @28
-msk_top.u_dem.u_f1.u_loopfilter.clk
+msk_top.u_dem.u_f1.u_lock_detect.cst_lock
 @22
-msk_top.u_dem.u_f1.u_loopfilter.acc[31:0]
+msk_top.u_dem.u_f1.u_lock_detect.tclk[3:0]
+msk_top.u_dem.u_f1.u_lock_detect.cst_lock_count[9:0]
+msk_top.u_dem.u_f1.u_lock_detect.cst_lock_thresh[15:0]
+@24
+msk_top.u_dem.u_f1.u_lock_detect.cst_lock_time[15:0]
 @28
-msk_top.u_dem.u_f1.u_loopfilter.enable
-@22
-msk_top.u_dem.u_f1.u_loopfilter.i_acc[31:0]
-msk_top.u_dem.u_f1.u_loopfilter.i_sat[31:0]
-msk_top.u_dem.u_f1.u_loopfilter.i_sum[31:0]
-msk_top.u_dem.u_f1.u_loopfilter.i_val[31:0]
-@28
-msk_top.u_dem.u_f1.u_loopfilter.init
-@22
-msk_top.u_dem.u_f1.u_loopfilter.lpf_accum[31:0]
-@28
-msk_top.u_dem.u_f1.u_loopfilter.lpf_adj_valid
-@22
-msk_top.u_dem.u_f1.u_loopfilter.lpf_adjust[31:0]
-msk_top.u_dem.u_f1.u_loopfilter.lpf_err[31:0]
-@28
-msk_top.u_dem.u_f1.u_loopfilter.lpf_err_valid
-msk_top.u_dem.u_f1.u_loopfilter.lpf_err_valid_d
-msk_top.u_dem.u_f1.u_loopfilter.lpf_freeze
-@22
-msk_top.u_dem.u_f1.u_loopfilter.lpf_i_gain[23:0]
-msk_top.u_dem.u_f1.u_loopfilter.lpf_i_shift[7:0]
-msk_top.u_dem.u_f1.u_loopfilter.lpf_p_gain[23:0]
-msk_top.u_dem.u_f1.u_loopfilter.lpf_p_shift[7:0]
-@28
-msk_top.u_dem.u_f1.u_loopfilter.lpf_zero
-@22
-msk_top.u_dem.u_f1.u_loopfilter.p_val[31:0]
-msk_top.u_dem.u_f1.u_loopfilter.sum[31:0]
+msk_top.u_dem.u_f1.u_lock_detect.cst_unlock
 [pattern_trace] 1
 [pattern_trace] 0

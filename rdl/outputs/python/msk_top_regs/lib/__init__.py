@@ -1,18 +1,18 @@
 """
 peakrdl-python is a tool to generate Python Register Access Layer (RAL) from SystemRDL
-Copyright (C) 2021 - 2023
+Copyright (C) 2021 - 2025
 
 This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+it under the terms of the GNU Lesser General Public License as 
+published by the Free Software Foundation, either version 3 of 
+the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU Lesser General Public License for more details.
 
-You should have received a copy of the GNU General Public License
+You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 This package is intended to distributed as part of automatically generated code by the PeakRDL
@@ -27,15 +27,15 @@ from .callbacks import NormalCallbackSet, NormalCallbackSetLegacy
 from .callbacks import AsyncCallbackSet, AsyncCallbackSetLegacy
 from .callbacks import CallbackSet
 
-from .base import AddressMap
-from .base import RegFile
-from .base import AddressMapArray
-from .base import RegFileArray
+from .sections import AddressMap
+from .sections import RegFile
+from .sections import AddressMapArray
+from .sections import RegFileArray
 
-from .base import AsyncAddressMap
-from .base import AsyncRegFile
-from .base import AsyncAddressMapArray
-from .base import AsyncRegFileArray
+from .sections import AsyncAddressMap
+from .sections import AsyncRegFile
+from .sections import AsyncAddressMapArray
+from .sections import AsyncRegFileArray
 
 from .register_and_field import Reg
 from .register_and_field import RegArray
@@ -92,12 +92,18 @@ from .memory import MemoryReadWrite, MemoryReadWriteLegacy
 from .memory import MemoryReadOnlyArray
 from .memory import MemoryWriteOnlyArray
 from .memory import MemoryReadWriteArray
+from .memory import MemoryReadOnlyLegacyArray
+from .memory import MemoryWriteOnlyLegacyArray
+from .memory import MemoryReadWriteLegacyArray
 from .async_memory import MemoryAsyncReadOnly, MemoryAsyncReadOnlyLegacy
 from .async_memory import MemoryAsyncWriteOnly, MemoryAsyncWriteOnlyLegacy
 from .async_memory import MemoryAsyncReadWrite, MemoryAsyncReadWriteLegacy
 from .async_memory import MemoryAsyncReadOnlyArray
 from .async_memory import MemoryAsyncWriteOnlyArray
 from .async_memory import MemoryAsyncReadWriteArray
+from .async_memory import MemoryAsyncReadOnlyLegacyArray
+from .async_memory import MemoryAsyncWriteOnlyLegacyArray
+from .async_memory import MemoryAsyncReadWriteLegacyArray
 from .memory import ReadableMemory, ReadableMemoryLegacy
 from .memory import WritableMemory, WritableMemoryLegacy
 from .memory import Memory
@@ -110,5 +116,6 @@ from .async_memory import AsyncMemoryArray
 from .utility_functions import get_array_typecode
 from .utility_functions import UnsupportedWidthError
 from .base import Node
+from .base import NodeArray
 from .base import Base
 from .base import UDPStruct

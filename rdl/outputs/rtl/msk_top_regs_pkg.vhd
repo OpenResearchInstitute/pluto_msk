@@ -9,7 +9,7 @@ package msk_top_regs_pkg is
 
     constant MSK_TOP_REGS_DATA_WIDTH : positive := 32;
     constant MSK_TOP_REGS_MIN_ADDR_WIDTH : positive := 8;
-    constant MSK_TOP_REGS_SIZE : positive := 156;
+    constant MSK_TOP_REGS_SIZE : positive := 168;
 
     type \msk_top_regs.msk_stat_0.demod_sync_lock_in_t\ is record
         next_q : std_logic;
@@ -186,6 +186,49 @@ package msk_top_regs_pkg is
         frame_sync_errors : \msk_top_regs.frame_sync_status.frame_sync_errors_in_t\;
     end record;
 
+    type \msk_top_regs.symbol_lock_status.f1f2_in_t\ is record
+        next_q : std_logic;
+    end record;
+
+    type \msk_top_regs.symbol_lock_status.f1_in_t\ is record
+        next_q : std_logic;
+    end record;
+
+    type \msk_top_regs.symbol_lock_status.f2_in_t\ is record
+        next_q : std_logic;
+    end record;
+
+    type \msk_top_regs.symbol_lock_status.unlock_f1_in_t\ is record
+        next_q : std_logic;
+        we : std_logic;
+    end record;
+
+    type \msk_top_regs.symbol_lock_status.unlock_f2_in_t\ is record
+        next_q : std_logic;
+        we : std_logic;
+    end record;
+
+    type \msk_top_regs.symbol_lock_status_in_t\ is record
+        f1f2 : \msk_top_regs.symbol_lock_status.f1f2_in_t\;
+        f1 : \msk_top_regs.symbol_lock_status.f1_in_t\;
+        f2 : \msk_top_regs.symbol_lock_status.f2_in_t\;
+        unlock_f1 : \msk_top_regs.symbol_lock_status.unlock_f1_in_t\;
+        unlock_f2 : \msk_top_regs.symbol_lock_status.unlock_f2_in_t\;
+    end record;
+
+    type \msk_top_regs.symbol_lock_time.f1_in_t\ is record
+        next_q : std_logic_vector(15 downto 0);
+    end record;
+
+    type \msk_top_regs.symbol_lock_time.f2_in_t\ is record
+        next_q : std_logic_vector(15 downto 0);
+    end record;
+
+    type \msk_top_regs.symbol_lock_time_in_t\ is record
+        f1 : \msk_top_regs.symbol_lock_time.f1_in_t\;
+        f2 : \msk_top_regs.symbol_lock_time.f2_in_t\;
+    end record;
+
     type msk_top_regs_in_t is record
         MSK_Status : \msk_top_regs.msk_stat_0_in_t\;
         Tx_Bit_Count : \msk_top_regs.msk_stat_1_in_t\;
@@ -203,6 +246,8 @@ package msk_top_regs_pkg is
         tx_async_fifo_rd_wr_ptr : \msk_top_regs.status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_in_t\;
         rx_async_fifo_rd_wr_ptr : \msk_top_regs.status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_in_t\;
         rx_frame_sync_status : \msk_top_regs.frame_sync_status_in_t\;
+        symbol_lock_status : \msk_top_regs.symbol_lock_status_in_t\;
+        symbol_lock_time : \msk_top_regs.symbol_lock_time_in_t\;
     end record;
 
     type \msk_top_regs.msk_init.txrxinit_out_t\ is record
@@ -580,6 +625,19 @@ package msk_top_regs_pkg is
         frame_sync_errors : \msk_top_regs.frame_sync_status.frame_sync_errors_out_t\;
     end record;
 
+    type \msk_top_regs.symbol_lock_control.symbol_lock_count_out_t\ is record
+        value : std_logic_vector(9 downto 0);
+    end record;
+
+    type \msk_top_regs.symbol_lock_control.symbol_lock_threshold_out_t\ is record
+        value : std_logic_vector(15 downto 0);
+    end record;
+
+    type \msk_top_regs.symbol_lock_control_out_t\ is record
+        symbol_lock_count : \msk_top_regs.symbol_lock_control.symbol_lock_count_out_t\;
+        symbol_lock_threshold : \msk_top_regs.symbol_lock_control.symbol_lock_threshold_out_t\;
+    end record;
+
     type msk_top_regs_out_t is record
         MSK_Init : \msk_top_regs.msk_init_out_t\;
         MSK_Control : \msk_top_regs.msk_ctrl_out_t\;
@@ -617,5 +675,6 @@ package msk_top_regs_pkg is
         tx_async_fifo_rd_wr_ptr : \msk_top_regs.status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_out_t\;
         rx_async_fifo_rd_wr_ptr : \msk_top_regs.status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_out_t\;
         rx_frame_sync_status : \msk_top_regs.frame_sync_status_out_t\;
+        symbol_lock_control : \msk_top_regs.symbol_lock_control_out_t\;
     end record;
 end package;

@@ -594,6 +594,97 @@ addrmap msk_top_regs {
         } frame_sync_errors = 0;
     };
 
+    reg symbol_lock_control {
+        name = "Symbol Lock Control";
+        //desc = "Symbol Lock Control";
+        regwidth = 32;        
+        field {
+            name = "Symbol Lock Integration Count";
+            desc = "Sets the integration period in symbols. Value is from 0 to 1023.";
+            fieldwidth = 10;
+            sw = rw; 
+            hw = r; 
+        } symbol_lock_count = 128;
+        field {
+            name = "Symbol Lock Threshold";
+            desc = "Sets the threshold value on which to declare symbol sync";
+            fieldwidth = 16;
+            sw = rw; 
+            hw = r;
+        } symbol_lock_threshold = 10000;
+    };
+
+    reg symbol_lock_status {
+        name = "Symbol Lock Status";
+        //desc = "Symbol Lock Status";
+        regwidth = 32;        
+        field {
+            name = "Symbol Lock F1 and F2";
+            desc = "0 - Unlocked
+                    1 - F1 and F2 locked";
+            fieldwidth = 1;
+            sw = r; 
+            hw = w; 
+        } f1f2 = 0;
+        field {
+            name = "Symbol Lock F1";
+            desc = "0 - Unlocked
+                    1 - F1 locked";
+            fieldwidth = 1;
+            sw = r; 
+            hw = w; 
+        } f1 = 0;
+        field {
+            name = "Symbol Lock F2";
+            desc = "0 - Unlocked
+                    1 - F2 locked";
+            fieldwidth = 1;
+            sw = r; 
+            hw = w; 
+        } f2 = 0;
+        field {
+            name = "F1 unlocked since last read";
+            desc = "0 - No unlock since last read
+                    1 - One or mode unlocks since last read";
+            fieldwidth = 1;
+            sw = r; 
+            hw = w; 
+            rclr = true;
+            we = true;
+        } unlock_f1 = 0;
+        field {
+            name = "F2 unlocked since last read";
+            desc = "0 - No unlock since last read
+                    1 - One or mode unlocks since last read";
+            fieldwidth = 1;
+            sw = r; 
+            hw = w; 
+            rclr = true;
+            we = true;
+        } unlock_f2 = 0;
+    };
+
+    reg symbol_lock_time {
+        name = "Symbol Lock Time";
+        //desc = "Symbol Lock Status";
+        regwidth = 32;        
+        field {
+            name = "F1 Symbol Lock Time";
+            desc = "Number of symbols for F1 lock since init released";
+            fieldwidth = 16;
+            sw = r; 
+            hw = w; 
+        } f1 = 0;
+        field {
+            name = "F2 Symbol Lock Time";
+            desc = "Number of symbols for F2 lock since init released";
+            fieldwidth = 16;
+            sw = r; 
+            hw = w; 
+        } f2 = 0;
+    };
+
+
 
     msk_hash_lo         Hash_ID_Low;
     msk_hash_hi         Hash_ID_High;
@@ -728,5 +819,9 @@ addrmap msk_top_regs {
                                                               [/list]";
 
     frame_sync_status   rx_frame_sync_status;
+
+    symbol_lock_control symbol_lock_control;
+    symbol_lock_status  symbol_lock_status;
+    symbol_lock_time    symbol_lock_time;
 
 };
