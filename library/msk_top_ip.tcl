@@ -22,6 +22,7 @@ adi_ip_files msk_top [list \
   "../lowpass_ema/src/lowpass_ema.vhd" \
   "../power_detector/src/power_detector.vhd" \
   "../msk_demodulator/src/msk_demodulator.vhd" \
+  "../msk_demodulator/src/costas_lock_detect.vhd" \
   "../msk_modulator/src/msk_modulator.vhd" \
   "../src/cdc_resync.vhd" \
   "../src/pulse_detect.vhd" \
