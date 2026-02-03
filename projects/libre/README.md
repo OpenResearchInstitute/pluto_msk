@@ -2,7 +2,7 @@
 
 LibreSDR is a PlutoSDR-compatible board with upgraded hardware:
 - **FPGA**: XC7Z020-CLG400 (53,200 LUTs vs PlutoSDR's 17,600)
-- **RF**: AD9363 (same as PlutoSDR AD9361 but different frequency range)
+- **RF**: AD9363 (essentially the same as PlutoSDR AD9361)
 - **Memory**: 1GB DDR3
 - **Interface**: LVDS (vs PlutoSDR's CMOS)
 
@@ -15,9 +15,16 @@ LibreSDR is a PlutoSDR-compatible board with upgraded hardware:
 ### Quick Start
 ```bash
 # 1. Clone and init submodules
-git clone --branch encoder-dev https://github.com/OpenResearchInstitute/pluto_msk.git
+git clone --recursive https://github.com/OpenResearchInstitute/pluto_msk.git
+git checkout <branch>
 cd pluto_msk
+
+or 
+
+git clone https://github.com/OpenResearchInstitute/pluto_msk.git
+git checkout <branch>
 git submodule update --init --recursive
+cd pluto_msk
 
 # 2. Run LibreSDR setup
 cd firmware/ori/libre
@@ -48,3 +55,11 @@ Copy `libre.frm` to the LibreSDR mass storage device, or use DFU:
 ```bash
 dfu-util -D build/libre.dfu -a firmware.dfu
 ```
+
+# 4. Build SD Card Image
+```bash
+cd pluto_msk/firmware
+make PLATFORM=libre sdimg
+```
+
+Copy contents of sdimg directory in build directory to an SD card and then boot from SD card. 
