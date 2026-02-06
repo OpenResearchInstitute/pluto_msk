@@ -1,18 +1,18 @@
 """
 peakrdl-python is a tool to generate Python Register Access Layer (RAL) from SystemRDL
-Copyright (C) 2021 - 2025
+Copyright (C) 2021 - 2023
 
 This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as 
-published by the Free Software Foundation, either version 3 of 
-the License, or (at your option) any later version.
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
+GNU General Public License for more details.
 
-You should have received a copy of the GNU Lesser General Public License
+You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 This module is intended to distributed as part of automatically generated code by the
@@ -23,10 +23,9 @@ from typing import Union, Optional, TypeVar
 from abc import ABC, abstractmethod
 
 
-from .base import Node, NodeArray, IterationClassification
-from .sections import AddressMap, RegFile
+from .base import Node, AddressMap, RegFile, NodeArray
 from .utility_functions import legal_register_width
-from .sections import AsyncAddressMap, AsyncRegFile
+from .base import AsyncAddressMap, AsyncRegFile
 from .memory import BaseMemory
 
 
@@ -44,13 +43,14 @@ class BaseReg(Node, ABC):
         It is not expected that this class will be instantiated under normal
         circumstances however, it is useful for type checking
     """
-    _iteration_classification = IterationClassification.REGISTER
 
-    __slots__: list[str] = []
+    __slots__: list[str] = ['__width', '__accesswidth']
 
     # pylint: disable=too-many-arguments,duplicate-code
     def __init__(self, *,
                  address: int,
+                 width: int,
+                 accesswidth: int,
                  logger_handle: str,
                  inst_name: str,
                  parent: Union[AddressMap, AsyncAddressMap, RegFile, AsyncRegFile, BaseMemory,
@@ -60,16 +60,16 @@ class BaseReg(Node, ABC):
                          logger_handle=logger_handle,
                          inst_name=inst_name,
                          parent=parent)
-
-        # check the properties have been set up correctly
-        if not isinstance(self.width, int):
-            raise TypeError(f'width should be int but got {(type(self.width))}')
-        if not legal_register_width(width_in_bits=self.width):
-            raise ValueError(f'Unsupported register width {self.width:d}')
-        if not isinstance(self.accesswidth, int):
-            raise TypeError(f'accesswidth should be int but got {(type(self.accesswidth))}')
-        if not legal_register_width(width_in_bits=self.accesswidth):
-            raise ValueError(f'Unsupported access width {self.accesswidth:d}')
+        if not isinstance(width, int):
+            raise TypeError(f'width should be int but got {(type(width))}')
+        if not legal_register_width(width_in_bits=width):
+            raise ValueError(f'Unsupported register width {width:d}')
+        self.__width = width
+        if not isinstance(accesswidth, int):
+            raise TypeError(f'accesswidth should be int but got {(type(accesswidth))}')
+        if not legal_register_width(width_in_bits=accesswidth):
+            raise ValueError(f'Unsupported access width {accesswidth:d}')
+        self.__accesswidth = accesswidth
     # pylint: enable=too-many-arguments,duplicate-code
 
     @property
@@ -100,25 +100,25 @@ class BaseReg(Node, ABC):
             raise ValueError('data out of range')
 
     @property
-    @abstractmethod
     def width(self) -> int:
         """
         The width of the register in bits, this uses the `regwidth` systemRDL property
         """
+        return self.__width
 
     @property
-    @abstractmethod
     def accesswidth(self) -> int:
         """
         The access width of the register in bits, this uses the `accesswidth` systemRDL property
         """
+        return self.__accesswidth
 
     @property
     def size(self) -> int:
         """
         Total Number of bytes of address the node occupies
         """
-        return self.width >> 3
+        return self.__width >> 3
 
     @property
     @abstractmethod
@@ -129,7 +129,6 @@ class BaseReg(Node, ABC):
     @abstractmethod
     def _is_writeable(self) -> bool:
         ...
-
 
 # pylint: disable-next=invalid-name
 BaseRegArrayElementType= TypeVar('BaseRegArrayElementType', bound=BaseReg)
@@ -145,26 +144,28 @@ class BaseRegArray(NodeArray[BaseRegArrayElementType], ABC):
     """
     # pylint: disable=too-many-arguments,duplicate-code
 
-    __slots__: list[str] = []
-    _iteration_classification = IterationClassification.REGISTER
+    __slots__: list[str] = ['__width', '__accesswidth']
 
     def __init__(self, *,
                  logger_handle: str, inst_name: str,
                  parent: Union[AddressMap, AsyncAddressMap, RegFile, AsyncRegFile, BaseMemory],
+                 width: int,
+                 accesswidth: int,
                  address: int,
                  stride: int,
                  dimensions: tuple[int, ...],
-                 elements: Optional[tuple[tuple[tuple[int, ...], ...],
-                                          tuple[BaseRegArrayElementType, ...]]] = None):
+                 elements: Optional[dict[tuple[int, ...], BaseRegArrayElementType]] = None):
 
-        if not isinstance(self.width, int):
-            raise TypeError(f'width should be int but got {(type(self.width))}')
-        if not legal_register_width(width_in_bits=self.width):
-            raise ValueError(f'Unsupported register width {self.width:d}')
-        if not isinstance(self.accesswidth, int):
-            raise TypeError(f'accesswidth should be int but got {(type(self.accesswidth))}')
-        if not legal_register_width(width_in_bits=self.accesswidth):
-            raise ValueError(f'Unsupported access width {self.accesswidth:d}')
+        if not isinstance(width, int):
+            raise TypeError(f'width should be int but got {(type(width))}')
+        if not legal_register_width(width_in_bits=width):
+            raise ValueError(f'Unsupported register width {width:d}')
+        self.__width = width
+        if not isinstance(accesswidth, int):
+            raise TypeError(f'accesswidth should be int but got {(type(accesswidth))}')
+        if not legal_register_width(width_in_bits=accesswidth):
+            raise ValueError(f'Unsupported access width {accesswidth:d}')
+        self.__accesswidth = accesswidth
 
         if not issubclass(self._element_datatype, BaseReg):
             raise TypeError(f'{self._element_datatype}')
@@ -174,18 +175,43 @@ class BaseRegArray(NodeArray[BaseRegArrayElementType], ABC):
                          stride=stride, dimensions=dimensions, elements=elements)
 
     @property
-    @abstractmethod
     def width(self) -> int:
         """
         The width of the register in bits, this uses the `regwidth` systemRDL property
         """
+        return self.__width
 
     @property
-    @abstractmethod
     def accesswidth(self) -> int:
         """
         The access width of the register in bits, this uses the `accesswidth` systemRDL property
         """
+        return self.__accesswidth
+
+    def _build_element(self, indices: tuple[int, ...]) -> BaseRegArrayElementType:
+
+        return self._element_datatype(
+            logger_handle=self._build_element_logger_handle(indices=indices),
+            address=self._address_calculator(indices),
+            inst_name=self._build_element_inst_name(indices=indices),
+            width=self.width,
+            accesswidth=self.accesswidth,
+            parent=self)
+
+    def _sub_instance(self, elements: dict[tuple[int, ...], BaseRegArrayElementType]) ->\
+            NodeArray[BaseRegArrayElementType]:
+        if not isinstance(self.parent, (AddressMap, AsyncAddressMap, RegFile,
+                                        AsyncRegFile, BaseMemory)):
+            raise RuntimeError('Parent of a Node Array must be Node')
+        return self.__class__(logger_handle=self._logger.name,
+                              inst_name=self.inst_name,
+                              parent=self.parent,
+                              address=self.address,
+                              width=self.width,
+                              accesswidth=self.accesswidth,
+                              stride=self.stride,
+                              dimensions=self.dimensions,
+                              elements=elements)
 
     @property
     @abstractmethod

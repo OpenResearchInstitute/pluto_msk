@@ -4,14 +4,8 @@
 """
 Unit Tests for the msk_top_regs register model Python Wrapper
 
-This code was generated from the PeakRDL-python package version 2.3.0
+This code was generated from the PeakRDL-python package version 1.4.0
 """
-
-
-
-
-
-
 from array import array as Array
 
 import sys
@@ -31,7 +25,7 @@ from ..lib import AsyncCallbackSet, AsyncCallbackSetLegacy
 
 
 
-from ..reg_model import RegModel
+from ..reg_model.msk_top_regs import msk_top_regs_cls
 
 from ..sim_lib.dummy_callbacks import async_dummy_read as read_addr_space
 from ..sim_lib.dummy_callbacks import async_dummy_write as write_addr_space
@@ -76,7 +70,7 @@ else:
 class msk_top_regs_TestCase(TestCaseBase): # type: ignore[valid-type,misc]
 
     def setUp(self) -> None:
-        self.dut = RegModel(callbacks=AsyncCallbackSet(read_callback=read_callback,
+        self.dut = msk_top_regs_cls(callbacks=AsyncCallbackSet(read_callback=read_callback,
                                                           write_callback=write_callback))
 
     @staticmethod
@@ -99,7 +93,7 @@ class msk_top_regs_TestCase(TestCaseBase): # type: ignore[valid-type,misc]
 class msk_top_regs_TestCase_BlockAccess(TestCaseBase): # type: ignore[valid-type,misc]
 
     def setUp(self) -> None:
-        self.dut = RegModel(callbacks=AsyncCallbackSet(read_callback=read_callback,
+        self.dut = msk_top_regs_cls(callbacks=AsyncCallbackSet(read_callback=read_callback,
                                                           write_callback=write_callback,
                                                           read_block_callback=read_block_callback,
                                                           write_block_callback=write_block_callback))
@@ -111,7 +105,7 @@ class msk_top_regs_TestCase_AltBlockAccess(TestCaseBase): # type: ignore[valid-t
     """
 
     def setUp(self) -> None:
-        self.dut = RegModel(callbacks=AsyncCallbackSetLegacy(
+        self.dut = msk_top_regs_cls(callbacks=AsyncCallbackSetLegacy(
                                                           read_callback=read_callback,
                                                           write_callback=write_callback,
                                                           read_block_callback=read_block_callback_alt,

@@ -1,18 +1,18 @@
 """
 peakrdl-python is a tool to generate Python Register Access Layer (RAL) from SystemRDL
-Copyright (C) 2021 - 2025
+Copyright (C) 2021 - 2023
 
 This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as 
-published by the Free Software Foundation, either version 3 of 
-the License, or (at your option) any later version.
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
+GNU General Public License for more details.
 
-You should have received a copy of the GNU Lesser General Public License
+You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 This module is intended to distributed as part of automatically generated code by the
@@ -81,21 +81,3 @@ def legal_register_width(width_in_bits: int) -> bool:
     must be a power of 2 and greater than 8
     """
     return (width_in_bits >= 8) and is_power_two(width_in_bits)
-
-
-def calculate_bitmask(high:int, low:int) -> int:
-    """
-    Calculate an integer bitmask based on the high and low bit positions
-    """
-    if not isinstance(high, int):
-        raise TypeError(f'high must be an int, got {type(high)}')
-    if high < 0:
-        raise ValueError('high must be greater than 0')
-    if not isinstance(low, int):
-        raise TypeError(f'low must be an int, got {type(low)}')
-    if low < 0:
-        raise ValueError('low must be greater than 0')
-    if high < low:
-        raise ValueError(f'low must be great than or equal to high, got: {low=}, {high=}')
-
-    return ((1 << (high - low + 1)) - 1) << low

@@ -11,6 +11,22 @@ package msk_top_regs_pkg is
     constant MSK_TOP_REGS_MIN_ADDR_WIDTH : positive := 8;
     constant MSK_TOP_REGS_SIZE : positive := 168;
 
+    type \msk_top_regs.msk_hash_lo.hash_id_lo_in_t\ is record
+        next_q : std_logic_vector(31 downto 0);
+    end record;
+
+    type \msk_top_regs.msk_hash_lo_in_t\ is record
+        hash_id_lo : \msk_top_regs.msk_hash_lo.hash_id_lo_in_t\;
+    end record;
+
+    type \msk_top_regs.msk_hash_hi.hash_id_hi_in_t\ is record
+        next_q : std_logic_vector(31 downto 0);
+    end record;
+
+    type \msk_top_regs.msk_hash_hi_in_t\ is record
+        hash_id_hi : \msk_top_regs.msk_hash_hi.hash_id_hi_in_t\;
+    end record;
+
     type \msk_top_regs.msk_stat_0.demod_sync_lock_in_t\ is record
         next_q : std_logic;
     end record;
@@ -230,6 +246,8 @@ package msk_top_regs_pkg is
     end record;
 
     type msk_top_regs_in_t is record
+        Hash_ID_Low : \msk_top_regs.msk_hash_lo_in_t\;
+        Hash_ID_High : \msk_top_regs.msk_hash_hi_in_t\;
         MSK_Status : \msk_top_regs.msk_stat_0_in_t\;
         Tx_Bit_Count : \msk_top_regs.msk_stat_1_in_t\;
         Tx_Enable_Count : \msk_top_regs.msk_stat_2_in_t\;
