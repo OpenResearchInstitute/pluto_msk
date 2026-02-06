@@ -59,26 +59,26 @@ addrmap msk_top_regs {
     default hw = r;
 
     reg msk_hash_lo {
-    
+
         name = "Pluto MSK FPGA Hash ID - Lower 32-bits";
-    
-        default sw = r; 
-        default hw = na;
-    
-        field { 
+
+        default sw = r;
+        default hw = w;
+
+        field {
             name = "Hash ID Lower 32-bits";
             desc = "Lower 32-bits of Pluto MSK FPGA Hash ID";
         } hash_id_lo[31:0] = 0xAAAA5555;
     };
 
     reg msk_hash_hi {
-    
+
         name = "Pluto MSK FPGA Hash ID - Upper 32-bits";
-    
-        default sw = r; 
-        default hw = na;
-    
-        field { 
+
+        default sw = r;
+        default hw = w;
+
+        field {
             name = "Hash ID Upper 32-bits";
             desc = "Upper 32-bits of Pluto MSK FPGA Hash ID";
         } hash_id_hi[31:0] = 0x5555AAAA;

@@ -32,6 +32,7 @@ VHDL_SOURCES += $(RDL)/src/axi4lite_intf_pkg.vhd \
 				$(SRC)/axis_async_fifo.vhd \
 				$(SRC)/axis_dma_adapter.vhd \
 				$(SRC)/byte_to_bit_deserializer.vhd \
+				$(SRC)/axi_lite_cdc.vhd \
 				$(SRC)/msk_top_csr.vhd \
 				$(SRC)/conv_encoder_k7.vhd \
 				$(SRC)/viterbi_decoder_k7_soft.vhd \
