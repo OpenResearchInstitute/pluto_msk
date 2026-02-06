@@ -27,10 +27,15 @@ VHDL_SOURCES += $(RDL)/src/axi4lite_intf_pkg.vhd \
 				$(SRC)/pulse_detect.vhd \
 				$(SRC)/data_capture.vhd \
 				$(SRC)/cdc_resync.vhd \
-				$(SRC)/frame_sync_detector.vhd \
+				$(SRC)/conv_encoder_k7.vhd \
+				$(SRC)/viterbi_decoder_k7_soft.vhd \
+				$(SRC)/ov_frame_encoder.vhd \
+				$(SRC)/ov_frame_decoder_soft.vhd \
+				$(SRC)/frame_sync_detector_soft.vhd \
 				$(SRC)/axis_async_fifo.vhd \
 				$(SRC)/axis_dma_adapter.vhd \
 				$(SRC)/byte_to_bit_deserializer.vhd \
+				$(SRC)/axi_lite_cdc.vhd \
 				$(SRC)/msk_top_csr.vhd \
 				../lowpass_ema/src/lowpass_ema.vhd \
 				../power_detector/src/power_detector.vhd \
