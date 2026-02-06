@@ -515,9 +515,9 @@ BEGIN
 			m_axis_tready   => fifo_tready,
 			m_axis_tlast    => fifo_tlast,
 			
-            -- status signals synchronized to AXI control/status bus
-			status_aclk	=> s_axi_aclk,
-			status_aresetn	=> s_axi_aresetn,
+            -- status signals synchronized to CSR (now in modem clock domain)
+			status_aclk	=> clk,
+			status_aresetn	=> NOT txinit,
 			status_req	=> tx_async_fifo_status_req,
 			status_ack	=> tx_async_fifo_status_ack,
 			prog_full       => tx_async_fifo_prog_full,
@@ -888,9 +888,9 @@ BEGIN
             m_axis_tready   => m_axis_tready,
             m_axis_tlast    => m_axis_tlast,
             
-            -- status signals synchronized to AXI control/status bus
-			status_aclk	=> s_axi_aclk,
-			status_aresetn	=> s_axi_aresetn,
+            -- status signals synchronized to CSR (now in modem clock domain)
+			status_aclk	=> clk,
+			status_aresetn	=> NOT rxinit,
 			status_req	=> rx_async_fifo_status_req,
 			status_ack	=> rx_async_fifo_status_ack,
 			prog_full       => rx_async_fifo_prog_full,

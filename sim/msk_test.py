@@ -977,3 +977,195 @@ async def msk_test_1(dut):
         plt.show()
     
         #fftPlot(np.asarray(tx_samples), dt=1/sample_rate)
+
+
+#------------------------------------------------------------------------------------------------------
+#  Register Read/Write Test
+#
+#  Exercises all registers through the AXI-Lite CDC bridge.
+#  - RW config registers: write a value, read it back, verify match
+#  - RO status registers: read and verify no error
+#  - Write-to-capture status registers: write (trigger capture), read back
+#------------------------------------------------------------------------------------------------------
+
+@cocotb.test()
+async def reg_rw_test(dut):
+    """Read and write all registers through the AXI-Lite CDC bridge."""
+
+    tx_sample_rate = 61.44e6
+    tx_sample_per = int(round(1/tx_sample_rate * 1e14))*10
+
+    await cocotb.start(Clock(dut.clk, tx_sample_per, units="fs").start())
+
+    axi  = axi_bus(dut)
+    regs = msk_top_regs_cls(callbacks=AsyncCallbackSet(read_callback=axi.read, write_callback=axi.write))
+
+    axis = axis_bus(dut)
+
+    await axi.init()
+    await axis.init()
+
+    # Drive required input signals to known states
+    dut.tx_enable.value = 1
+    dut.rx_enable.value = 1
+    dut.rx_svalid.value = 0
+    dut.tx_valid.value  = 0
+    dut.rx_samples_I.value = 0
+    dut.rx_samples_Q.value = 0
+    dut.s_axis_tvalid.value = 0
+    dut.s_axis_tdata.value = 0
+    dut.s_axis_tlast.value = 0
+    dut.s_axis_tkeep.value = 0
+    dut.m_axis_tready.value = 0
+
+    await Timer(200, units="ns")
+
+    errors = 0
+
+    #------------------------------------------------------------------
+    # 1. Read-only registers (Hash IDs)
+    #------------------------------------------------------------------
+    dut._log.info("--- Read-only registers ---")
+
+    val = await regs.Hash_ID_Low.read()
+    dut._log.info("Hash_ID_Low  = 0x%08X" % val)
+    if val != 0xAAAA5555:
+        dut._log.error("Hash_ID_Low mismatch: expected 0xAAAA5555, got 0x%08X" % val)
+        errors += 1
+
+    val = await regs.Hash_ID_High.read()
+    dut._log.info("Hash_ID_High = 0x%08X" % val)
+    if val != 0xFFFFCCCC:
+        dut._log.error("Hash_ID_High mismatch: expected 0xFFFFCCCC, got 0x%08X" % val)
+        errors += 1
+
+    #------------------------------------------------------------------
+    # 2. RW config registers — write then read back
+    #------------------------------------------------------------------
+    dut._log.info("--- RW config register write/readback ---")
+
+    rw_tests = [
+        # (register, write_value, readback_mask, name)
+        (regs.MSK_Init,           0x00000007, 0x00000007, "MSK_Init"),
+        (regs.MSK_Control,        0x00000013, 0x00000013, "MSK_Control"),
+        (regs.Fb_FreqWord,        0x12345678, 0xFFFFFFFF, "Fb_FreqWord"),
+        (regs.TX_F1_FreqWord,     0xABCD0001, 0xFFFFFFFF, "TX_F1_FreqWord"),
+        (regs.TX_F2_FreqWord,     0xABCD0002, 0xFFFFFFFF, "TX_F2_FreqWord"),
+        (regs.RX_F1_FreqWord,     0xABCD0003, 0xFFFFFFFF, "RX_F1_FreqWord"),
+        (regs.RX_F2_FreqWord,     0xABCD0004, 0xFFFFFFFF, "RX_F2_FreqWord"),
+        (regs.LPF_Config_0,       0x00000A03, 0xFFFFFF03, "LPF_Config_0"),
+        (regs.LPF_Config_1,       0x0A000080, 0xFFFFFFFF, "LPF_Config_1"),
+        (regs.LPF_Config_2,       0x05000050, 0xFFFFFFFF, "LPF_Config_2"),
+        (regs.Tx_Data_Width,      0x00000010, 0x000000FF, "Tx_Data_Width"),
+        (regs.Rx_Data_Width,      0x00000008, 0x000000FF, "Rx_Data_Width"),
+        (regs.Rx_Sample_Discard,  0x00001818, 0x0000FFFF, "Rx_Sample_Discard"),
+        (regs.PRBS_Control,       0x00320001, 0x00FF0001, "PRBS_Control"),
+        (regs.PRBS_Initial_State, 0x8E7589FD, 0xFFFFFFFF, "PRBS_Initial_State"),
+        (regs.PRBS_Polynomial,    0x48000000, 0xFFFFFFFF, "PRBS_Polynomial"),
+        (regs.PRBS_Error_Mask,    0x00000001, 0xFFFFFFFF, "PRBS_Error_Mask"),
+        (regs.Tx_Sync_Ctrl,       0x00000003, 0x00000003, "Tx_Sync_Ctrl"),
+        (regs.Tx_Sync_Cnt,        0x000000C0, 0x00FFFFFF, "Tx_Sync_Cnt"),
+        (regs.lowpass_ema_alpha1,  0x00000040, 0x0003FFFF, "lowpass_ema_alpha1"),
+        (regs.lowpass_ema_alpha2,  0x00000080, 0x0003FFFF, "lowpass_ema_alpha2"),
+    ]
+
+    for reg, wr_val, mask, name in rw_tests:
+        await reg.write(wr_val)
+        rd_val = await reg.read()
+        expected = wr_val & mask
+        actual = rd_val & mask
+        if actual != expected:
+            dut._log.error("%s: wrote 0x%08X, read 0x%08X (expected 0x%08X, mask 0x%08X)"
+                           % (name, wr_val, rd_val, expected, mask))
+            errors += 1
+        else:
+            dut._log.info("%s: OK (0x%08X)" % (name, actual))
+
+    #------------------------------------------------------------------
+    # 3. RO status register — just read (driven by HW)
+    #------------------------------------------------------------------
+    dut._log.info("--- RO status register read ---")
+
+    val = await regs.MSK_Status.read()
+    dut._log.info("MSK_Status = 0x%08X (tx_enable=%d, rx_enable=%d)"
+                  % (val, (val >> 1) & 1, (val >> 2) & 1))
+
+    #------------------------------------------------------------------
+    # 4. Write-to-capture status registers
+    #    Write triggers data_capture snapshot; read returns captured value
+    #------------------------------------------------------------------
+    dut._log.info("--- Write-to-capture registers ---")
+
+    wtc_regs = [
+        (regs.Tx_Bit_Count,        "Tx_Bit_Count"),
+        (regs.Tx_Enable_Count,     "Tx_Enable_Count"),
+        (regs.PRBS_Bit_Count,      "PRBS_Bit_Count"),
+        (regs.PRBS_Error_Count,    "PRBS_Error_Count"),
+        (regs.LPF_Accum_F1,       "LPF_Accum_F1"),
+        (regs.LPF_Accum_F2,       "LPF_Accum_F2"),
+        (regs.axis_xfer_count,     "axis_xfer_count"),
+        (regs.f1_nco_adjust,       "f1_nco_adjust"),
+        (regs.f2_nco_adjust,       "f2_nco_adjust"),
+        (regs.f1_error,            "f1_error"),
+        (regs.f2_error,            "f2_error"),
+        (regs.rx_power,            "rx_power"),
+    ]
+
+    for reg, name in wtc_regs:
+        # Write any value to trigger capture
+        await reg.write(0)
+        # Read back captured value
+        val = await reg.read()
+        dut._log.info("%s: captured 0x%08X" % (name, val))
+
+    #------------------------------------------------------------------
+    # 5. FIFO pointer registers (write-to-capture with FIFO handshake)
+    #------------------------------------------------------------------
+    dut._log.info("--- FIFO pointer registers ---")
+
+    await regs.tx_async_fifo_rd_wr_ptr.write(0)
+    await Timer(500, units="ns")
+    val = await regs.tx_async_fifo_rd_wr_ptr.read()
+    dut._log.info("tx_async_fifo_rd_wr_ptr: 0x%08X" % val)
+
+    await regs.rx_async_fifo_rd_wr_ptr.write(0)
+    await Timer(500, units="ns")
+    val = await regs.rx_async_fifo_rd_wr_ptr.read()
+    dut._log.info("rx_async_fifo_rd_wr_ptr: 0x%08X" % val)
+
+    #------------------------------------------------------------------
+    # 6. Frame sync status register
+    #------------------------------------------------------------------
+    dut._log.info("--- Frame sync status ---")
+    val = await regs.rx_frame_sync_status.read()
+    dut._log.info("rx_frame_sync_status: 0x%08X" % val)
+
+    #------------------------------------------------------------------
+    # 7. Second pass — verify config registers survive multiple accesses
+    #------------------------------------------------------------------
+    dut._log.info("--- Re-read config registers (stability check) ---")
+
+    # Write known patterns, read back twice to confirm stability
+    await regs.Fb_FreqWord.write(0xCAFEBABE)
+    rd1 = await regs.Fb_FreqWord.read()
+    rd2 = await regs.Fb_FreqWord.read()
+    if rd1 != rd2 or rd1 != 0xCAFEBABE:
+        dut._log.error("Fb_FreqWord stability: rd1=0x%08X rd2=0x%08X expected 0xCAFEBABE" % (rd1, rd2))
+        errors += 1
+    else:
+        dut._log.info("Fb_FreqWord stability: OK (0x%08X)" % rd1)
+
+    await regs.PRBS_Initial_State.write(0x55AA55AA)
+    rd1 = await regs.PRBS_Initial_State.read()
+    rd2 = await regs.PRBS_Initial_State.read()
+    if rd1 != rd2 or rd1 != 0x55AA55AA:
+        dut._log.error("PRBS_Initial_State stability: rd1=0x%08X rd2=0x%08X expected 0x55AA55AA" % (rd1, rd2))
+        errors += 1
+    else:
+        dut._log.info("PRBS_Initial_State stability: OK (0x%08X)" % rd1)
+
+    #------------------------------------------------------------------
+    # Done
+    #------------------------------------------------------------------
+    dut._log.info("Register test complete: %d error(s)" % errors)
+    assert errors == 0, "Register read/write test failed with %d error(s)" % errors

@@ -28,6 +28,7 @@ adi_ip_files msk_top [list \
   "../src/pulse_detect.vhd" \
   "../src/data_capture.vhd" \
   "../src/msk_top.vhd" \
+  "../src/axi_lite_cdc.vhd" \
   "../src/msk_top_csr.vhd" \
   "../src/axis_dma_adapter.vhd" \
   "../src/axis_async_fifo.vhd" \
