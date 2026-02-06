@@ -1791,14 +1791,14 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frames_received'):
             
                 
-            self.assertEqual(self.dut.rx_frame_sync_status.frames_received.rdl_desc, "Count of frames received since last read. Value is 0x00_0000 to 0xFF_FFFF") # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_frame_sync_status.frames_received.rdl_desc, "Count of frames received. Value is 0x00_0000 to 0xFF_FFFF. Counter rolls over when max count is reached.") # type: ignore[union-attr]
                 
             
 
         with self.subTest(msg='node: msk_top_regs.rx_frame_sync_status.frame_sync_errors'):
             
                 
-            self.assertEqual(self.dut.rx_frame_sync_status.frame_sync_errors.rdl_desc, "Count of frame sync errors since last read. Value is 0 to 63. This field will saturate at 63 if more than 63 occur.") # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_frame_sync_status.frame_sync_errors.rdl_desc, "Count of frame sync errors. Value is 0 to 63. Counter rolls over when max count is reached.") # type: ignore[union-attr]
                 
             
 
@@ -2127,7 +2127,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
             self.assertEqual(fut.default,2863289685)
                 
-            self.assertEqual(fut.is_volatile,False)
+            self.assertEqual(fut.is_volatile,True)
         with self.subTest(msg='field: msk_top_regs.Hash_ID_High.hash_id_hi'):
             # test properties of field: msk_top_regs.Hash_ID_High.hash_id_hi
             fut = self.dut.Hash_ID_High.hash_id_hi # type: ignore[union-attr]
@@ -2143,7 +2143,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
             self.assertEqual(fut.default,1431677610)
                 
-            self.assertEqual(fut.is_volatile,False)
+            self.assertEqual(fut.is_volatile,True)
         with self.subTest(msg='field: msk_top_regs.MSK_Init.txrxinit'):
             # test properties of field: msk_top_regs.MSK_Init.txrxinit
             fut = self.dut.MSK_Init.txrxinit # type: ignore[union-attr]

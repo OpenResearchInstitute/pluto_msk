@@ -874,8 +874,8 @@ Bits 15:00 - read pointer (12-bits)</code></p>
 
 #### frames_received field
 
-<p>Count of frames received since last read. Value is 0x00_0000 to 0xFF_FFFF</p>
+<p>Count of frames received. Value is 0x00_0000 to 0xFF_FFFF. Counter rolls over when max count is reached.</p>
 
 #### frame_sync_errors field
 
-<p>Count of frame sync errors since last read. Value is 0 to 63. This field will saturate at 63 if more than 63 occur.</p>
+<p>Count of frame sync errors. Value is 0 to 63. Counter rolls over when max count is reached.</p>
