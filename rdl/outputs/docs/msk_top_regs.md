@@ -10,7 +10,7 @@ Don't override. Generated from: msk_top_regs
 
 - Absolute Address: 0x0
 - Base Offset: 0x0
-- Size: 0xA8
+- Size: 0x9C
 
 <p>MSK Modem Configuration and Status Registers</p>
 
@@ -55,9 +55,6 @@ Don't override. Generated from: msk_top_regs
 | 0x90 |tx_async_fifo_rd_wr_ptr|            Tx async FIFO read and write pointers            |
 | 0x94 |rx_async_fifo_rd_wr_ptr|            Rx async FIFO read and write pointers            |
 | 0x98 |  rx_frame_sync_status |                      Frame Sync Status                      |
-| 0x9C |  symbol_lock_control  |                     Symbol Lock Control                     |
-| 0xA0 |   symbol_lock_status  |                      Symbol Lock Status                     |
-| 0xA4 |    symbol_lock_time   |                       Symbol Lock Time                      |
 
 ### Hash_ID_Low register
 
@@ -882,80 +879,3 @@ Bits 15:00 - read pointer (12-bits)</code></p>
 #### frame_sync_errors field
 
 <p>Count of frame sync errors. Value is 0 to 63. Counter rolls over when max count is reached.</p>
-
-### symbol_lock_control register
-
-- Absolute Address: 0x9C
-- Base Offset: 0x9C
-- Size: 0x4
-
-| Bits|      Identifier     |Access| Reset|             Name            |
-|-----|---------------------|------|------|-----------------------------|
-| 9:0 |  symbol_lock_count  |  rw  | 0x80 |Symbol Lock Integration Count|
-|25:10|symbol_lock_threshold|  rw  |0x2710|    Symbol Lock Threshold    |
-
-#### symbol_lock_count field
-
-<p>Sets the integration period in symbols. Value is from 0 to 1023.</p>
-
-#### symbol_lock_threshold field
-
-<p>Sets the threshold value on which to declare symbol sync</p>
-
-### symbol_lock_status register
-
-- Absolute Address: 0xA0
-- Base Offset: 0xA0
-- Size: 0x4
-
-|Bits|Identifier| Access|Reset|            Name           |
-|----|----------|-------|-----|---------------------------|
-|  0 |   f1f2   |   r   | 0x0 |   Symbol Lock F1 and F2   |
-|  1 |    f1    |   r   | 0x0 |       Symbol Lock F1      |
-|  2 |    f2    |   r   | 0x0 |       Symbol Lock F2      |
-|  3 | unlock_f1|r, rclr| 0x0 |F1 unlocked since last read|
-|  4 | unlock_f2|r, rclr| 0x0 |F2 unlocked since last read|
-
-#### f1f2 field
-
-<p>0 - Unlocked
-1 - F1 and F2 locked</p>
-
-#### f1 field
-
-<p>0 - Unlocked
-1 - F1 locked</p>
-
-#### f2 field
-
-<p>0 - Unlocked
-1 - F2 locked</p>
-
-#### unlock_f1 field
-
-<p>0 - No unlock since last read
-1 - One or mode unlocks since last read</p>
-
-#### unlock_f2 field
-
-<p>0 - No unlock since last read
-1 - One or mode unlocks since last read</p>
-
-### symbol_lock_time register
-
-- Absolute Address: 0xA4
-- Base Offset: 0xA4
-- Size: 0x4
-
-| Bits|Identifier|Access|Reset|        Name       |
-|-----|----------|------|-----|-------------------|
-| 15:0|    f1    |   r  | 0x0 |F1 Symbol Lock Time|
-|31:16|    f2    |   r  | 0x0 |F2 Symbol Lock Time|
-
-#### f1 field
-
-<p>Number of symbols for F1 lock since init released</p>
-
-#### f2 field
-
-<p>Number of symbols for F2 lock since init released</p>

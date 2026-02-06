@@ -3202,8 +3202,8 @@ begin
     ----------------------------------------------------------------------------
 
     -- Assign readback values to a flattened array
-    readback_array(0)(31 downto 0) <= 32x"AAAA5555" when (decoded_reg_strb.Hash_ID_Low and not decoded_req_is_wr) else (others => '0');
-    readback_array(1)(31 downto 0) <= 32x"5555AAAA" when (decoded_reg_strb.Hash_ID_High and not decoded_req_is_wr) else (others => '0');
+    readback_array(0)(31 downto 0) <= hwif_in.Hash_ID_Low.hash_id_lo.next_q when (decoded_reg_strb.Hash_ID_Low and not decoded_req_is_wr) else (others => '0');
+    readback_array(1)(31 downto 0) <= hwif_in.Hash_ID_High.hash_id_hi.next_q when (decoded_reg_strb.Hash_ID_High and not decoded_req_is_wr) else (others => '0');
     readback_array(2)(0 downto 0) <= to_std_logic_vector(field_storage.MSK_Init.txrxinit.value) when (decoded_reg_strb.MSK_Init and not decoded_req_is_wr) else (others => '0');
     readback_array(2)(1 downto 1) <= to_std_logic_vector(field_storage.MSK_Init.txinit.value) when (decoded_reg_strb.MSK_Init and not decoded_req_is_wr) else (others => '0');
     readback_array(2)(2 downto 2) <= to_std_logic_vector(field_storage.MSK_Init.rxinit.value) when (decoded_reg_strb.MSK_Init and not decoded_req_is_wr) else (others => '0');
