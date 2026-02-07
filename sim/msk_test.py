@@ -148,6 +148,7 @@ class axis_bus:
 
         self.dut._log.info("starting aclk with period %d %s" % (self.aclk_per, self.aclk_per_units))
         await cocotb.start(Clock(self.aclk, self.aclk_per, units=self.aclk_per_units).start())
+        self.dut._log.info("...aclk started")
 
     async def _reset(self):
 
@@ -243,6 +244,7 @@ class axi_bus:
 
         self.dut._log.info("starting aclk with period %d %s" % (self.aclk_per, self.aclk_per_units))
         await cocotb.start(Clock(self.aclk, self.aclk_per, units=self.aclk_per_units).start())
+        self.dut._log.info("...aclk started")
 
     async def _reset(self):
 
@@ -625,6 +627,8 @@ class ddc:
 @cocotb.test()
 async def msk_test_1(dut):
 
+    dut._log.info("msk_test_1 starting...")
+
     plot = True
 
     run_time = 35000 # microseconds
@@ -672,7 +676,7 @@ async def msk_test_1(dut):
     digital_loopback = 1
     diff_enc_loopback = 0
 
-    print("Instantiate registers")
+    print("Instantiate registers...")
     axi  = axi_bus(dut)
     regs = msk_top_regs_cls(callbacks=AsyncCallbackSet(read_callback=axi.read, write_callback=axi.write))
 
@@ -686,7 +690,9 @@ async def msk_test_1(dut):
     tx_data_width = 8
     rx_data_width = 8
 
+    dut._log.info("starting clock...")
     await cocotb.start(Clock(dut.clk, tx_sample_per, units="fs").start())
+    dut._log.info("... clock started")
 
     delta_f = bitrate/4
 
@@ -888,11 +894,17 @@ async def msk_test_1(dut):
     # print("Ones: ", pn.ones_count)
     # print("Zeros: ", pn.zeros_count)
 
+    await regs.PRBS_Error_Count.write(0)
     errs = await regs.PRBS_Error_Count.read()
     print("Bit errors: ", errs)
+    await regs.PRBS_Bit_Count.write(0)
     bits = await regs.PRBS_Bit_Count.read()
     print("Bit count:  ", bits)
     print("BER:        ", (1.0*errs)/bits)
+
+    assert errs == 1, f"Expected 1, got {errs}"
+    assert bits > 1, f"Expected >0, got {bits}"
+
 
     # print("Bit errors: ", pn.err_count)
     # print("Bit count:  ", pn.data_count)

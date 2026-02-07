@@ -13,7 +13,7 @@ ifeq ($(SIM),ghdl)
 endif
 
 ifeq ($(SIM),nvc)
-	SIM_ARGS = --wave=msk_top.ghw
+	SIM_ARGS = --wave=msk_top.ghw --ieee-warnings=off
 endif
 
 SRC = ../src
