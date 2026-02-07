@@ -146,9 +146,8 @@ class axis_bus:
 
     async def _clock(self):
 
-        self.dut._log.info("starting aclk with period %d %s ..." % (self.aclk_per, self.aclk_per_units))
-        self.aclk_clk = Clock(self.aclk, self.aclk_per, unit=self.aclk_per_units)
-        self.aclk_clk.start()
+        self.dut._log.info("starting aclk with period %d %s" % (self.aclk_per, self.aclk_per_units))
+        await cocotb.start(Clock(self.aclk, self.aclk_per, units=self.aclk_per_units).start())
         self.dut._log.info("...aclk started")
 
     async def _reset(self):
@@ -243,9 +242,8 @@ class axi_bus:
 
     async def _clock(self):
 
-        self.dut._log.info("starting aclk with period %d %s ..." % (self.aclk_per, self.aclk_per_units))
-        self.aclk_clk = Clock(self.aclk, self.aclk_per, unit=self.aclk_per_units)
-        self.aclk_clk.start()
+        self.dut._log.info("starting aclk with period %d %s" % (self.aclk_per, self.aclk_per_units))
+        await cocotb.start(Clock(self.aclk, self.aclk_per, units=self.aclk_per_units).start())
         self.dut._log.info("...aclk started")
 
     async def _reset(self):
@@ -693,8 +691,7 @@ async def msk_test_1(dut):
     rx_data_width = 8
 
     dut._log.info("starting clock...")
-    clk_mdm = Clock(dut.clk, tx_sample_per, unit="fs")
-    clk_mdm.start()
+    await cocotb.start(Clock(dut.clk, tx_sample_per, units="fs").start())
     dut._log.info("... clock started")
 
     delta_f = bitrate/4
@@ -913,7 +910,7 @@ async def msk_test_1(dut):
 
     await regs.PRBS_Error_Count.write(0)
     errs = await regs.PRBS_Error_Count.read()
-    print("Bit errors: ", errs.to_unsigned())
+    print("Bit errors: ", errs)
     await regs.PRBS_Bit_Count.write(0)
     bits = await regs.PRBS_Bit_Count.read()
     print("Bit count:  ", bits.to_unsigned())
@@ -921,6 +918,10 @@ async def msk_test_1(dut):
     ltf1f2 = await regs.symbol_lock_time.read()
     print("F1 lock time: ", ltf1f2[15:0].to_unsigned())
     print("f2 lock time: ", ltf1f2[31:16].to_unsigned())
+
+    assert errs == 1, f"Expected 1, got {errs}"
+    assert bits > 1, f"Expected >0, got {bits}"
+
 
     # print("Bit errors: ", pn.err_count)
     # print("Bit count:  ", pn.data_count)
