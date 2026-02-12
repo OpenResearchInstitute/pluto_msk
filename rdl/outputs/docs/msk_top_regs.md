@@ -10,7 +10,7 @@ Don't override. Generated from: msk_top_regs
 
 - Absolute Address: 0x0
 - Base Offset: 0x0
-- Size: 0xA8
+- Size: 0xAC
 
 <p>MSK Modem Configuration and Status Registers</p>
 
@@ -49,15 +49,16 @@ Don't override. Generated from: msk_top_regs
 | 0x78 |        f2_error       |                        F2 Error Value                       |
 | 0x7C |      Tx_Sync_Ctrl     |                   Transmitter Sync Control                  |
 | 0x80 |      Tx_Sync_Cnt      |                  Transmitter Sync Duration                  |
-| 0x84 |   lowpass_ema_alpha1  |               Exponential Moving Average Alpha              |
-| 0x88 |   lowpass_ema_alpha2  |               Exponential Moving Average Alpha              |
-| 0x8C |        rx_power       |                        Receive Power                        |
-| 0x90 |tx_async_fifo_rd_wr_ptr|            Tx async FIFO read and write pointers            |
-| 0x94 |rx_async_fifo_rd_wr_ptr|            Rx async FIFO read and write pointers            |
-| 0x98 |  rx_frame_sync_status |                      Frame Sync Status                      |
-| 0x9C |  symbol_lock_control  |                     Symbol Lock Control                     |
-| 0xA0 |   symbol_lock_status  |                      Symbol Lock Status                     |
-| 0xA4 |    symbol_lock_time   |                       Symbol Lock Time                      |
+| 0x84 |      Tx_Sync_Pat      |                   Transmitter Sync pattern                  |
+| 0x88 |   lowpass_ema_alpha1  |               Exponential Moving Average Alpha              |
+| 0x8C |   lowpass_ema_alpha2  |               Exponential Moving Average Alpha              |
+| 0x90 |        rx_power       |                        Receive Power                        |
+| 0x94 |tx_async_fifo_rd_wr_ptr|            Tx async FIFO read and write pointers            |
+| 0x98 |rx_async_fifo_rd_wr_ptr|            Rx async FIFO read and write pointers            |
+| 0x9C |  rx_frame_sync_status |                      Frame Sync Status                      |
+| 0xA0 |  symbol_lock_control  |                     Symbol Lock Control                     |
+| 0xA4 |   symbol_lock_status  |                      Symbol Lock Status                     |
+| 0xA8 |    symbol_lock_time   |                       Symbol Lock Time                      |
 
 ### Hash_ID_Low register
 
@@ -751,23 +752,24 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 <p>Value from 0x00_0000 to 0xFF_FFFF. </p>
 <p>This value represents the number bit-times the synchronization signal should be sent after PTT is asserted.</p>
 
-### lowpass_ema_alpha1 register
+### Tx_Sync_Pat register
 
 - Absolute Address: 0x84
 - Base Offset: 0x84
 - Size: 0x4
 
-<p>Sets the alpha for the EMA</p>
+<p>Sets the synchronization pattern to be transmitted when synchronization tones are enabled</p>
 
-|Bits|Identifier|Access|Reset|   Name  |
-|----|----------|------|-----|---------|
-|17:0|   alpha  |  rw  | 0x0 |EMA alpha|
+|Bits| Identifier|Access| Reset|      Name     |
+|----|-----------|------|------|---------------|
+|15:0|tx_sync_pat|  rw  |0x1B33|Tx sync pattern|
 
-#### alpha field
+#### tx_sync_pat field
 
-<p>Value from 0x0_0000 to 0x3_FFFF represent the EMA alpha</p>
+<p>Value from 0x0000 to 0xFFFF. </p>
+<p>This value represents the number bit-times the synchronization signal should be sent after PTT is asserted.</p>
 
-### lowpass_ema_alpha2 register
+### lowpass_ema_alpha1 register
 
 - Absolute Address: 0x88
 - Base Offset: 0x88
@@ -783,10 +785,26 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 <p>Value from 0x0_0000 to 0x3_FFFF represent the EMA alpha</p>
 
-### rx_power register
+### lowpass_ema_alpha2 register
 
 - Absolute Address: 0x8C
 - Base Offset: 0x8C
+- Size: 0x4
+
+<p>Sets the alpha for the EMA</p>
+
+|Bits|Identifier|Access|Reset|   Name  |
+|----|----------|------|-----|---------|
+|17:0|   alpha  |  rw  | 0x0 |EMA alpha|
+
+#### alpha field
+
+<p>Value from 0x0_0000 to 0x3_FFFF represent the EMA alpha</p>
+
+### rx_power register
+
+- Absolute Address: 0x90
+- Base Offset: 0x90
 - Size: 0x4
 
 <p>Receive power computed from I/Q samples</p>
@@ -806,8 +824,8 @@ BER can be calculated as the ratio of received bits to errored-bits</p>
 
 ### tx_async_fifo_rd_wr_ptr register
 
-- Absolute Address: 0x90
-- Base Offset: 0x90
+- Absolute Address: 0x94
+- Base Offset: 0x94
 - Size: 0x4
 
 <p>Tx async FIFO read and write pointers</p>
@@ -830,8 +848,8 @@ Bits 15:00 - read pointer (12-bits)</code></p>
 
 ### rx_async_fifo_rd_wr_ptr register
 
-- Absolute Address: 0x94
-- Base Offset: 0x94
+- Absolute Address: 0x98
+- Base Offset: 0x98
 - Size: 0x4
 
 <p>Rx async FIFO read and write pointers</p>
@@ -854,8 +872,8 @@ Bits 15:00 - read pointer (12-bits)</code></p>
 
 ### rx_frame_sync_status register
 
-- Absolute Address: 0x98
-- Base Offset: 0x98
+- Absolute Address: 0x9C
+- Base Offset: 0x9C
 - Size: 0x4
 
 | Bits|      Identifier     | Access|Reset|         Name        |
@@ -885,8 +903,8 @@ Bits 15:00 - read pointer (12-bits)</code></p>
 
 ### symbol_lock_control register
 
-- Absolute Address: 0x9C
-- Base Offset: 0x9C
+- Absolute Address: 0xA0
+- Base Offset: 0xA0
 - Size: 0x4
 
 | Bits|      Identifier     |Access| Reset|             Name            |
@@ -904,8 +922,8 @@ Bits 15:00 - read pointer (12-bits)</code></p>
 
 ### symbol_lock_status register
 
-- Absolute Address: 0xA0
-- Base Offset: 0xA0
+- Absolute Address: 0xA4
+- Base Offset: 0xA4
 - Size: 0x4
 
 |Bits|Identifier| Access|Reset|            Name           |
@@ -943,8 +961,8 @@ Bits 15:00 - read pointer (12-bits)</code></p>
 
 ### symbol_lock_time register
 
-- Absolute Address: 0xA4
-- Base Offset: 0xA4
+- Absolute Address: 0xA8
+- Base Offset: 0xA8
 - Size: 0x4
 
 | Bits|Identifier|Access|Reset|        Name       |

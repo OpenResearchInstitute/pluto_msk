@@ -9,7 +9,7 @@ package msk_top_regs_pkg is
 
     constant MSK_TOP_REGS_DATA_WIDTH : positive := 32;
     constant MSK_TOP_REGS_MIN_ADDR_WIDTH : positive := 8;
-    constant MSK_TOP_REGS_SIZE : positive := 168;
+    constant MSK_TOP_REGS_SIZE : positive := 172;
 
     type \msk_top_regs.msk_stat_0.demod_sync_lock_in_t\ is record
         next_q : std_logic;
@@ -580,6 +580,14 @@ package msk_top_regs_pkg is
         tx_sync_cnt : \msk_top_regs.tx_sync_cnt.tx_sync_cnt_out_t\;
     end record;
 
+    type \msk_top_regs.tx_sync_pat.tx_sync_pat_out_t\ is record
+        value : std_logic_vector(15 downto 0);
+    end record;
+
+    type \msk_top_regs.tx_sync_pat_out_t\ is record
+        tx_sync_pat : \msk_top_regs.tx_sync_pat.tx_sync_pat_out_t\;
+    end record;
+
     type \msk_top_regs.lowpass_ema_alpha.alpha_out_t\ is record
         value : std_logic_vector(17 downto 0);
     end record;
@@ -669,6 +677,7 @@ package msk_top_regs_pkg is
         f2_error : \msk_top_regs.status_reg_data_642692cf_name_3de9a0d3_out_t\;
         Tx_Sync_Ctrl : \msk_top_regs.tx_sync_ctrl_out_t\;
         Tx_Sync_Cnt : \msk_top_regs.tx_sync_cnt_out_t\;
+        Tx_Sync_Pat : \msk_top_regs.tx_sync_pat_out_t\;
         lowpass_ema_alpha1 : \msk_top_regs.lowpass_ema_alpha_out_t\;
         lowpass_ema_alpha2 : \msk_top_regs.lowpass_ema_alpha_out_t\;
         rx_power : \msk_top_regs.rx_power_out_t\;

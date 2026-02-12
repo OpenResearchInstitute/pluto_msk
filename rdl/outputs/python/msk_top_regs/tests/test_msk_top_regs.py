@@ -4,13 +4,8 @@
 """
 Unit Tests for the msk_top_regs register model Python Wrapper
 
-This code was generated from the PeakRDL-python package version 2.3.0
+This code was generated from the PeakRDL-python package version 1.4.0
 """
-
-
-
-
-
 from typing import Union,Iterable
 from array import array as Array
 
@@ -26,8 +21,9 @@ import math
 
 from ..lib import RegisterWriteVerifyError, UnsupportedWidthError
 
-from ..reg_model import RegModel
-from ..reg_model.msk_top_regs_property_enums import *
+from ..reg_model.msk_top_regs import msk_top_regs_cls
+
+
 
 
 from ..lib import FieldAsyncReadOnly, FieldAsyncWriteOnly, FieldAsyncReadWrite
@@ -41,7 +37,7 @@ from ..lib import AsyncAddressMapArray, AsyncRegFileArray
 from ..lib import AsyncMemory
 
 
-from ..lib import NodeArray
+
 from ..lib import Field
 from ..lib import Reg
 
@@ -159,6 +155,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.Tx_Sync_Cnt'):
             self.assertEqual(self.dut.Tx_Sync_Cnt.inst_name, 'Tx_Sync_Cnt') # type: ignore[union-attr]
             self.assertEqual(self.dut.Tx_Sync_Cnt.full_inst_name, 'msk_top_regs.Tx_Sync_Cnt')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.Tx_Sync_Pat'):
+            self.assertEqual(self.dut.Tx_Sync_Pat.inst_name, 'Tx_Sync_Pat') # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Sync_Pat.full_inst_name, 'msk_top_regs.Tx_Sync_Pat')  # type: ignore[union-attr]
         with self.subTest(msg='node: msk_top_regs.lowpass_ema_alpha1'):
             self.assertEqual(self.dut.lowpass_ema_alpha1.inst_name, 'lowpass_ema_alpha1') # type: ignore[union-attr]
             self.assertEqual(self.dut.lowpass_ema_alpha1.full_inst_name, 'msk_top_regs.lowpass_ema_alpha1')  # type: ignore[union-attr]
@@ -348,6 +347,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.Tx_Sync_Cnt.tx_sync_cnt'):
             self.assertEqual(self.dut.Tx_Sync_Cnt.tx_sync_cnt.inst_name, 'tx_sync_cnt') # type: ignore[union-attr]
             self.assertEqual(self.dut.Tx_Sync_Cnt.tx_sync_cnt.full_inst_name, 'msk_top_regs.Tx_Sync_Cnt.tx_sync_cnt')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.Tx_Sync_Pat.tx_sync_pat'):
+            self.assertEqual(self.dut.Tx_Sync_Pat.tx_sync_pat.inst_name, 'tx_sync_pat') # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Sync_Pat.tx_sync_pat.full_inst_name, 'msk_top_regs.Tx_Sync_Pat.tx_sync_pat')  # type: ignore[union-attr]
         with self.subTest(msg='node: msk_top_regs.lowpass_ema_alpha1.alpha'):
             self.assertEqual(self.dut.lowpass_ema_alpha1.alpha.inst_name, 'alpha') # type: ignore[union-attr]
             self.assertEqual(self.dut.lowpass_ema_alpha1.alpha.full_inst_name, 'msk_top_regs.lowpass_ema_alpha1.alpha')  # type: ignore[union-attr]
@@ -636,6 +638,13 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             
                 
             self.assertEqual(self.dut.Tx_Sync_Cnt.rdl_name, "Transmitter Sync Duration") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.Tx_Sync_Pat'):
+            
+                
+            self.assertEqual(self.dut.Tx_Sync_Pat.rdl_name, "Transmitter Sync pattern") # type: ignore[union-attr]
                 
             
 
@@ -1080,6 +1089,13 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
             
 
+        with self.subTest(msg='node: msk_top_regs.Tx_Sync_Pat.tx_sync_pat'):
+            
+                
+            self.assertEqual(self.dut.Tx_Sync_Pat.tx_sync_pat.rdl_name, "Tx sync pattern") # type: ignore[union-attr]
+                
+            
+
         with self.subTest(msg='node: msk_top_regs.lowpass_ema_alpha1.alpha'):
             
                 
@@ -1440,6 +1456,13 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             
                 
             self.assertEqual(self.dut.Tx_Sync_Cnt.rdl_desc, "Sets the duration of the synchronization tones when enabled") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.Tx_Sync_Pat'):
+            
+                
+            self.assertEqual(self.dut.Tx_Sync_Pat.rdl_desc, "Sets the synchronization pattern to be transmitted when synchronization tones are enabled") # type: ignore[union-attr]
                 
             
 
@@ -1884,6 +1907,13 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 
             
 
+        with self.subTest(msg='node: msk_top_regs.Tx_Sync_Pat.tx_sync_pat'):
+            
+                
+            self.assertEqual(self.dut.Tx_Sync_Pat.tx_sync_pat.rdl_desc, "Value from 0x0000 to 0xFFFF. \n\nThis value represents the number bit-times the synchronization signal should be sent after PTT is asserted.") # type: ignore[union-attr]
+                
+            
+
         with self.subTest(msg='node: msk_top_regs.lowpass_ema_alpha1.alpha'):
             
                 
@@ -2082,6 +2112,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(self.dut.Tx_Sync_Ctrl.size, 4) # type: ignore[union-attr]
         with self.subTest(msg='node: msk_top_regs.Tx_Sync_Cnt'):
             self.assertEqual(self.dut.Tx_Sync_Cnt.size, 4) # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.Tx_Sync_Pat'):
+            self.assertEqual(self.dut.Tx_Sync_Pat.size, 4) # type: ignore[union-attr]
         with self.subTest(msg='node: msk_top_regs.lowpass_ema_alpha1'):
             self.assertEqual(self.dut.lowpass_ema_alpha1.size, 4) # type: ignore[union-attr]
         with self.subTest(msg='node: msk_top_regs.lowpass_ema_alpha2'):
@@ -2105,7 +2137,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         # check the size of the address map itself
         
         with self.subTest(msg='node: msk_top_regs'):
-            self.assertEqual(self.dut.size, 168) # type: ignore[union-attr]
+            self.assertEqual(self.dut.size, 172) # type: ignore[union-attr]
         
 
 
@@ -2279,48 +2311,53 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(self.dut.Tx_Sync_Cnt.width, 32) # type: ignore[union-attr]
             self.assertEqual(self.dut.Tx_Sync_Cnt.size, 4) # type: ignore[union-attr]
             self.assertEqual(self.dut.Tx_Sync_Cnt.accesswidth, 32) # type: ignore[union-attr]
+        with self.subTest(msg='register: msk_top_regs.Tx_Sync_Pat'):
+            self.assertEqual(self.dut.Tx_Sync_Pat.address, 132) # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Sync_Pat.width, 32) # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Sync_Pat.size, 4) # type: ignore[union-attr]
+            self.assertEqual(self.dut.Tx_Sync_Pat.accesswidth, 32) # type: ignore[union-attr]
         with self.subTest(msg='register: msk_top_regs.lowpass_ema_alpha1'):
-            self.assertEqual(self.dut.lowpass_ema_alpha1.address, 132) # type: ignore[union-attr]
+            self.assertEqual(self.dut.lowpass_ema_alpha1.address, 136) # type: ignore[union-attr]
             self.assertEqual(self.dut.lowpass_ema_alpha1.width, 32) # type: ignore[union-attr]
             self.assertEqual(self.dut.lowpass_ema_alpha1.size, 4) # type: ignore[union-attr]
             self.assertEqual(self.dut.lowpass_ema_alpha1.accesswidth, 32) # type: ignore[union-attr]
         with self.subTest(msg='register: msk_top_regs.lowpass_ema_alpha2'):
-            self.assertEqual(self.dut.lowpass_ema_alpha2.address, 136) # type: ignore[union-attr]
+            self.assertEqual(self.dut.lowpass_ema_alpha2.address, 140) # type: ignore[union-attr]
             self.assertEqual(self.dut.lowpass_ema_alpha2.width, 32) # type: ignore[union-attr]
             self.assertEqual(self.dut.lowpass_ema_alpha2.size, 4) # type: ignore[union-attr]
             self.assertEqual(self.dut.lowpass_ema_alpha2.accesswidth, 32) # type: ignore[union-attr]
         with self.subTest(msg='register: msk_top_regs.rx_power'):
-            self.assertEqual(self.dut.rx_power.address, 140) # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_power.address, 144) # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_power.width, 32) # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_power.size, 4) # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_power.accesswidth, 32) # type: ignore[union-attr]
         with self.subTest(msg='register: msk_top_regs.tx_async_fifo_rd_wr_ptr'):
-            self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.address, 144) # type: ignore[union-attr]
+            self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.address, 148) # type: ignore[union-attr]
             self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.width, 32) # type: ignore[union-attr]
             self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.size, 4) # type: ignore[union-attr]
             self.assertEqual(self.dut.tx_async_fifo_rd_wr_ptr.accesswidth, 32) # type: ignore[union-attr]
         with self.subTest(msg='register: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
-            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.address, 148) # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.address, 152) # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.width, 32) # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.size, 4) # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_async_fifo_rd_wr_ptr.accesswidth, 32) # type: ignore[union-attr]
         with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status'):
-            self.assertEqual(self.dut.rx_frame_sync_status.address, 152) # type: ignore[union-attr]
+            self.assertEqual(self.dut.rx_frame_sync_status.address, 156) # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_frame_sync_status.width, 32) # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_frame_sync_status.size, 4) # type: ignore[union-attr]
             self.assertEqual(self.dut.rx_frame_sync_status.accesswidth, 32) # type: ignore[union-attr]
         with self.subTest(msg='register: msk_top_regs.symbol_lock_control'):
-            self.assertEqual(self.dut.symbol_lock_control.address, 156) # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_control.address, 160) # type: ignore[union-attr]
             self.assertEqual(self.dut.symbol_lock_control.width, 32) # type: ignore[union-attr]
             self.assertEqual(self.dut.symbol_lock_control.size, 4) # type: ignore[union-attr]
             self.assertEqual(self.dut.symbol_lock_control.accesswidth, 32) # type: ignore[union-attr]
         with self.subTest(msg='register: msk_top_regs.symbol_lock_status'):
-            self.assertEqual(self.dut.symbol_lock_status.address, 160) # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_status.address, 164) # type: ignore[union-attr]
             self.assertEqual(self.dut.symbol_lock_status.width, 32) # type: ignore[union-attr]
             self.assertEqual(self.dut.symbol_lock_status.size, 4) # type: ignore[union-attr]
             self.assertEqual(self.dut.symbol_lock_status.accesswidth, 32) # type: ignore[union-attr]
         with self.subTest(msg='register: msk_top_regs.symbol_lock_time'):
-            self.assertEqual(self.dut.symbol_lock_time.address, 164) # type: ignore[union-attr]
+            self.assertEqual(self.dut.symbol_lock_time.address, 168) # type: ignore[union-attr]
             self.assertEqual(self.dut.symbol_lock_time.width, 32) # type: ignore[union-attr]
             self.assertEqual(self.dut.symbol_lock_time.size, 4) # type: ignore[union-attr]
             self.assertEqual(self.dut.symbol_lock_time.accesswidth, 32) # type: ignore[union-attr]
@@ -3205,6 +3242,22 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(fut.default,0)
                 
             self.assertEqual(fut.is_volatile,False)
+        with self.subTest(msg='field: msk_top_regs.Tx_Sync_Pat.tx_sync_pat'):
+            # test properties of field: msk_top_regs.Tx_Sync_Pat.tx_sync_pat
+            fut = self.dut.Tx_Sync_Pat.tx_sync_pat # type: ignore[union-attr]
+            if not isinstance(fut, Field):
+                raise TypeError('This test relies on node being of type Field')
+            self.assertEqual(fut.lsb,0)
+            self.assertEqual(fut.msb,15)
+            self.assertEqual(fut.low,0)
+            self.assertEqual(fut.high,15)
+            self.assertEqual(fut.bitmask,0xFFFF)
+            self.assertEqual(fut.inverse_bitmask,0xFFFF0000)
+            self.assertEqual(fut.max_value,0xFFFF)
+                
+            self.assertEqual(fut.default,6963)
+                
+            self.assertEqual(fut.is_volatile,False)
         with self.subTest(msg='field: msk_top_regs.lowpass_ema_alpha1.alpha'):
             # test properties of field: msk_top_regs.lowpass_ema_alpha1.alpha
             fut = self.dut.lowpass_ema_alpha1.alpha # type: ignore[union-attr]
@@ -3572,6 +3625,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         
         
         
+        
 
     def test_user_defined_properties(self)  -> None:
         """
@@ -3579,571 +3633,465 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         """
         with self.subTest(msg='register: msk_top_regs.Hash_ID_Low'):
             
-            
             self.assertDictEqual(self.dut.Hash_ID_Low.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Hash_ID_High'):
-            
             
             self.assertDictEqual(self.dut.Hash_ID_High.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Init'):
             
-            
             self.assertDictEqual(self.dut.MSK_Init.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Control'):
-            
             
             self.assertDictEqual(self.dut.MSK_Control.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Status'):
             
-            
             self.assertDictEqual(self.dut.MSK_Status.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Bit_Count'):
-            
             
             self.assertDictEqual(self.dut.Tx_Bit_Count.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Enable_Count'):
             
-            
             self.assertDictEqual(self.dut.Tx_Enable_Count.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Fb_FreqWord'):
-            
             
             self.assertDictEqual(self.dut.Fb_FreqWord.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.TX_F1_FreqWord'):
             
-            
             self.assertDictEqual(self.dut.TX_F1_FreqWord.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.TX_F2_FreqWord'):
-            
             
             self.assertDictEqual(self.dut.TX_F2_FreqWord.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.RX_F1_FreqWord'):
             
-            
             self.assertDictEqual(self.dut.RX_F1_FreqWord.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.RX_F2_FreqWord'):
-            
             
             self.assertDictEqual(self.dut.RX_F2_FreqWord.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_0'):
             
-            
             self.assertDictEqual(self.dut.LPF_Config_0.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_1'):
-            
             
             self.assertDictEqual(self.dut.LPF_Config_1.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Data_Width'):
             
-            
             self.assertDictEqual(self.dut.Tx_Data_Width.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Rx_Data_Width'):
-            
             
             self.assertDictEqual(self.dut.Rx_Data_Width.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Control'):
             
-            
             self.assertDictEqual(self.dut.PRBS_Control.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Initial_State'):
-            
             
             self.assertDictEqual(self.dut.PRBS_Initial_State.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Polynomial'):
             
-            
             self.assertDictEqual(self.dut.PRBS_Polynomial.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Error_Mask'):
-            
             
             self.assertDictEqual(self.dut.PRBS_Error_Mask.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Bit_Count'):
             
-            
             self.assertDictEqual(self.dut.PRBS_Bit_Count.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Error_Count'):
-            
             
             self.assertDictEqual(self.dut.PRBS_Error_Count.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Accum_F1'):
             
-            
             self.assertDictEqual(self.dut.LPF_Accum_F1.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Accum_F2'):
-            
             
             self.assertDictEqual(self.dut.LPF_Accum_F2.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.axis_xfer_count'):
             
-            
             self.assertDictEqual(self.dut.axis_xfer_count.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Rx_Sample_Discard'):
-            
             
             self.assertDictEqual(self.dut.Rx_Sample_Discard.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_2'):
             
-            
             self.assertDictEqual(self.dut.LPF_Config_2.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.f1_nco_adjust'):
-            
             
             self.assertDictEqual(self.dut.f1_nco_adjust.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.f2_nco_adjust'):
             
-            
             self.assertDictEqual(self.dut.f2_nco_adjust.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.f1_error'):
-            
             
             self.assertDictEqual(self.dut.f1_error.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.f2_error'):
             
-            
             self.assertDictEqual(self.dut.f2_error.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Sync_Ctrl'):
-            
             
             self.assertDictEqual(self.dut.Tx_Sync_Ctrl.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Sync_Cnt'):
             
-            
             self.assertDictEqual(self.dut.Tx_Sync_Cnt.udp,{})
             
-        with self.subTest(msg='register: msk_top_regs.lowpass_ema_alpha1'):
+        with self.subTest(msg='register: msk_top_regs.Tx_Sync_Pat'):
             
+            self.assertDictEqual(self.dut.Tx_Sync_Pat.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.lowpass_ema_alpha1'):
             
             self.assertDictEqual(self.dut.lowpass_ema_alpha1.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.lowpass_ema_alpha2'):
             
-            
             self.assertDictEqual(self.dut.lowpass_ema_alpha2.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.rx_power'):
-            
             
             self.assertDictEqual(self.dut.rx_power.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.tx_async_fifo_rd_wr_ptr'):
             
-            
             self.assertDictEqual(self.dut.tx_async_fifo_rd_wr_ptr.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.rx_async_fifo_rd_wr_ptr'):
-            
             
             self.assertDictEqual(self.dut.rx_async_fifo_rd_wr_ptr.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status'):
             
-            
             self.assertDictEqual(self.dut.rx_frame_sync_status.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.symbol_lock_control'):
-            
             
             self.assertDictEqual(self.dut.symbol_lock_control.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.symbol_lock_status'):
             
-            
             self.assertDictEqual(self.dut.symbol_lock_status.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.symbol_lock_time'):
-            
             
             self.assertDictEqual(self.dut.symbol_lock_time.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Hash_ID_Low.hash_id_lo'):
             
-            
             self.assertDictEqual(self.dut.Hash_ID_Low.hash_id_lo.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Hash_ID_High.hash_id_hi'):
-            
             
             self.assertDictEqual(self.dut.Hash_ID_High.hash_id_hi.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Init.txrxinit'):
             
-            
             self.assertDictEqual(self.dut.MSK_Init.txrxinit.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Init.txinit'):
-            
             
             self.assertDictEqual(self.dut.MSK_Init.txinit.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Init.rxinit'):
             
-            
             self.assertDictEqual(self.dut.MSK_Init.rxinit.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Control.ptt'):
-            
             
             self.assertDictEqual(self.dut.MSK_Control.ptt.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Control.loopback_ena'):
             
-            
             self.assertDictEqual(self.dut.MSK_Control.loopback_ena.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Control.rx_invert'):
-            
             
             self.assertDictEqual(self.dut.MSK_Control.rx_invert.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Control.clear_counts'):
             
-            
             self.assertDictEqual(self.dut.MSK_Control.clear_counts.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Control.diff_encoder_loopback'):
-            
             
             self.assertDictEqual(self.dut.MSK_Control.diff_encoder_loopback.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Status.demod_sync_lock'):
             
-            
             self.assertDictEqual(self.dut.MSK_Status.demod_sync_lock.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Status.tx_enable'):
-            
             
             self.assertDictEqual(self.dut.MSK_Status.tx_enable.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Status.rx_enable'):
             
-            
             self.assertDictEqual(self.dut.MSK_Status.rx_enable.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Status.tx_axis_valid'):
-            
             
             self.assertDictEqual(self.dut.MSK_Status.tx_axis_valid.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Bit_Count.data'):
             
-            
             self.assertDictEqual(self.dut.Tx_Bit_Count.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Enable_Count.data'):
-            
             
             self.assertDictEqual(self.dut.Tx_Enable_Count.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Fb_FreqWord.config_data'):
             
-            
             self.assertDictEqual(self.dut.Fb_FreqWord.config_data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.TX_F1_FreqWord.config_data'):
-            
             
             self.assertDictEqual(self.dut.TX_F1_FreqWord.config_data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.TX_F2_FreqWord.config_data'):
             
-            
             self.assertDictEqual(self.dut.TX_F2_FreqWord.config_data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.RX_F1_FreqWord.config_data'):
-            
             
             self.assertDictEqual(self.dut.RX_F1_FreqWord.config_data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.RX_F2_FreqWord.config_data'):
             
-            
             self.assertDictEqual(self.dut.RX_F2_FreqWord.config_data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_0.lpf_freeze'):
-            
             
             self.assertDictEqual(self.dut.LPF_Config_0.lpf_freeze.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_0.lpf_zero'):
             
-            
             self.assertDictEqual(self.dut.LPF_Config_0.lpf_zero.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_0.prbs_reserved'):
-            
             
             self.assertDictEqual(self.dut.LPF_Config_0.prbs_reserved.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_0.lpf_alpha'):
             
-            
             self.assertDictEqual(self.dut.LPF_Config_0.lpf_alpha.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_1.i_gain'):
-            
             
             self.assertDictEqual(self.dut.LPF_Config_1.i_gain.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_1.i_shift'):
             
-            
             self.assertDictEqual(self.dut.LPF_Config_1.i_shift.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Data_Width.data_width'):
-            
             
             self.assertDictEqual(self.dut.Tx_Data_Width.data_width.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Rx_Data_Width.data_width'):
             
-            
             self.assertDictEqual(self.dut.Rx_Data_Width.data_width.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Control.prbs_sel'):
-            
             
             self.assertDictEqual(self.dut.PRBS_Control.prbs_sel.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Control.prbs_error_insert'):
             
-            
             self.assertDictEqual(self.dut.PRBS_Control.prbs_error_insert.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Control.prbs_clear'):
-            
             
             self.assertDictEqual(self.dut.PRBS_Control.prbs_clear.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Control.prbs_manual_sync'):
             
-            
             self.assertDictEqual(self.dut.PRBS_Control.prbs_manual_sync.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Control.prbs_reserved'):
-            
             
             self.assertDictEqual(self.dut.PRBS_Control.prbs_reserved.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Control.prbs_sync_threshold'):
             
-            
             self.assertDictEqual(self.dut.PRBS_Control.prbs_sync_threshold.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Initial_State.config_data'):
-            
             
             self.assertDictEqual(self.dut.PRBS_Initial_State.config_data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Polynomial.config_data'):
             
-            
             self.assertDictEqual(self.dut.PRBS_Polynomial.config_data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Error_Mask.config_data'):
-            
             
             self.assertDictEqual(self.dut.PRBS_Error_Mask.config_data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Bit_Count.data'):
             
-            
             self.assertDictEqual(self.dut.PRBS_Bit_Count.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.PRBS_Error_Count.data'):
-            
             
             self.assertDictEqual(self.dut.PRBS_Error_Count.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Accum_F1.data'):
             
-            
             self.assertDictEqual(self.dut.LPF_Accum_F1.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Accum_F2.data'):
-            
             
             self.assertDictEqual(self.dut.LPF_Accum_F2.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.axis_xfer_count.data'):
             
-            
             self.assertDictEqual(self.dut.axis_xfer_count.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Rx_Sample_Discard.rx_sample_discard'):
-            
             
             self.assertDictEqual(self.dut.Rx_Sample_Discard.rx_sample_discard.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Rx_Sample_Discard.rx_nco_discard'):
             
-            
             self.assertDictEqual(self.dut.Rx_Sample_Discard.rx_nco_discard.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_2.p_gain'):
-            
             
             self.assertDictEqual(self.dut.LPF_Config_2.p_gain.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.LPF_Config_2.p_shift'):
             
-            
             self.assertDictEqual(self.dut.LPF_Config_2.p_shift.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.f1_nco_adjust.data'):
-            
             
             self.assertDictEqual(self.dut.f1_nco_adjust.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.f2_nco_adjust.data'):
             
-            
             self.assertDictEqual(self.dut.f2_nco_adjust.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.f1_error.data'):
-            
             
             self.assertDictEqual(self.dut.f1_error.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.f2_error.data'):
             
-            
             self.assertDictEqual(self.dut.f2_error.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Sync_Ctrl.tx_sync_ena'):
-            
             
             self.assertDictEqual(self.dut.Tx_Sync_Ctrl.tx_sync_ena.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Sync_Ctrl.tx_sync_force'):
             
-            
             self.assertDictEqual(self.dut.Tx_Sync_Ctrl.tx_sync_force.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.Tx_Sync_Cnt.tx_sync_cnt'):
             
-            
             self.assertDictEqual(self.dut.Tx_Sync_Cnt.tx_sync_cnt.udp,{})
             
-        with self.subTest(msg='register: msk_top_regs.lowpass_ema_alpha1.alpha'):
+        with self.subTest(msg='register: msk_top_regs.Tx_Sync_Pat.tx_sync_pat'):
             
+            self.assertDictEqual(self.dut.Tx_Sync_Pat.tx_sync_pat.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.lowpass_ema_alpha1.alpha'):
             
             self.assertDictEqual(self.dut.lowpass_ema_alpha1.alpha.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.lowpass_ema_alpha2.alpha'):
             
-            
             self.assertDictEqual(self.dut.lowpass_ema_alpha2.alpha.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.rx_power.data'):
-            
             
             self.assertDictEqual(self.dut.rx_power.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.tx_async_fifo_rd_wr_ptr.data'):
             
-            
             self.assertDictEqual(self.dut.tx_async_fifo_rd_wr_ptr.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.rx_async_fifo_rd_wr_ptr.data'):
-            
             
             self.assertDictEqual(self.dut.rx_async_fifo_rd_wr_ptr.data.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status.frame_sync_locked'):
             
-            
             self.assertDictEqual(self.dut.rx_frame_sync_status.frame_sync_locked.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status.frame_buffer_overflow'):
-            
             
             self.assertDictEqual(self.dut.rx_frame_sync_status.frame_buffer_overflow.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status.frames_received'):
             
-            
             self.assertDictEqual(self.dut.rx_frame_sync_status.frames_received.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.rx_frame_sync_status.frame_sync_errors'):
-            
             
             self.assertDictEqual(self.dut.rx_frame_sync_status.frame_sync_errors.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.symbol_lock_control.symbol_lock_count'):
             
-            
             self.assertDictEqual(self.dut.symbol_lock_control.symbol_lock_count.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.symbol_lock_control.symbol_lock_threshold'):
-            
             
             self.assertDictEqual(self.dut.symbol_lock_control.symbol_lock_threshold.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.symbol_lock_status.f1f2'):
             
-            
             self.assertDictEqual(self.dut.symbol_lock_status.f1f2.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.symbol_lock_status.f1'):
-            
             
             self.assertDictEqual(self.dut.symbol_lock_status.f1.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.symbol_lock_status.f2'):
             
-            
             self.assertDictEqual(self.dut.symbol_lock_status.f2.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.symbol_lock_status.unlock_f1'):
-            
             
             self.assertDictEqual(self.dut.symbol_lock_status.unlock_f1.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.symbol_lock_status.unlock_f2'):
             
-            
             self.assertDictEqual(self.dut.symbol_lock_status.unlock_f2.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.symbol_lock_time.f1'):
             
-            
             self.assertDictEqual(self.dut.symbol_lock_time.f1.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.symbol_lock_time.f2'):
-            
             
             self.assertDictEqual(self.dut.symbol_lock_time.f2.udp,{})
             
@@ -7089,9 +7037,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # check the read has not been called in the write test
                 read_callback_mock.assert_not_called()
         # test access operations (read and/or write) to register:
-        # msk_top_regs.lowpass_ema_alpha1
-        with self.subTest(msg='register: msk_top_regs.lowpass_ema_alpha1'):
-            rut=self.dut.lowpass_ema_alpha1 # type: ignore[union-attr,assignment]
+        # msk_top_regs.Tx_Sync_Pat
+        with self.subTest(msg='register: msk_top_regs.Tx_Sync_Pat'):
+            rut=self.dut.Tx_Sync_Pat # type: ignore[union-attr,assignment]
             with patch(base_name + '.write_addr_space') as write_callback_mock, \
                 patch(base_name + '.read_addr_space', return_value=1) as read_callback_mock:
 
@@ -7166,6 +7114,98 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 await rut.write(random_value)  # type: ignore[union-attr]
                 write_callback_mock.assert_called_once_with(
                                     addr=132,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=random_value)
+                write_callback_mock.reset_mock()
+
+                # test writing a value beyond the register range is blocked with an exception being raised
+                with self.assertRaises(ValueError):
+                    await rut.write(-1)
+
+                with self.assertRaises(ValueError):
+                    await rut.write(0xFFFFFFFF+1)
+
+                # check the read has not been called in the write test
+                read_callback_mock.assert_not_called()
+        # test access operations (read and/or write) to register:
+        # msk_top_regs.lowpass_ema_alpha1
+        with self.subTest(msg='register: msk_top_regs.lowpass_ema_alpha1'):
+            rut=self.dut.lowpass_ema_alpha1 # type: ignore[union-attr,assignment]
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                patch(base_name + '.read_addr_space', return_value=1) as read_callback_mock:
+
+                
+                if not isinstance(rut, (RegAsyncReadOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Readable Async Type')
+                
+                # test reading back 1 (the unpatched version returns 0 so this confirms the patch works)
+                self.assertEqual(await rut.read(), 1)
+                read_callback_mock.assert_called_once_with(
+                                    addr=136,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read check with high value
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0xFFFFFFFF
+                self.assertEqual(await rut.read(), 0xFFFFFFFF)
+                read_callback_mock.assert_called_once_with(
+                                    addr=136,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read of the low value
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0
+                self.assertEqual(await rut.read(), 0x0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=136,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # test the read of a random value
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = random_value
+                self.assertEqual(await rut.read(), random_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=136,
+                                    width=32,
+                                    accesswidth=rut.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+                
+
+                
+                if not isinstance(rut, (RegAsyncWriteOnly, RegAsyncReadWrite)):
+                    raise TypeError('Register is not a Writeable Async Type')
+                
+                # test the write with high value
+                await rut.write(0xFFFFFFFF)
+                write_callback_mock.assert_called_once_with(
+                                    addr=136,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0xFFFFFFFF)
+                write_callback_mock.reset_mock()
+
+                # test the write of a low value
+                await rut.write(0)
+                write_callback_mock.assert_called_once_with(
+                                    addr=136,
+                                    width=32,
+                                    accesswidth=rut.accesswidth,
+                                    data=0)
+                write_callback_mock.reset_mock()
+
+                # test the write of a random
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                await rut.write(random_value)  # type: ignore[union-attr]
+                write_callback_mock.assert_called_once_with(
+                                    addr=136,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=random_value)
@@ -7194,7 +7234,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test reading back 1 (the unpatched version returns 0 so this confirms the patch works)
                 self.assertEqual(await rut.read(), 1)
                 read_callback_mock.assert_called_once_with(
-                                    addr=136,
+                                    addr=140,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7203,7 +7243,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = 0xFFFFFFFF
                 self.assertEqual(await rut.read(), 0xFFFFFFFF)
                 read_callback_mock.assert_called_once_with(
-                                    addr=136,
+                                    addr=140,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7212,7 +7252,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = 0
                 self.assertEqual(await rut.read(), 0x0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=136,
+                                    addr=140,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7222,7 +7262,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = random_value
                 self.assertEqual(await rut.read(), random_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=136,
+                                    addr=140,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7238,7 +7278,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test the write with high value
                 await rut.write(0xFFFFFFFF)
                 write_callback_mock.assert_called_once_with(
-                                    addr=136,
+                                    addr=140,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=0xFFFFFFFF)
@@ -7247,7 +7287,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test the write of a low value
                 await rut.write(0)
                 write_callback_mock.assert_called_once_with(
-                                    addr=136,
+                                    addr=140,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=0)
@@ -7257,7 +7297,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 random_value = random.randrange(0, 0xFFFFFFFF+1)
                 await rut.write(random_value)  # type: ignore[union-attr]
                 write_callback_mock.assert_called_once_with(
-                                    addr=136,
+                                    addr=140,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=random_value)
@@ -7286,7 +7326,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test reading back 1 (the unpatched version returns 0 so this confirms the patch works)
                 self.assertEqual(await rut.read(), 1)
                 read_callback_mock.assert_called_once_with(
-                                    addr=140,
+                                    addr=144,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7295,7 +7335,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = 0xFFFFFFFF
                 self.assertEqual(await rut.read(), 0xFFFFFFFF)
                 read_callback_mock.assert_called_once_with(
-                                    addr=140,
+                                    addr=144,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7304,7 +7344,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = 0
                 self.assertEqual(await rut.read(), 0x0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=140,
+                                    addr=144,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7314,7 +7354,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = random_value
                 self.assertEqual(await rut.read(), random_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=140,
+                                    addr=144,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7330,7 +7370,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test the write with high value
                 await rut.write(0xFFFFFFFF)
                 write_callback_mock.assert_called_once_with(
-                                    addr=140,
+                                    addr=144,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=0xFFFFFFFF)
@@ -7339,7 +7379,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test the write of a low value
                 await rut.write(0)
                 write_callback_mock.assert_called_once_with(
-                                    addr=140,
+                                    addr=144,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=0)
@@ -7349,7 +7389,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 random_value = random.randrange(0, 0xFFFFFFFF+1)
                 await rut.write(random_value)  # type: ignore[union-attr]
                 write_callback_mock.assert_called_once_with(
-                                    addr=140,
+                                    addr=144,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=random_value)
@@ -7378,7 +7418,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test reading back 1 (the unpatched version returns 0 so this confirms the patch works)
                 self.assertEqual(await rut.read(), 1)
                 read_callback_mock.assert_called_once_with(
-                                    addr=144,
+                                    addr=148,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7387,7 +7427,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = 0xFFFFFFFF
                 self.assertEqual(await rut.read(), 0xFFFFFFFF)
                 read_callback_mock.assert_called_once_with(
-                                    addr=144,
+                                    addr=148,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7396,7 +7436,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = 0
                 self.assertEqual(await rut.read(), 0x0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=144,
+                                    addr=148,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7406,7 +7446,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = random_value
                 self.assertEqual(await rut.read(), random_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=144,
+                                    addr=148,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7422,7 +7462,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test the write with high value
                 await rut.write(0xFFFFFFFF)
                 write_callback_mock.assert_called_once_with(
-                                    addr=144,
+                                    addr=148,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=0xFFFFFFFF)
@@ -7431,7 +7471,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test the write of a low value
                 await rut.write(0)
                 write_callback_mock.assert_called_once_with(
-                                    addr=144,
+                                    addr=148,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=0)
@@ -7441,7 +7481,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 random_value = random.randrange(0, 0xFFFFFFFF+1)
                 await rut.write(random_value)  # type: ignore[union-attr]
                 write_callback_mock.assert_called_once_with(
-                                    addr=144,
+                                    addr=148,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=random_value)
@@ -7470,7 +7510,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test reading back 1 (the unpatched version returns 0 so this confirms the patch works)
                 self.assertEqual(await rut.read(), 1)
                 read_callback_mock.assert_called_once_with(
-                                    addr=148,
+                                    addr=152,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7479,7 +7519,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = 0xFFFFFFFF
                 self.assertEqual(await rut.read(), 0xFFFFFFFF)
                 read_callback_mock.assert_called_once_with(
-                                    addr=148,
+                                    addr=152,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7488,7 +7528,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = 0
                 self.assertEqual(await rut.read(), 0x0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=148,
+                                    addr=152,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7498,7 +7538,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = random_value
                 self.assertEqual(await rut.read(), random_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=148,
+                                    addr=152,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7514,7 +7554,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test the write with high value
                 await rut.write(0xFFFFFFFF)
                 write_callback_mock.assert_called_once_with(
-                                    addr=148,
+                                    addr=152,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=0xFFFFFFFF)
@@ -7523,7 +7563,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test the write of a low value
                 await rut.write(0)
                 write_callback_mock.assert_called_once_with(
-                                    addr=148,
+                                    addr=152,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=0)
@@ -7533,7 +7573,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 random_value = random.randrange(0, 0xFFFFFFFF+1)
                 await rut.write(random_value)  # type: ignore[union-attr]
                 write_callback_mock.assert_called_once_with(
-                                    addr=148,
+                                    addr=152,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=random_value)
@@ -7562,7 +7602,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test reading back 1 (the unpatched version returns 0 so this confirms the patch works)
                 self.assertEqual(await rut.read(), 1)
                 read_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7571,7 +7611,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = 0xFFFFFFFF
                 self.assertEqual(await rut.read(), 0xFFFFFFFF)
                 read_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7580,7 +7620,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = 0
                 self.assertEqual(await rut.read(), 0x0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7590,7 +7630,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = random_value
                 self.assertEqual(await rut.read(), random_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7606,7 +7646,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test the write with high value
                 await rut.write(0xFFFFFFFF)
                 write_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=0xFFFFFFFF)
@@ -7615,7 +7655,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test the write of a low value
                 await rut.write(0)
                 write_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=0)
@@ -7625,7 +7665,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 random_value = random.randrange(0, 0xFFFFFFFF+1)
                 await rut.write(random_value)  # type: ignore[union-attr]
                 write_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=random_value)
@@ -7654,7 +7694,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test reading back 1 (the unpatched version returns 0 so this confirms the patch works)
                 self.assertEqual(await rut.read(), 1)
                 read_callback_mock.assert_called_once_with(
-                                    addr=156,
+                                    addr=160,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7663,7 +7703,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = 0xFFFFFFFF
                 self.assertEqual(await rut.read(), 0xFFFFFFFF)
                 read_callback_mock.assert_called_once_with(
-                                    addr=156,
+                                    addr=160,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7672,7 +7712,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = 0
                 self.assertEqual(await rut.read(), 0x0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=156,
+                                    addr=160,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7682,7 +7722,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = random_value
                 self.assertEqual(await rut.read(), random_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=156,
+                                    addr=160,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7698,7 +7738,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test the write with high value
                 await rut.write(0xFFFFFFFF)
                 write_callback_mock.assert_called_once_with(
-                                    addr=156,
+                                    addr=160,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=0xFFFFFFFF)
@@ -7707,7 +7747,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test the write of a low value
                 await rut.write(0)
                 write_callback_mock.assert_called_once_with(
-                                    addr=156,
+                                    addr=160,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=0)
@@ -7717,7 +7757,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 random_value = random.randrange(0, 0xFFFFFFFF+1)
                 await rut.write(random_value)  # type: ignore[union-attr]
                 write_callback_mock.assert_called_once_with(
-                                    addr=156,
+                                    addr=160,
                                     width=32,
                                     accesswidth=rut.accesswidth,
                                     data=random_value)
@@ -7746,7 +7786,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test reading back 1 (the unpatched version returns 0 so this confirms the patch works)
                 self.assertEqual(await rut.read(), 1)
                 read_callback_mock.assert_called_once_with(
-                                    addr=160,
+                                    addr=164,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7755,7 +7795,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = 0xFFFFFFFF
                 self.assertEqual(await rut.read(), 0xFFFFFFFF)
                 read_callback_mock.assert_called_once_with(
-                                    addr=160,
+                                    addr=164,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7764,7 +7804,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = 0
                 self.assertEqual(await rut.read(), 0x0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=160,
+                                    addr=164,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7774,7 +7814,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = random_value
                 self.assertEqual(await rut.read(), random_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=160,
+                                    addr=164,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7804,7 +7844,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # test reading back 1 (the unpatched version returns 0 so this confirms the patch works)
                 self.assertEqual(await rut.read(), 1)
                 read_callback_mock.assert_called_once_with(
-                                    addr=164,
+                                    addr=168,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7813,7 +7853,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = 0xFFFFFFFF
                 self.assertEqual(await rut.read(), 0xFFFFFFFF)
                 read_callback_mock.assert_called_once_with(
-                                    addr=164,
+                                    addr=168,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7822,7 +7862,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = 0
                 self.assertEqual(await rut.read(), 0x0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=164,
+                                    addr=168,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -7832,7 +7872,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.return_value = random_value
                 self.assertEqual(await rut.read(), random_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=164,
+                                    addr=168,
                                     width=32,
                                     accesswidth=rut.accesswidth)
 
@@ -11985,6 +12025,90 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                     await fut.write(-1)
 
         # test access operations (read and/or write) to field:
+        # msk_top_regs.Tx_Sync_Pat.tx_sync_pat
+        with self.subTest(msg='field: msk_top_regs.Tx_Sync_Pat.tx_sync_pat'):
+            fut = self.dut.Tx_Sync_Pat.tx_sync_pat # type: ignore[union-attr]
+            with patch(base_name + '.write_addr_space') as write_callback_mock,\
+                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
+
+                
+                
+                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a readable async field')
+                
+
+                # read back - zero, this is achieved by setting the register to inverse bitmask
+                read_callback_mock.return_value = 0xFFFF0000
+                self.assertEqual(await fut.read(),
+                                 0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=132,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - max_value, this is achieved by setting the register to bitmask
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0xFFFF
+                self.assertEqual(await fut.read(),
+                                 0xFFFF)
+                read_callback_mock.assert_called_once_with(
+                                    addr=132,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - random value
+                read_callback_mock.reset_mock()
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.return_value = random_value
+                random_field_value = (random_value & 0xFFFF) >> 0
+                self.assertEqual(await fut.read(),
+                                 random_field_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=132,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0xFFFF + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0xFFFF, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.Tx_Sync_Pat.tx_sync_pat.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_called_once_with(
+                                    addr=132,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+                        
+                        write_callback_mock.assert_called_once_with(
+                                    addr=132,
+                                    width=32,
+                                    accesswidth=self.dut.Tx_Sync_Pat.tx_sync_pat.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0xFFFF0000) | \
+                                         (0xFFFF & (field_value << 0)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0xFFFF + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
+
+        # test access operations (read and/or write) to field:
         # msk_top_regs.lowpass_ema_alpha1.alpha
         with self.subTest(msg='field: msk_top_regs.lowpass_ema_alpha1.alpha'):
             fut = self.dut.lowpass_ema_alpha1.alpha # type: ignore[union-attr]
@@ -12002,7 +12126,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=132,
+                                    addr=136,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12012,7 +12136,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0x3FFFF)
                 read_callback_mock.assert_called_once_with(
-                                    addr=132,
+                                    addr=136,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12024,7 +12148,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  random_field_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=132,
+                                    addr=136,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12049,12 +12173,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
 
                         
                         read_callback_mock.assert_called_once_with(
-                                    addr=132,
+                                    addr=136,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
                         
                         write_callback_mock.assert_called_once_with(
-                                    addr=132,
+                                    addr=136,
                                     width=32,
                                     accesswidth=self.dut.lowpass_ema_alpha1.alpha.parent_register.accesswidth, # type: ignore[union-attr]
                                     data=(reg_base_value & 0xFFFC0000) | \
@@ -12086,7 +12210,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=136,
+                                    addr=140,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12096,7 +12220,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0x3FFFF)
                 read_callback_mock.assert_called_once_with(
-                                    addr=136,
+                                    addr=140,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12108,7 +12232,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  random_field_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=136,
+                                    addr=140,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12133,12 +12257,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
 
                         
                         read_callback_mock.assert_called_once_with(
-                                    addr=136,
+                                    addr=140,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
                         
                         write_callback_mock.assert_called_once_with(
-                                    addr=136,
+                                    addr=140,
                                     width=32,
                                     accesswidth=self.dut.lowpass_ema_alpha2.alpha.parent_register.accesswidth, # type: ignore[union-attr]
                                     data=(reg_base_value & 0xFFFC0000) | \
@@ -12170,7 +12294,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=140,
+                                    addr=144,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12180,7 +12304,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0x7FFFFF)
                 read_callback_mock.assert_called_once_with(
-                                    addr=140,
+                                    addr=144,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12192,7 +12316,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  random_field_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=140,
+                                    addr=144,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12217,12 +12341,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
 
                         
                         read_callback_mock.assert_called_once_with(
-                                    addr=140,
+                                    addr=144,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
                         
                         write_callback_mock.assert_called_once_with(
-                                    addr=140,
+                                    addr=144,
                                     width=32,
                                     accesswidth=self.dut.rx_power.data.parent_register.accesswidth, # type: ignore[union-attr]
                                     data=(reg_base_value & 0xFF800000) | \
@@ -12254,7 +12378,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=144,
+                                    addr=148,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12264,7 +12388,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0xFFFFFFFF)
                 read_callback_mock.assert_called_once_with(
-                                    addr=144,
+                                    addr=148,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12276,7 +12400,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  random_field_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=144,
+                                    addr=148,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12302,7 +12426,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                         
                         read_callback_mock.assert_not_called()
                         write_callback_mock.assert_called_once_with(
-                                    addr=144,
+                                    addr=148,
                                     width=32,
                                     accesswidth=self.dut.tx_async_fifo_rd_wr_ptr.data.parent_register.accesswidth, # type: ignore[union-attr]
                                     data=(reg_base_value & 0x0) | \
@@ -12334,7 +12458,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=148,
+                                    addr=152,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12344,7 +12468,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0xFFFFFFFF)
                 read_callback_mock.assert_called_once_with(
-                                    addr=148,
+                                    addr=152,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12356,7 +12480,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  random_field_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=148,
+                                    addr=152,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12382,7 +12506,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                         
                         read_callback_mock.assert_not_called()
                         write_callback_mock.assert_called_once_with(
-                                    addr=148,
+                                    addr=152,
                                     width=32,
                                     accesswidth=self.dut.rx_async_fifo_rd_wr_ptr.data.parent_register.accesswidth, # type: ignore[union-attr]
                                     data=(reg_base_value & 0x0) | \
@@ -12414,7 +12538,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12424,7 +12548,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0x1)
                 read_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12436,7 +12560,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  random_field_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12462,7 +12586,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12472,7 +12596,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0x1)
                 read_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12484,7 +12608,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  random_field_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12510,7 +12634,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12520,7 +12644,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0xFFFFFF)
                 read_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12532,7 +12656,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  random_field_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12557,12 +12681,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
 
                         
                         read_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
                         
                         write_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=self.dut.rx_frame_sync_status.frames_received.parent_register.accesswidth, # type: ignore[union-attr]
                                     data=(reg_base_value & 0xFC000003) | \
@@ -12594,7 +12718,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12604,7 +12728,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0x3F)
                 read_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12616,7 +12740,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  random_field_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12641,12 +12765,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
 
                         
                         read_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
                         
                         write_callback_mock.assert_called_once_with(
-                                    addr=152,
+                                    addr=156,
                                     width=32,
                                     accesswidth=self.dut.rx_frame_sync_status.frame_sync_errors.parent_register.accesswidth, # type: ignore[union-attr]
                                     data=(reg_base_value & 0x3FFFFFF) | \
@@ -12678,7 +12802,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=156,
+                                    addr=160,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12688,7 +12812,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0x3FF)
                 read_callback_mock.assert_called_once_with(
-                                    addr=156,
+                                    addr=160,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12700,7 +12824,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  random_field_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=156,
+                                    addr=160,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12725,12 +12849,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
 
                         
                         read_callback_mock.assert_called_once_with(
-                                    addr=156,
+                                    addr=160,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
                         
                         write_callback_mock.assert_called_once_with(
-                                    addr=156,
+                                    addr=160,
                                     width=32,
                                     accesswidth=self.dut.symbol_lock_control.symbol_lock_count.parent_register.accesswidth, # type: ignore[union-attr]
                                     data=(reg_base_value & 0xFFFFFC00) | \
@@ -12762,7 +12886,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=156,
+                                    addr=160,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12772,7 +12896,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0xFFFF)
                 read_callback_mock.assert_called_once_with(
-                                    addr=156,
+                                    addr=160,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12784,7 +12908,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  random_field_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=156,
+                                    addr=160,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12809,12 +12933,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
 
                         
                         read_callback_mock.assert_called_once_with(
-                                    addr=156,
+                                    addr=160,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
                         
                         write_callback_mock.assert_called_once_with(
-                                    addr=156,
+                                    addr=160,
                                     width=32,
                                     accesswidth=self.dut.symbol_lock_control.symbol_lock_threshold.parent_register.accesswidth, # type: ignore[union-attr]
                                     data=(reg_base_value & 0xFC0003FF) | \
@@ -12846,7 +12970,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=160,
+                                    addr=164,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12856,7 +12980,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0x1)
                 read_callback_mock.assert_called_once_with(
-                                    addr=160,
+                                    addr=164,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12868,7 +12992,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  random_field_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=160,
+                                    addr=164,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12894,7 +13018,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=160,
+                                    addr=164,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12904,7 +13028,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0x1)
                 read_callback_mock.assert_called_once_with(
-                                    addr=160,
+                                    addr=164,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12916,7 +13040,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  random_field_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=160,
+                                    addr=164,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12942,7 +13066,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=160,
+                                    addr=164,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12952,7 +13076,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0x1)
                 read_callback_mock.assert_called_once_with(
-                                    addr=160,
+                                    addr=164,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12964,7 +13088,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  random_field_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=160,
+                                    addr=164,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -12990,7 +13114,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=160,
+                                    addr=164,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -13000,7 +13124,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0x1)
                 read_callback_mock.assert_called_once_with(
-                                    addr=160,
+                                    addr=164,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -13012,7 +13136,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  random_field_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=160,
+                                    addr=164,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -13038,7 +13162,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=160,
+                                    addr=164,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -13048,7 +13172,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0x1)
                 read_callback_mock.assert_called_once_with(
-                                    addr=160,
+                                    addr=164,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -13060,7 +13184,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  random_field_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=160,
+                                    addr=164,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -13086,7 +13210,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=164,
+                                    addr=168,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -13096,7 +13220,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0xFFFF)
                 read_callback_mock.assert_called_once_with(
-                                    addr=164,
+                                    addr=168,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -13108,7 +13232,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  random_field_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=164,
+                                    addr=168,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -13134,7 +13258,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0)
                 read_callback_mock.assert_called_once_with(
-                                    addr=164,
+                                    addr=168,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -13144,7 +13268,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  0xFFFF)
                 read_callback_mock.assert_called_once_with(
-                                    addr=164,
+                                    addr=168,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -13156,7 +13280,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 self.assertEqual(await fut.read(),
                                  random_field_value)
                 read_callback_mock.assert_called_once_with(
-                                    addr=164,
+                                    addr=168,
                                     width=32,
                                     accesswidth=fut.parent_register.accesswidth)
 
@@ -14453,6 +14577,38 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.reset_mock()
 
                 self.assertDictEqual(await self.dut.Tx_Sync_Cnt.read_fields(),
+                                     reference_read_fields)
+                read_callback_mock.assert_called_once()
+                write_callback_mock.assert_not_called()
+        with self.subTest(msg='register: msk_top_regs.Tx_Sync_Pat'):
+            # test read_fields to register:
+            # msk_top_regs.Tx_Sync_Pat
+            # build up the register value with a random base value, overlaid with
+            # a random value for each field
+            rand_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0xFFFF + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFF0000) | (rand_field_value << 0)
+                        
+                    
+                
+            
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                 patch(base_name + '.read_addr_space', return_value=rand_reg_value) as read_callback_mock:
+                # the read_fields method gets a dictionary back
+                # from the object with all the read back field
+                # values
+                reference_read_fields = { 
+                                          'tx_sync_pat' : await self.dut.Tx_Sync_Pat.tx_sync_pat.read()
+                                        }
+
+                read_callback_mock.reset_mock()
+
+                self.assertDictEqual(await self.dut.Tx_Sync_Pat.read_fields(),
                                      reference_read_fields)
                 read_callback_mock.assert_called_once()
                 write_callback_mock.assert_not_called()
@@ -16360,6 +16516,43 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 read_callback_mock.assert_called_once()
                 write_callback_mock.assert_not_called()
         # test context manager to register:
+        # msk_top_regs.Tx_Sync_Pat
+        # build up the register value with a random base value, overlaid with
+        # a random value for each field
+        with self.subTest(msg='register: msk_top_regs.Tx_Sync_Pat'):
+            rand_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0xFFFF + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFF0000) | (rand_field_value << 0)
+                        
+                    
+                
+            
+            with patch(base_name + '.write_addr_space') as write_callback_mock, \
+                 patch(base_name + '.read_addr_space', return_value=rand_reg_value) as read_callback_mock:
+
+                # first read the fields using the "normal" method, then compare the result to reading
+                # via the context manager
+                reference_read_fields = { 
+                                          'tx_sync_pat' : await self.dut.Tx_Sync_Pat.tx_sync_pat.read()  # type: ignore[union-attr]
+                                        }
+                read_callback_mock.reset_mock()
+
+                
+                async with self.dut.Tx_Sync_Pat.single_read_modify_write(skip_write=True) as reg_context: # type: ignore[union-attr]
+                
+                    self.assertEqual(reference_read_fields['tx_sync_pat'],
+                                      await reg_context.get_child_by_system_rdl_name('tx_sync_pat').read()
+                                     )
+                    pass
+
+                read_callback_mock.assert_called_once()
+                write_callback_mock.assert_not_called()
+        # test context manager to register:
         # msk_top_regs.lowpass_ema_alpha1
         # build up the register value with a random base value, overlaid with
         # a random value for each field
@@ -17042,6 +17235,10 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             await write_field_combinations(reg=self.dut.Tx_Sync_Cnt,
                                writable_fields = [ 'tx_sync_cnt'
                                                    ])
+        with self.subTest(msg='register: msk_top_regs.Tx_Sync_Pat'):
+            await write_field_combinations(reg=self.dut.Tx_Sync_Pat,
+                               writable_fields = [ 'tx_sync_pat'
+                                                   ])
         with self.subTest(msg='register: msk_top_regs.lowpass_ema_alpha1'):
             await write_field_combinations(reg=self.dut.lowpass_ema_alpha1,
                                writable_fields = [ 'alpha'
@@ -17349,6 +17546,13 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                        writable_fields = [ 'tx_sync_cnt'
                                                            ])
             
+        with self.subTest(msg='register: msk_top_regs.Tx_Sync_Pat'):
+            # test read_fields to register:
+            # msk_top_regs.Tx_Sync_Pat
+            await write_field_combinations(reg=self.dut.Tx_Sync_Pat,
+                                       writable_fields = [ 'tx_sync_pat'
+                                                           ])
+            
         with self.subTest(msg='register: msk_top_regs.lowpass_ema_alpha1'):
             # test read_fields to register:
             # msk_top_regs.lowpass_ema_alpha1
@@ -17576,6 +17780,11 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
                 self.dut.Tx_Sync_Cnt.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.Tx_Sync_Pat'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.Tx_Sync_Pat.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
         with self.subTest(msg='node: msk_top_regs.lowpass_ema_alpha1'):
             with self.assertRaises(AttributeError):
                 # this line is trying to set an illegal value so by definition should fail the type
@@ -17891,6 +18100,11 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
                 self.dut.Tx_Sync_Cnt.tx_sync_cnt.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.Tx_Sync_Pat.tx_sync_pat'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.Tx_Sync_Pat.tx_sync_pat.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
         with self.subTest(msg='node: msk_top_regs.lowpass_ema_alpha1.alpha'):
             with self.assertRaises(AttributeError):
                 # this line is trying to set an illegal value so by definition should fail the type
@@ -18060,6 +18274,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                         
                                     self.dut.Tx_Sync_Cnt, # type: ignore[union-attr,list-item] 
                                         
+                                    self.dut.Tx_Sync_Pat, # type: ignore[union-attr,list-item] 
+                                        
                                     self.dut.lowpass_ema_alpha1, # type: ignore[union-attr,list-item] 
                                         
                                     self.dut.lowpass_ema_alpha2, # type: ignore[union-attr,list-item] 
@@ -18150,6 +18366,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                    self.dut.Tx_Sync_Ctrl, # type: ignore[union-attr,list-item] 
                                        
                                    self.dut.Tx_Sync_Cnt, # type: ignore[union-attr,list-item] 
+                                       
+                                   self.dut.Tx_Sync_Pat, # type: ignore[union-attr,list-item] 
                                        
                                    self.dut.lowpass_ema_alpha1, # type: ignore[union-attr,list-item] 
                                        
@@ -18242,6 +18460,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                        
                                    self.dut.Tx_Sync_Cnt, # type: ignore[union-attr,list-item] 
                                        
+                                   self.dut.Tx_Sync_Pat, # type: ignore[union-attr,list-item] 
+                                       
                                    self.dut.lowpass_ema_alpha1, # type: ignore[union-attr,list-item] 
                                        
                                    self.dut.lowpass_ema_alpha2, # type: ignore[union-attr,list-item] 
@@ -18333,6 +18553,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                        
                                    self.dut.Tx_Sync_Cnt, # type: ignore[union-attr,list-item] 
                                        
+                                   self.dut.Tx_Sync_Pat, # type: ignore[union-attr,list-item] 
+                                       
                                    self.dut.lowpass_ema_alpha1, # type: ignore[union-attr,list-item] 
                                        
                                    self.dut.lowpass_ema_alpha2, # type: ignore[union-attr,list-item] 
@@ -18359,6 +18581,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
 
         # check the sections
         expected_sections = [
+                                  
+                              
                                   
                               
                                   
@@ -18533,6 +18757,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                   
                               
                                   
+                              
+                                  
                                ]
         sections = []
         for section in self.dut.get_sections(unroll=False):  # type: ignore[union-attr]
@@ -18624,6 +18850,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                   
                               
                                   
+                              
+                                  
                                ]
         memories = []
         for memory in self.dut.get_memories(unroll=True):  # type: ignore[union-attr]
@@ -18632,6 +18860,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         self.assertCountEqual(expected_memories, memories)
         
         expected_memories = [
+                                  
+                              
                                   
                               
                                   
@@ -19894,6 +20124,37 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 readable_fields.append(readable_field)
             self.assertCountEqual(expected_readable_fields, readable_fields)
                     
+        with self.subTest(msg='register: msk_top_regs.Tx_Sync_Pat'):
+                
+            expected_fields = [self.dut.Tx_Sync_Pat.tx_sync_pat, # type: ignore[union-attr,list-item]
+                                        
+                                    
+                                 
+                                         ]
+            fields = []
+            for field in self.dut.Tx_Sync_Pat.fields:  # type: ignore[union-attr]
+                fields.append(field)
+            self.assertCountEqual(expected_fields, fields)
+                
+            expected_writable_fields = [self.dut.Tx_Sync_Pat.tx_sync_pat, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            writable_fields = []
+            for writable_field in self.dut.Tx_Sync_Pat.writable_fields:  # type: ignore[union-attr]
+                writable_fields.append(writable_field)
+            self.assertCountEqual(expected_writable_fields, writable_fields)
+                    
+                    
+            expected_readable_fields = [self.dut.Tx_Sync_Pat.tx_sync_pat, # type: ignore[union-attr,list-item] 
+                                            
+                                         
+                                         ]
+            readable_fields = []
+            for readable_field in self.dut.Tx_Sync_Pat.readable_fields: # type: ignore[union-attr]
+                readable_fields.append(readable_field)
+            self.assertCountEqual(expected_readable_fields, readable_fields)
+                    
         with self.subTest(msg='register: msk_top_regs.lowpass_ema_alpha1'):
                 
             expected_fields = [self.dut.lowpass_ema_alpha1.alpha, # type: ignore[union-attr,list-item]
@@ -20531,6 +20792,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         
         
         
+        self.assertEqual(self.dut.Tx_Sync_Pat.get_child_by_system_rdl_name('tx_sync_pat').inst_name, 'tx_sync_pat')
+        
+        
+        
+        
+        
         self.assertEqual(self.dut.lowpass_ema_alpha1.get_child_by_system_rdl_name('alpha').inst_name, 'alpha')
         
         
@@ -20701,15 +20968,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         
         
         
+        
 
     
-
-    def test_array_slicing(self) -> None:
-        """
-        Check slicing into array
-        """
-        full_slice:NodeArray
-        
 
 
 

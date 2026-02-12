@@ -8,9 +8,9 @@
     <dt>Absolute Address:</dt><dd id="_AbsAddr" class="address"></dd>
     <div id="_AbsAddrDetails"></div>
     <dt>Base Offset:</dt><dd class="address">0x0</dd>
-    <dt>Size:</dt><dd class="address">0xa8</dd>
+    <dt>Size:</dt><dd class="address">0xac</dd>
     
-    <dt>Source:</dt><dd><a href="https://github.com/OpenResearchInstitute/pluto_msk/blob/symbol_lock/rdl/src/msk_top_regs.rdl#L51" target="_blank">msk_top_regs.rdl</a></dd>
+    <dt>Source:</dt><dd><a href="https://github.com/OpenResearchInstitute/pluto_msk/blob/main/rdl/src/msk_top_regs.rdl#L51" target="_blank">msk_top_regs.rdl</a></dd>
     
 </dl>
 <h2>Description</h2>
@@ -291,73 +291,81 @@
             <a class="headerlink" href="#Tx_Sync_Cnt" title="Permalink to this row"></a>
         </td>
     </tr>
-    <tr id="lowpass_ema_alpha1">
+    <tr id="Tx_Sync_Pat">
         <td class="address">0x84</td>
-        <td><a href="?p=msk_top_regs.lowpass_ema_alpha1" data-id="34" onclick="onClickNodeLink(event); return(false)">lowpass_ema_alpha1</a></td>
+        <td><a href="?p=msk_top_regs.Tx_Sync_Pat" data-id="34" onclick="onClickNodeLink(event); return(false)">Tx_Sync_Pat</a></td>
+        <td>Transmitter Sync pattern</td>
+        <td>
+            <a class="headerlink" href="#Tx_Sync_Pat" title="Permalink to this row"></a>
+        </td>
+    </tr>
+    <tr id="lowpass_ema_alpha1">
+        <td class="address">0x88</td>
+        <td><a href="?p=msk_top_regs.lowpass_ema_alpha1" data-id="35" onclick="onClickNodeLink(event); return(false)">lowpass_ema_alpha1</a></td>
         <td>Exponential Moving Average Alpha</td>
         <td>
             <a class="headerlink" href="#lowpass_ema_alpha1" title="Permalink to this row"></a>
         </td>
     </tr>
     <tr id="lowpass_ema_alpha2">
-        <td class="address">0x88</td>
-        <td><a href="?p=msk_top_regs.lowpass_ema_alpha2" data-id="35" onclick="onClickNodeLink(event); return(false)">lowpass_ema_alpha2</a></td>
+        <td class="address">0x8C</td>
+        <td><a href="?p=msk_top_regs.lowpass_ema_alpha2" data-id="36" onclick="onClickNodeLink(event); return(false)">lowpass_ema_alpha2</a></td>
         <td>Exponential Moving Average Alpha</td>
         <td>
             <a class="headerlink" href="#lowpass_ema_alpha2" title="Permalink to this row"></a>
         </td>
     </tr>
     <tr id="rx_power">
-        <td class="address">0x8C</td>
-        <td><a href="?p=msk_top_regs.rx_power" data-id="36" onclick="onClickNodeLink(event); return(false)">rx_power</a></td>
+        <td class="address">0x90</td>
+        <td><a href="?p=msk_top_regs.rx_power" data-id="37" onclick="onClickNodeLink(event); return(false)">rx_power</a></td>
         <td>Receive Power</td>
         <td>
             <a class="headerlink" href="#rx_power" title="Permalink to this row"></a>
         </td>
     </tr>
     <tr id="tx_async_fifo_rd_wr_ptr">
-        <td class="address">0x90</td>
-        <td><a href="?p=msk_top_regs.tx_async_fifo_rd_wr_ptr" data-id="37" onclick="onClickNodeLink(event); return(false)">tx_async_fifo_rd_wr_ptr</a></td>
+        <td class="address">0x94</td>
+        <td><a href="?p=msk_top_regs.tx_async_fifo_rd_wr_ptr" data-id="38" onclick="onClickNodeLink(event); return(false)">tx_async_fifo_rd_wr_ptr</a></td>
         <td>Tx async FIFO read and write pointers</td>
         <td>
             <a class="headerlink" href="#tx_async_fifo_rd_wr_ptr" title="Permalink to this row"></a>
         </td>
     </tr>
     <tr id="rx_async_fifo_rd_wr_ptr">
-        <td class="address">0x94</td>
-        <td><a href="?p=msk_top_regs.rx_async_fifo_rd_wr_ptr" data-id="38" onclick="onClickNodeLink(event); return(false)">rx_async_fifo_rd_wr_ptr</a></td>
+        <td class="address">0x98</td>
+        <td><a href="?p=msk_top_regs.rx_async_fifo_rd_wr_ptr" data-id="39" onclick="onClickNodeLink(event); return(false)">rx_async_fifo_rd_wr_ptr</a></td>
         <td>Rx async FIFO read and write pointers</td>
         <td>
             <a class="headerlink" href="#rx_async_fifo_rd_wr_ptr" title="Permalink to this row"></a>
         </td>
     </tr>
     <tr id="rx_frame_sync_status">
-        <td class="address">0x98</td>
-        <td><a href="?p=msk_top_regs.rx_frame_sync_status" data-id="39" onclick="onClickNodeLink(event); return(false)">rx_frame_sync_status</a></td>
+        <td class="address">0x9C</td>
+        <td><a href="?p=msk_top_regs.rx_frame_sync_status" data-id="40" onclick="onClickNodeLink(event); return(false)">rx_frame_sync_status</a></td>
         <td>Frame Sync Status</td>
         <td>
             <a class="headerlink" href="#rx_frame_sync_status" title="Permalink to this row"></a>
         </td>
     </tr>
     <tr id="symbol_lock_control">
-        <td class="address">0x9C</td>
-        <td><a href="?p=msk_top_regs.symbol_lock_control" data-id="40" onclick="onClickNodeLink(event); return(false)">symbol_lock_control</a></td>
+        <td class="address">0xA0</td>
+        <td><a href="?p=msk_top_regs.symbol_lock_control" data-id="41" onclick="onClickNodeLink(event); return(false)">symbol_lock_control</a></td>
         <td>Symbol Lock Control</td>
         <td>
             <a class="headerlink" href="#symbol_lock_control" title="Permalink to this row"></a>
         </td>
     </tr>
     <tr id="symbol_lock_status">
-        <td class="address">0xA0</td>
-        <td><a href="?p=msk_top_regs.symbol_lock_status" data-id="41" onclick="onClickNodeLink(event); return(false)">symbol_lock_status</a></td>
+        <td class="address">0xA4</td>
+        <td><a href="?p=msk_top_regs.symbol_lock_status" data-id="42" onclick="onClickNodeLink(event); return(false)">symbol_lock_status</a></td>
         <td>Symbol Lock Status</td>
         <td>
             <a class="headerlink" href="#symbol_lock_status" title="Permalink to this row"></a>
         </td>
     </tr>
     <tr id="symbol_lock_time">
-        <td class="address">0xA4</td>
-        <td><a href="?p=msk_top_regs.symbol_lock_time" data-id="42" onclick="onClickNodeLink(event); return(false)">symbol_lock_time</a></td>
+        <td class="address">0xA8</td>
+        <td><a href="?p=msk_top_regs.symbol_lock_time" data-id="43" onclick="onClickNodeLink(event); return(false)">symbol_lock_time</a></td>
         <td>Symbol Lock Time</td>
         <td>
             <a class="headerlink" href="#symbol_lock_time" title="Permalink to this row"></a>

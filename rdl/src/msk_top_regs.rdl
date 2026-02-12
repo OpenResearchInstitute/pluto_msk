@@ -509,6 +509,20 @@ addrmap msk_top_regs {
         } tx_sync_cnt[23:0] = 0;
     };
 
+    reg tx_sync_pat {
+        name = "Transmitter Sync pattern";
+        desc = "Sets the synchronization pattern to be transmitted when synchronization tones are enabled";
+        regwidth = 32;
+        field { 
+            name = "Tx sync pattern";
+            desc = "Value from 0x0000 to 0xFFFF. 
+
+                    This value represents the number bit-times the synchronization signal should be sent after PTT is asserted.";
+            sw = rw; 
+            hw = r; 
+        } tx_sync_pat[15:0] = 16'b001101100110011;
+    };
+
     reg lowpass_ema_alpha {
         name = "Exponential Moving Average Alpha";
         desc = "Sets the alpha for the EMA";
@@ -782,6 +796,7 @@ addrmap msk_top_regs {
 
     tx_sync_ctrl        Tx_Sync_Ctrl;
     tx_sync_cnt         Tx_Sync_Cnt;
+    tx_sync_pat         Tx_Sync_Pat;
     lowpass_ema_alpha   lowpass_ema_alpha1;
     lowpass_ema_alpha   lowpass_ema_alpha2;
     rx_power            rx_power;

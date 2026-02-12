@@ -85,6 +85,7 @@ ENTITY msk_top_csr IS
 		C_S_AXI_DATA_WIDTH	: NATURAL := 32;
 		C_S_AXI_ADDR_WIDTH	: NATURAL := 32;
 		SYNC_CNT_W 			: NATURAL := 24;
+		SYNC_PAT_W 			: NATURAL := 16;
 		FIFO_ADDR_WIDTH 	: NATURAL := 9
 	);
 	PORT (
@@ -177,6 +178,7 @@ ENTITY msk_top_csr IS
 		tx_sync_ena 		: out std_logic;
 		tx_sync_cnt 		: out std_logic_vector(SYNC_CNT_W -1 DOWNTO 0);
 		tx_sync_force		: out std_logic;
+		tx_sync_pat 		: out std_logic_vector(SYNC_PAT_W -1 DOWNTO 0);
 		tx_sync_f1			: out std_logic;
 		tx_sync_f2			: out std_logic;
 		pd_alpha1			: out std_logic_vector(17 DOWNTO 0);
@@ -504,7 +506,7 @@ hwif_in.tx_async_fifo_rd_wr_ptr.data.next_q <=
 	prbs_sync_threshold <= hwif_out.PRBS_Control.prbs_sync_threshold.value;
 
 	tx_sync_cnt 		<= hwif_out.Tx_Sync_Cnt.tx_sync_cnt.value;
-
+	tx_sync_pat 		<= hwif_out.Tx_Sync_Pat.tx_sync_pat.value;
 	pd_alpha1			<= hwif_out.lowpass_ema_alpha1.alpha.value;
 	pd_alpha2			<= hwif_out.lowpass_ema_alpha2.alpha.value;
 
