@@ -293,6 +293,12 @@ extern "C" {
 #define MSK_TOP_REGS__TX_SYNC_CNT__TX_SYNC_CNT_bw 24
 #define MSK_TOP_REGS__TX_SYNC_CNT__TX_SYNC_CNT_reset 0x0
 
+// Reg - msk_top_regs::tx_sync_pat
+#define MSK_TOP_REGS__TX_SYNC_PAT__TX_SYNC_PAT_bm 0xffff
+#define MSK_TOP_REGS__TX_SYNC_PAT__TX_SYNC_PAT_bp 0
+#define MSK_TOP_REGS__TX_SYNC_PAT__TX_SYNC_PAT_bw 16
+#define MSK_TOP_REGS__TX_SYNC_PAT__TX_SYNC_PAT_reset 0x1b33
+
 // Reg - msk_top_regs::lowpass_ema_alpha
 #define MSK_TOP_REGS__LOWPASS_EMA_ALPHA__ALPHA_bm 0x3ffff
 #define MSK_TOP_REGS__LOWPASS_EMA_ALPHA__ALPHA_bp 0
@@ -412,6 +418,7 @@ typedef struct __attribute__ ((__packed__)) {
     uint32_t f2_error;
     uint32_t Tx_Sync_Ctrl;
     uint32_t Tx_Sync_Cnt;
+    uint32_t Tx_Sync_Pat;
     uint32_t lowpass_ema_alpha1;
     uint32_t lowpass_ema_alpha2;
     uint32_t rx_power;
@@ -424,7 +431,7 @@ typedef struct __attribute__ ((__packed__)) {
 } msk_top_regs_t;
 
 
-static_assert(sizeof(msk_top_regs_t) == 0xa8, "Packing error");
+static_assert(sizeof(msk_top_regs_t) == 0xac, "Packing error");
 
 #ifdef __cplusplus
 }

@@ -97,6 +97,7 @@ ENTITY msk_top IS
 		C_S_AXI_DATA_WIDTH	: NATURAL := 32;
 		C_S_AXI_ADDR_WIDTH	: NATURAL := 32;
 		SYNC_CNT_W 			: NATURAL := 24;
+		SYNC_PAT_W 			: NATURAL := 16;
 		FIFO_ADDR_WIDTH 	: NATURAL := 9  -- 512 byte FIFO (used in both tx and rx)
 	);
 	PORT (
@@ -415,6 +416,7 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL tx_sync_ena 			: std_logic;
 	SIGNAL tx_sync_cnt 			: std_logic_vector(SYNC_CNT_W -1 DOWNTO 0);
 	SIGNAL tx_sync_force		: std_logic;
+	SIGNAL tx_sync_pat 			: std_logic_vector(SYNC_PAT_W -1 DOWNTO 0);
 	SIGNAL tx_sync_f1			: std_logic;
 	SIGNAL tx_sync_f2			: std_logic;
 
@@ -723,7 +725,8 @@ BEGIN
 			PHASE_W 		=> PHASE_W,
 			SINUSOID_W 		=> SINUSOID_W,
 			SAMPLE_W 		=> SAMPLE_W,
-			SYNC_CNT_W		=> SYNC_CNT_W
+			SYNC_CNT_W		=> SYNC_CNT_W,
+			SYNC_PAT_W 		=> SYNC_PAT_W
 		)
 		PORT MAP (
 			clk 			=> clk,
@@ -737,6 +740,7 @@ BEGIN
 			tx_sync_ena 	=> tx_sync_ena,
 			tx_sync_cnt 	=> tx_sync_cnt,
 			tx_sync_force	=> tx_sync_force,
+			tx_sync_pat 	=> tx_sync_pat,
 
 			tx_data 		=> prbs_data_bit,
 			tx_req 			=> tx_req,
@@ -1101,7 +1105,8 @@ BEGIN
 		GENERATOR_W 		=> 32,
 		C_S_AXI_DATA_WIDTH	=> C_S_AXI_DATA_WIDTH,
 		C_S_AXI_ADDR_WIDTH	=> C_S_AXI_ADDR_WIDTH,
-		SYNC_CNT_W 			=> SYNC_CNT_W
+		SYNC_CNT_W 			=> SYNC_CNT_W,
+		SYNC_PAT_W 			=> SYNC_PAT_W
 	)
 	PORT MAP (
 		clk 			=> clk,
@@ -1189,6 +1194,7 @@ BEGIN
 		tx_sync_ena 		=> tx_sync_ena,
 		tx_sync_cnt 		=> tx_sync_cnt,
 		tx_sync_force		=> tx_sync_force,
+		tx_sync_pat 		=> tx_sync_pat,
 		tx_sync_f1			=> tx_sync_f1,
 		tx_sync_f2			=> tx_sync_f2,
 		pd_alpha1			=> pd_alpha1,

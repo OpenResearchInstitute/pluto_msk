@@ -154,38 +154,42 @@ class msk_top_regs_simulator_cls(Simulator):
                                          fields=[FieldDefinition(high=23, low=0, msb=23, lsb=0, inst_name='tx_sync_cnt'),
                                                 ]),
             132 : 
+    Register(width=32, full_inst_name='msk_top_regs.Tx_Sync_Pat', readable=True, writable=True,
+                                         fields=[FieldDefinition(high=15, low=0, msb=15, lsb=0, inst_name='tx_sync_pat'),
+                                                ]),
+            136 : 
     Register(width=32, full_inst_name='msk_top_regs.lowpass_ema_alpha1', readable=True, writable=True,
                                          fields=[FieldDefinition(high=17, low=0, msb=17, lsb=0, inst_name='alpha'),
                                                 ]),
-            136 : 
+            140 : 
     Register(width=32, full_inst_name='msk_top_regs.lowpass_ema_alpha2', readable=True, writable=True,
                                          fields=[FieldDefinition(high=17, low=0, msb=17, lsb=0, inst_name='alpha'),
                                                 ]),
-            140 : 
+            144 : 
     Register(width=32, full_inst_name='msk_top_regs.rx_power', readable=True, writable=True,
                                          fields=[FieldDefinition(high=22, low=0, msb=22, lsb=0, inst_name='data'),
                                                 ]),
-            144 : 
+            148 : 
     Register(width=32, full_inst_name='msk_top_regs.tx_async_fifo_rd_wr_ptr', readable=True, writable=True,
                                          fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='data'),
                                                 ]),
-            148 : 
+            152 : 
     Register(width=32, full_inst_name='msk_top_regs.rx_async_fifo_rd_wr_ptr', readable=True, writable=True,
                                          fields=[FieldDefinition(high=31, low=0, msb=31, lsb=0, inst_name='data'),
                                                 ]),
-            152 : 
+            156 : 
     Register(width=32, full_inst_name='msk_top_regs.rx_frame_sync_status', readable=True, writable=True,
                                          fields=[FieldDefinition(high=0, low=0, msb=0, lsb=0, inst_name='frame_sync_locked'),FieldDefinition(high=1, low=1, msb=1, lsb=1, inst_name='frame_buffer_overflow'),FieldDefinition(high=25, low=2, msb=25, lsb=2, inst_name='frames_received'),FieldDefinition(high=31, low=26, msb=31, lsb=26, inst_name='frame_sync_errors'),
                                                 ]),
-            156 : 
+            160 : 
     Register(width=32, full_inst_name='msk_top_regs.symbol_lock_control', readable=True, writable=True,
                                          fields=[FieldDefinition(high=9, low=0, msb=9, lsb=0, inst_name='symbol_lock_count'),FieldDefinition(high=25, low=10, msb=25, lsb=10, inst_name='symbol_lock_threshold'),
                                                 ]),
-            160 : 
+            164 : 
     Register(width=32, full_inst_name='msk_top_regs.symbol_lock_status', readable=True, writable=False,
                                          fields=[FieldDefinition(high=0, low=0, msb=0, lsb=0, inst_name='f1f2'),FieldDefinition(high=1, low=1, msb=1, lsb=1, inst_name='f1'),FieldDefinition(high=2, low=2, msb=2, lsb=2, inst_name='f2'),FieldDefinition(high=3, low=3, msb=3, lsb=3, inst_name='unlock_f1'),FieldDefinition(high=4, low=4, msb=4, lsb=4, inst_name='unlock_f2'),
                                                 ]),
-            164 : 
+            168 : 
     Register(width=32, full_inst_name='msk_top_regs.symbol_lock_time', readable=True, writable=False,
                                          fields=[FieldDefinition(high=15, low=0, msb=15, lsb=0, inst_name='f1'),FieldDefinition(high=31, low=16, msb=31, lsb=16, inst_name='f2'),
                                                 ]),
