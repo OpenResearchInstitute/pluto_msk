@@ -378,36 +378,29 @@ BEGIN
     hwif_in.rx_frame_sync_status.frame_sync_locked.next_q    <= rx_frame_sync;
     hwif_in.rx_frame_sync_status.frame_buffer_overflow.we    <= rx_frame_buffer_ovf;
 
-    ----------------------------------------------------------------------
-    -- Status capture (counters — snapshot on read via swmod)
-    -- data_capture latches the value when swmod fires; we delay one cycle for we
-    ----------------------------------------------------------------------
-    utbc_c : data_capture PORT MAP (clk, csr_init, hwif_out.Tx_Bit_Count.data.swmod,        tx_bit_counter,    hwif_in.Tx_Bit_Count.data.next_q    );
-    utbe_c : data_capture PORT MAP (clk, csr_init, hwif_out.Tx_Enable_Count.data.swmod,     tx_ena_counter,    hwif_in.Tx_Enable_Count.data.next_q );
-    utatc_c: data_capture PORT MAP (clk, csr_init, hwif_out.axis_xfer_count.data.swmod,     xfer_count,        hwif_in.axis_xfer_count.data.next_q );
-    utf1e_c: data_capture PORT MAP (clk, csr_init, hwif_out.f1_error.data.swmod,            f1_error,          hwif_in.f1_error.data.next_q        );
-    utf2e_c: data_capture PORT MAP (clk, csr_init, hwif_out.f2_error.data.swmod,            f2_error,          hwif_in.f2_error.data.next_q        );
-    utf1a_c: data_capture PORT MAP (clk, csr_init, hwif_out.f1_nco_adjust.data.swmod,       f1_nco_adjust,     hwif_in.f1_nco_adjust.data.next_q   );
-    utf2a_c: data_capture PORT MAP (clk, csr_init, hwif_out.f2_nco_adjust.data.swmod,       f2_nco_adjust,     hwif_in.f2_nco_adjust.data.next_q   );
-    utprb_c: data_capture PORT MAP (clk, csr_init, hwif_out.PRBS_Bit_Count.data.swmod,      prbs_bits,         hwif_in.PRBS_Bit_Count.data.next_q  );
-    utpre_c: data_capture PORT MAP (clk, csr_init, hwif_out.PRBS_Error_Count.data.swmod,    prbs_errs,         hwif_in.PRBS_Error_Count.data.next_q);
-    utlp1_c: data_capture PORT MAP (clk, csr_init, hwif_out.LPF_Accum_F1.data.swmod,        lpf_accum_f1,      hwif_in.LPF_Accum_F1.data.next_q   );
-    utlp2_c: data_capture PORT MAP (clk, csr_init, hwif_out.LPF_Accum_F2.data.swmod,        lpf_accum_f2,      hwif_in.LPF_Accum_F2.data.next_q   );
-    utpwr_c: data_capture GENERIC MAP (23)
-    					  PORT MAP (clk, csr_init, hwif_out.rx_power.data.swmod,             pd_power,          hwif_in.rx_power.data.next_q        );
-    utfsc_c: data_capture GENERIC MAP (24)
-    					  PORT MAP (clk, csr_init, hwif_out.rx_frame_sync_status.frames_received.swmod,    rx_frame_count,    hwif_in.rx_frame_sync_status.frames_received.next_q    );
-    utfse_c: data_capture GENERIC MAP (6)
-    					  PORT MAP (clk, csr_init, hwif_out.rx_frame_sync_status.frame_sync_errors.swmod,  rx_frame_sync_err, hwif_in.rx_frame_sync_status.frame_sync_errors.next_q  );
+	hwif_in.Tx_Bit_Count.data.next_q    					<= tx_bit_counter;
+	hwif_in.Tx_Enable_Count.data.next_q 					<= tx_ena_counter;
+	hwif_in.axis_xfer_count.data.next_q 					<= xfer_count;
+	hwif_in.f1_error.data.next_q        					<= f1_error;
+	hwif_in.f2_error.data.next_q        					<= f2_error;
+	hwif_in.f1_nco_adjust.data.next_q   					<= f1_nco_adjust;
+	hwif_in.f2_nco_adjust.data.next_q   					<= f2_nco_adjust;
+	hwif_in.PRBS_Bit_Count.data.next_q  					<= prbs_bits;
+	hwif_in.PRBS_Error_Count.data.next_q					<= prbs_errs;
+	hwif_in.LPF_Accum_F1.data.next_q   						<= lpf_accum_f1;
+	hwif_in.LPF_Accum_F2.data.next_q   						<= lpf_accum_f2;
+	hwif_in.rx_power.data.next_q 							<= pd_power;
+	hwif_in.rx_frame_sync_status.frames_received.next_q 	<= rx_frame_count;
+	hwif_in.rx_frame_sync_status.frame_sync_errors.next_q 	<= rx_frame_sync_err;
 
     -- we pulse delayed one cycle so captured data is stable when loaded
     we_delay_proc : PROCESS (clk)
     BEGIN
         IF rising_edge(clk) THEN
             IF csr_init = '1' THEN
-                hwif_in.Tx_Bit_Count.data.we       <= '0';
-                hwif_in.Tx_Enable_Count.data.we     <= '0';
-                hwif_in.axis_xfer_count.data.we     <= '0';
+                hwif_in.Tx_Bit_Count.data.we         <= '0';
+                hwif_in.Tx_Enable_Count.data.we      <= '0';
+                hwif_in.axis_xfer_count.data.we      <= '0';
                 hwif_in.f1_error.data.we             <= '0';
                 hwif_in.f2_error.data.we             <= '0';
                 hwif_in.f1_nco_adjust.data.we        <= '0';
@@ -417,23 +410,23 @@ BEGIN
                 hwif_in.LPF_Accum_F1.data.we         <= '0';
                 hwif_in.LPF_Accum_F2.data.we         <= '0';
                 hwif_in.rx_power.data.we             <= '0';
-                hwif_in.rx_frame_sync_status.frames_received.we  <= '0';
-                hwif_in.rx_frame_sync_status.frame_sync_errors.we <= '0';
+                hwif_in.rx_frame_sync_status.frames_received.we  	<= '0';
+                hwif_in.rx_frame_sync_status.frame_sync_errors.we 	<= '0';
             ELSE
-                hwif_in.Tx_Bit_Count.data.we       <= hwif_out.Tx_Bit_Count.data.swmod;
-                hwif_in.Tx_Enable_Count.data.we     <= hwif_out.Tx_Enable_Count.data.swmod;
-                hwif_in.axis_xfer_count.data.we     <= hwif_out.axis_xfer_count.data.swmod;
-                hwif_in.f1_error.data.we             <= hwif_out.f1_error.data.swmod;
-                hwif_in.f2_error.data.we             <= hwif_out.f2_error.data.swmod;
-                hwif_in.f1_nco_adjust.data.we        <= hwif_out.f1_nco_adjust.data.swmod;
-                hwif_in.f2_nco_adjust.data.we        <= hwif_out.f2_nco_adjust.data.swmod;
-                hwif_in.PRBS_Bit_Count.data.we       <= hwif_out.PRBS_Bit_Count.data.swmod;
-                hwif_in.PRBS_Error_Count.data.we     <= hwif_out.PRBS_Error_Count.data.swmod;
-                hwif_in.LPF_Accum_F1.data.we         <= hwif_out.LPF_Accum_F1.data.swmod;
-                hwif_in.LPF_Accum_F2.data.we         <= hwif_out.LPF_Accum_F2.data.swmod;
-                hwif_in.rx_power.data.we             <= hwif_out.rx_power.data.swmod;
-                hwif_in.rx_frame_sync_status.frames_received.we  <= hwif_out.rx_frame_sync_status.frames_received.swmod;
-                hwif_in.rx_frame_sync_status.frame_sync_errors.we <= hwif_out.rx_frame_sync_status.frame_sync_errors.swmod;
+                hwif_in.Tx_Bit_Count.data.we       	<= '1';
+                hwif_in.Tx_Enable_Count.data.we     <= '1';
+                hwif_in.axis_xfer_count.data.we     <= '1';
+                hwif_in.f1_error.data.we            <= '1';
+                hwif_in.f2_error.data.we            <= '1';
+                hwif_in.f1_nco_adjust.data.we       <= '1';
+                hwif_in.f2_nco_adjust.data.we       <= '1';
+                hwif_in.PRBS_Bit_Count.data.we      <= '1';
+                hwif_in.PRBS_Error_Count.data.we    <= '1';
+                hwif_in.LPF_Accum_F1.data.we        <= '1';
+                hwif_in.LPF_Accum_F2.data.we        <= '1';
+                hwif_in.rx_power.data.we            <= '1';
+                hwif_in.rx_frame_sync_status.frames_received.we   <= '1';
+                hwif_in.rx_frame_sync_status.frame_sync_errors.we <= '1';
             END IF;
         END IF;
     END PROCESS we_delay_proc;
@@ -446,8 +439,8 @@ BEGIN
 
 	-- Lock status
 
-    usls1_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, cst_unlock_f1, hwif_in.symbol_lock_status.unlock_f1.we);
-    usls2_a: pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, cst_unlock_f2, hwif_in.symbol_lock_status.unlock_f2.we);
+    usls1_a: ENTITY work.pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, cst_unlock_f1, hwif_in.symbol_lock_status.unlock_f1.we);
+    usls2_a: ENTITY work.pulse_detect PORT MAP (s_axi_aclk, NOT s_axi_aresetn, cst_unlock_f2, hwif_in.symbol_lock_status.unlock_f2.we);
 	hwif_in.symbol_lock_status.f1f2.next_q 		<= cst_lock_f1 AND cst_lock_f2;
 	hwif_in.symbol_lock_status.f1.next_q 		<= cst_lock_f1;
 	hwif_in.symbol_lock_status.f2.next_q 		<= cst_lock_f2;

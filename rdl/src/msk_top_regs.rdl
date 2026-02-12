@@ -198,8 +198,6 @@ addrmap msk_top_regs {
                     2 - Read the register";
             sw = rw; 
             hw = w; 
-            we = true;
-            swmod = true;
         } data[31:0] = 0;
     };
 
@@ -220,8 +218,6 @@ addrmap msk_top_regs {
             name = "Tx Enable Count";
             sw = rw; 
             hw = w; 
-            we = true;
-            swmod = true;
         } data[31:0] = 0;
     };
 
@@ -407,8 +403,6 @@ addrmap msk_top_regs {
                     2 - Read the register";
             sw = rw; 
             hw = w; 
-            we = true;
-            swmod = true;
         } data[31:0] = 0;
     };
 
@@ -430,8 +424,6 @@ addrmap msk_top_regs {
                     2 - Read the register";
             sw = rw; 
             hw = w; 
-            we = true;
-            swmod = true;
         } data[31:0] = 0;
     };
 
@@ -450,8 +442,6 @@ addrmap msk_top_regs {
                     2 - Read the register";
             sw = rw; 
             hw = w; 
-            we = true;
-            swmod = true;
         } data[31:0] = 0;
     };
 
@@ -472,8 +462,6 @@ addrmap msk_top_regs {
                     2 - Read the register";
             sw = rw; 
             hw = w; 
-            we = true;
-            swmod = true;
         } data[31:0] = 0;
     };
 
@@ -534,8 +522,6 @@ addrmap msk_top_regs {
                     [/list]";
             sw = rw; 
             hw = w; 
-            we = true;
-            swmod = true;
         } data[22:0] = 0;
     };
 
@@ -547,8 +533,6 @@ addrmap msk_top_regs {
             fieldwidth = 32;
             sw = rw; 
             hw = w; 
-            we = true;
-            swmod = true;
         } data[31:0] = 0;
     };
 
@@ -571,8 +555,6 @@ addrmap msk_top_regs {
             fieldwidth = 1;
             sw = r; 
             hw = w; 
-            we = true;
-            rclr = true;
         } frame_buffer_overflow = 0;
         field {
             name = "Frames Received";
@@ -580,8 +562,6 @@ addrmap msk_top_regs {
             fieldwidth = 24;
             sw = rw; 
             hw = w; 
-            swmod = true;
-            we = true;
         } frames_received = 0;
         field {
             name = "Frames Sync Errors";
@@ -589,8 +569,6 @@ addrmap msk_top_regs {
             fieldwidth = 6;
             sw = rw; 
             hw = w; 
-            swmod = true;
-            we = true;
         } frame_sync_errors = 0;
     };
 
@@ -649,8 +627,6 @@ addrmap msk_top_regs {
             fieldwidth = 1;
             sw = r; 
             hw = w; 
-            rclr = true;
-            we = true;
         } unlock_f1 = 0;
         field {
             name = "F2 unlocked since last read";
@@ -659,8 +635,6 @@ addrmap msk_top_regs {
             fieldwidth = 1;
             sw = r; 
             hw = w; 
-            rclr = true;
-            we = true;
         } unlock_f2 = 0;
     };
 
