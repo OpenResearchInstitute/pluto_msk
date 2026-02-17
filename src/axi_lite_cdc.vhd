@@ -120,8 +120,8 @@ END ENTITY axi_lite_cdc;
 ARCHITECTURE rtl OF axi_lite_cdc IS
 
 	-- Reset synchronizer (async assert, sync deassert into m_axi_aclk)
-	SIGNAL rst_meta  : std_logic := '1';
-	SIGNAL rst_sync  : std_logic := '1';
+	SIGNAL rst_meta  : std_logic;
+	SIGNAL rst_sync  : std_logic;
 
 	-- Write path signals --
 
@@ -133,10 +133,10 @@ ARCHITECTURE rtl OF axi_lite_cdc IS
 	SIGNAL s_wr_data     : std_logic_vector(DATA_WIDTH-1 DOWNTO 0);
 	SIGNAL s_wr_strb     : std_logic_vector(DATA_WIDTH/8-1 DOWNTO 0);
 	SIGNAL s_wr_bresp    : std_logic_vector(1 DOWNTO 0);
-	SIGNAL wr_req_toggle : std_logic := '0';
-	SIGNAL wr_ack_sync1  : std_logic := '0';
-	SIGNAL wr_ack_sync2  : std_logic := '0';
-	SIGNAL wr_ack_sync3  : std_logic := '0';
+	SIGNAL wr_req_toggle : std_logic;
+	SIGNAL wr_ack_sync1  : std_logic;
+	SIGNAL wr_ack_sync2  : std_logic;
+	SIGNAL wr_ack_sync3  : std_logic;
 
 	-- Master side
 	TYPE m_wr_state_t IS (ST_MWR_IDLE, ST_MWR_ADDR, ST_MWR_DATA, ST_MWR_RESP);
@@ -146,10 +146,12 @@ ARCHITECTURE rtl OF axi_lite_cdc IS
 	SIGNAL m_wr_data     : std_logic_vector(DATA_WIDTH-1 DOWNTO 0);
 	SIGNAL m_wr_strb     : std_logic_vector(DATA_WIDTH/8-1 DOWNTO 0);
 	SIGNAL m_wr_bresp    : std_logic_vector(1 DOWNTO 0);
-	SIGNAL wr_ack_toggle : std_logic := '0';
-	SIGNAL wr_req_sync1  : std_logic := '0';
-	SIGNAL wr_req_sync2  : std_logic := '0';
-	SIGNAL wr_req_last   : std_logic := '0';
+	SIGNAL m_wr_avld 	 : std_logic;
+	SIGNAL m_wr_wvld 	 : std_logic;
+	SIGNAL wr_ack_toggle : std_logic;
+	SIGNAL wr_req_sync1  : std_logic;
+	SIGNAL wr_req_sync2  : std_logic;
+	SIGNAL wr_req_last   : std_logic;
 
 	-- Read path signals --
 
@@ -160,10 +162,10 @@ ARCHITECTURE rtl OF axi_lite_cdc IS
 	SIGNAL s_rd_prot     : std_logic_vector(2 DOWNTO 0);
 	SIGNAL s_rd_rdata    : std_logic_vector(DATA_WIDTH-1 DOWNTO 0);
 	SIGNAL s_rd_rresp    : std_logic_vector(1 DOWNTO 0);
-	SIGNAL rd_req_toggle : std_logic := '0';
-	SIGNAL rd_ack_sync1  : std_logic := '0';
-	SIGNAL rd_ack_sync2  : std_logic := '0';
-	SIGNAL rd_ack_sync3  : std_logic := '0';
+	SIGNAL rd_req_toggle : std_logic;
+	SIGNAL rd_ack_sync1  : std_logic;
+	SIGNAL rd_ack_sync2  : std_logic;
+	SIGNAL rd_ack_sync3  : std_logic;
 
 	-- Master side
 	TYPE m_rd_state_t IS (ST_MRD_IDLE, ST_MRD_ADDR, ST_MRD_RESP);
@@ -172,10 +174,10 @@ ARCHITECTURE rtl OF axi_lite_cdc IS
 	SIGNAL m_rd_prot     : std_logic_vector(2 DOWNTO 0);
 	SIGNAL m_rd_rdata    : std_logic_vector(DATA_WIDTH-1 DOWNTO 0);
 	SIGNAL m_rd_rresp    : std_logic_vector(1 DOWNTO 0);
-	SIGNAL rd_ack_toggle : std_logic := '0';
-	SIGNAL rd_req_sync1  : std_logic := '0';
-	SIGNAL rd_req_sync2  : std_logic := '0';
-	SIGNAL rd_req_last   : std_logic := '0';
+	SIGNAL rd_ack_toggle : std_logic;
+	SIGNAL rd_req_sync1  : std_logic;
+	SIGNAL rd_req_sync2  : std_logic;
+	SIGNAL rd_req_last   : std_logic;
 
 BEGIN
 
@@ -207,6 +209,12 @@ BEGIN
 				wr_ack_sync1  <= '0';
 				wr_ack_sync2  <= '0';
 				wr_ack_sync3  <= '0';
+				s_wr_addr 	  <= (OTHERS => '0');
+				s_wr_prot	  <= (OTHERS => '0');
+				s_wr_data 	  <= (OTHERS => '0');
+				s_wr_strb 	  <= (OTHERS => '0');
+				s_wr_bresp 	  <= (OTHERS => '0');
+
 			ELSE
 				-- 2-FF synchronizer for ack toggle from master
 				wr_ack_sync1 <= wr_ack_toggle;
@@ -252,13 +260,20 @@ BEGIN
 		IF rising_edge(m_axi_aclk) THEN
 			IF rst_sync = '1' THEN
 				m_wr_state    <= ST_MWR_IDLE;
+				wr_req_sync1  <= '0';
+				wr_req_sync2  <= '0';
 				wr_ack_toggle <= '0';
 				wr_req_sync1  <= '0';
 				wr_req_sync2  <= '0';
 				wr_req_last   <= '0';
-				m_axi_awvalid <= '0';
-				m_axi_wvalid  <= '0';
+				m_wr_avld 	  <= '0';
+				m_wr_wvld  	  <= '0';
 				m_axi_bready  <= '0';
+				m_wr_avld 	  <= '0';
+				m_wr_addr 	  <= (OTHERS => '0');
+				m_wr_prot 	  <= (OTHERS => '0');
+				m_wr_data 	  <= (OTHERS => '0');
+				m_wr_strb 	  <= (OTHERS => '0');
 			ELSE
 				-- 2-FF synchronizer for req toggle from slave
 				wr_req_sync1 <= wr_req_toggle;
@@ -266,8 +281,8 @@ BEGIN
 
 				CASE m_wr_state IS
 					WHEN ST_MWR_IDLE =>
-						m_axi_awvalid <= '0';
-						m_axi_wvalid  <= '0';
+						m_wr_avld 	  <= '0';
+						m_wr_wvld  	  <= '0';
 						m_axi_bready  <= '0';
 						IF wr_req_sync2 /= wr_req_last THEN
 							wr_req_last   <= wr_req_sync2;
@@ -275,20 +290,20 @@ BEGIN
 							m_wr_prot     <= s_wr_prot;
 							m_wr_data     <= s_wr_data;
 							m_wr_strb     <= s_wr_strb;
-							m_axi_awvalid <= '1';
-							m_axi_wvalid  <= '1';
+							m_wr_avld 	  <= '1';
+							m_wr_wvld     <= '1';
 							m_wr_state    <= ST_MWR_ADDR;
 						END IF;
 
 					WHEN ST_MWR_ADDR =>
 						IF m_axi_awready = '1' THEN
-							m_axi_awvalid <= '0';
+							m_wr_avld 	 <= '0';
 						END IF;
 						IF m_axi_wready = '1' THEN
-							m_axi_wvalid <= '0';
+							m_wr_wvld    <= '0';
 						END IF;
-						IF (m_axi_awready = '1' OR m_axi_awvalid = '0') AND
-						   (m_axi_wready = '1' OR m_axi_wvalid = '0') THEN
+						IF (m_axi_awready = '1' OR m_wr_avld = '0') AND
+						   (m_axi_wready = '1'  OR m_wr_wvld = '0') THEN
 							m_axi_bready <= '1';
 							m_wr_state   <= ST_MWR_RESP;
 						END IF;
@@ -308,10 +323,12 @@ BEGIN
 		END IF;
 	END PROCESS m_wr_fsm;
 
-	m_axi_awaddr <= m_wr_addr;
-	m_axi_awprot <= m_wr_prot;
-	m_axi_wdata  <= m_wr_data;
-	m_axi_wstrb  <= m_wr_strb;
+	m_axi_awaddr 	<= m_wr_addr;
+	m_axi_awprot 	<= m_wr_prot;
+	m_axi_wdata  	<= m_wr_data;
+	m_axi_wstrb  	<= m_wr_strb;
+	m_axi_awvalid 	<= m_wr_avld;
+	m_axi_wvalid 	<= m_wr_wvld;
 
 	----------------------------------------------------------------------
 	-- READ PATH — Slave side FSM (s_axi_aclk domain)
@@ -325,6 +342,10 @@ BEGIN
 				rd_ack_sync1  <= '0';
 				rd_ack_sync2  <= '0';
 				rd_ack_sync3  <= '0';
+				s_rd_addr 	  <= (OTHERS => '0');
+				s_rd_prot 	  <= (OTHERS => '0');
+				s_rd_rdata 	  <= (OTHERS => '0');
+				s_rd_rresp 	  <= (OTHERS => '0');
 			ELSE
 				-- 2-FF synchronizer for ack toggle from master
 				rd_ack_sync1 <= rd_ack_toggle;
@@ -375,6 +396,11 @@ BEGIN
 				rd_req_last   <= '0';
 				m_axi_arvalid <= '0';
 				m_axi_rready  <= '0';
+				m_rd_addr 	  <= (OTHERS => '0');
+				m_rd_prot 	  <= (OTHERS => '0');
+				m_axi_rready  <= '0';
+				m_rd_rdata    <= (OTHERS => '0');
+				m_rd_rresp    <= (OTHERS => '0');
 			ELSE
 				-- 2-FF synchronizer for req toggle from slave
 				rd_req_sync1 <= rd_req_toggle;
