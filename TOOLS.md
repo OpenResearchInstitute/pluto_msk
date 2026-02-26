@@ -58,16 +58,19 @@ Other waveform viewers maybe used, but may not have all the features supported b
 * [Wavedrom](https://wavedrom.com) - timing diagram editor
 * [Markdown](https://www.markdownguide.org) - Light weight documentation markup language
 * [Asciidoctor](https://asciidoctor.org) - Documentation markup language
-* [MathJax]
+* [Short Math Guide for LATEX](http://mirrors.rit.edu/CTAN/info/short-math-guide/short-math-guide.pdf)
 
 # Editors and IDEs
 
 Any editing solution will work. If you don't have an established workflow the following options may be useful.
 
 * [VSCode](https://code.visualstudio.com) or [VSCodium](https://vscodium.com) with the following extensions
-    * [AsciiDoc] - if using AsciiDoctor
-    * [SystemRDL] - for SystemRDL syntax highlighting - (For VSCodium must be installed from .vsix file)
-    * [VaporView] - Waveform display
-    * [Surfer] - Waveform display
-    * [Claude Code] - for AI agent integration
+    * [AsciiDoc](https://open-vsx.org/extension/asciidoctor/asciidoctor-vscode)
+    * [SystemRDL language support for VS Code](https://github.com/SystemRDL/vscode-systemrdl)
+        * For VSCodium the extension must be installed from the .vsix file
+    * [VaporView](https://marketplace.visualstudio.com/items?itemName=lramseyer.vaporview) - Waveform display
+    * [Surfer](https://marketplace.visualstudio.com/items?itemName=surfer-project.surfer) - Waveform display
+    * [Waveform Render](https://marketplace.visualstudio.com/items?itemName=bmpenuelas.waveform-render) - WaveDrom viewer
+    * [Draw.io](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio)
+
 
