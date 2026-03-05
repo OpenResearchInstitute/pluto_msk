@@ -561,6 +561,12 @@ class duc:
             self.sin = math.sin(2*math.pi*self.lo*self.time)
             self.cos = math.cos(2*math.pi*self.lo*self.time)
 
+            # tx_sample_I = self.cos * self.dut.tx_samples_I.value.to_signed() - \
+            #               self.sin * self.dut.tx_samples_Q.value.to_signed()
+
+            # tx_sample_Q = self.sin * self.dut.tx_samples_I.value.to_signed() + \
+            #               self.cos * self.dut.tx_samples_Q.value.to_signed()
+
             self.tx_samples_I_up.append(self.cos * self.dut.tx_samples_I.value.to_signed())
             self.tx_samples_Q_up.append(self.sin * self.dut.tx_samples_Q.value.to_signed())
             self.tx_samples_IQ_mod.append(self.tx_samples_I_up[-1] + self.tx_samples_Q_up[-1])
@@ -601,12 +607,17 @@ class ddc:
             self.time += self.sample_period
 
             rx_sample = self.duc.tx_samples_IQ_mod[-1]
+            rx_sample_I = self.duc.tx_samples_I_up[-1]
+            rx_sample_Q = self.duc.tx_samples_Q_up[-1]
 
             self.sin = math.sin(2*math.pi*self.lo*self.time)
             self.cos = math.cos(2*math.pi*self.lo*self.time)
 
             rx_sample_I_dn = self.cos * rx_sample
-            rx_sample_Q_dn = self.sin * rx_sample
+            rx_sample_Q_dn = -self.sin * rx_sample
+
+            # rx_sample_I_dn = self.cos * rx_sample_I - self.sin * rx_sample_Q
+            # rx_sample_Q_dn = self.sin * rx_sample_I + self.cos * rx_sample_Q
 
             self.rx_samples_I_dn.append(rx_sample_I_dn)
             self.rx_samples_Q_dn.append(rx_sample_Q_dn)
@@ -775,7 +786,7 @@ async def msk_test_1(dut):
     dut._log.info("releasing init...")
     await regs.MSK_Init.write(0)    
     dut._log.info("asserting ptt...")
-    await regs.MSK_Control.write((diff_enc_loopback << 4) + (rx_invert <<2) + ptt)    
+    await regs.MSK_Control.write((diff_enc_loopback << 4) + (rx_invert <<2) + (digital_loopback << 1) + ptt)    
 
     await RisingEdge(dut.clk)
 
