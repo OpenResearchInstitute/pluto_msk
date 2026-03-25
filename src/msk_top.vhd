@@ -420,6 +420,8 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL tx_sync_f1			: std_logic;
 	SIGNAL tx_sync_f2			: std_logic;
 
+	SIGNAL tx_shift 			: std_logic_vector(2 DOWNTO 0);
+
 	SIGNAL pd_alpha1			: std_logic_vector(17 DOWNTO 0);
 	SIGNAL pd_alpha2			: std_logic_vector(17 DOWNTO 0);
 	SIGNAL pd_power 			: std_logic_vector(22 DOWNTO 0);
@@ -741,6 +743,8 @@ BEGIN
 			tx_sync_cnt 	=> tx_sync_cnt,
 			tx_sync_force	=> tx_sync_force,
 			tx_sync_pat 	=> tx_sync_pat,
+
+			tx_shift 		=> tx_shift,
 
 			tx_data 		=> prbs_data_bit,
 			tx_req 			=> tx_req,
@@ -1197,6 +1201,7 @@ BEGIN
 		tx_sync_pat 		=> tx_sync_pat,
 		tx_sync_f1			=> tx_sync_f1,
 		tx_sync_f2			=> tx_sync_f2,
+		tx_shift 			=> tx_shift,
 		pd_alpha1			=> pd_alpha1,
 		pd_alpha2			=> pd_alpha2,
 

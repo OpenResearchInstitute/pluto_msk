@@ -642,7 +642,7 @@ async def msk_test_1(dut):
 
     plot = True
 
-    run_time = 15000 # microseconds
+    run_time = 50000 # microseconds
 
     # p_gain = 579
     # i_gain = 128
@@ -674,6 +674,8 @@ async def msk_test_1(dut):
 
     tx_sample_rate = 61.44e6
     tx_sample_period = 1/tx_sample_rate
+
+    tx_shift = 4
 
     tx_rx_sample_ratio = 25
 
@@ -786,7 +788,7 @@ async def msk_test_1(dut):
     dut._log.info("releasing init...")
     await regs.MSK_Init.write(0)    
     dut._log.info("asserting ptt...")
-    await regs.MSK_Control.write((diff_enc_loopback << 4) + (rx_invert <<2) + (digital_loopback << 1) + ptt)    
+    await regs.MSK_Control.write((tx_shift << 8) + (diff_enc_loopback << 4) + (rx_invert <<2) + (digital_loopback << 1) + ptt)    
 
     await RisingEdge(dut.clk)
 

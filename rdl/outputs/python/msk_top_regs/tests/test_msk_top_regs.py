@@ -215,6 +215,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.MSK_Control.diff_encoder_loopback'):
             self.assertEqual(self.dut.MSK_Control.diff_encoder_loopback.inst_name, 'diff_encoder_loopback') # type: ignore[union-attr]
             self.assertEqual(self.dut.MSK_Control.diff_encoder_loopback.full_inst_name, 'msk_top_regs.MSK_Control.diff_encoder_loopback')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.MSK_Control.reserved'):
+            self.assertEqual(self.dut.MSK_Control.reserved.inst_name, 'reserved') # type: ignore[union-attr]
+            self.assertEqual(self.dut.MSK_Control.reserved.full_inst_name, 'msk_top_regs.MSK_Control.reserved')  # type: ignore[union-attr]
+        with self.subTest(msg='node: msk_top_regs.MSK_Control.tx_shift'):
+            self.assertEqual(self.dut.MSK_Control.tx_shift.inst_name, 'tx_shift') # type: ignore[union-attr]
+            self.assertEqual(self.dut.MSK_Control.tx_shift.full_inst_name, 'msk_top_regs.MSK_Control.tx_shift')  # type: ignore[union-attr]
         with self.subTest(msg='node: msk_top_regs.MSK_Status.demod_sync_lock'):
             self.assertEqual(self.dut.MSK_Status.demod_sync_lock.inst_name, 'demod_sync_lock') # type: ignore[union-attr]
             self.assertEqual(self.dut.MSK_Status.demod_sync_lock.full_inst_name, 'msk_top_regs.MSK_Status.demod_sync_lock')  # type: ignore[union-attr]
@@ -778,6 +784,20 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             
                 
             self.assertEqual(self.dut.MSK_Control.diff_encoder_loopback.rdl_name, "Differential Encoder -\u003e Decoder Loopback Enable") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.MSK_Control.reserved'):
+            
+                
+            self.assertIsNone(self.dut.MSK_Control.reserved.rdl_name)  # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.MSK_Control.tx_shift'):
+            
+                
+            self.assertEqual(self.dut.MSK_Control.tx_shift.rdl_name, "Tx Sample Shoift") # type: ignore[union-attr]
                 
             
 
@@ -1567,7 +1587,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.MSK_Control.ptt'):
             
                 
-            self.assertEqual(self.dut.MSK_Control.ptt.rdl_desc, "0 -\u003e PTT Disabled\n1 -\u003e PTT Enabled") # type: ignore[union-attr]
+            self.assertEqual(self.dut.MSK_Control.ptt.rdl_desc, "0 -\u003e PTT Disabled\n\n1 -\u003e PTT Enabled") # type: ignore[union-attr]
                 
             
 
@@ -1581,7 +1601,7 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='node: msk_top_regs.MSK_Control.rx_invert'):
             
                 
-            self.assertEqual(self.dut.MSK_Control.rx_invert.rdl_desc, "0 -\u003e Rx data normal\n1 -\u003e Rx data inverted") # type: ignore[union-attr]
+            self.assertEqual(self.dut.MSK_Control.rx_invert.rdl_desc, "0 -\u003e Rx data normal\n\n1 -\u003e Rx data inverted") # type: ignore[union-attr]
                 
             
 
@@ -1596,6 +1616,20 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             
                 
             self.assertEqual(self.dut.MSK_Control.diff_encoder_loopback.rdl_desc, "0 -\u003e Differential Encoder -\u003e Decoder loopback disabled\n\n1 -\u003e Differential Encoder -\u003e Decoder loopback enabled") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.MSK_Control.reserved'):
+            
+                
+            self.assertEqual(self.dut.MSK_Control.reserved.rdl_desc, "Reserved") # type: ignore[union-attr]
+                
+            
+
+        with self.subTest(msg='node: msk_top_regs.MSK_Control.tx_shift'):
+            
+                
+            self.assertEqual(self.dut.MSK_Control.tx_shift.rdl_desc, "Shift left from 0 to 4 bits") # type: ignore[union-attr]
                 
             
 
@@ -2534,6 +2568,38 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
             self.assertEqual(fut.bitmask,0x10)
             self.assertEqual(fut.inverse_bitmask,0xFFFFFFEF)
             self.assertEqual(fut.max_value,0x1)
+                
+            self.assertEqual(fut.default,0)
+                
+            self.assertEqual(fut.is_volatile,False)
+        with self.subTest(msg='field: msk_top_regs.MSK_Control.reserved'):
+            # test properties of field: msk_top_regs.MSK_Control.reserved
+            fut = self.dut.MSK_Control.reserved # type: ignore[union-attr]
+            if not isinstance(fut, Field):
+                raise TypeError('This test relies on node being of type Field')
+            self.assertEqual(fut.lsb,5)
+            self.assertEqual(fut.msb,7)
+            self.assertEqual(fut.low,5)
+            self.assertEqual(fut.high,7)
+            self.assertEqual(fut.bitmask,0xE0)
+            self.assertEqual(fut.inverse_bitmask,0xFFFFFF1F)
+            self.assertEqual(fut.max_value,0x7)
+                
+            self.assertEqual(fut.default,0)
+                
+            self.assertEqual(fut.is_volatile,False)
+        with self.subTest(msg='field: msk_top_regs.MSK_Control.tx_shift'):
+            # test properties of field: msk_top_regs.MSK_Control.tx_shift
+            fut = self.dut.MSK_Control.tx_shift # type: ignore[union-attr]
+            if not isinstance(fut, Field):
+                raise TypeError('This test relies on node being of type Field')
+            self.assertEqual(fut.lsb,8)
+            self.assertEqual(fut.msb,10)
+            self.assertEqual(fut.low,8)
+            self.assertEqual(fut.high,10)
+            self.assertEqual(fut.bitmask,0x700)
+            self.assertEqual(fut.inverse_bitmask,0xFFFFF8FF)
+            self.assertEqual(fut.max_value,0x7)
                 
             self.assertEqual(fut.default,0)
                 
@@ -3626,6 +3692,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         
         
         
+        
+        
 
     def test_user_defined_properties(self)  -> None:
         """
@@ -3842,6 +3910,14 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         with self.subTest(msg='register: msk_top_regs.MSK_Control.diff_encoder_loopback'):
             
             self.assertDictEqual(self.dut.MSK_Control.diff_encoder_loopback.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.MSK_Control.reserved'):
+            
+            self.assertDictEqual(self.dut.MSK_Control.reserved.udp,{})
+            
+        with self.subTest(msg='register: msk_top_regs.MSK_Control.tx_shift'):
+            
+            self.assertDictEqual(self.dut.MSK_Control.tx_shift.udp,{})
             
         with self.subTest(msg='register: msk_top_regs.MSK_Status.demod_sync_lock'):
             
@@ -8666,6 +8742,174 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                     await fut.write(-1)
 
         # test access operations (read and/or write) to field:
+        # msk_top_regs.MSK_Control.reserved
+        with self.subTest(msg='field: msk_top_regs.MSK_Control.reserved'):
+            fut = self.dut.MSK_Control.reserved # type: ignore[union-attr]
+            with patch(base_name + '.write_addr_space') as write_callback_mock,\
+                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
+
+                
+                
+                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a readable async field')
+                
+
+                # read back - zero, this is achieved by setting the register to inverse bitmask
+                read_callback_mock.return_value = 0xFFFFFF1F
+                self.assertEqual(await fut.read(),
+                                 0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=12,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - max_value, this is achieved by setting the register to bitmask
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0xE0
+                self.assertEqual(await fut.read(),
+                                 0x7)
+                read_callback_mock.assert_called_once_with(
+                                    addr=12,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - random value
+                read_callback_mock.reset_mock()
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.return_value = random_value
+                random_field_value = (random_value & 0xE0) >> 5
+                self.assertEqual(await fut.read(),
+                                 random_field_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=12,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0x7 + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0x7, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.MSK_Control.reserved.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_called_once_with(
+                                    addr=12,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+                        
+                        write_callback_mock.assert_called_once_with(
+                                    addr=12,
+                                    width=32,
+                                    accesswidth=self.dut.MSK_Control.reserved.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0xFFFFFF1F) | \
+                                         (0xE0 & (field_value << 5)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0x7 + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
+
+        # test access operations (read and/or write) to field:
+        # msk_top_regs.MSK_Control.tx_shift
+        with self.subTest(msg='field: msk_top_regs.MSK_Control.tx_shift'):
+            fut = self.dut.MSK_Control.tx_shift # type: ignore[union-attr]
+            with patch(base_name + '.write_addr_space') as write_callback_mock,\
+                patch(base_name + '.read_addr_space', return_value=0) as read_callback_mock:
+
+                
+                
+                if not isinstance(fut, (FieldAsyncReadOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a readable async field')
+                
+
+                # read back - zero, this is achieved by setting the register to inverse bitmask
+                read_callback_mock.return_value = 0xFFFFF8FF
+                self.assertEqual(await fut.read(),
+                                 0)
+                read_callback_mock.assert_called_once_with(
+                                    addr=12,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - max_value, this is achieved by setting the register to bitmask
+                read_callback_mock.reset_mock()
+                read_callback_mock.return_value = 0x700
+                self.assertEqual(await fut.read(),
+                                 0x7)
+                read_callback_mock.assert_called_once_with(
+                                    addr=12,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # read back - random value
+                read_callback_mock.reset_mock()
+                random_value = random.randrange(0, 0xFFFFFFFF+1)
+                read_callback_mock.return_value = random_value
+                random_field_value = (random_value & 0x700) >> 8
+                self.assertEqual(await fut.read(),
+                                 random_field_value)
+                read_callback_mock.assert_called_once_with(
+                                    addr=12,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+
+                # at the end of the read tests the write should not have been called
+                read_callback_mock.reset_mock()
+                write_callback_mock.assert_not_called()
+                # check the write
+                
+                if not isinstance(fut, (FieldAsyncWriteOnly, FieldAsyncReadWrite)):
+                    raise TypeError('Test can not proceed as the fut is not a writable async field')
+                
+
+                random_reg_value = random.randrange(0, 0xFFFFFFFF + 1)
+                random_field_value = random.randrange(0, 0x7 + 1)
+                for reg_base_value in [0, 0xFFFFFFFF, random_reg_value]:
+                    for field_value in [0, 0x7, random_field_value]:
+                        read_callback_mock.reset_mock()
+                        write_callback_mock.reset_mock()
+                        read_callback_mock.return_value = reg_base_value
+
+                        await self.dut.MSK_Control.tx_shift.write(field_value) # type: ignore[union-attr]
+
+                        
+                        read_callback_mock.assert_called_once_with(
+                                    addr=12,
+                                    width=32,
+                                    accesswidth=fut.parent_register.accesswidth)
+                        
+                        write_callback_mock.assert_called_once_with(
+                                    addr=12,
+                                    width=32,
+                                    accesswidth=self.dut.MSK_Control.tx_shift.parent_register.accesswidth, # type: ignore[union-attr]
+                                    data=(reg_base_value & 0xFFFFF8FF) | \
+                                         (0x700 & (field_value << 8)))
+                        
+
+                # check invalid write values bounce
+                with self.assertRaises(ValueError):
+                    await fut.write(0x7 + 1)
+
+                with self.assertRaises(ValueError):
+                    await fut.write(-1)
+
+        # test access operations (read and/or write) to field:
         # msk_top_regs.MSK_Status.demod_sync_lock
         with self.subTest(msg='field: msk_top_regs.MSK_Status.demod_sync_lock'):
             fut = self.dut.MSK_Status.demod_sync_lock # type: ignore[union-attr]
@@ -13477,6 +13721,28 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                     
                 
             
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x7 + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFFF1F) | (rand_field_value << 5)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x7 + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFF8FF) | (rand_field_value << 8)
+                        
+                    
+                
+            
             with patch(base_name + '.write_addr_space') as write_callback_mock, \
                  patch(base_name + '.read_addr_space', return_value=rand_reg_value) as read_callback_mock:
                 # the read_fields method gets a dictionary back
@@ -13487,7 +13753,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                           'loopback_ena' : await self.dut.MSK_Control.loopback_ena.read(),
                                           'rx_invert' : await self.dut.MSK_Control.rx_invert.read(),
                                           'clear_counts' : await self.dut.MSK_Control.clear_counts.read(),
-                                          'diff_encoder_loopback' : await self.dut.MSK_Control.diff_encoder_loopback.read()
+                                          'diff_encoder_loopback' : await self.dut.MSK_Control.diff_encoder_loopback.read(),
+                                          'reserved' : await self.dut.MSK_Control.reserved.read(),
+                                          'tx_shift' : await self.dut.MSK_Control.tx_shift.read()
                                         }
 
                 read_callback_mock.reset_mock()
@@ -15215,6 +15483,28 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                     
                 
             
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x7 + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFFF1F) | (rand_field_value << 5)
+                        
+                    
+                
+            
+                
+                    
+                        
+            rand_field_value = random.randrange(0, 0x7 + 1)
+                        
+                        
+            rand_reg_value = (rand_reg_value & 0xFFFFF8FF) | (rand_field_value << 8)
+                        
+                    
+                
+            
             with patch(base_name + '.write_addr_space') as write_callback_mock, \
                  patch(base_name + '.read_addr_space', return_value=rand_reg_value) as read_callback_mock:
 
@@ -15225,7 +15515,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                           'loopback_ena' : await self.dut.MSK_Control.loopback_ena.read(),  # type: ignore[union-attr]
                                           'rx_invert' : await self.dut.MSK_Control.rx_invert.read(),  # type: ignore[union-attr]
                                           'clear_counts' : await self.dut.MSK_Control.clear_counts.read(),  # type: ignore[union-attr]
-                                          'diff_encoder_loopback' : await self.dut.MSK_Control.diff_encoder_loopback.read()  # type: ignore[union-attr]
+                                          'diff_encoder_loopback' : await self.dut.MSK_Control.diff_encoder_loopback.read(),  # type: ignore[union-attr]
+                                          'reserved' : await self.dut.MSK_Control.reserved.read(),  # type: ignore[union-attr]
+                                          'tx_shift' : await self.dut.MSK_Control.tx_shift.read()  # type: ignore[union-attr]
                                         }
                 read_callback_mock.reset_mock()
 
@@ -15246,6 +15538,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                      )
                     self.assertEqual(reference_read_fields['diff_encoder_loopback'],
                                       await reg_context.get_child_by_system_rdl_name('diff_encoder_loopback').read()
+                                     )
+                    self.assertEqual(reference_read_fields['reserved'],
+                                      await reg_context.get_child_by_system_rdl_name('reserved').read()
+                                     )
+                    self.assertEqual(reference_read_fields['tx_shift'],
+                                      await reg_context.get_child_by_system_rdl_name('tx_shift').read()
                                      )
                     pass
 
@@ -17109,7 +17407,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                                    'loopback_ena',
                                                    'rx_invert',
                                                    'clear_counts',
-                                                   'diff_encoder_loopback'
+                                                   'diff_encoder_loopback',
+                                                   'reserved',
+                                                   'tx_shift'
                                                    ])
         with self.subTest(msg='register: msk_top_regs.Tx_Bit_Count'):
             await write_field_combinations(reg=self.dut.Tx_Bit_Count,
@@ -17335,7 +17635,9 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                                            'loopback_ena',
                                                            'rx_invert',
                                                            'clear_counts',
-                                                           'diff_encoder_loopback'
+                                                           'diff_encoder_loopback',
+                                                           'reserved',
+                                                           'tx_shift'
                                                            ])
             
         with self.subTest(msg='register: msk_top_regs.Tx_Bit_Count'):
@@ -17880,6 +18182,16 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                 # this line is trying to set an illegal value so by definition should fail the type
                 # checks
                 self.dut.MSK_Control.diff_encoder_loopback.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.MSK_Control.reserved'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.MSK_Control.reserved.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
+        with self.subTest(msg='node: msk_top_regs.MSK_Control.tx_shift'):
+            with self.assertRaises(AttributeError):
+                # this line is trying to set an illegal value so by definition should fail the type
+                # checks
+                self.dut.MSK_Control.tx_shift.cppkbrgmgeloagvfgjjeiiushygirh = 1 # type: ignore[attr-defined,union-attr]
         with self.subTest(msg='node: msk_top_regs.MSK_Status.demod_sync_lock'):
             with self.assertRaises(AttributeError):
                 # this line is trying to set an illegal value so by definition should fail the type
@@ -19090,6 +19402,12 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                  self.dut.MSK_Control.diff_encoder_loopback, # type: ignore[union-attr,list-item]
                                         
                                     
+                                 self.dut.MSK_Control.reserved, # type: ignore[union-attr,list-item]
+                                        
+                                    
+                                 self.dut.MSK_Control.tx_shift, # type: ignore[union-attr,list-item]
+                                        
+                                    
                                  
                                          ]
             fields = []
@@ -19106,6 +19424,10 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                          self.dut.MSK_Control.clear_counts, # type: ignore[union-attr,list-item] 
                                             
                                          self.dut.MSK_Control.diff_encoder_loopback, # type: ignore[union-attr,list-item] 
+                                            
+                                         self.dut.MSK_Control.reserved, # type: ignore[union-attr,list-item] 
+                                            
+                                         self.dut.MSK_Control.tx_shift, # type: ignore[union-attr,list-item] 
                                             
                                          
                                          ]
@@ -19124,6 +19446,10 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
                                          self.dut.MSK_Control.clear_counts, # type: ignore[union-attr,list-item] 
                                             
                                          self.dut.MSK_Control.diff_encoder_loopback, # type: ignore[union-attr,list-item] 
+                                            
+                                         self.dut.MSK_Control.reserved, # type: ignore[union-attr,list-item] 
+                                            
+                                         self.dut.MSK_Control.tx_shift, # type: ignore[union-attr,list-item] 
                                             
                                          
                                          ]
@@ -20542,6 +20868,16 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         
         
         
+        self.assertEqual(self.dut.MSK_Control.get_child_by_system_rdl_name('reserved').inst_name, 'reserved')
+        
+        
+        
+        
+        self.assertEqual(self.dut.MSK_Control.get_child_by_system_rdl_name('tx_shift').inst_name, 'tx_shift')
+        
+        
+        
+        
         
         self.assertEqual(self.dut.MSK_Status.get_child_by_system_rdl_name('demod_sync_lock').inst_name, 'demod_sync_lock')
         
@@ -20892,6 +21228,8 @@ class msk_top_regs_single_access(msk_top_regs_TestCase): # type: ignore[valid-ty
         
         
         self.assertEqual(self.dut.symbol_lock_time.get_child_by_system_rdl_name('f2').inst_name, 'f2')
+        
+        
         
         
         

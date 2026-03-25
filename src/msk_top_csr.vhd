@@ -179,6 +179,7 @@ ENTITY msk_top_csr IS
 		tx_sync_f2			: out std_logic;
 		pd_alpha1			: out std_logic_vector(17 DOWNTO 0);
 		pd_alpha2			: out std_logic_vector(17 DOWNTO 0);
+		tx_shift 			: out std_logic_vector( 2 DOWNTO 0);
 
                 -- Debug signals for TX path
                 tx_debug_encoder_tvalid  : IN std_logic;
@@ -511,6 +512,7 @@ hwif_in.tx_async_fifo_rd_wr_ptr.data.next_q <=
     prbs_manual_sync    <= hwif_out.PRBS_Control.prbs_manual_sync.value;
     tx_sync_ena         <= hwif_out.Tx_Sync_Ctrl.tx_sync_ena.value;
     tx_sync_force       <= hwif_out.Tx_Sync_Ctrl.tx_sync_force.value;
+	tx_shift 			<= hwif_out.MSK_Control.tx_shift.value;
 
     -- Static config signals (same clock domain — no CDC needed)
     freq_word_ft		<= hwif_out.Fb_FreqWord.config_data.value;

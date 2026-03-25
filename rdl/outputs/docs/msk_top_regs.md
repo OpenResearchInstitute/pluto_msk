@@ -132,11 +132,13 @@ Don't override. Generated from: msk_top_regs
 |  2 |      rx_invert      |  rw  | 0x0 |             Rx Data Invert Enable             |
 |  3 |     clear_counts    |  rw  | 0x0 |             Clear Status Counters             |
 |  4 |diff_encoder_loopback|  rw  | 0x0 |Differential Encoder -> Decoder Loopback Enable|
+| 7:5|       reserved      |  rw  | 0x0 |                       —                       |
+|10:8|       tx_shift      |  rw  | 0x0 |                Tx Sample Shoift               |
 
 #### ptt field
 
-<p>0 -&gt; PTT Disabled
-1 -&gt; PTT Enabled</p>
+<p>0 -&gt; PTT Disabled</p>
+<p>1 -&gt; PTT Enabled</p>
 
 #### loopback_ena field
 
@@ -145,8 +147,8 @@ Don't override. Generated from: msk_top_regs
 
 #### rx_invert field
 
-<p>0 -&gt; Rx data normal
-1 -&gt; Rx data inverted</p>
+<p>0 -&gt; Rx data normal</p>
+<p>1 -&gt; Rx data inverted</p>
 
 #### clear_counts field
 
@@ -156,6 +158,14 @@ Don't override. Generated from: msk_top_regs
 
 <p>0 -&gt; Differential Encoder -&gt; Decoder loopback disabled</p>
 <p>1 -&gt; Differential Encoder -&gt; Decoder loopback enabled</p>
+
+#### reserved field
+
+<p>Reserved</p>
+
+#### tx_shift field
+
+<p>Shift left from 0 to 4 bits</p>
 
 ### MSK_Status register
 
@@ -876,12 +886,12 @@ Bits 15:00 - read pointer (12-bits)</code></p>
 - Base Offset: 0x9C
 - Size: 0x4
 
-| Bits|      Identifier     | Access|Reset|         Name        |
-|-----|---------------------|-------|-----|---------------------|
-|  0  |  frame_sync_locked  |   r   | 0x0 |   Frame Sync Lock   |
-|  1  |frame_buffer_overflow|r, rclr| 0x0 |Frame Buffer Overflow|
-| 25:2|   frames_received   |   rw  | 0x0 |   Frames Received   |
-|31:26|  frame_sync_errors  |   rw  | 0x0 |  Frames Sync Errors |
+| Bits|      Identifier     |Access|Reset|         Name        |
+|-----|---------------------|------|-----|---------------------|
+|  0  |  frame_sync_locked  |   r  | 0x0 |   Frame Sync Lock   |
+|  1  |frame_buffer_overflow|   r  | 0x0 |Frame Buffer Overflow|
+| 25:2|   frames_received   |  rw  | 0x0 |   Frames Received   |
+|31:26|  frame_sync_errors  |  rw  | 0x0 |  Frames Sync Errors |
 
 #### frame_sync_locked field
 
@@ -926,13 +936,13 @@ Bits 15:00 - read pointer (12-bits)</code></p>
 - Base Offset: 0xA4
 - Size: 0x4
 
-|Bits|Identifier| Access|Reset|            Name           |
-|----|----------|-------|-----|---------------------------|
-|  0 |   f1f2   |   r   | 0x0 |   Symbol Lock F1 and F2   |
-|  1 |    f1    |   r   | 0x0 |       Symbol Lock F1      |
-|  2 |    f2    |   r   | 0x0 |       Symbol Lock F2      |
-|  3 | unlock_f1|r, rclr| 0x0 |F1 unlocked since last read|
-|  4 | unlock_f2|r, rclr| 0x0 |F2 unlocked since last read|
+|Bits|Identifier|Access|Reset|            Name           |
+|----|----------|------|-----|---------------------------|
+|  0 |   f1f2   |   r  | 0x0 |   Symbol Lock F1 and F2   |
+|  1 |    f1    |   r  | 0x0 |       Symbol Lock F1      |
+|  2 |    f2    |   r  | 0x0 |       Symbol Lock F2      |
+|  3 | unlock_f1|   r  | 0x0 |F1 unlocked since last read|
+|  4 | unlock_f2|   r  | 0x0 |F2 unlocked since last read|
 
 #### f1f2 field
 

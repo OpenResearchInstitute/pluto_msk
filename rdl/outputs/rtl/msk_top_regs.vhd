@@ -176,12 +176,24 @@ architecture rtl of msk_top_regs is
         load_next : std_logic;
     end record;
 
+    type \msk_top_regs.MSK_Control.reserved_combo_t\ is record
+        next_q : std_logic_vector(2 downto 0);
+        load_next : std_logic;
+    end record;
+
+    type \msk_top_regs.MSK_Control.tx_shift_combo_t\ is record
+        next_q : std_logic_vector(2 downto 0);
+        load_next : std_logic;
+    end record;
+
     type \msk_top_regs.MSK_Control_combo_t\ is record
         ptt : \msk_top_regs.MSK_Control.ptt_combo_t\;
         loopback_ena : \msk_top_regs.MSK_Control.loopback_ena_combo_t\;
         rx_invert : \msk_top_regs.MSK_Control.rx_invert_combo_t\;
         clear_counts : \msk_top_regs.MSK_Control.clear_counts_combo_t\;
         diff_encoder_loopback : \msk_top_regs.MSK_Control.diff_encoder_loopback_combo_t\;
+        reserved : \msk_top_regs.MSK_Control.reserved_combo_t\;
+        tx_shift : \msk_top_regs.MSK_Control.tx_shift_combo_t\;
     end record;
 
     type \msk_top_regs.Tx_Bit_Count.data_combo_t\ is record
@@ -562,6 +574,11 @@ architecture rtl of msk_top_regs is
         data : \msk_top_regs.rx_async_fifo_rd_wr_ptr.data_combo_t\;
     end record;
 
+    type \msk_top_regs.rx_frame_sync_status.frame_sync_locked_combo_t\ is record
+        next_q : std_logic;
+        load_next : std_logic;
+    end record;
+
     type \msk_top_regs.rx_frame_sync_status.frame_buffer_overflow_combo_t\ is record
         next_q : std_logic;
         load_next : std_logic;
@@ -578,6 +595,7 @@ architecture rtl of msk_top_regs is
     end record;
 
     type \msk_top_regs.rx_frame_sync_status_combo_t\ is record
+        frame_sync_locked : \msk_top_regs.rx_frame_sync_status.frame_sync_locked_combo_t\;
         frame_buffer_overflow : \msk_top_regs.rx_frame_sync_status.frame_buffer_overflow_combo_t\;
         frames_received : \msk_top_regs.rx_frame_sync_status.frames_received_combo_t\;
         frame_sync_errors : \msk_top_regs.rx_frame_sync_status.frame_sync_errors_combo_t\;
@@ -598,6 +616,21 @@ architecture rtl of msk_top_regs is
         symbol_lock_threshold : \msk_top_regs.symbol_lock_control.symbol_lock_threshold_combo_t\;
     end record;
 
+    type \msk_top_regs.symbol_lock_status.f1f2_combo_t\ is record
+        next_q : std_logic;
+        load_next : std_logic;
+    end record;
+
+    type \msk_top_regs.symbol_lock_status.f1_combo_t\ is record
+        next_q : std_logic;
+        load_next : std_logic;
+    end record;
+
+    type \msk_top_regs.symbol_lock_status.f2_combo_t\ is record
+        next_q : std_logic;
+        load_next : std_logic;
+    end record;
+
     type \msk_top_regs.symbol_lock_status.unlock_f1_combo_t\ is record
         next_q : std_logic;
         load_next : std_logic;
@@ -609,8 +642,26 @@ architecture rtl of msk_top_regs is
     end record;
 
     type \msk_top_regs.symbol_lock_status_combo_t\ is record
+        f1f2 : \msk_top_regs.symbol_lock_status.f1f2_combo_t\;
+        f1 : \msk_top_regs.symbol_lock_status.f1_combo_t\;
+        f2 : \msk_top_regs.symbol_lock_status.f2_combo_t\;
         unlock_f1 : \msk_top_regs.symbol_lock_status.unlock_f1_combo_t\;
         unlock_f2 : \msk_top_regs.symbol_lock_status.unlock_f2_combo_t\;
+    end record;
+
+    type \msk_top_regs.symbol_lock_time.f1_combo_t\ is record
+        next_q : std_logic_vector(15 downto 0);
+        load_next : std_logic;
+    end record;
+
+    type \msk_top_regs.symbol_lock_time.f2_combo_t\ is record
+        next_q : std_logic_vector(15 downto 0);
+        load_next : std_logic;
+    end record;
+
+    type \msk_top_regs.symbol_lock_time_combo_t\ is record
+        f1 : \msk_top_regs.symbol_lock_time.f1_combo_t\;
+        f2 : \msk_top_regs.symbol_lock_time.f2_combo_t\;
     end record;
 
     type field_combo_t is record
@@ -653,6 +704,7 @@ architecture rtl of msk_top_regs is
         rx_frame_sync_status : \msk_top_regs.rx_frame_sync_status_combo_t\;
         symbol_lock_control : \msk_top_regs.symbol_lock_control_combo_t\;
         symbol_lock_status : \msk_top_regs.symbol_lock_status_combo_t\;
+        symbol_lock_time : \msk_top_regs.symbol_lock_time_combo_t\;
     end record;
     signal field_combo : field_combo_t;
 
@@ -695,12 +747,22 @@ architecture rtl of msk_top_regs is
         value : std_logic;
     end record;
 
+    type \msk_top_regs.MSK_Control.reserved_storage_t\ is record
+        value : std_logic_vector(2 downto 0);
+    end record;
+
+    type \msk_top_regs.MSK_Control.tx_shift_storage_t\ is record
+        value : std_logic_vector(2 downto 0);
+    end record;
+
     type \msk_top_regs.MSK_Control_storage_t\ is record
         ptt : \msk_top_regs.MSK_Control.ptt_storage_t\;
         loopback_ena : \msk_top_regs.MSK_Control.loopback_ena_storage_t\;
         rx_invert : \msk_top_regs.MSK_Control.rx_invert_storage_t\;
         clear_counts : \msk_top_regs.MSK_Control.clear_counts_storage_t\;
         diff_encoder_loopback : \msk_top_regs.MSK_Control.diff_encoder_loopback_storage_t\;
+        reserved : \msk_top_regs.MSK_Control.reserved_storage_t\;
+        tx_shift : \msk_top_regs.MSK_Control.tx_shift_storage_t\;
     end record;
 
     type \msk_top_regs.Tx_Bit_Count.data_storage_t\ is record
@@ -1035,6 +1097,10 @@ architecture rtl of msk_top_regs is
         data : \msk_top_regs.rx_async_fifo_rd_wr_ptr.data_storage_t\;
     end record;
 
+    type \msk_top_regs.rx_frame_sync_status.frame_sync_locked_storage_t\ is record
+        value : std_logic;
+    end record;
+
     type \msk_top_regs.rx_frame_sync_status.frame_buffer_overflow_storage_t\ is record
         value : std_logic;
     end record;
@@ -1048,6 +1114,7 @@ architecture rtl of msk_top_regs is
     end record;
 
     type \msk_top_regs.rx_frame_sync_status_storage_t\ is record
+        frame_sync_locked : \msk_top_regs.rx_frame_sync_status.frame_sync_locked_storage_t\;
         frame_buffer_overflow : \msk_top_regs.rx_frame_sync_status.frame_buffer_overflow_storage_t\;
         frames_received : \msk_top_regs.rx_frame_sync_status.frames_received_storage_t\;
         frame_sync_errors : \msk_top_regs.rx_frame_sync_status.frame_sync_errors_storage_t\;
@@ -1066,6 +1133,18 @@ architecture rtl of msk_top_regs is
         symbol_lock_threshold : \msk_top_regs.symbol_lock_control.symbol_lock_threshold_storage_t\;
     end record;
 
+    type \msk_top_regs.symbol_lock_status.f1f2_storage_t\ is record
+        value : std_logic;
+    end record;
+
+    type \msk_top_regs.symbol_lock_status.f1_storage_t\ is record
+        value : std_logic;
+    end record;
+
+    type \msk_top_regs.symbol_lock_status.f2_storage_t\ is record
+        value : std_logic;
+    end record;
+
     type \msk_top_regs.symbol_lock_status.unlock_f1_storage_t\ is record
         value : std_logic;
     end record;
@@ -1075,8 +1154,24 @@ architecture rtl of msk_top_regs is
     end record;
 
     type \msk_top_regs.symbol_lock_status_storage_t\ is record
+        f1f2 : \msk_top_regs.symbol_lock_status.f1f2_storage_t\;
+        f1 : \msk_top_regs.symbol_lock_status.f1_storage_t\;
+        f2 : \msk_top_regs.symbol_lock_status.f2_storage_t\;
         unlock_f1 : \msk_top_regs.symbol_lock_status.unlock_f1_storage_t\;
         unlock_f2 : \msk_top_regs.symbol_lock_status.unlock_f2_storage_t\;
+    end record;
+
+    type \msk_top_regs.symbol_lock_time.f1_storage_t\ is record
+        value : std_logic_vector(15 downto 0);
+    end record;
+
+    type \msk_top_regs.symbol_lock_time.f2_storage_t\ is record
+        value : std_logic_vector(15 downto 0);
+    end record;
+
+    type \msk_top_regs.symbol_lock_time_storage_t\ is record
+        f1 : \msk_top_regs.symbol_lock_time.f1_storage_t\;
+        f2 : \msk_top_regs.symbol_lock_time.f2_storage_t\;
     end record;
 
     type field_storage_t is record
@@ -1119,6 +1214,7 @@ architecture rtl of msk_top_regs is
         rx_frame_sync_status : \msk_top_regs.rx_frame_sync_status_storage_t\;
         symbol_lock_control : \msk_top_regs.symbol_lock_control_storage_t\;
         symbol_lock_status : \msk_top_regs.symbol_lock_status_storage_t\;
+        symbol_lock_time : \msk_top_regs.symbol_lock_time_storage_t\;
     end record;
     signal field_storage : field_storage_t;
 
@@ -1634,6 +1730,64 @@ begin
     end process;
     hwif_out.MSK_Control.diff_encoder_loopback.value <= field_storage.MSK_Control.diff_encoder_loopback.value;
 
+    -- Field: msk_top_regs.MSK_Control.reserved
+    process(all)
+        variable next_c: std_logic_vector(2 downto 0);
+        variable load_next_c: std_logic;
+    begin
+        next_c := field_storage.MSK_Control.reserved.value;
+        load_next_c := '0';
+        if decoded_reg_strb.MSK_Control and decoded_req_is_wr then -- SW write
+            next_c := (field_storage.MSK_Control.reserved.value and not decoded_wr_biten(7 downto 5)) or (decoded_wr_data(7 downto 5) and decoded_wr_biten(7 downto 5));
+            load_next_c := '1';
+        end if;
+        field_combo.MSK_Control.reserved.next_q <= next_c;
+        field_combo.MSK_Control.reserved.load_next <= load_next_c;
+    end process;
+    process(clk) begin
+        if false then -- async reset
+            field_storage.MSK_Control.reserved.value <= 3x"0";
+        elsif rising_edge(clk) then
+            if rst then -- sync reset
+                field_storage.MSK_Control.reserved.value <= 3x"0";
+            else
+                if field_combo.MSK_Control.reserved.load_next then
+                    field_storage.MSK_Control.reserved.value <= field_combo.MSK_Control.reserved.next_q;
+                end if;
+            end if;
+        end if;
+    end process;
+    hwif_out.MSK_Control.reserved.value <= field_storage.MSK_Control.reserved.value;
+
+    -- Field: msk_top_regs.MSK_Control.tx_shift
+    process(all)
+        variable next_c: std_logic_vector(2 downto 0);
+        variable load_next_c: std_logic;
+    begin
+        next_c := field_storage.MSK_Control.tx_shift.value;
+        load_next_c := '0';
+        if decoded_reg_strb.MSK_Control and decoded_req_is_wr then -- SW write
+            next_c := (field_storage.MSK_Control.tx_shift.value and not decoded_wr_biten(10 downto 8)) or (decoded_wr_data(10 downto 8) and decoded_wr_biten(10 downto 8));
+            load_next_c := '1';
+        end if;
+        field_combo.MSK_Control.tx_shift.next_q <= next_c;
+        field_combo.MSK_Control.tx_shift.load_next <= load_next_c;
+    end process;
+    process(clk) begin
+        if false then -- async reset
+            field_storage.MSK_Control.tx_shift.value <= 3x"0";
+        elsif rising_edge(clk) then
+            if rst then -- sync reset
+                field_storage.MSK_Control.tx_shift.value <= 3x"0";
+            else
+                if field_combo.MSK_Control.tx_shift.load_next then
+                    field_storage.MSK_Control.tx_shift.value <= field_combo.MSK_Control.tx_shift.next_q;
+                end if;
+            end if;
+        end if;
+    end process;
+    hwif_out.MSK_Control.tx_shift.value <= field_storage.MSK_Control.tx_shift.value;
+
     -- Field: msk_top_regs.Tx_Bit_Count.data
     process(all)
         variable next_c: std_logic_vector(31 downto 0);
@@ -1664,7 +1818,6 @@ begin
             end if;
         end if;
     end process;
-    hwif_out.Tx_Bit_Count.data.swmod <= decoded_reg_strb.Tx_Bit_Count and decoded_req_is_wr and or_reduce(decoded_wr_biten(31 downto 0));
 
     -- Field: msk_top_regs.Tx_Enable_Count.data
     process(all)
@@ -1696,7 +1849,6 @@ begin
             end if;
         end if;
     end process;
-    hwif_out.Tx_Enable_Count.data.swmod <= decoded_reg_strb.Tx_Enable_Count and decoded_req_is_wr and or_reduce(decoded_wr_biten(31 downto 0));
 
     -- Field: msk_top_regs.Fb_FreqWord.config_data
     process(all)
@@ -2375,7 +2527,6 @@ begin
             end if;
         end if;
     end process;
-    hwif_out.PRBS_Bit_Count.data.swmod <= decoded_reg_strb.PRBS_Bit_Count and decoded_req_is_wr and or_reduce(decoded_wr_biten(31 downto 0));
 
     -- Field: msk_top_regs.PRBS_Error_Count.data
     process(all)
@@ -2407,7 +2558,6 @@ begin
             end if;
         end if;
     end process;
-    hwif_out.PRBS_Error_Count.data.swmod <= decoded_reg_strb.PRBS_Error_Count and decoded_req_is_wr and or_reduce(decoded_wr_biten(31 downto 0));
 
     -- Field: msk_top_regs.LPF_Accum_F1.data
     process(all)
@@ -2439,7 +2589,6 @@ begin
             end if;
         end if;
     end process;
-    hwif_out.LPF_Accum_F1.data.swmod <= decoded_reg_strb.LPF_Accum_F1 and decoded_req_is_wr and or_reduce(decoded_wr_biten(31 downto 0));
 
     -- Field: msk_top_regs.LPF_Accum_F2.data
     process(all)
@@ -2471,7 +2620,6 @@ begin
             end if;
         end if;
     end process;
-    hwif_out.LPF_Accum_F2.data.swmod <= decoded_reg_strb.LPF_Accum_F2 and decoded_req_is_wr and or_reduce(decoded_wr_biten(31 downto 0));
 
     -- Field: msk_top_regs.axis_xfer_count.data
     process(all)
@@ -2503,7 +2651,6 @@ begin
             end if;
         end if;
     end process;
-    hwif_out.axis_xfer_count.data.swmod <= decoded_reg_strb.axis_xfer_count and decoded_req_is_wr and or_reduce(decoded_wr_biten(31 downto 0));
 
     -- Field: msk_top_regs.Rx_Sample_Discard.rx_sample_discard
     process(all)
@@ -2953,7 +3100,6 @@ begin
             end if;
         end if;
     end process;
-    hwif_out.rx_power.data.swmod <= decoded_reg_strb.rx_power and decoded_req_is_wr and or_reduce(decoded_wr_biten(22 downto 0));
 
     -- Field: msk_top_regs.tx_async_fifo_rd_wr_ptr.data
     process(all)
@@ -3019,6 +3165,34 @@ begin
     end process;
     hwif_out.rx_async_fifo_rd_wr_ptr.data.swmod <= decoded_reg_strb.rx_async_fifo_rd_wr_ptr and decoded_req_is_wr and or_reduce(decoded_wr_biten(31 downto 0));
 
+    -- Field: msk_top_regs.rx_frame_sync_status.frame_sync_locked
+    process(all)
+        variable next_c: std_logic;
+        variable load_next_c: std_logic;
+    begin
+        next_c := field_storage.rx_frame_sync_status.frame_sync_locked.value;
+        load_next_c := '0';
+        if hwif_in.rx_frame_sync_status.frame_sync_locked.we then -- HW Write - we
+            next_c := hwif_in.rx_frame_sync_status.frame_sync_locked.next_q;
+            load_next_c := '1';
+        end if;
+        field_combo.rx_frame_sync_status.frame_sync_locked.next_q <= next_c;
+        field_combo.rx_frame_sync_status.frame_sync_locked.load_next <= load_next_c;
+    end process;
+    process(clk) begin
+        if false then -- async reset
+            field_storage.rx_frame_sync_status.frame_sync_locked.value <= '0';
+        elsif rising_edge(clk) then
+            if rst then -- sync reset
+                field_storage.rx_frame_sync_status.frame_sync_locked.value <= '0';
+            else
+                if field_combo.rx_frame_sync_status.frame_sync_locked.load_next then
+                    field_storage.rx_frame_sync_status.frame_sync_locked.value <= field_combo.rx_frame_sync_status.frame_sync_locked.next_q;
+                end if;
+            end if;
+        end if;
+    end process;
+
     -- Field: msk_top_regs.rx_frame_sync_status.frame_buffer_overflow
     process(all)
         variable next_c: std_logic;
@@ -3026,10 +3200,7 @@ begin
     begin
         next_c := field_storage.rx_frame_sync_status.frame_buffer_overflow.value;
         load_next_c := '0';
-        if decoded_reg_strb.rx_frame_sync_status and not decoded_req_is_wr then -- SW clear on read
-            next_c := '0';
-            load_next_c := '1';
-        elsif hwif_in.rx_frame_sync_status.frame_buffer_overflow.we then -- HW Write - we
+        if hwif_in.rx_frame_sync_status.frame_buffer_overflow.we then -- HW Write - we
             next_c := hwif_in.rx_frame_sync_status.frame_buffer_overflow.next_q;
             load_next_c := '1';
         end if;
@@ -3080,7 +3251,6 @@ begin
             end if;
         end if;
     end process;
-    hwif_out.rx_frame_sync_status.frames_received.swmod <= decoded_reg_strb.rx_frame_sync_status and decoded_req_is_wr and or_reduce(decoded_wr_biten(25 downto 2));
 
     -- Field: msk_top_regs.rx_frame_sync_status.frame_sync_errors
     process(all)
@@ -3112,7 +3282,6 @@ begin
             end if;
         end if;
     end process;
-    hwif_out.rx_frame_sync_status.frame_sync_errors.swmod <= decoded_reg_strb.rx_frame_sync_status and decoded_req_is_wr and or_reduce(decoded_wr_biten(31 downto 26));
 
     -- Field: msk_top_regs.symbol_lock_control.symbol_lock_count
     process(all)
@@ -3172,6 +3341,90 @@ begin
     end process;
     hwif_out.symbol_lock_control.symbol_lock_threshold.value <= field_storage.symbol_lock_control.symbol_lock_threshold.value;
 
+    -- Field: msk_top_regs.symbol_lock_status.f1f2
+    process(all)
+        variable next_c: std_logic;
+        variable load_next_c: std_logic;
+    begin
+        next_c := field_storage.symbol_lock_status.f1f2.value;
+        load_next_c := '0';
+        if hwif_in.symbol_lock_status.f1f2.we then -- HW Write - we
+            next_c := hwif_in.symbol_lock_status.f1f2.next_q;
+            load_next_c := '1';
+        end if;
+        field_combo.symbol_lock_status.f1f2.next_q <= next_c;
+        field_combo.symbol_lock_status.f1f2.load_next <= load_next_c;
+    end process;
+    process(clk) begin
+        if false then -- async reset
+            field_storage.symbol_lock_status.f1f2.value <= '0';
+        elsif rising_edge(clk) then
+            if rst then -- sync reset
+                field_storage.symbol_lock_status.f1f2.value <= '0';
+            else
+                if field_combo.symbol_lock_status.f1f2.load_next then
+                    field_storage.symbol_lock_status.f1f2.value <= field_combo.symbol_lock_status.f1f2.next_q;
+                end if;
+            end if;
+        end if;
+    end process;
+
+    -- Field: msk_top_regs.symbol_lock_status.f1
+    process(all)
+        variable next_c: std_logic;
+        variable load_next_c: std_logic;
+    begin
+        next_c := field_storage.symbol_lock_status.f1.value;
+        load_next_c := '0';
+        if hwif_in.symbol_lock_status.f1.we then -- HW Write - we
+            next_c := hwif_in.symbol_lock_status.f1.next_q;
+            load_next_c := '1';
+        end if;
+        field_combo.symbol_lock_status.f1.next_q <= next_c;
+        field_combo.symbol_lock_status.f1.load_next <= load_next_c;
+    end process;
+    process(clk) begin
+        if false then -- async reset
+            field_storage.symbol_lock_status.f1.value <= '0';
+        elsif rising_edge(clk) then
+            if rst then -- sync reset
+                field_storage.symbol_lock_status.f1.value <= '0';
+            else
+                if field_combo.symbol_lock_status.f1.load_next then
+                    field_storage.symbol_lock_status.f1.value <= field_combo.symbol_lock_status.f1.next_q;
+                end if;
+            end if;
+        end if;
+    end process;
+
+    -- Field: msk_top_regs.symbol_lock_status.f2
+    process(all)
+        variable next_c: std_logic;
+        variable load_next_c: std_logic;
+    begin
+        next_c := field_storage.symbol_lock_status.f2.value;
+        load_next_c := '0';
+        if hwif_in.symbol_lock_status.f2.we then -- HW Write - we
+            next_c := hwif_in.symbol_lock_status.f2.next_q;
+            load_next_c := '1';
+        end if;
+        field_combo.symbol_lock_status.f2.next_q <= next_c;
+        field_combo.symbol_lock_status.f2.load_next <= load_next_c;
+    end process;
+    process(clk) begin
+        if false then -- async reset
+            field_storage.symbol_lock_status.f2.value <= '0';
+        elsif rising_edge(clk) then
+            if rst then -- sync reset
+                field_storage.symbol_lock_status.f2.value <= '0';
+            else
+                if field_combo.symbol_lock_status.f2.load_next then
+                    field_storage.symbol_lock_status.f2.value <= field_combo.symbol_lock_status.f2.next_q;
+                end if;
+            end if;
+        end if;
+    end process;
+
     -- Field: msk_top_regs.symbol_lock_status.unlock_f1
     process(all)
         variable next_c: std_logic;
@@ -3179,10 +3432,7 @@ begin
     begin
         next_c := field_storage.symbol_lock_status.unlock_f1.value;
         load_next_c := '0';
-        if decoded_reg_strb.symbol_lock_status and not decoded_req_is_wr then -- SW clear on read
-            next_c := '0';
-            load_next_c := '1';
-        elsif hwif_in.symbol_lock_status.unlock_f1.we then -- HW Write - we
+        if hwif_in.symbol_lock_status.unlock_f1.we then -- HW Write - we
             next_c := hwif_in.symbol_lock_status.unlock_f1.next_q;
             load_next_c := '1';
         end if;
@@ -3210,10 +3460,7 @@ begin
     begin
         next_c := field_storage.symbol_lock_status.unlock_f2.value;
         load_next_c := '0';
-        if decoded_reg_strb.symbol_lock_status and not decoded_req_is_wr then -- SW clear on read
-            next_c := '0';
-            load_next_c := '1';
-        elsif hwif_in.symbol_lock_status.unlock_f2.we then -- HW Write - we
+        if hwif_in.symbol_lock_status.unlock_f2.we then -- HW Write - we
             next_c := hwif_in.symbol_lock_status.unlock_f2.next_q;
             load_next_c := '1';
         end if;
@@ -3229,6 +3476,62 @@ begin
             else
                 if field_combo.symbol_lock_status.unlock_f2.load_next then
                     field_storage.symbol_lock_status.unlock_f2.value <= field_combo.symbol_lock_status.unlock_f2.next_q;
+                end if;
+            end if;
+        end if;
+    end process;
+
+    -- Field: msk_top_regs.symbol_lock_time.f1
+    process(all)
+        variable next_c: std_logic_vector(15 downto 0);
+        variable load_next_c: std_logic;
+    begin
+        next_c := field_storage.symbol_lock_time.f1.value;
+        load_next_c := '0';
+        if hwif_in.symbol_lock_time.f1.we then -- HW Write - we
+            next_c := hwif_in.symbol_lock_time.f1.next_q;
+            load_next_c := '1';
+        end if;
+        field_combo.symbol_lock_time.f1.next_q <= next_c;
+        field_combo.symbol_lock_time.f1.load_next <= load_next_c;
+    end process;
+    process(clk) begin
+        if false then -- async reset
+            field_storage.symbol_lock_time.f1.value <= 16x"0";
+        elsif rising_edge(clk) then
+            if rst then -- sync reset
+                field_storage.symbol_lock_time.f1.value <= 16x"0";
+            else
+                if field_combo.symbol_lock_time.f1.load_next then
+                    field_storage.symbol_lock_time.f1.value <= field_combo.symbol_lock_time.f1.next_q;
+                end if;
+            end if;
+        end if;
+    end process;
+
+    -- Field: msk_top_regs.symbol_lock_time.f2
+    process(all)
+        variable next_c: std_logic_vector(15 downto 0);
+        variable load_next_c: std_logic;
+    begin
+        next_c := field_storage.symbol_lock_time.f2.value;
+        load_next_c := '0';
+        if hwif_in.symbol_lock_time.f2.we then -- HW Write - we
+            next_c := hwif_in.symbol_lock_time.f2.next_q;
+            load_next_c := '1';
+        end if;
+        field_combo.symbol_lock_time.f2.next_q <= next_c;
+        field_combo.symbol_lock_time.f2.load_next <= load_next_c;
+    end process;
+    process(clk) begin
+        if false then -- async reset
+            field_storage.symbol_lock_time.f2.value <= 16x"0";
+        elsif rising_edge(clk) then
+            if rst then -- sync reset
+                field_storage.symbol_lock_time.f2.value <= 16x"0";
+            else
+                if field_combo.symbol_lock_time.f2.load_next then
+                    field_storage.symbol_lock_time.f2.value <= field_combo.symbol_lock_time.f2.next_q;
                 end if;
             end if;
         end if;
@@ -3257,7 +3560,9 @@ begin
     readback_array(3)(2 downto 2) <= to_std_logic_vector(field_storage.MSK_Control.rx_invert.value) when (decoded_reg_strb.MSK_Control and not decoded_req_is_wr) else (others => '0');
     readback_array(3)(3 downto 3) <= to_std_logic_vector(field_storage.MSK_Control.clear_counts.value) when (decoded_reg_strb.MSK_Control and not decoded_req_is_wr) else (others => '0');
     readback_array(3)(4 downto 4) <= to_std_logic_vector(field_storage.MSK_Control.diff_encoder_loopback.value) when (decoded_reg_strb.MSK_Control and not decoded_req_is_wr) else (others => '0');
-    readback_array(3)(31 downto 5) <= (others => '0');
+    readback_array(3)(7 downto 5) <= field_storage.MSK_Control.reserved.value when (decoded_reg_strb.MSK_Control and not decoded_req_is_wr) else (others => '0');
+    readback_array(3)(10 downto 8) <= field_storage.MSK_Control.tx_shift.value when (decoded_reg_strb.MSK_Control and not decoded_req_is_wr) else (others => '0');
+    readback_array(3)(31 downto 11) <= (others => '0');
     readback_array(4)(0 downto 0) <= to_std_logic_vector(hwif_in.MSK_Status.demod_sync_lock.next_q) when (decoded_reg_strb.MSK_Status and not decoded_req_is_wr) else (others => '0');
     readback_array(4)(1 downto 1) <= to_std_logic_vector(hwif_in.MSK_Status.tx_enable.next_q) when (decoded_reg_strb.MSK_Status and not decoded_req_is_wr) else (others => '0');
     readback_array(4)(2 downto 2) <= to_std_logic_vector(hwif_in.MSK_Status.rx_enable.next_q) when (decoded_reg_strb.MSK_Status and not decoded_req_is_wr) else (others => '0');
@@ -3316,21 +3621,21 @@ begin
     readback_array(36)(31 downto 23) <= (others => '0');
     readback_array(37)(31 downto 0) <= field_storage.tx_async_fifo_rd_wr_ptr.data.value when (decoded_reg_strb.tx_async_fifo_rd_wr_ptr and not decoded_req_is_wr) else (others => '0');
     readback_array(38)(31 downto 0) <= field_storage.rx_async_fifo_rd_wr_ptr.data.value when (decoded_reg_strb.rx_async_fifo_rd_wr_ptr and not decoded_req_is_wr) else (others => '0');
-    readback_array(39)(0 downto 0) <= to_std_logic_vector(hwif_in.rx_frame_sync_status.frame_sync_locked.next_q) when (decoded_reg_strb.rx_frame_sync_status and not decoded_req_is_wr) else (others => '0');
+    readback_array(39)(0 downto 0) <= to_std_logic_vector(field_storage.rx_frame_sync_status.frame_sync_locked.value) when (decoded_reg_strb.rx_frame_sync_status and not decoded_req_is_wr) else (others => '0');
     readback_array(39)(1 downto 1) <= to_std_logic_vector(field_storage.rx_frame_sync_status.frame_buffer_overflow.value) when (decoded_reg_strb.rx_frame_sync_status and not decoded_req_is_wr) else (others => '0');
     readback_array(39)(25 downto 2) <= field_storage.rx_frame_sync_status.frames_received.value when (decoded_reg_strb.rx_frame_sync_status and not decoded_req_is_wr) else (others => '0');
     readback_array(39)(31 downto 26) <= field_storage.rx_frame_sync_status.frame_sync_errors.value when (decoded_reg_strb.rx_frame_sync_status and not decoded_req_is_wr) else (others => '0');
     readback_array(40)(9 downto 0) <= field_storage.symbol_lock_control.symbol_lock_count.value when (decoded_reg_strb.symbol_lock_control and not decoded_req_is_wr) else (others => '0');
     readback_array(40)(25 downto 10) <= field_storage.symbol_lock_control.symbol_lock_threshold.value when (decoded_reg_strb.symbol_lock_control and not decoded_req_is_wr) else (others => '0');
     readback_array(40)(31 downto 26) <= (others => '0');
-    readback_array(41)(0 downto 0) <= to_std_logic_vector(hwif_in.symbol_lock_status.f1f2.next_q) when (decoded_reg_strb.symbol_lock_status and not decoded_req_is_wr) else (others => '0');
-    readback_array(41)(1 downto 1) <= to_std_logic_vector(hwif_in.symbol_lock_status.f1.next_q) when (decoded_reg_strb.symbol_lock_status and not decoded_req_is_wr) else (others => '0');
-    readback_array(41)(2 downto 2) <= to_std_logic_vector(hwif_in.symbol_lock_status.f2.next_q) when (decoded_reg_strb.symbol_lock_status and not decoded_req_is_wr) else (others => '0');
+    readback_array(41)(0 downto 0) <= to_std_logic_vector(field_storage.symbol_lock_status.f1f2.value) when (decoded_reg_strb.symbol_lock_status and not decoded_req_is_wr) else (others => '0');
+    readback_array(41)(1 downto 1) <= to_std_logic_vector(field_storage.symbol_lock_status.f1.value) when (decoded_reg_strb.symbol_lock_status and not decoded_req_is_wr) else (others => '0');
+    readback_array(41)(2 downto 2) <= to_std_logic_vector(field_storage.symbol_lock_status.f2.value) when (decoded_reg_strb.symbol_lock_status and not decoded_req_is_wr) else (others => '0');
     readback_array(41)(3 downto 3) <= to_std_logic_vector(field_storage.symbol_lock_status.unlock_f1.value) when (decoded_reg_strb.symbol_lock_status and not decoded_req_is_wr) else (others => '0');
     readback_array(41)(4 downto 4) <= to_std_logic_vector(field_storage.symbol_lock_status.unlock_f2.value) when (decoded_reg_strb.symbol_lock_status and not decoded_req_is_wr) else (others => '0');
     readback_array(41)(31 downto 5) <= (others => '0');
-    readback_array(42)(15 downto 0) <= hwif_in.symbol_lock_time.f1.next_q when (decoded_reg_strb.symbol_lock_time and not decoded_req_is_wr) else (others => '0');
-    readback_array(42)(31 downto 16) <= hwif_in.symbol_lock_time.f2.next_q when (decoded_reg_strb.symbol_lock_time and not decoded_req_is_wr) else (others => '0');
+    readback_array(42)(15 downto 0) <= field_storage.symbol_lock_time.f1.value when (decoded_reg_strb.symbol_lock_time and not decoded_req_is_wr) else (others => '0');
+    readback_array(42)(31 downto 16) <= field_storage.symbol_lock_time.f2.value when (decoded_reg_strb.symbol_lock_time and not decoded_req_is_wr) else (others => '0');
 
     -- Reduce the array
     process(all)

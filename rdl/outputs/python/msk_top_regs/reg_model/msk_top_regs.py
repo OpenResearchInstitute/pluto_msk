@@ -1623,7 +1623,7 @@ class msk_top_regs_status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_cls(RegA
     
     
     
-class msk_top_regs_status_reg_data_desc_a6882ec4_0x0x106e341a_cls(FieldAsyncReadWrite):
+class msk_top_regs_status_reg_data_desc_a6882ec4_0x0x1049d862_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -1696,7 +1696,7 @@ class msk_top_regs_status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_cls(RegA
 
         # build the field attributes
         
-        self.__data:msk_top_regs_status_reg_data_desc_a6882ec4_0x0x106e341a_cls = msk_top_regs_status_reg_data_desc_a6882ec4_0x0x106e341a_cls(
+        self.__data:msk_top_regs_status_reg_data_desc_a6882ec4_0x0x1049d862_cls = msk_top_regs_status_reg_data_desc_a6882ec4_0x0x1049d862_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -1727,7 +1727,7 @@ class msk_top_regs_status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_cls(RegA
     # build the properties for the fields
     
     @property
-    def data(self) -> msk_top_regs_status_reg_data_desc_a6882ec4_0x0x106e341a_cls:
+    def data(self) -> msk_top_regs_status_reg_data_desc_a6882ec4_0x0x1049d862_cls:
         """
         Property to access data field of the register
 
@@ -1767,7 +1767,7 @@ class msk_top_regs_status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_cls(RegA
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_status_reg_data_desc_a6882ec4_0x0x106e341a_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_status_reg_data_desc_a6882ec4_0x0x1049d862_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -2137,7 +2137,7 @@ class msk_top_regs_lowpass_ema_alpha_cls(RegAsyncReadWrite):
     
     
     
-class msk_top_regs_lowpass_ema_alpha_alpha_0x0x106e3480_cls(FieldAsyncReadWrite):
+class msk_top_regs_lowpass_ema_alpha_alpha_0x0x10475092_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -2175,7 +2175,7 @@ class msk_top_regs_lowpass_ema_alpha_alpha_0x0x106e3480_cls(FieldAsyncReadWrite)
 
     
     
-class msk_top_regs_lowpass_ema_alpha_0x0x106e34ec_cls(RegAsyncReadWrite):
+class msk_top_regs_lowpass_ema_alpha_0x0x10475341_cls(RegAsyncReadWrite):
     """
     Class to represent a register in the register model
 
@@ -2212,7 +2212,7 @@ class msk_top_regs_lowpass_ema_alpha_0x0x106e34ec_cls(RegAsyncReadWrite):
 
         # build the field attributes
         
-        self.__alpha:msk_top_regs_lowpass_ema_alpha_alpha_0x0x106e3480_cls = msk_top_regs_lowpass_ema_alpha_alpha_0x0x106e3480_cls(
+        self.__alpha:msk_top_regs_lowpass_ema_alpha_alpha_0x0x10475092_cls = msk_top_regs_lowpass_ema_alpha_alpha_0x0x10475092_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=18,
@@ -2243,7 +2243,7 @@ class msk_top_regs_lowpass_ema_alpha_0x0x106e34ec_cls(RegAsyncReadWrite):
     # build the properties for the fields
     
     @property
-    def alpha(self) -> msk_top_regs_lowpass_ema_alpha_alpha_0x0x106e3480_cls:
+    def alpha(self) -> msk_top_regs_lowpass_ema_alpha_alpha_0x0x10475092_cls:
         """
         Property to access alpha field of the register
 
@@ -2282,7 +2282,7 @@ class msk_top_regs_lowpass_ema_alpha_0x0x106e34ec_cls(RegAsyncReadWrite):
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_lowpass_ema_alpha_alpha_0x0x106e3480_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_lowpass_ema_alpha_alpha_0x0x10475092_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -4427,7 +4427,7 @@ class msk_top_regs_stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce_cls(RegAsyncReadW
     
     
     
-class msk_top_regs_stat_32_lpf_acc_data_0x0x106db287_cls(FieldAsyncReadWrite):
+class msk_top_regs_stat_32_lpf_acc_data_0x0x104040a7_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -4505,7 +4505,7 @@ class msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls(RegAsyncReadW
 
         # build the field attributes
         
-        self.__data:msk_top_regs_stat_32_lpf_acc_data_0x0x106db287_cls = msk_top_regs_stat_32_lpf_acc_data_0x0x106db287_cls(
+        self.__data:msk_top_regs_stat_32_lpf_acc_data_0x0x104040a7_cls = msk_top_regs_stat_32_lpf_acc_data_0x0x104040a7_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -4536,7 +4536,7 @@ class msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls(RegAsyncReadW
     # build the properties for the fields
     
     @property
-    def data(self) -> msk_top_regs_stat_32_lpf_acc_data_0x0x106db287_cls:
+    def data(self) -> msk_top_regs_stat_32_lpf_acc_data_0x0x104040a7_cls:
         """
         Property to access data field of the register
 
@@ -4578,7 +4578,7 @@ class msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls(RegAsyncReadW
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_stat_32_lpf_acc_data_0x0x106db287_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_stat_32_lpf_acc_data_0x0x104040a7_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -6199,7 +6199,7 @@ class msk_top_regs_data_width_desc_6097df38_name_4609588b_cls(RegAsyncReadWrite)
     
     
     
-class msk_top_regs_data_width_data_width_0x0x106b8762_cls(FieldAsyncReadWrite):
+class msk_top_regs_data_width_data_width_0x0x10499c32_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -6275,7 +6275,7 @@ class msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls(RegAsyncReadWrite)
 
         # build the field attributes
         
-        self.__data_width:msk_top_regs_data_width_data_width_0x0x106b8762_cls = msk_top_regs_data_width_data_width_0x0x106b8762_cls(
+        self.__data_width:msk_top_regs_data_width_data_width_0x0x10499c32_cls = msk_top_regs_data_width_data_width_0x0x10499c32_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=8,
@@ -6306,7 +6306,7 @@ class msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls(RegAsyncReadWrite)
     # build the properties for the fields
     
     @property
-    def data_width(self) -> msk_top_regs_data_width_data_width_0x0x106b8762_cls:
+    def data_width(self) -> msk_top_regs_data_width_data_width_0x0x10499c32_cls:
         """
         Property to access data_width field of the register
 
@@ -6345,7 +6345,7 @@ class msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls(RegAsyncReadWrite)
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data_width_data_width_0x0x106b8762_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_data_width_data_width_0x0x10499c32_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -7195,7 +7195,7 @@ class msk_top_regs_config_nco_fw_desc_43c0828f_name_bdc60ecf_cls(RegAsyncReadWri
     
     
     
-class msk_top_regs_config_nco_fw_config_data_0x0x106e011f_cls(FieldAsyncReadWrite):
+class msk_top_regs_config_nco_fw_config_data_0x0x1049ac2f_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -7272,7 +7272,7 @@ class msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls(RegAsyncReadWri
 
         # build the field attributes
         
-        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x106e011f_cls = msk_top_regs_config_nco_fw_config_data_0x0x106e011f_cls(
+        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x1049ac2f_cls = msk_top_regs_config_nco_fw_config_data_0x0x1049ac2f_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -7303,7 +7303,7 @@ class msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls(RegAsyncReadWri
     # build the properties for the fields
     
     @property
-    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x106e011f_cls:
+    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x1049ac2f_cls:
         """
         Property to access config_data field of the register
 
@@ -7344,7 +7344,7 @@ class msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls(RegAsyncReadWri
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x106e011f_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x1049ac2f_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -7368,7 +7368,7 @@ class msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls(RegAsyncReadWri
     
     
     
-class msk_top_regs_config_nco_fw_config_data_0x0x106e023f_cls(FieldAsyncReadWrite):
+class msk_top_regs_config_nco_fw_config_data_0x0x1049af50_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -7445,7 +7445,7 @@ class msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls(RegAsyncReadWri
 
         # build the field attributes
         
-        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x106e023f_cls = msk_top_regs_config_nco_fw_config_data_0x0x106e023f_cls(
+        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x1049af50_cls = msk_top_regs_config_nco_fw_config_data_0x0x1049af50_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -7476,7 +7476,7 @@ class msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls(RegAsyncReadWri
     # build the properties for the fields
     
     @property
-    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x106e023f_cls:
+    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x1049af50_cls:
         """
         Property to access config_data field of the register
 
@@ -7517,7 +7517,7 @@ class msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls(RegAsyncReadWri
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x106e023f_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x1049af50_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -7541,7 +7541,7 @@ class msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls(RegAsyncReadWri
     
     
     
-class msk_top_regs_config_nco_fw_config_data_0x0x106e037a_cls(FieldAsyncReadWrite):
+class msk_top_regs_config_nco_fw_config_data_0x0x1048bf56_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -7618,7 +7618,7 @@ class msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls(RegAsyncReadWri
 
         # build the field attributes
         
-        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x106e037a_cls = msk_top_regs_config_nco_fw_config_data_0x0x106e037a_cls(
+        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x1048bf56_cls = msk_top_regs_config_nco_fw_config_data_0x0x1048bf56_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -7649,7 +7649,7 @@ class msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls(RegAsyncReadWri
     # build the properties for the fields
     
     @property
-    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x106e037a_cls:
+    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x1048bf56_cls:
         """
         Property to access config_data field of the register
 
@@ -7690,7 +7690,7 @@ class msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls(RegAsyncReadWri
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x106e037a_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x1048bf56_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -7714,7 +7714,7 @@ class msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls(RegAsyncReadWri
     
     
     
-class msk_top_regs_config_nco_fw_config_data_0x0x106e10bf_cls(FieldAsyncReadWrite):
+class msk_top_regs_config_nco_fw_config_data_0x0x1048bf92_cls(FieldAsyncReadWrite):
     
     """
     Class to represent a register field in the register model
@@ -7791,7 +7791,7 @@ class msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls(RegAsyncReadWri
 
         # build the field attributes
         
-        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x106e10bf_cls = msk_top_regs_config_nco_fw_config_data_0x0x106e10bf_cls(
+        self.__config_data:msk_top_regs_config_nco_fw_config_data_0x0x1048bf92_cls = msk_top_regs_config_nco_fw_config_data_0x0x1048bf92_cls(
             parent_register=self,
             size_props=FieldSizeProps(
                 width=32,
@@ -7822,7 +7822,7 @@ class msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls(RegAsyncReadWri
     # build the properties for the fields
     
     @property
-    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x106e10bf_cls:
+    def config_data(self) -> msk_top_regs_config_nco_fw_config_data_0x0x1048bf92_cls:
         """
         Property to access config_data field of the register
 
@@ -7863,7 +7863,7 @@ class msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls(RegAsyncReadWri
     
     
                 
-    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x106e10bf_cls:
+    def get_child_by_system_rdl_name(self, name: Any) -> msk_top_regs_config_nco_fw_config_data_0x0x1048bf92_cls:
         return super().get_child_by_system_rdl_name(name)
                 
     
@@ -8650,6 +8650,77 @@ class msk_top_regs_msk_stat_0_cls(RegAsyncReadOnly):
     
     
     
+class msk_top_regs_msk_ctrl_tx_shift_cls(FieldAsyncReadWrite):
+    
+    """
+    Class to represent a register field in the register model
+
+    +--------------+-------------------------------------------------------------------------+
+    | SystemRDL    | Value                                                                   |
+    | Field        |                                                                         |
+    +==============+=========================================================================+
+    | Name         | .. raw:: html                                                           |
+    |              |                                                                         |
+    |              |      Tx Sample Shoift                                                   |
+    +--------------+-------------------------------------------------------------------------+
+    | Description  | .. raw:: html                                                           |
+    |              |                                                                         |
+    |              |      <p>Shift left from 0 to 4 bits</p>                                 |
+    +--------------+-------------------------------------------------------------------------+
+    """
+
+    __slots__ : list[str] = []
+
+    
+
+    
+    
+
+    @property
+    def rdl_name(self) -> str:
+        return "Tx Sample Shoift"
+    @property
+    def rdl_desc(self) -> str:
+        return "Shift left from 0 to 4 bits"
+    
+    
+    
+
+    
+    
+    
+class msk_top_regs_msk_ctrl_reserved_cls(FieldAsyncReadWrite):
+    
+    """
+    Class to represent a register field in the register model
+
+    +--------------+-------------------------------------------------------------------------+
+    | SystemRDL    | Value                                                                   |
+    | Field        |                                                                         |
+    +==============+=========================================================================+
+    | Description  | .. raw:: html                                                           |
+    |              |                                                                         |
+    |              |      <p>Reserved</p>                                                    |
+    +--------------+-------------------------------------------------------------------------+
+    """
+
+    __slots__ : list[str] = []
+
+    
+
+    
+    
+
+    @property
+    def rdl_desc(self) -> str:
+        return "Reserved"
+    
+    
+    
+
+    
+    
+    
 class msk_top_regs_msk_ctrl_diff_encoder_loopback_cls(FieldAsyncReadWrite):
     
     """
@@ -8745,7 +8816,7 @@ class msk_top_regs_msk_ctrl_rx_invert_cls(FieldAsyncReadWrite):
     +--------------+-------------------------------------------------------------------------+
     | Description  | .. raw:: html                                                           |
     |              |                                                                         |
-    |              |      <p>0 -&gt; Rx data normal 1 -&gt; Rx data inverted</p>             |
+    |              |      <p>0 -&gt; Rx data normal</p> <p>1 -&gt; Rx data inverted</p>      |
     +--------------+-------------------------------------------------------------------------+
     """
 
@@ -8761,7 +8832,7 @@ class msk_top_regs_msk_ctrl_rx_invert_cls(FieldAsyncReadWrite):
         return "Rx Data Invert Enable"
     @property
     def rdl_desc(self) -> str:
-        return "0 -\u003e Rx data normal\n1 -\u003e Rx data inverted"
+        return "0 -\u003e Rx data normal\n\n1 -\u003e Rx data inverted"
     
     
     
@@ -8824,7 +8895,7 @@ class msk_top_regs_msk_ctrl_ptt_cls(FieldAsyncReadWrite):
     +--------------+-------------------------------------------------------------------------+
     | Description  | .. raw:: html                                                           |
     |              |                                                                         |
-    |              |      <p>0 -&gt; PTT Disabled 1 -&gt; PTT Enabled</p>                    |
+    |              |      <p>0 -&gt; PTT Disabled</p> <p>1 -&gt; PTT Enabled</p>             |
     +--------------+-------------------------------------------------------------------------+
     """
 
@@ -8840,7 +8911,7 @@ class msk_top_regs_msk_ctrl_ptt_cls(FieldAsyncReadWrite):
         return "Push-to-Talk Enable"
     @property
     def rdl_desc(self) -> str:
-        return "0 -\u003e PTT Disabled\n1 -\u003e PTT Enabled"
+        return "0 -\u003e PTT Disabled\n\n1 -\u003e PTT Enabled"
     
     
     
@@ -8865,7 +8936,7 @@ class msk_top_regs_msk_ctrl_cls(RegAsyncReadWrite):
     +--------------+-------------------------------------------------------------------------+
     """
 
-    __slots__ : list[str] = ['__ptt', '__loopback_ena', '__rx_invert', '__clear_counts', '__diff_encoder_loopback']
+    __slots__ : list[str] = ['__ptt', '__loopback_ena', '__rx_invert', '__clear_counts', '__diff_encoder_loopback', '__reserved', '__tx_shift']
 
     def __init__(self,
                  address: int,
@@ -8954,6 +9025,34 @@ class msk_top_regs_msk_ctrl_cls(RegAsyncReadWrite):
             logger_handle=logger_handle+'.diff_encoder_loopback',
             inst_name='diff_encoder_loopback',
             field_type=int)
+        self.__reserved:msk_top_regs_msk_ctrl_reserved_cls = msk_top_regs_msk_ctrl_reserved_cls(
+            parent_register=self,
+            size_props=FieldSizeProps(
+                width=3,
+                lsb=5,
+                msb=7,
+                low=5,
+                high=7),
+            misc_props=FieldMiscProps(
+                default=0,
+                is_volatile=False),
+            logger_handle=logger_handle+'.reserved',
+            inst_name='reserved',
+            field_type=int)
+        self.__tx_shift:msk_top_regs_msk_ctrl_tx_shift_cls = msk_top_regs_msk_ctrl_tx_shift_cls(
+            parent_register=self,
+            size_props=FieldSizeProps(
+                width=3,
+                lsb=8,
+                msb=10,
+                low=8,
+                high=10),
+            misc_props=FieldMiscProps(
+                default=0,
+                is_volatile=False),
+            logger_handle=logger_handle+'.tx_shift',
+            inst_name='tx_shift',
+            field_type=int)
 
     @property
     def fields(self) -> Iterator[Union[FieldAsyncReadOnly, FieldAsyncWriteOnly,FieldAsyncReadWrite]]:
@@ -8965,6 +9064,8 @@ class msk_top_regs_msk_ctrl_cls(RegAsyncReadWrite):
         yield self.rx_invert
         yield self.clear_counts
         yield self.diff_encoder_loopback
+        yield self.reserved
+        yield self.tx_shift
         
         # Empty generator in case there are no children of this type
         if False: yield
@@ -8989,7 +9090,7 @@ class msk_top_regs_msk_ctrl_cls(RegAsyncReadWrite):
         +--------------+-------------------------------------------------------------------------+
         | Description  | .. raw:: html                                                           |
         |              |                                                                         |
-        |              |      <p>0 -&gt; PTT Disabled 1 -&gt; PTT Enabled</p>                    |
+        |              |      <p>0 -&gt; PTT Disabled</p> <p>1 -&gt; PTT Enabled</p>             |
         +--------------+-------------------------------------------------------------------------+
         """
         return self.__ptt
@@ -9028,7 +9129,7 @@ class msk_top_regs_msk_ctrl_cls(RegAsyncReadWrite):
         +--------------+-------------------------------------------------------------------------+
         | Description  | .. raw:: html                                                           |
         |              |                                                                         |
-        |              |      <p>0 -&gt; Rx data normal 1 -&gt; Rx data inverted</p>             |
+        |              |      <p>0 -&gt; Rx data normal</p> <p>1 -&gt; Rx data inverted</p>      |
         +--------------+-------------------------------------------------------------------------+
         """
         return self.__rx_invert
@@ -9072,6 +9173,40 @@ class msk_top_regs_msk_ctrl_cls(RegAsyncReadWrite):
         +--------------+-------------------------------------------------------------------------+
         """
         return self.__diff_encoder_loopback
+    @property
+    def reserved(self) -> msk_top_regs_msk_ctrl_reserved_cls:
+        """
+        Property to access reserved field of the register
+
+        +--------------+-------------------------------------------------------------------------+
+        | SystemRDL    | Value                                                                   |
+        | Field        |                                                                         |
+        +==============+=========================================================================+
+        | Description  | .. raw:: html                                                           |
+        |              |                                                                         |
+        |              |      <p>Reserved</p>                                                    |
+        +--------------+-------------------------------------------------------------------------+
+        """
+        return self.__reserved
+    @property
+    def tx_shift(self) -> msk_top_regs_msk_ctrl_tx_shift_cls:
+        """
+        Property to access tx_shift field of the register
+
+        +--------------+-------------------------------------------------------------------------+
+        | SystemRDL    | Value                                                                   |
+        | Field        |                                                                         |
+        +==============+=========================================================================+
+        | Name         | .. raw:: html                                                           |
+        |              |                                                                         |
+        |              |      Tx Sample Shoift                                                   |
+        +--------------+-------------------------------------------------------------------------+
+        | Description  | .. raw:: html                                                           |
+        |              |                                                                         |
+        |              |      <p>Shift left from 0 to 4 bits</p>                                 |
+        +--------------+-------------------------------------------------------------------------+
+        """
+        return self.__tx_shift
 
     
     @property
@@ -9083,7 +9218,7 @@ class msk_top_regs_msk_ctrl_cls(RegAsyncReadWrite):
 
         Returns: dictionary whose key is the systemRDL names and value it the property name
         """
-        return {'ptt':'ptt','loopback_ena':'loopback_ena','rx_invert':'rx_invert','clear_counts':'clear_counts','diff_encoder_loopback':'diff_encoder_loopback',
+        return {'ptt':'ptt','loopback_ena':'loopback_ena','rx_invert':'rx_invert','clear_counts':'clear_counts','diff_encoder_loopback':'diff_encoder_loopback','reserved':'reserved','tx_shift':'tx_shift',
             }
 
     
@@ -9092,7 +9227,7 @@ class msk_top_regs_msk_ctrl_cls(RegAsyncReadWrite):
     
     
     
-    # nodes:5
+    # nodes:7
                 
     @overload
     def get_child_by_system_rdl_name(self, name: Literal["ptt"]) -> msk_top_regs_msk_ctrl_ptt_cls: ...
@@ -9113,9 +9248,17 @@ class msk_top_regs_msk_ctrl_cls(RegAsyncReadWrite):
     @overload
     def get_child_by_system_rdl_name(self, name: Literal["diff_encoder_loopback"]) -> msk_top_regs_msk_ctrl_diff_encoder_loopback_cls: ...
                 
+                
+    @overload
+    def get_child_by_system_rdl_name(self, name: Literal["reserved"]) -> msk_top_regs_msk_ctrl_reserved_cls: ...
+                
+                
+    @overload
+    def get_child_by_system_rdl_name(self, name: Literal["tx_shift"]) -> msk_top_regs_msk_ctrl_tx_shift_cls: ...
+                
 
     @overload
-    def get_child_by_system_rdl_name(self, name: str) -> Union[msk_top_regs_msk_ctrl_ptt_cls, msk_top_regs_msk_ctrl_loopback_ena_cls, msk_top_regs_msk_ctrl_rx_invert_cls, msk_top_regs_msk_ctrl_clear_counts_cls, msk_top_regs_msk_ctrl_diff_encoder_loopback_cls, ]: ...
+    def get_child_by_system_rdl_name(self, name: str) -> Union[msk_top_regs_msk_ctrl_ptt_cls, msk_top_regs_msk_ctrl_loopback_ena_cls, msk_top_regs_msk_ctrl_rx_invert_cls, msk_top_regs_msk_ctrl_clear_counts_cls, msk_top_regs_msk_ctrl_diff_encoder_loopback_cls, msk_top_regs_msk_ctrl_reserved_cls, msk_top_regs_msk_ctrl_tx_shift_cls, ]: ...
 
     def get_child_by_system_rdl_name(self, name: Any) -> Any:
         return super().get_child_by_system_rdl_name(name)
@@ -9554,7 +9697,7 @@ class msk_top_regs_msk_hash_hi_cls(RegAsyncReadOnly):
                 high=31),
             misc_props=FieldMiscProps(
                 default=1431677610,
-                is_volatile=False),
+                is_volatile=True),
             logger_handle=logger_handle+'.hash_id_hi',
             inst_name='hash_id_hi',
             field_type=int)
@@ -9716,7 +9859,7 @@ class msk_top_regs_msk_hash_lo_cls(RegAsyncReadOnly):
                 high=31),
             misc_props=FieldMiscProps(
                 default=2863289685,
-                is_volatile=False),
+                is_volatile=True),
             logger_handle=logger_handle+'.hash_id_lo',
             inst_name='hash_id_lo',
             field_type=int)
@@ -10107,7 +10250,7 @@ class msk_top_regs_cls(AsyncAddressMap):
                                                                      inst_name='Tx_Sync_Pat', parent=self)
         
             
-        self.__lowpass_ema_alpha1:msk_top_regs_lowpass_ema_alpha_0x0x106e34ec_cls = msk_top_regs_lowpass_ema_alpha_0x0x106e34ec_cls(
+        self.__lowpass_ema_alpha1:msk_top_regs_lowpass_ema_alpha_0x0x10475341_cls = msk_top_regs_lowpass_ema_alpha_0x0x10475341_cls(
                                                                      address=self.address+136,
                                                                      accesswidth=32,
                                                                      width=32,
@@ -10860,7 +11003,7 @@ class msk_top_regs_cls(AsyncAddressMap):
         return self.__Tx_Sync_Pat
         
     @property
-    def lowpass_ema_alpha1(self) -> msk_top_regs_lowpass_ema_alpha_0x0x106e34ec_cls:
+    def lowpass_ema_alpha1(self) -> msk_top_regs_lowpass_ema_alpha_0x0x10475341_cls:
         """
         Property to access lowpass_ema_alpha1 
 
@@ -11182,7 +11325,7 @@ class msk_top_regs_cls(AsyncAddressMap):
                 
                 
     @overload
-    def get_child_by_system_rdl_name(self, name: Literal["lowpass_ema_alpha1"]) -> msk_top_regs_lowpass_ema_alpha_0x0x106e34ec_cls: ...
+    def get_child_by_system_rdl_name(self, name: Literal["lowpass_ema_alpha1"]) -> msk_top_regs_lowpass_ema_alpha_0x0x10475341_cls: ...
                 
                 
     @overload
@@ -11218,7 +11361,7 @@ class msk_top_regs_cls(AsyncAddressMap):
                 
 
     @overload
-    def get_child_by_system_rdl_name(self, name: str) -> Union[msk_top_regs_msk_hash_lo_cls, msk_top_regs_msk_hash_hi_cls, msk_top_regs_msk_init_cls, msk_top_regs_msk_ctrl_cls, msk_top_regs_msk_stat_0_cls, msk_top_regs_msk_stat_1_cls, msk_top_regs_msk_stat_2_cls, msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls, msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls, msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls, msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls, msk_top_regs_config_nco_fw_desc_43c0828f_name_bdc60ecf_cls, msk_top_regs_lpf_config_0_cls, msk_top_regs_lpf_config_1_cls, msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls, msk_top_regs_data_width_desc_6097df38_name_4609588b_cls, msk_top_regs_prbs_ctrl_cls, msk_top_regs_config_prbs_seed_cls, msk_top_regs_config_prbs_poly_cls, msk_top_regs_config_prbs_errmask_cls, msk_top_regs_stat_32_bits_cls, msk_top_regs_stat_32_errs_cls, msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls, msk_top_regs_stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce_cls, msk_top_regs_msk_stat_3_cls, msk_top_regs_rx_sample_discard_cls, msk_top_regs_lpf_config_2_cls, msk_top_regs_status_reg_data_f53978c8_name_d8ad3b25_cls, msk_top_regs_status_reg_data_05243a4e_name_2c154788_cls, msk_top_regs_status_reg_data_10a2e5b5_name_3b640507_cls, msk_top_regs_status_reg_data_642692cf_name_3de9a0d3_cls, msk_top_regs_tx_sync_ctrl_cls, msk_top_regs_tx_sync_cnt_cls, msk_top_regs_tx_sync_pat_cls, msk_top_regs_lowpass_ema_alpha_0x0x106e34ec_cls, msk_top_regs_lowpass_ema_alpha_cls, msk_top_regs_rx_power_cls, msk_top_regs_status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_cls, msk_top_regs_status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_cls, msk_top_regs_frame_sync_status_cls, msk_top_regs_symbol_lock_control_cls, msk_top_regs_symbol_lock_status_cls, msk_top_regs_symbol_lock_time_cls, ]: ...
+    def get_child_by_system_rdl_name(self, name: str) -> Union[msk_top_regs_msk_hash_lo_cls, msk_top_regs_msk_hash_hi_cls, msk_top_regs_msk_init_cls, msk_top_regs_msk_ctrl_cls, msk_top_regs_msk_stat_0_cls, msk_top_regs_msk_stat_1_cls, msk_top_regs_msk_stat_2_cls, msk_top_regs_config_nco_fw_desc_c4924cc6_name_0c494469_cls, msk_top_regs_config_nco_fw_desc_94d7aaf5_name_84dd0c1c_cls, msk_top_regs_config_nco_fw_desc_42134a4f_name_d97dbd51_cls, msk_top_regs_config_nco_fw_desc_16fb48c8_name_8d01a20d_cls, msk_top_regs_config_nco_fw_desc_43c0828f_name_bdc60ecf_cls, msk_top_regs_lpf_config_0_cls, msk_top_regs_lpf_config_1_cls, msk_top_regs_data_width_desc_58c848dd_name_2fbd8eba_cls, msk_top_regs_data_width_desc_6097df38_name_4609588b_cls, msk_top_regs_prbs_ctrl_cls, msk_top_regs_config_prbs_seed_cls, msk_top_regs_config_prbs_poly_cls, msk_top_regs_config_prbs_errmask_cls, msk_top_regs_stat_32_bits_cls, msk_top_regs_stat_32_errs_cls, msk_top_regs_stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_cls, msk_top_regs_stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce_cls, msk_top_regs_msk_stat_3_cls, msk_top_regs_rx_sample_discard_cls, msk_top_regs_lpf_config_2_cls, msk_top_regs_status_reg_data_f53978c8_name_d8ad3b25_cls, msk_top_regs_status_reg_data_05243a4e_name_2c154788_cls, msk_top_regs_status_reg_data_10a2e5b5_name_3b640507_cls, msk_top_regs_status_reg_data_642692cf_name_3de9a0d3_cls, msk_top_regs_tx_sync_ctrl_cls, msk_top_regs_tx_sync_cnt_cls, msk_top_regs_tx_sync_pat_cls, msk_top_regs_lowpass_ema_alpha_0x0x10475341_cls, msk_top_regs_lowpass_ema_alpha_cls, msk_top_regs_rx_power_cls, msk_top_regs_status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_cls, msk_top_regs_status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_cls, msk_top_regs_frame_sync_status_cls, msk_top_regs_symbol_lock_control_cls, msk_top_regs_symbol_lock_status_cls, msk_top_regs_symbol_lock_time_cls, ]: ...
 
     def get_child_by_system_rdl_name(self, name: Any) -> Any:
         return super().get_child_by_system_rdl_name(name)
