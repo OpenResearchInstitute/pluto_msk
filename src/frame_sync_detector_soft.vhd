@@ -1,3 +1,4 @@
+
 ------------------------------------------------------------------------------------------------------
 -- Frame Sync Detector with Soft Decision Support
 -- frame_sync_detector_soft.vhd
@@ -413,7 +414,8 @@ ARCHITECTURE rtl OF frame_sync_detector_soft IS
     --     5. Differential decoding (sign flip based on previous bit)
     --
     -- OBSERVED VALUES:
-    --   In simulation loopback (perfect channel): approximately ±360
+    --   In simulation loopback (perfect channel): approximately +/- 692
+    --   anchor (avg |soft|) = 16,600 / 24 = 692
     --   In hardware with noise: expect a distribution around these values
     --
     -- 3-BIT QUANTIZATION CONVENTION:
@@ -428,11 +430,11 @@ ARCHITECTURE rtl OF frame_sync_detector_soft IS
     --
     -- THRESHOLD CALIBRATION:
     --   Thresholds are set based on observed rx_data_soft magnitudes.
-    --   Current values calibrated for simulation with ±360 nominal:
-    --     |soft| > 300  ? Strong decision
-    --     |soft| > 150  ? Medium decision
-    --     |soft| > 50   ? Weak decision
-    --     |soft| < 50   ? Uncertain/erasure
+    --   Current values calibrated for simulation with +/- 692 nominal:
+    --     |soft| > 520  ? Strong decision
+    --     |soft| > 350  ? Medium decision
+    --     |soft| > 175   ? Weak decision
+    --     |soft| < 175   ? Uncertain/erasure
     --
     --   For hardware deployment, monitor rx_data_soft distribution and
     --   adjust thresholds if needed. Could also make configurable via CSR.
@@ -446,17 +448,17 @@ ARCHITECTURE rtl OF frame_sync_detector_soft IS
     FUNCTION quantize_soft(soft : signed(15 DOWNTO 0)) RETURN std_logic_vector IS
     BEGIN
         -- POLARITY: negative soft = '1' bit, positive soft = '0' bit
-        IF soft < -300 THEN
+        IF soft < -520 THEN
             RETURN "111";  -- Strong '1' (large negative soft)
-        ELSIF soft < -150 THEN
+        ELSIF soft < -350 THEN
             RETURN "101";  -- Medium '1'
-        ELSIF soft < -50 THEN
+        ELSIF soft < -175 THEN
             RETURN "100";  -- Weak '1'
-        ELSIF soft < 50 THEN
+        ELSIF soft < 175 THEN
             RETURN "011";  -- Erasure/uncertain
-        ELSIF soft < 150 THEN
+        ELSIF soft < 350 THEN
             RETURN "010";  -- Weak '0'
-        ELSIF soft < 300 THEN
+        ELSIF soft < 520 THEN
             RETURN "001";  -- Medium '0'
         ELSE
             RETURN "000";  -- Strong '0' (large positive soft)
@@ -684,6 +686,11 @@ BEGIN
                     WHEN VERIFYING_SYNC =>
                         IF rx_bit_valid = '1' THEN
                             sync_bit_count <= sync_bit_count + 1;
+
+
+                            -- Compute at every bit for diagnostic (remove after fix)
+                            corr_result := calc_correlation(soft_shift_reg, s_axis_soft_tdata);
+                            correlation_value <= corr_result;  -- visible every bit now
                             
                             -- After collecting 24 bits, verify via correlation
                             IF sync_bit_count = 23 THEN

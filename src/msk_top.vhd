@@ -667,8 +667,10 @@ BEGIN
 	dbg_rx_output_valid     <= sync_det_tvalid;
 	dbg_rx_soft_quantized <= rx_sync_soft_quantized;
 
-
-	rx_samples_mux <= std_logic_vector(resize(signed(tx_samples_I_int), 16)) WHEN loopback_ena = '1' ELSE rx_samples_I;
+        -- original
+	--rx_samples_mux <= std_logic_vector(resize(signed(tx_samples_I_int), 16)) WHEN loopback_ena = '1' ELSE rx_samples_I;
+        -- 24 dB bug fix repercussion fix attempts
+        rx_samples_mux <= std_logic_vector(shift_right(signed(tx_samples_I_int), to_integer(unsigned(tx_shift)))) WHEN loopback_ena = '1' ELSE rx_samples_I;
 
 	-- Delay pipeline for tx_data_bit
 	tx_delay_proc : PROCESS (clk)
@@ -766,10 +768,10 @@ BEGIN
         GENERIC MAP (
             SYNC_WORD           => x"02B8DB",  -- MSB-first sync word (same as TX!)
             PAYLOAD_BYTES       => 268,
-            HUNTING_THRESHOLD   => 3500,      -- adjust after observing, soft decisions
-            -- HUNTING_THRESHOLD   => 3,          -- Strict threshold when searching, hard decisions
-            LOCKED_THRESHOLD    => 1500,      -- adjust after observing, soft decisions
-            --LOCKED_THRESHOLD    => 5,          -- Relaxed threshold when locked, hard decisions
+            HUNTING_THRESHOLD   => 14110,      -- adjust after observing, soft decisions 85% of 16,600
+            -- HUNTING_THRESHOLD   => 3500,          -- Strict threshold when searching, hard decisions
+            LOCKED_THRESHOLD    => 8000,      -- adjust after observing, soft decisions 50% of 16,600
+            --LOCKED_THRESHOLD    => 1500,          -- Relaxed threshold when locked, hard decisions
             FLYWHEEL_TOLERANCE  => 2,          -- Tolerate 2 missed syncs
             LOCK_FRAMES         => 3,          -- Need 3 consecutive good frames
             BUFFER_DEPTH        => 11,         -- 2048 bytes
