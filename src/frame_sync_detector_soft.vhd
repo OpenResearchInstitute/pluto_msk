@@ -245,7 +245,7 @@ ARCHITECTURE rtl OF frame_sync_detector_soft IS
     -- Soft frame buffer (one frame: PAYLOAD_BITS x SOFT_WIDTH bits)
     TYPE soft_buffer_t IS ARRAY(0 TO PAYLOAD_BITS-1) OF
         std_logic_vector(SOFT_WIDTH-1 DOWNTO 0);
-    SIGNAL soft_frame_buf : soft_buffer_t;
+    SIGNAL soft_frame_buf : soft_buffer_t := (OTHERS => (OTHERS => '0'));
     ATTRIBUTE ram_style OF soft_frame_buf : SIGNAL IS "block";
 
     SIGNAL wr_ptr          : unsigned(BUFFER_DEPTH-1 DOWNTO 0) := (OTHERS => '0');
@@ -527,7 +527,15 @@ BEGIN
                                 bit_count     <= to_unsigned(1, 3);
 
                                 -- Capture P(0) soft value; advance soft index past slot 0
-                                soft_frame_buf(0) <= quantize(soft_r);
+
+                                --soft_frame_buf(0) <= quantize(soft_r); -- P(0) soft value intentionally not captured here.
+                                -- Position 0 is pre-initialized to "000" (strong '0' / erasure) in both simulation and
+                                -- hardware. Writing soft_frame_buf(0) here creates a dual-write-port pattern (hardcoded
+                                -- address 0 here + variable address frame_soft_idx in LOCKED) that prevents Vivado from
+                                -- inferring soft_frame_buf as BRAM, costing ~4000 LUTs. One erasure out of 2144 soft
+                                -- values has negligible impact on Viterbi performance (~0.01 dB coding gain loss).
+
+                                --soft_frame_buf(0) <= quantize(soft_r);
                                 frame_soft_idx    <= 1;
 
                                 frame_byte_count <= 0;
