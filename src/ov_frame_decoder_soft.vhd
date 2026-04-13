@@ -326,6 +326,7 @@ ARCHITECTURE rtl OF ov_frame_decoder_soft IS
     ATTRIBUTE ram_style OF input_bits : SIGNAL IS "block";
     ATTRIBUTE ram_style OF deinterleaved_bits : SIGNAL IS "block";
     ATTRIBUTE ram_style OF deinterleaved_soft : SIGNAL IS "block";
+
     
     ATTRIBUTE dont_touch : STRING;
     ATTRIBUTE dont_touch OF U_DECODER : LABEL IS "true";
@@ -518,27 +519,53 @@ WHEN DEINTERLEAVE =>
                 -- PREP_FEC_DECODE: Pack soft G1/G2 and start decoder
                 -- BYPASS_FEC=TRUE: Skip packing, go straight to extraction
                 ----------------------------------------------------------
-                WHEN PREP_FEC_DECODE =>
-                    IF BYPASS_FEC THEN
-                        -- BYPASS: Skip Viterbi, will extract first 134 bytes in FEC_DECODE
-                        state <= FEC_DECODE;
-                    ELSE
-                        -- Real FEC: Pack soft values for Viterbi decoder
-                        -- Deinterleaved stream: G1[0], G2[0], G1[1], G2[1], ...
-                        FOR i IN 0 TO NUM_SYMBOLS - 1 LOOP
-                            decoder_input_soft_g1((i+1)*SOFT_WIDTH-1 DOWNTO i*SOFT_WIDTH) <= 
-                                deinterleaved_soft(i*2);
-                            decoder_input_soft_g2((i+1)*SOFT_WIDTH-1 DOWNTO i*SOFT_WIDTH) <= 
-                                deinterleaved_soft(i*2 + 1);
-                        END LOOP;
-                        
-                        decoder_start <= '1';
-                        debug_viterbi_start <= '1';
-                        IF decoder_busy = '1' THEN
-                            state <= FEC_DECODE;
-                        END IF;
-                    END IF;
+
+WHEN PREP_FEC_DECODE =>
+    IF BYPASS_FEC THEN
+        state <= FEC_DECODE;
+    ELSE
+        IF byte_idx < NUM_SYMBOLS THEN
+            decoder_input_soft_g1((byte_idx+1)*SOFT_WIDTH-1 DOWNTO byte_idx*SOFT_WIDTH)
+                <= deinterleaved_soft(byte_idx*2);
+            decoder_input_soft_g2((byte_idx+1)*SOFT_WIDTH-1 DOWNTO byte_idx*SOFT_WIDTH)
+                <= deinterleaved_soft(byte_idx*2 + 1);
+            byte_idx <= byte_idx + 1;
+        ELSE
+            decoder_start <= '1';
+            state <= FEC_DECODE;
+        END IF;
+    END IF;
+
+
+
+
+
+
+--                WHEN PREP_FEC_DECODE =>
+--                    IF BYPASS_FEC THEN
+--                        -- BYPASS: Skip Viterbi, will extract first 134 bytes in FEC_DECODE
+--                        state <= FEC_DECODE;
+--                    ELSE
+--                        -- Real FEC: Pack soft values for Viterbi decoder
+--                        -- Deinterleaved stream: G1[0], G2[0], G1[1], G2[1], ...
+--                        FOR i IN 0 TO NUM_SYMBOLS - 1 LOOP
+--                            decoder_input_soft_g1((i+1)*SOFT_WIDTH-1 DOWNTO i*SOFT_WIDTH) <= 
+--                                deinterleaved_soft(i*2);
+--                            decoder_input_soft_g2((i+1)*SOFT_WIDTH-1 DOWNTO i*SOFT_WIDTH) <= 
+--                                deinterleaved_soft(i*2 + 1);
+--                        END LOOP;
+--                        
+--                        decoder_start <= '1';
+--                        debug_viterbi_start <= '1';
+--                        IF decoder_busy = '1' THEN
+--                            state <= FEC_DECODE;
+--                        END IF;
+--                    END IF;
                     
+
+
+
+
                 ----------------------------------------------------------
                 -- FEC_DECODE: Wait for Viterbi decoder OR extract first copy
                 -- BYPASS_FEC=TRUE: Take first 1072 bits (134 bytes) from deinterleaved stream

@@ -527,7 +527,7 @@ BEGIN
                                 bit_count     <= to_unsigned(1, 3);
 
                                 -- Capture P(0) soft value; advance soft index past slot 0
-                                --soft_frame_buf(0) <= quantize(soft_r); -- removed because wrecks BRAM utilization
+                                soft_frame_buf(0) <= quantize(soft_r);
                                 frame_soft_idx    <= 1;
 
                                 frame_byte_count <= 0;
@@ -711,6 +711,7 @@ BEGIN
                 soft_tlast_int  <= '0';
                 frame_ack       <= '0';
                 rd_ptr          <= (OTHERS => '0');
+                m_axis_soft_bit_tdata <= (OTHERS => '0');
             ELSE
                 frame_ack <= '0';
 
