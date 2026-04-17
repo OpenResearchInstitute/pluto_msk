@@ -495,6 +495,15 @@ ad_connect clk_divider/adc_valid_out msk_top/rx_svalid
 # MSK RX AXIS to DMA - interface connection
 ad_connect  msk_top/m_axis axi_ad9361_adc_dma/s_axis
 
+
+
+
+
+
+
+
+if {0} {
+
 ##############################################################################
 # ILA Debug Core - Deserializer Monitoring
 ##############################################################################
@@ -511,34 +520,37 @@ ad_connect  msk_top/m_axis axi_ad9361_adc_dma/s_axis
 # At 61 MHz with 32768 samples, we get more time fails to place (over on BRAM)
 # Look for patterns at byte boundaries (every 8 tx_req pulses).
 ##############################################################################
-#create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_msk_tx
-#set_property -dict [list \
-#    CONFIG.C_PROBE0_WIDTH {1} \
-#    CONFIG.C_PROBE1_WIDTH {1} \
-#    CONFIG.C_PROBE2_WIDTH {1} \
-#    CONFIG.C_PROBE3_WIDTH {1} \
-#    CONFIG.C_PROBE4_WIDTH {1} \
-#    CONFIG.C_PROBE5_WIDTH {8} \
-#    CONFIG.C_NUM_OF_PROBES {6} \
-#    CONFIG.C_DATA_DEPTH {16384} \
-#    CONFIG.C_TRIGIN_EN {false} \
-#    CONFIG.C_EN_STRG_QUAL {1} \
-#    CONFIG.ALL_PROBE_SAME_MU_CNT {2} \
-#] [get_bd_cells ila_msk_tx]
-## Clock ILA with clk_div4 (61 MHz) - deserializer clock domain
-#ad_connect clk_divider/clk_out ila_msk_tx/clk
-## Probe 0: tx_data_bit - the bit going to modulator
-#ad_connect msk_top/dbg_tx_data_bit ila_msk_tx/probe0
-## Probe 1: tx_req - when modulator requests a bit
-#ad_connect msk_top/dbg_tx_req ila_msk_tx/probe1
-## Probe 2: encoder_tvalid - data available from encoder
-#ad_connect msk_top/dbg_encoder_tvalid ila_msk_tx/probe2
-## Probe 3: encoder_tready - deserializer ready for data
-#ad_connect msk_top/dbg_encoder_tready ila_msk_tx/probe3
-## Probe 4: frame_complete - end of frame marker
-#ad_connect msk_top/dbg_frame_complete ila_msk_tx/probe4
-## Probe 5: encoder_tdata - 8-bit data from encoder to deserializer
-#ad_connect msk_top/dbg_encoder_tdata ila_msk_tx/probe5
+create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_msk_tx
+set_property -dict [list \
+    CONFIG.C_PROBE0_WIDTH {1} \
+    CONFIG.C_PROBE1_WIDTH {1} \
+    CONFIG.C_PROBE2_WIDTH {1} \
+    CONFIG.C_PROBE3_WIDTH {1} \
+    CONFIG.C_PROBE4_WIDTH {1} \
+    CONFIG.C_PROBE5_WIDTH {8} \
+    CONFIG.C_NUM_OF_PROBES {6} \
+    CONFIG.C_DATA_DEPTH {16384} \
+    CONFIG.C_TRIGIN_EN {false} \
+    CONFIG.C_EN_STRG_QUAL {1} \
+    CONFIG.ALL_PROBE_SAME_MU_CNT {2} \
+] [get_bd_cells ila_msk_tx]
+# Clock ILA with clk_div4 (61 MHz) - deserializer clock domain
+ad_connect clk_divider/clk_out ila_msk_tx/clk
+# Probe 0: tx_data_bit - the bit going to modulator
+ad_connect msk_top/dbg_tx_data_bit ila_msk_tx/probe0
+# Probe 1: tx_req - when modulator requests a bit
+ad_connect msk_top/dbg_tx_req ila_msk_tx/probe1
+# Probe 2: encoder_tvalid - data available from encoder
+ad_connect msk_top/dbg_encoder_tvalid ila_msk_tx/probe2
+# Probe 3: encoder_tready - deserializer ready for data
+ad_connect msk_top/dbg_encoder_tready ila_msk_tx/probe3
+# Probe 4: frame_complete - end of frame marker
+ad_connect msk_top/dbg_frame_complete ila_msk_tx/probe4
+# Probe 5: encoder_tdata - 8-bit data from encoder to deserializer
+ad_connect msk_top/dbg_encoder_tdata ila_msk_tx/probe5
+}
+
+
 
 
 
@@ -650,12 +662,12 @@ ad_connect axi_ad9361/adc_valid_q0 ila_dac_tx/probe19
 
 # Probe 20: adc_enable_q0
 ad_connect axi_ad9361/adc_enable_q0 ila_dac_tx/probe20
+}
 
 
 
 
-
-
+if {0} {
 
 ##############################################################################
 # FUTURE DEBUG: Comprehensive MSK Datapath ILA
@@ -753,9 +765,12 @@ ad_connect msk_top/dbg_fifo_tready ila_msk_tx/probe8
 
 # Probe 9: encoder_debug_state - encoder FSM state (now exposed in msk_top)
 ad_connect msk_top/dbg_encoder_state ila_msk_tx/probe9
+}
 
 
 
+
+if {0} {
 
 ##############################################################################
 # ILA Debug Core - Randomizer Monitoring
@@ -791,9 +806,11 @@ ad_connect msk_top/dbg_encoder_state ila_msk_tx/probe9
 #
 ## Probe 4: Encoder state
 #ad_connect msk_top/dbg_encoder_state ila_randomizer/probe4
+}
 
 
 
+if {0} {
 
 ##############################################################################
 # ILA Debug Core #1: FEC Encoder Verification
@@ -878,7 +895,11 @@ ad_connect msk_top/dbg_conv_done ila_fec_verify/probe10
 ad_connect axi_ad9361/dac_enable_i0 ila_fec_verify/probe11
 
 ad_connect axi_ad9361/dac_enable_q0 ila_fec_verify/probe12
+}
 
+
+
+if {0} {
 
 ##############################################################################
 # ADDITIONAL PORTS NEEDED (to truly verify FEC engagement)
@@ -1005,11 +1026,12 @@ ad_connect msk_top/dbg_rx_samples_dec ila_rx_soft/probe9
 
 # Probe 10: sample data from the ADC before it gets to msk_top
 ad_connect msk_top/dbg_rx_samples_I_raw ila_rx_soft/probe10
-
 }
 
 
 
+
+if {0} {
 
 ##############################################################################
 # THRESHOLD CALIBRATION QUICK REFERENCE
@@ -1067,8 +1089,6 @@ ad_connect msk_top/dbg_rx_samples_I_raw ila_rx_soft/probe10
 #   - Locks then loses lock?        -> Raise LOCKED_THRESHOLD
 #
 ##############################################################################
-
-
 
 
 create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_msk_rx
@@ -1142,6 +1162,8 @@ ad_connect msk_top/dbg_rx_bit_corr ila_msk_rx/probe12
 #   Too many 011 (erasure)? -> Signal weak or thresholds too tight
 #   All 000/111 (strong)? -> Thresholds may be too loose
 ad_connect msk_top/dbg_rx_soft_quantized ila_msk_rx/probe13
+}
+
 
 
 
@@ -1173,6 +1195,128 @@ ad_connect msk_top/frame_sync_errors ila_msk_rx/probe3
 ad_connect msk_top/dbg_rx_bit_valid ila_msk_rx/probe4
 ad_connect msk_top/dbg_rx_data_soft ila_msk_rx/probe5
 
+}
+
+
+if {1} {
+
+##############################################################################
+# ILA: Symbol Lock and Costas Loop Behavior
+##############################################################################
+#
+# PURPOSE: Diagnose symbol lock acquisition on real hardware.
+#          Answers: Are F1/F2 Costas loops locking? How fast? Are they
+#          staying locked? What are the actual ADC sample levels?
+#
+# What we are looking for and at:
+#
+#   1. dbg_cst_lock_f1 / dbg_cst_lock_f2:
+#      - Should both go HIGH within some small number of symbols after PTT
+#      - If never HIGH: signal too weak or wrong frequency
+#      - If toggling: loop unstable, adjust i_shift / p_shift gains?
+#
+#   2. dbg_cst_lock_time_f1 / dbg_cst_lock_time_f2:
+#      - Number of symbols to first lock since init released
+#      - Typical good values: 25-100 symbols
+#      - Values > 200: loop too slow, increase gains
+#      - Values = 0: never locked (saw 35, 25, and very low in sim)
+#
+#   3. dbg_cst_unlock_f1 / dbg_cst_unlock_f2:
+#      - Pulses when lock is lost
+#      - Should be rare after initial acquisition
+#      - Frequent pulses: loop underdamped or signal too weak
+#
+#   4. dbg_symbol_lock_threshold / dbg_symbol_lock_count:
+#      - Readback of register values (verify Dialogus set them correctly)
+#      - threshold default: 0x2710 = 10000
+#      - count default: 0x80 = 128 symbols
+#
+#   5. dbg_rx_samples_dec_out (12-bit ADC samples to demodulator):
+#      - Should span most of 12-bit range: peak values > 1000
+#      - If max values < 200: signal too weak, check tx_shift and RF path
+#      - If clipping at 2047/-2048: signal too strong, reduce gain
+#
+#   6. dbg_rx_samples_I_raw_out (16-bit raw ADC samples before decimation):
+#      - AD9361 outputs right-justified 12-bit in bits [11:0]
+#      - Bits [15:12] should be sign extension ONLY
+#      - Compare with dbg_rx_samples_dec to verify decimation is correct
+#        which is immediately above in this list
+#
+# TRIGGER PLAN:
+#   Trigger on dbg_cst_lock_f1 rising edge to capture lock acquisition
+#   Or trigger on dbg_cst_unlock_f1 rising edge to capture lock loss
+#   Check stuff out when this happens
+#
+# SYMBOL LOCK THRESHOLD CALIBRATION:
+#   The symbol lock mechanism accumulates Costas loop output over
+#   symbol_lock_count symbols and compares to symbol_lock_threshold.
+#   I'm hoping this is similar procedure to the frame sync threshold calibration.
+#
+#   With soft values of +/- 225 (observed in loopback):
+#     Expected accumulated metric ≈ 225 * symbol_lock_count * convergence_factor
+#     If symbol_lock_count=128, try threshold = 3000 first, adjust upward
+#
+#   Register writes (via Dialogus, no rebuild needed):
+#     symbol_lock_control @ 0xA0:
+#       bits [9:0]  = symbol_lock_count  (default 128 = 0x080)
+#       bits [25:10] = symbol_lock_threshold (default 10000 = 0x2710)
+#     Try: count=128, threshold=3000 which means write 0x00BB8080 to 0xA0
+#
+##############################################################################
+
+create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_symbol_lock
+set_property -dict [list \
+    CONFIG.C_MONITOR_TYPE {Native} \
+    CONFIG.C_NUM_OF_PROBES {10} \
+    CONFIG.C_PROBE0_WIDTH {1} \
+    CONFIG.C_PROBE1_WIDTH {1} \
+    CONFIG.C_PROBE2_WIDTH {1} \
+    CONFIG.C_PROBE3_WIDTH {1} \
+    CONFIG.C_PROBE4_WIDTH {16} \
+    CONFIG.C_PROBE5_WIDTH {16} \
+    CONFIG.C_PROBE6_WIDTH {10} \
+    CONFIG.C_PROBE7_WIDTH {16} \
+    CONFIG.C_PROBE8_WIDTH {12} \
+    CONFIG.C_PROBE9_WIDTH {16} \
+    CONFIG.C_DATA_DEPTH {16384} \
+    CONFIG.C_TRIGIN_EN {false} \
+    CONFIG.C_EN_STRG_QUAL {1} \
+    CONFIG.ALL_PROBE_SAME_MU_CNT {2} \
+] [get_bd_cells ila_symbol_lock]
+
+ad_connect clk_divider/clk_out ila_symbol_lock/clk
+
+# Probe 0: F1 Costas loop lock status
+ad_connect msk_top/dbg_cst_lock_f1 ila_symbol_lock/probe0
+
+# Probe 1: F2 Costas loop lock status
+ad_connect msk_top/dbg_cst_lock_f2 ila_symbol_lock/probe1
+
+# Probe 2: F1 unlock event (pulse on loss of lock)
+ad_connect msk_top/dbg_cst_unlock_f1 ila_symbol_lock/probe2
+
+# Probe 3: F2 unlock event (pulse on loss of lock)
+ad_connect msk_top/dbg_cst_unlock_f2 ila_symbol_lock/probe3
+
+# Probe 4: F1 lock time (symbols to first lock since init)
+ad_connect msk_top/dbg_cst_lock_time_f1 ila_symbol_lock/probe4
+
+# Probe 5: F2 lock time (symbols to first lock since init)
+ad_connect msk_top/dbg_cst_lock_time_f2 ila_symbol_lock/probe5
+
+# Probe 6: Symbol lock integration count (readback from register)
+ad_connect msk_top/dbg_symbol_lock_count ila_symbol_lock/probe6
+
+# Probe 7: Symbol lock threshold (readback from register)
+ad_connect msk_top/dbg_symbol_lock_threshold ila_symbol_lock/probe7
+
+# Probe 8: Decimated RX samples to demodulator (12-bit)
+# Key signal: amplitude here determines soft value range
+# With tx_shift=4 and loopback, should see peak values > 1000
+ad_connect msk_top/dbg_rx_samples_dec_out ila_symbol_lock/probe8
+
+# Probe 9: Raw ADC samples before decimation (16-bit, right-justified 12-bit)
+ad_connect msk_top/dbg_rx_samples_I_raw_out ila_symbol_lock/probe9
 }
 
 

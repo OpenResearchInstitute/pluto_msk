@@ -196,7 +196,20 @@ ENTITY msk_top IS
 		dbg_rx_soft_quantized   : OUT std_logic_vector(2 DOWNTO 0);
 		dbg_rx_bit_count        : OUT std_logic_vector(31 DOWNTO 0);
 		dbg_rx_output_byte      : OUT std_logic_vector(7 DOWNTO 0);
-		dbg_rx_output_valid     : OUT std_logic
+		dbg_rx_output_valid     : OUT std_logic;
+
+		-- Symbol lock and Costas loop investigation debug (for ILA)
+		dbg_cst_lock_f1      : OUT std_logic;
+		dbg_cst_lock_f2      : OUT std_logic;
+		dbg_cst_unlock_f1    : OUT std_logic;
+		dbg_cst_unlock_f2    : OUT std_logic;
+		dbg_cst_lock_time_f1 : OUT std_logic_vector(15 DOWNTO 0);
+		dbg_cst_lock_time_f2 : OUT std_logic_vector(15 DOWNTO 0);
+		dbg_symbol_lock_count     : OUT std_logic_vector(9 DOWNTO 0);
+		dbg_symbol_lock_threshold : OUT std_logic_vector(15 DOWNTO 0);
+		dbg_rx_samples_dec_out    : OUT std_logic_vector(11 DOWNTO 0);
+		dbg_rx_samples_I_raw_out  : OUT std_logic_vector(15 DOWNTO 0)
+
 
 	);
 
@@ -666,6 +679,18 @@ BEGIN
 	dbg_rx_output_byte      <= sync_det_tdata;
 	dbg_rx_output_valid     <= sync_det_tvalid;
 	dbg_rx_soft_quantized <= rx_sync_soft_quantized;
+
+	-- Debug output assignments for ILA probing (symbol lock and Costas loop)
+	dbg_cst_lock_f1           <= cst_lock_f1;
+	dbg_cst_lock_f2           <= cst_lock_f2;
+	dbg_cst_unlock_f1         <= cst_unlock_f1;
+	dbg_cst_unlock_f2         <= cst_unlock_f2;
+	dbg_cst_lock_time_f1      <= cst_lock_time_f1;
+	dbg_cst_lock_time_f2      <= cst_lock_time_f2;
+	dbg_symbol_lock_count     <= symbol_lock_count;
+	dbg_symbol_lock_threshold <= symbol_lock_threshold;
+	dbg_rx_samples_dec_out    <= rx_samples_dec;
+	dbg_rx_samples_I_raw_out  <= rx_samples_I;
 
         -- original
 	--rx_samples_mux <= std_logic_vector(resize(signed(tx_samples_I_int), 16)) WHEN loopback_ena = '1' ELSE rx_samples_I;
