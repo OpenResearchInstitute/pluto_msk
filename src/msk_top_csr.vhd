@@ -452,6 +452,13 @@ BEGIN
 	hwif_in.symbol_lock_time.f1.next_q			<= cst_lock_time_f1;
 	hwif_in.symbol_lock_time.f2.next_q			<= cst_lock_time_f2;
 
+	-- Experiment to get lock status and lock time working in Dialogus Abraxas3d
+	hwif_in.symbol_lock_status.f1f2.we     <= '1';
+	hwif_in.symbol_lock_status.f1.we       <= '1';
+	hwif_in.symbol_lock_status.f2.we       <= '1';
+	hwif_in.symbol_lock_time.f1.we         <= '1';
+	hwif_in.symbol_lock_time.f2.we         <= '1';
+
     -- commented out by Abraxas3d to add more bits to the register to investigate receive failures
     --hwif_in.rx_async_fifo_rd_wr_ptr.data.next_q <= std_logic_vector(resize(unsigned(rx_async_fifo_wr_ptr), 16) & resize(unsigned(rx_async_fifo_rd_ptr), 16));
 
