@@ -793,9 +793,9 @@ BEGIN
         GENERIC MAP (
             SYNC_WORD           => x"02B8DB",  -- MSB-first sync word (same as TX!)
             PAYLOAD_BYTES       => 268,
-            HUNTING_THRESHOLD   => 14110,      -- adjust after observing, soft decisions 85% of 16,600
+            HUNTING_THRESHOLD   => 60000,      -- adjust after observing, soft decisions 85% of full scale (80160)
             -- HUNTING_THRESHOLD   => 3500,          -- Strict threshold when searching, hard decisions
-            LOCKED_THRESHOLD    => 8000,      -- adjust after observing, soft decisions 50% of 16,600
+            LOCKED_THRESHOLD    => 36000,      -- adjust after observing, soft decisions 50% of full scale (80160)
             --LOCKED_THRESHOLD    => 1500,          -- Relaxed threshold when locked, hard decisions
             FLYWHEEL_TOLERANCE  => 2,          -- Tolerate 2 missed syncs
             LOCK_FRAMES         => 3,          -- Need 3 consecutive good frames

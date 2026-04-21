@@ -115,8 +115,8 @@
 --   CALIBRATION PROCEDURE:
 --   1. Monitor debug_corr_peak via ILA or CSR
 --   2. Transmit known frames and observe peak correlation  
---   3. Set HUNTING_THRESHOLD ? 70-80% of peak (conservative)
---   4. Set LOCKED_THRESHOLD ? 40-50% of peak (allow flywheel margin)
+--   3. Set HUNTING_THRESHOLD to 70-80% of peak (conservative)
+--   4. Set LOCKED_THRESHOLD to 40-50% of peak (allow flywheel margin)
 --
 ------------------------------------------------------------------------------------------------------
 -- SYNC WORD: 0x02B8DB (24 bits, MSB-first transmission)
@@ -133,6 +133,7 @@
 --       latency that contaminated bit 7 of the first assembled byte on every LOCKED
 --       entry. Also fixed soft_frame_buf alignment on HUNTING->LOCKED path (P(0)
 --       soft value is now captured on the transition clock).
+--   v6: Revised quantizer after Case of the Missing 24 dB
 --
 ------------------------------------------------------------------------------------------------------
 
@@ -145,8 +146,8 @@ ENTITY frame_sync_detector_soft IS
     GENERIC (
         SYNC_WORD          : std_logic_vector(23 DOWNTO 0) := x"02B8DB";
         PAYLOAD_BYTES      : NATURAL := 268;
-        HUNTING_THRESHOLD  : INTEGER := 14000;
-        LOCKED_THRESHOLD   : INTEGER := 8000;
+        HUNTING_THRESHOLD  : INTEGER := 60000;
+        LOCKED_THRESHOLD   : INTEGER := 36000;
         FLYWHEEL_TOLERANCE : NATURAL := 2;
         LOCK_FRAMES        : NATURAL := 3;
         BUFFER_DEPTH       : NATURAL := 11;
@@ -323,27 +324,38 @@ ARCHITECTURE rtl OF frame_sync_detector_soft IS
     -- quantize: 16-bit signed soft -> 3-bit unsigned for Viterbi decoder
     --
     -- Polarity: negative soft = '1', positive soft = '0'.
-    -- Thresholds calibrated for loopback simulation (~+/-692 nominal soft range).
+    -- Thresholds calibrated for loopback simulation (~+/- 3340 nominal soft range).
     -- Adjust for hardware deployment based on observed rx_data_soft distribution.
     --
     --   Code | Meaning       | Soft range
     --   -----|---------------|--------------------
-    --   111  | Strong '1'    | soft < -520
-    --   101  | Medium '1'    | -520 <= soft < -350
-    --   100  | Weak '1'      | -350 <= soft < -175
-    --   011  | Uncertain     | -175 <= soft < +175
-    --   010  | Weak '0'      |  175 <= soft < +350
-    --   001  | Medium '0'    |  350 <= soft < +520
-    --   000  | Strong '0'    | soft >= +520
+    --   111  | Strong '1'    | soft < -2800
+    --   101  | Medium '1'    | -2800 <= soft < -1400
+    --   100  | Weak '1'      | -1400 <= soft < -500
+    --   011  | Uncertain     | -500 <= soft < +500
+    --   010  | Weak '0'      |  500 <= soft < +1400
+    --   001  | Medium '0'    |  1400 <= soft < +2800
+    --   000  | Strong '0'    | soft >= +2800
+    --
+    -- Thresholds for -6 dBFS (~±5,766 nominal soft range)
+    --IF    soft < -4840 THEN RETURN "111";
+    --ELSIF soft < -2420 THEN RETURN "101";
+    --ELSIF soft <  -860 THEN RETURN "100";
+    --ELSIF soft <   860 THEN RETURN "011";
+    --ELSIF soft <  2420 THEN RETURN "010";
+    --ELSIF soft <  4840 THEN RETURN "001";
+    --ELSE                    RETURN "000";
     ----------------------------------------------------------------------------
+
+    -- Thresholds for -12 dBFS (+/- 3340 nominal soft range)
     FUNCTION quantize(soft : signed(15 DOWNTO 0)) RETURN std_logic_vector IS
     BEGIN
-        IF    soft < -520 THEN RETURN "111";
-        ELSIF soft < -350 THEN RETURN "101";
-        ELSIF soft < -175 THEN RETURN "100";
-        ELSIF soft <  175 THEN RETURN "011";
-        ELSIF soft <  350 THEN RETURN "010";
-        ELSIF soft <  520 THEN RETURN "001";
+        IF    soft < -2800 THEN RETURN "111";
+        ELSIF soft < -1400 THEN RETURN "101";
+        ELSIF soft < -500 THEN RETURN "100";
+        ELSIF soft <  500 THEN RETURN "011";
+        ELSIF soft <  1400 THEN RETURN "010";
+        ELSIF soft <  2800 THEN RETURN "001";
         ELSE                    RETURN "000";
         END IF;
     END FUNCTION;
