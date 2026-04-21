@@ -307,7 +307,8 @@ ARCHITECTURE rtl OF ov_frame_decoder_soft IS
     SIGNAL decoder_path_metric  : std_logic_vector(15 DOWNTO 0);
     
     -- Processing indices
-    SIGNAL byte_idx             : NATURAL RANGE 0 TO ENCODED_BYTES;
+    --SIGNAL byte_idx             : NATURAL RANGE 0 TO ENCODED_BYTES; -- old method
+    SIGNAL byte_idx             : NATURAL RANGE 0 to ENCODED_BITS;
     SIGNAL bit_idx              : NATURAL RANGE 0 TO ENCODED_BITS;
     SIGNAL out_idx              : NATURAL RANGE 0 TO PAYLOAD_BYTES;
     
