@@ -197,6 +197,7 @@ ENTITY msk_top IS
 		dbg_rx_bit_count        : OUT std_logic_vector(31 DOWNTO 0);
 		dbg_rx_output_byte      : OUT std_logic_vector(7 DOWNTO 0);
 		dbg_rx_output_valid     : OUT std_logic;
+		dbg_decoder_state	: OUT std_logic_vector(3 DOWNTO 0); 
 
 		-- Symbol lock and Costas loop investigation debug (for ILA)
 		dbg_cst_lock_f1      : OUT std_logic;
@@ -658,6 +659,8 @@ BEGIN
 	dbg_rx_sample_clk       <= rx_sample_clk;
 	dbg_rx_samples_dec      <= rx_samples_dec;
 	dbg_rx_samples_I_raw    <= rx_samples_I;
+        dbg_decoder_state	<= decoder_debug_state;
+
 
 
 	-- Debug output assignments for ILA probing (Randomizer)

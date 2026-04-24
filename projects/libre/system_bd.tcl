@@ -1094,7 +1094,7 @@ if {1} {
 create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_msk_rx
 set_property -dict [list \
     CONFIG.C_MONITOR_TYPE {Native} \
-    CONFIG.C_NUM_OF_PROBES {14} \
+    CONFIG.C_NUM_OF_PROBES {15} \
     CONFIG.C_PROBE0_WIDTH {3} \
     CONFIG.C_PROBE1_WIDTH {4} \
     CONFIG.C_PROBE2_WIDTH {4} \
@@ -1109,6 +1109,7 @@ set_property -dict [list \
     CONFIG.C_PROBE11_WIDTH {16} \
     CONFIG.C_PROBE12_WIDTH {1} \
     CONFIG.C_PROBE13_WIDTH {3} \
+    CONFIG.C_PROBE14_WIDTH {4} \
     CONFIG.C_DATA_DEPTH {16384} \
     CONFIG.C_TRIGIN_EN {false} \
     CONFIG.C_EN_STRG_QUAL {1} \
@@ -1162,6 +1163,10 @@ ad_connect msk_top/dbg_rx_bit_corr ila_msk_rx/probe12
 #   Too many 011 (erasure)? -> Signal weak or thresholds too tight
 #   All 000/111 (strong)? -> Thresholds may be too loose
 ad_connect msk_top/dbg_rx_soft_quantized ila_msk_rx/probe13
+
+# Probe 14: dbg_decoder_state[3:0] Decoder State Machine 
+# state now visible. Helps catch stalls in the machine.
+ad_connect msk_top/dbg_decoder_state ila_msk_rx/probe14
 }
 
 
