@@ -209,7 +209,12 @@ ENTITY msk_top IS
 		dbg_symbol_lock_count     : OUT std_logic_vector(9 DOWNTO 0);
 		dbg_symbol_lock_threshold : OUT std_logic_vector(15 DOWNTO 0);
 		dbg_rx_samples_dec_out    : OUT std_logic_vector(11 DOWNTO 0);
-		dbg_rx_samples_I_raw_out  : OUT std_logic_vector(15 DOWNTO 0)
+		dbg_rx_samples_I_raw_out  : OUT std_logic_vector(15 DOWNTO 0);
+
+		-- Ports added for ILA in order to calibrate symbol lock threshold
+		dbg_acc_i_f1		: OUT std_logic_vector(31 DOWNTO 0);
+		dbg_acc_q_f1		: OUT std_logic_vector(31 DOWNTO 0);
+		dbg_acc_iq_delta_f1	: OUT std_logic_vector(31 DOWNTO 0)
 
 
 	);
@@ -448,6 +453,12 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL cst_lock_time_f2  	: std_logic_vector(15 DOWNTO 0);
 	SIGNAL cst_unlock_f1 		: std_logic;
 	SIGNAL cst_unlock_f2 		: std_logic;
+
+	-- Signals added for ILA in order to calibrate symbol lock threshold
+	SIGNAL cst_acc_i_f1        : std_logic_vector(31 DOWNTO 0);
+	SIGNAL cst_acc_q_f1        : std_logic_vector(31 DOWNTO 0);
+	SIGNAL cst_acc_iq_delta_f1 : std_logic_vector(31 DOWNTO 0);
+
 
 
         ATTRIBUTE dont_touch : STRING;
@@ -694,6 +705,11 @@ BEGIN
 	dbg_symbol_lock_threshold <= symbol_lock_threshold;
 	dbg_rx_samples_dec_out    <= rx_samples_dec;
 	dbg_rx_samples_I_raw_out  <= rx_samples_I;
+
+	-- Concurrent assignments for ILA probing (symbol lock threshold calibration)
+	dbg_acc_i_f1        <= cst_acc_i_f1;
+	dbg_acc_q_f1        <= cst_acc_q_f1;
+	dbg_acc_iq_delta_f1 <= cst_acc_iq_delta_f1;
 
         -- original
 	--rx_samples_mux <= std_logic_vector(resize(signed(tx_samples_I_int), 16)) WHEN loopback_ena = '1' ELSE rx_samples_I;
@@ -950,21 +966,6 @@ BEGIN
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         rx_bit_corr <= rx_bit WHEN rx_invert = '0' ELSE NOT rx_bit;
 
 ------------------------------------------------------------------------------------------------------
@@ -1043,7 +1044,12 @@ BEGIN
 			cst_lock_time_f1  		=> cst_lock_time_f1,
 			cst_lock_time_f2  		=> cst_lock_time_f2,
 			cst_unlock_f1 			=> cst_unlock_f1,
-			cst_unlock_f2 			=> cst_unlock_f2
+			cst_unlock_f2 			=> cst_unlock_f2, 
+
+			-- Port map for symbol lock calibration ILA
+			dbg_acc_i_f1        => cst_acc_i_f1,
+			dbg_acc_q_f1        => cst_acc_q_f1,
+			dbg_acc_iq_delta_f1 => cst_acc_iq_delta_f1
 
 		);
 

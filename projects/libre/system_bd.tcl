@@ -1272,7 +1272,7 @@ if {1} {
 create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_symbol_lock
 set_property -dict [list \
     CONFIG.C_MONITOR_TYPE {Native} \
-    CONFIG.C_NUM_OF_PROBES {10} \
+    CONFIG.C_NUM_OF_PROBES {13} \
     CONFIG.C_PROBE0_WIDTH {1} \
     CONFIG.C_PROBE1_WIDTH {1} \
     CONFIG.C_PROBE2_WIDTH {1} \
@@ -1283,6 +1283,9 @@ set_property -dict [list \
     CONFIG.C_PROBE7_WIDTH {16} \
     CONFIG.C_PROBE8_WIDTH {12} \
     CONFIG.C_PROBE9_WIDTH {16} \
+    CONFIG.C_PROBE10_WIDTH {32} \
+    CONFIG.C_PROBE11_WIDTH {32} \
+    CONFIG.C_PROBE12_WIDTH {32} \
     CONFIG.C_DATA_DEPTH {16384} \
     CONFIG.C_TRIGIN_EN {false} \
     CONFIG.C_EN_STRG_QUAL {1} \
@@ -1322,6 +1325,15 @@ ad_connect msk_top/dbg_rx_samples_dec_out ila_symbol_lock/probe8
 
 # Probe 9: Raw ADC samples before decimation (16-bit, right-justified 12-bit)
 ad_connect msk_top/dbg_rx_samples_I_raw_out ila_symbol_lock/probe9
+
+# Probe 10: f1 I accumulator
+ad_connect msk_top/dbg_acc_i_f1 ila_symbol_lock/probe10
+
+# Probe 11: f1 Q accumulator
+ad_connect msk_top/dbg_acc_q_f1 ila_symbol_lock/probe11
+
+# Probe 12: the delta between I and Q, in an accumulator
+ad_connect msk_top/dbg_acc_iq_delta_f1 ila_symbol_lock/probe12
 }
 
 
