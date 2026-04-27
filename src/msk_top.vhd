@@ -1106,7 +1106,9 @@ BEGIN
 -- CONFIG/STATUS (preserved)
 ------------------------------------------------------------------------------------------------------
 
-	demod_sync_lock <= '0';
+	-- demod_sync_lock <= '0'; -- frame sync lock doesn't wait on anything
+	demod_sync_lock <= cst_lock_f1 AND cst_lock_f2; -- frame sync lock waits for symbol lock
+
 	ptt_start <= ptt AND NOT ptt_d;
 
 	stats_proc : PROCESS (clk)
