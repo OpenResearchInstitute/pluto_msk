@@ -1031,7 +1031,7 @@ ad_connect msk_top/dbg_rx_samples_I_raw ila_rx_soft/probe10
 
 
 
-if {1} {
+if {0} {
 
 ##############################################################################
 # THRESHOLD CALIBRATION QUICK REFERENCE
