@@ -129,6 +129,9 @@ ARCHITECTURE behavior OF tb_msk_modem_134byte IS
     CONSTANT FRAME_BYTES    : NATURAL := 134;     -- OV payload size
     CONSTANT NUM_FRAMES     : NATURAL := 10;      -- Test 10 frames (5 even + 5 odd pattern)
     CONSTANT FRAME_GAP      : TIME := 5 ms;       -- Intentional backpressure test
+
+    CONSTANT PREAMBLE_BYTE  : std_logic_vector(7 DOWNTO 0) := X"CC";
+    CONSTANT PREAMBLE_BYTES : NATURAL := FRAME_BYTES;  -- 134 bytes, same as data frame
     
     -- MSK Register Addresses (from working testbench!)
     CONSTANT MSK_INIT_ADDR          : std_logic_vector(31 DOWNTO 0) := X"43C00008";
@@ -145,6 +148,8 @@ ARCHITECTURE behavior OF tb_msk_modem_134byte IS
     CONSTANT TX_DATA_WIDTH_ADDR     : std_logic_vector(31 DOWNTO 0) := X"43C00038";
     CONSTANT RX_DATA_WIDTH_ADDR     : std_logic_vector(31 DOWNTO 0) := X"43C0003C";
     CONSTANT SYMBOL_LOCK_CTRL_ADDR  : std_logic_vector(31 DOWNTO 0) := X"43C000A0";
+
+
     
     -- Clock and reset
     SIGNAL clk        : std_logic := '0';
@@ -391,7 +396,8 @@ BEGIN
 
         axi_write(s_axi_awaddr, s_axi_awvalid, s_axi_wdata, s_axi_wvalid,
                   s_axi_aclk, s_axi_awready, s_axi_wready, s_axi_bvalid,
-                  SYMBOL_LOCK_CTRL_ADDR, X"002EE010"); -- threshold 3000 count 16 
+                  --SYMBOL_LOCK_CTRL_ADDR, X"002EE010"); -- threshold 3000 count 16
+                  SYMBOL_LOCK_CTRL_ADDR, X"001F9410");  -- threshold=2021<<16=132M, count=16 
         
         REPORT "Step 4: Configuring RX sample decimation...";
         axi_write(s_axi_awaddr, s_axi_awvalid, s_axi_wdata, s_axi_wvalid,
@@ -514,6 +520,33 @@ BEGIN
         REPORT "  Odd  frames: 0x80 -> 0x05 (wraps)";
         REPORT "Frame gap: 5ms (backpressure test)";
         REPORT "========================================";
+
+
+
+        -- Send sacrificial preamble frame
+        -- Goes through full encoder path (randomizer+FEC+interleaver)
+        -- Not a "real" preamble (0xCC gets randomized) but gives Costas
+        -- loops ~40ms to converge on carrier before first real sync word.
+        -- TODO: implement hardware bypass path to send raw 0xCC when ready
+        REPORT "Sending sacrificial preamble frame (0xCC x 134, fully encoded)...";
+        FOR byte_idx IN 0 TO PREAMBLE_BYTES-1 LOOP
+            s_axis_tdata(7 DOWNTO 0)  <= PREAMBLE_BYTE;
+            s_axis_tdata(31 DOWNTO 8) <= (OTHERS => '0');
+            s_axis_tvalid <= '1';
+            s_axis_tkeep  <= "1111";
+            IF byte_idx = PREAMBLE_BYTES - 1 THEN
+                s_axis_tlast <= '1';
+            ELSE
+                s_axis_tlast <= '0';
+            END IF;
+            WAIT UNTIL rising_edge(clk) AND s_axis_tready = '1';
+        END LOOP;
+        s_axis_tvalid <= '0';
+        s_axis_tlast  <= '0';
+        REPORT "Sacrificial preamble frame sent, waiting for Costas loops...";
+        WAIT FOR FRAME_GAP;
+
+
         
         FOR frame_idx IN 0 TO NUM_FRAMES-1 LOOP
             REPORT "Sending Frame " & INTEGER'IMAGE(frame_idx) &
