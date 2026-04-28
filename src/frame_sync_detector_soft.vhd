@@ -180,6 +180,9 @@ ENTITY frame_sync_detector_soft IS
         frame_sync_errors     : OUT std_logic_vector(31 DOWNTO 0);
         frame_buffer_overflow : OUT std_logic;
 
+        -- Control
+        demod_sync_lock       : IN std_logic;
+
         -- Debug
         debug_state           : OUT std_logic_vector(2 DOWNTO 0);
         debug_correlation     : OUT signed(31 DOWNTO 0);
@@ -277,6 +280,9 @@ ARCHITECTURE rtl OF frame_sync_detector_soft IS
     SIGNAL missed_sync_count : natural range 0 to FLYWHEEL_TOLERANCE+1 := 0;
     SIGNAL frames_count      : unsigned(31 DOWNTO 0) := (OTHERS => '0');
     SIGNAL errors_count      : unsigned(31 DOWNTO 0) := (OTHERS => '0');
+
+    -- Control
+    SIGNAL demod_sync_lock_d : std_logic := '0';
 
     -- Debug
     SIGNAL bits_received : unsigned(31 DOWNTO 0) := (OTHERS => '0');
@@ -424,6 +430,10 @@ BEGIN
                     soft_sr(i) <= (OTHERS => '0');
                 END LOOP;
                 bits_received <= (OTHERS => '0');
+            ELSIF demod_sync_lock = '1' AND demod_sync_lock_d = '0' THEN
+                FOR i IN 0 TO 23 LOOP
+                    soft_sr(i) <= (OTHERS => '0');
+                END LOOP;
             ELSIF rx_bit_valid_r = '1' THEN
                 -- Shift soft register: position 0 = most recently registered sample
                 FOR i IN 23 DOWNTO 1 LOOP
@@ -494,7 +504,12 @@ BEGIN
                 byte_v           := (OTHERS => '0');  -- variable initialisation on reset
             ELSE
                 frame_buffer_overflow <= '0';
-
+                demod_sync_lock_d <= demod_sync_lock;
+                IF demod_sync_lock = '1' AND demod_sync_lock_d = '0' THEN
+                    corr_prev <= (OTHERS => '0'); 
+                    corr <= (OTHERS => '0');
+                    corr_peak <= (OTHERS => '0');
+                END IF;
                 IF frame_ack = '1' THEN
                     frame_ready <= '0';
                 END IF;
@@ -528,10 +543,10 @@ BEGIN
                         --------------------------------------------------------
                         WHEN HUNTING =>
                             acquiring_lock <= '1';
-
-                            IF corr_prev >= to_signed(HUNTING_THRESHOLD, 32) AND
-                               corr_v    <=  corr_prev THEN
-
+                            IF demod_sync_lock = '1' AND
+                                demod_sync_lock_d = '1' AND
+                                corr_prev >= to_signed(HUNTING_THRESHOLD, 32) AND
+                                corr_v    <=  corr_prev THEN
                                 state <= LOCKED;
 
                                 -- Capture P(0) into byte_v (variable: immediate effect)

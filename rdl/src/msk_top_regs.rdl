@@ -168,7 +168,8 @@ addrmap msk_top_regs {
         regwidth = 32;
         field { 
             name = "Demodulator Sync Status";
-            desc = "Demodulator Sync Status - not currently implemented";
+            desc = "Demodulator Sync Status - asserted when cst_lock_f1 AND cst_lock_f2, gates frame sync HUNTING state";
+            --desc = "Demodulator Sync Status - not currently implemented";
             sw = r; 
             hw = w; 
         } demod_sync_lock = 0;

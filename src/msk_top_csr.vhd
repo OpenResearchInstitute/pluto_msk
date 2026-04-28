@@ -374,7 +374,7 @@ BEGIN
     ----------------------------------------------------------------------
     -- Status inputs — direct connection (same clock domain)
     ----------------------------------------------------------------------
-    hwif_in.MSK_Status.demod_sync_lock.next_q	<= '0';
+    hwif_in.MSK_Status.demod_sync_lock.next_q	<= demod_sync_lock; -- was '0'
     hwif_in.MSK_Status.tx_enable.next_q			<= tx_enable;
     hwif_in.MSK_Status.rx_enable.next_q			<= rx_enable;
     hwif_in.MSK_Status.tx_axis_valid.next_q		<= tx_axis_valid;

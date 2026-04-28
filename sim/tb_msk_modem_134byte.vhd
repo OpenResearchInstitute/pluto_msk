@@ -58,7 +58,9 @@ ARCHITECTURE behavior OF tb_msk_modem_134byte IS
     -- Component declaration (matches actual msk_top)
     COMPONENT msk_top IS
         GENERIC (
-            S_AXIS_DATA_W : NATURAL := 32
+            S_AXIS_DATA_W : NATURAL := 32;
+            HUNTING_THRESHOLD   : INTEGER := 60000;
+            LOCKED_THRESHOLD    : INTEGER := 36000  
         );
         PORT (
             -- Single clock (61.44 MHz)
@@ -273,7 +275,9 @@ BEGIN
     -- Instantiate DUT
     DUT: msk_top
         GENERIC MAP (
-            S_AXIS_DATA_W => 32
+            S_AXIS_DATA_W => 32,
+            HUNTING_THRESHOLD => 200000,
+            LOCKED_THRESHOLD => 120000
         )
         PORT MAP (
             clk                   => clk,

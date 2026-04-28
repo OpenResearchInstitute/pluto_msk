@@ -98,7 +98,9 @@ ENTITY msk_top IS
 		C_S_AXI_ADDR_WIDTH	: NATURAL := 32;
 		SYNC_CNT_W 			: NATURAL := 24;
 		SYNC_PAT_W 			: NATURAL := 16;
-		FIFO_ADDR_WIDTH 	: NATURAL := 9  -- 512 byte FIFO (used in both tx and rx)
+		FIFO_ADDR_WIDTH 	: NATURAL := 9;  -- 512 byte FIFO (used in both tx and rx)
+		HUNTING_THRESHOLD	: INTEGER := 60000; -- calibrated in libre SDR hardware
+		LOCKED_THRESHOLD	: INTEGER := 36000  -- calibrated in libre SDR hardware
 	);
 	PORT (
 		clk 			: IN  std_logic;
@@ -812,10 +814,10 @@ BEGIN
         GENERIC MAP (
             SYNC_WORD           => x"02B8DB",  -- MSB-first sync word (same as TX!)
             PAYLOAD_BYTES       => 268,
-            HUNTING_THRESHOLD   => 60000,      -- adjust after observing, soft decisions 85% of full scale (80160)
-            -- HUNTING_THRESHOLD   => 3500,          -- Strict threshold when searching, hard decisions
-            LOCKED_THRESHOLD    => 36000,      -- adjust after observing, soft decisions 50% of full scale (80160)
-            --LOCKED_THRESHOLD    => 1500,          -- Relaxed threshold when locked, hard decisions
+
+            HUNTING_THRESHOLD => HUNTING_THRESHOLD,
+            LOCKED_THRESHOLD  => LOCKED_THRESHOLD,
+
             FLYWHEEL_TOLERANCE  => 2,          -- Tolerate 2 missed syncs
             LOCK_FRAMES         => 3,          -- Need 3 consecutive good frames
             BUFFER_DEPTH        => 11,         -- 2048 bytes
@@ -827,6 +829,7 @@ BEGIN
             
             rx_bit          => rx_bit_corr,
             rx_bit_valid    => rx_bit_valid,
+            demod_sync_lock   => demod_sync_lock,
             --s_axis_soft_tdata => (OTHERS => '0'),  -- tied to zero for hard decisions
             s_axis_soft_tdata => rx_data_soft,  -- Connect rx_data_soft for soft decisions
 
