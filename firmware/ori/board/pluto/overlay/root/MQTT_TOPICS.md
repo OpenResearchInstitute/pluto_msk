@@ -14,7 +14,9 @@ pluto/status/ovp/heartbeat                Liveness signal (ISO 8601 timestamp)
 pluto/status/ovp/publisher/<aspect>       Publisher metadata
 ```
 
-Update rate is 1 Hz uniform. Both raw register values and derived values are always published; bandwidth is irrelevant on a LAN and the raw values aid forensic debugging.
+Update rate is approximately 0.5 Hz on the LibreSDR (Z7020 + AD9361). The publisher loop walks ~60 topics per cycle, each invoking `mosquitto_pub` as a separate process, plus a `sleep 1`. Total cycle time is dominated by process-forking overhead and runs slower than the nominal 1 Hz target. Sufficient for visual dashboards; insufficient for catching millisecond-scale transients. A future optimization could use a single persistent broker connection to dramatically increase rate. See `ovp_status_pub.sh`.
+
+Both raw register values and derived values are always published; bandwidth is irrelevant on a LAN and the raw values aid forensic debugging.
 
 ## How to subscribe
 
