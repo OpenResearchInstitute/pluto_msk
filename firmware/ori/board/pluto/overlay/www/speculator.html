@@ -445,13 +445,14 @@
             var payload = message.payloadString;
 
             switch (topic) {
-                case "pluto/status/ovp/rx_power/dbfs":
+                // ---- RX power ----
+                case "pluto/status/ovp/derived/rx_power/dbfs":
                     document.getElementById("rx-power-dbfs").textContent = payload + " dBFS";
                     document.getElementById("rx-power-time").textContent =
                         "updated " + new Date().toLocaleTimeString();
                     break;
 
-                case "pluto/status/ovp/rx_power/saturated":
+                case "pluto/status/ovp/derived/rx_power/saturated":
                     var card = document.getElementById("card-saturated");
                     var valEl = document.getElementById("rx-saturated");
                     if (payload === "1") {
@@ -463,64 +464,70 @@
                     }
                     break;
 
-                case "pluto/status/ovp/pi/i_gain":  piState.iGain  = payload; renderPI(); break;
-                case "pluto/status/ovp/pi/i_shift": piState.iShift = payload; renderPI(); break;
-                case "pluto/status/ovp/pi/p_gain":  piState.pGain  = payload; renderPI(); break;
-                case "pluto/status/ovp/pi/p_shift": piState.pShift = payload; renderPI(); break;
+                // ---- PI controller ----
+                case "pluto/status/ovp/derived/pi/i_gain":  piState.iGain  = payload; renderPI(); break;
+                case "pluto/status/ovp/derived/pi/i_shift": piState.iShift = payload; renderPI(); break;
+                case "pluto/status/ovp/derived/pi/p_gain":  piState.pGain  = payload; renderPI(); break;
+                case "pluto/status/ovp/derived/pi/p_shift": piState.pShift = payload; renderPI(); break;
 
-                case "pluto/status/ovp/symlock_time/f1":
+                // ---- Symbol lock ----
+                case "pluto/status/ovp/derived/symlock/f1_time":
                     lockState.f1Time = payload;
                     renderLock("f1");
                     break;
-                case "pluto/status/ovp/symlock_time/f2":
+                case "pluto/status/ovp/derived/symlock/f2_time":
                     lockState.f2Time = payload;
                     renderLock("f2");
                     break;
 
-                case "pluto/status/ovp/symlock/f1_locked":
+                case "pluto/status/ovp/derived/symlock/f1_locked":
                     lockState.f1Locked = (payload === "1");
                     renderLock("f1");
                     break;
-                case "pluto/status/ovp/symlock/f2_locked":
+                case "pluto/status/ovp/derived/symlock/f2_locked":
                     lockState.f2Locked = (payload === "1");
                     renderLock("f2");
                     break;
 
-                case "pluto/status/ovp/register/f1_error":
+                // ---- Costas errors (signed values from publisher) ----
+                case "pluto/status/ovp/derived/f1_error/signed":
                     document.getElementById("f1-error").textContent = payload;
                     break;
-                case "pluto/status/ovp/register/f2_error":
+                case "pluto/status/ovp/derived/f2_error/signed":
                     document.getElementById("f2-error").textContent = payload;
                     break;
 
-                case "pluto/status/ovp/register/rx_frame_sync":
-                    var locked = parseInt(payload, 16) !== 0;
+                // ---- Frame sync ----
+                case "pluto/status/ovp/derived/frame_sync/locked":
                     document.getElementById("frame-sync").textContent =
-                        locked ? "LOCKED" : "no sync";
+                        (payload === "1") ? "LOCKED" : "no sync";
                     break;
 
+                // ---- Heartbeat ----
                 case "pluto/status/ovp/heartbeat":
-                    var t = new Date().toLocaleTimeString();
-                    document.getElementById("heartbeat").textContent = t;
+                    document.getElementById("heartbeat").textContent =
+                        new Date().toLocaleTimeString();
                     break;
 
-                case "pluto/status/ovp/agc/mode":
+                // ---- AGC / AD9361 state from IIO ----
+                case "pluto/status/ovp/iio/rx/gain_control_mode":
                     document.getElementById("agc-mode").textContent = payload;
                     break;
 
-                case "pluto/status/ovp/agc/hardwaregain_db":
+                case "pluto/status/ovp/iio/rx/hardwaregain_db":
                     document.getElementById("agc-gain").textContent = payload + " dB";
                     break;
 
-                case "pluto/status/ovp/agc/rssi_db":
+                case "pluto/status/ovp/iio/rx/rssi_db":
                     document.getElementById("agc-rssi").textContent = payload + " dB";
                     break;
 
-                case "pluto/status/ovp/agc/ensm_mode":
+                case "pluto/status/ovp/iio/system/ensm_mode":
                     var ensmEl = document.getElementById("ensm-mode");
                     ensmEl.textContent = payload;
-                    // Color-code: green for fdd (operational), yellow for alert,
-                    // red for sleep/wait (chip not actively running)
+                    // Color-code: green for fdd (operational),
+                    // red for sleep/wait (chip not actively running),
+                    // default for alert (transitional).
                     var ensmCard = ensmEl.closest(".card");
                     ensmCard.classList.remove("ok", "alert");
                     if (payload === "fdd") {
