@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speculator — OVP Telemetry</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+    <style>
+        /* ============================================================
+           Speculator — OVP technical telemetry dashboard
+           Visual style inspired by Interlocutor (sister application).
+           Uses Atkinson Hyperlegible font for accessibility.
+           ============================================================ */
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            /* Color palette adapted from Interlocutor */
+            --primary-color: #1e3c72;
+            --secondary-color: #2a5298;
+            --accent-color: #42a5f5;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --error-color: #f44336;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --text-tertiary: rgba(255, 255, 255, 0.55);
+            --bg-glass: rgba(255, 255, 255, 0.1);
+            --bg-glass-hover: rgba(255, 255, 255, 0.15);
+            --border-glass: rgba(255, 255, 255, 0.2);
+            --shadow-main: 0 15px 35px rgba(0, 0, 0, 0.2);
+
+            /* Font stack */
+            --font-primary: 'Atkinson Hyperlegible', 'Arial', 'Helvetica', sans-serif;
+            --font-mono: 'Atkinson Hyperlegible', 'Courier New', monospace;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 50%, var(--primary-color) 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-family: var(--font-primary);
+            font-size: 16px;
+        }
+
+        /* ============================================================
+           Header
+           ============================================================ */
+        .main-header {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .app-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            letter-spacing: 0.025em;
+        }
+
+        .app-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .connection-status .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--error-color);
+            transition: background 0.3s ease;
+        }
+
+        .connection-status.connected .dot {
+            background: var(--success-color);
+            box-shadow: 0 0 8px var(--success-color);
+        }
+
+        /* ============================================================
+           Layout
+           ============================================================ */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1rem;
+        }
+
+        /* ============================================================
+           Card
+           ============================================================ */
+        .card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: var(--shadow-main);
+            transition: background 0.2s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            background: var(--bg-glass-hover);
+        }
+
+        .card-label {
+            color: var(--text-tertiary);
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.075em;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-value {
+            font-family: var(--font-mono);
+            font-size: 1.6rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            color: var(--accent-color);
+            line-height: 1.2;
+        }
+
+        .card-meta {
+            margin-top: 0.4rem;
+            color: var(--text-tertiary);
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* Saturation alert state */
+        .card.alert {
+            border-color: var(--error-color);
+            background: rgba(244, 67, 54, 0.15);
+            animation: alert-pulse 1.5s ease-in-out infinite;
+        }
+
+        .card.alert .card-value {
+            color: var(--error-color);
+        }
+
+        .card.ok {
+            border-color: var(--success-color);
+        }
+
+        .card.ok .card-value {
+            color: var(--success-color);
+        }
+
+        @keyframes alert-pulse {
+            0%, 100% { box-shadow: var(--shadow-main); }
+            50% { box-shadow: 0 0 24px rgba(244, 67, 54, 0.5); }
+        }
+
+        /* ============================================================
+           Status badges
+           ============================================================ */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: var(--font-mono);
+        }
+
+        .badge.success { background: var(--success-color); color: #fff; }
+        .badge.warning { background: var(--warning-color); color: #000; }
+        .badge.error   { background: var(--error-color); color: #fff; }
+        .badge.neutral { background: var(--bg-glass); color: var(--text-secondary); border: 1px solid var(--border-glass); }
+
+        /* ============================================================
+           Footer info
+           ============================================================ */
+        .footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-glass);
+            color: var(--text-tertiary);
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        /* ============================================================
+           Responsive
+           ============================================================ */
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .app-title { font-size: 1.3rem; }
+            .grid { grid-template-columns: 1fr; }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Focus styling — matches Interlocutor */
+        *:focus {
+            outline: 2px solid #00ff88;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header" role="banner">
+        <div class="header-content">
+            <div>
+                <span class="app-title">Speculator</span>
+                <span class="app-subtitle">OVP Technical Telemetry</span>
+            </div>
+            <div class="connection-status" id="connection-status" aria-live="polite">
+                <span class="dot"></span>
+                <span class="text">disconnected</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" role="main">
+
+        <section class="section" aria-labelledby="signal-section">
+            <h2 class="section-title" id="signal-section">Signal Health</h2>
+            <div class="grid">
+                <div class="card" id="card-rxpower">
+                    <div class="card-label">RX Power</div>
+                    <div class="card-value" id="rx-power-dbfs">— dBFS</div>
+                    <div class="card-meta" id="rx-power-time">awaiting data</div>
+                </div>
+
+                <div class="card" id="card-saturated">
+                    <div class="card-label">Saturation State</div>
+                    <div class="card-value" id="rx-saturated">—</div>
+                    <div class="card-meta">threshold: −1 dBFS</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-label">Frame Sync</div>
+                    <div class="card-value" id="frame-sync">—</div>
+                    <div class="card-meta">register 0x9C</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-label">Heartbeat</div>
+                    <div class="card-value" id="heartbeat">—</div>
+                    <div class="card-meta">publisher liveness</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" aria-labelledby="agc-section">
+            <h2 class="section-title" id="agc-section">AGC State</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-label">AGC Mode</div>
+                    <div class="card-value" id="agc-mode">—</div>
+                    <div class="card-meta">gain control mode</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-label">Hardware Gain</div>
+                    <div class="card-value" id="agc-gain">—</div>
+                    <div class="card-meta">AD9361 LNA + mixer</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-label">Chip RSSI</div>
+                    <div class="card-value" id="agc-rssi">—</div>
+                    <div class="card-meta">AD9361 internal measurement</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-label">ENSM State</div>
+                    <div class="card-value" id="ensm-mode">—</div>
+                    <div class="card-meta">enable state machine</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" aria-labelledby="lock-section">
+            <h2 class="section-title" id="lock-section">Symbol Lock</h2>
+            <div class="grid">
+                <div class="card" id="card-f1-lock">
+                    <div class="card-label">F1 Lock State</div>
+                    <div class="card-value" id="f1-lock-state">—</div>
+                    <div class="card-meta">
+                        <span id="f1-lock-time">—</span> symbols
+                        <span id="f1-lock-meaning"></span>
+                    </div>
+                </div>
+
+                <div class="card" id="card-f2-lock">
+                    <div class="card-label">F2 Lock State</div>
+                    <div class="card-value" id="f2-lock-state">—</div>
+                    <div class="card-meta">
+                        <span id="f2-lock-time">—</span> symbols
+                        <span id="f2-lock-meaning"></span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-label">F1 Error</div>
+                    <div class="card-value" id="f1-error">—</div>
+                    <div class="card-meta">register 0x74</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-label">F2 Error</div>
+                    <div class="card-value" id="f2-error">—</div>
+                    <div class="card-meta">register 0x78</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" aria-labelledby="pi-section">
+            <h2 class="section-title" id="pi-section">PI Controller</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-label">Integral Gain</div>
+                    <div class="card-value" id="pi-i">—</div>
+                    <div class="card-meta">i_gain × 2<sup>−i_shift</sup></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-label">Proportional Gain</div>
+                    <div class="card-value" id="pi-p">—</div>
+                    <div class="card-meta">p_gain × 2<sup>−p_shift</sup></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div class="container">
+        <div class="footer">
+            Speculator · OVP Telemetry Dashboard ·
+            Subscribed to <code>pluto/status/ovp/#</code><br>
+            <span style="font-size: 0.8em; color: var(--text-tertiary);">
+                Companion to
+                <a href="https://github.com/OpenResearchInstitute/interlocutor/" target="_blank" rel="noopener">Interlocutor</a>,
+                the OVP human-radio interface (separate host-side application).
+            </span>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // Speculator dashboard logic
+        // ============================================================
+
+        var clientId = "speculator-" + Math.floor(Math.random() * 1000000);
+        var brokerHost = window.location.hostname;
+        var brokerPort = 9001;
+        var brokerPath = "/wss";
+
+        var client = new Paho.MQTT.Client(brokerHost, brokerPort, brokerPath, clientId);
+
+        // PI controller state buffer (need both gain and shift to render)
+        var piState = { iGain: null, iShift: null, pGain: null, pShift: null };
+
+        // Lock state buffer (need both lock state and lock time to render meaningfully)
+        var lockState = {
+            f1Locked: null, f2Locked: null,
+            f1Time: null, f2Time: null
+        };
+
+        function setConnectionStatus(connected) {
+            var el = document.getElementById("connection-status");
+            var text = el.querySelector(".text");
+            if (connected) {
+                el.classList.add("connected");
+                text.textContent = "connected to " + brokerHost;
+            } else {
+                el.classList.remove("connected");
+                text.textContent = "disconnected — retrying";
+            }
+        }
+
+        client.onConnectionLost = function (responseObject) {
+            setConnectionStatus(false);
+            setTimeout(connect, 5000);
+        };
+
+        client.onMessageArrived = function (message) {
+            var topic = message.destinationName;
+            var payload = message.payloadString;
+
+            switch (topic) {
+                case "pluto/status/ovp/rx_power/dbfs":
+                    document.getElementById("rx-power-dbfs").textContent = payload + " dBFS";
+                    document.getElementById("rx-power-time").textContent =
+                        "updated " + new Date().toLocaleTimeString();
+                    break;
+
+                case "pluto/status/ovp/rx_power/saturated":
+                    var card = document.getElementById("card-saturated");
+                    var valEl = document.getElementById("rx-saturated");
+                    if (payload === "1") {
+                        valEl.textContent = "SATURATED";
+                        card.className = "card alert";
+                    } else {
+                        valEl.textContent = "NORMAL";
+                        card.className = "card ok";
+                    }
+                    break;
+
+                case "pluto/status/ovp/pi/i_gain":  piState.iGain  = payload; renderPI(); break;
+                case "pluto/status/ovp/pi/i_shift": piState.iShift = payload; renderPI(); break;
+                case "pluto/status/ovp/pi/p_gain":  piState.pGain  = payload; renderPI(); break;
+                case "pluto/status/ovp/pi/p_shift": piState.pShift = payload; renderPI(); break;
+
+                case "pluto/status/ovp/symlock_time/f1":
+                    lockState.f1Time = payload;
+                    renderLock("f1");
+                    break;
+                case "pluto/status/ovp/symlock_time/f2":
+                    lockState.f2Time = payload;
+                    renderLock("f2");
+                    break;
+
+                case "pluto/status/ovp/symlock/f1_locked":
+                    lockState.f1Locked = (payload === "1");
+                    renderLock("f1");
+                    break;
+                case "pluto/status/ovp/symlock/f2_locked":
+                    lockState.f2Locked = (payload === "1");
+                    renderLock("f2");
+                    break;
+
+                case "pluto/status/ovp/register/f1_error":
+                    document.getElementById("f1-error").textContent = payload;
+                    break;
+                case "pluto/status/ovp/register/f2_error":
+                    document.getElementById("f2-error").textContent = payload;
+                    break;
+
+                case "pluto/status/ovp/register/rx_frame_sync":
+                    var locked = parseInt(payload, 16) !== 0;
+                    document.getElementById("frame-sync").textContent =
+                        locked ? "LOCKED" : "no sync";
+                    break;
+
+                case "pluto/status/ovp/heartbeat":
+                    var t = new Date().toLocaleTimeString();
+                    document.getElementById("heartbeat").textContent = t;
+                    break;
+
+                case "pluto/status/ovp/agc/mode":
+                    document.getElementById("agc-mode").textContent = payload;
+                    break;
+
+                case "pluto/status/ovp/agc/hardwaregain_db":
+                    document.getElementById("agc-gain").textContent = payload + " dB";
+                    break;
+
+                case "pluto/status/ovp/agc/rssi_db":
+                    document.getElementById("agc-rssi").textContent = payload + " dB";
+                    break;
+
+                case "pluto/status/ovp/agc/ensm_mode":
+                    var ensmEl = document.getElementById("ensm-mode");
+                    ensmEl.textContent = payload;
+                    // Color-code: green for fdd (operational), yellow for alert,
+                    // red for sleep/wait (chip not actively running)
+                    var ensmCard = ensmEl.closest(".card");
+                    ensmCard.classList.remove("ok", "alert");
+                    if (payload === "fdd") {
+                        ensmCard.classList.add("ok");
+                    } else if (payload === "sleep" || payload === "wait") {
+                        ensmCard.classList.add("alert");
+                    }
+                    break;
+            }
+        };
+
+        function renderPI() {
+            if (piState.iGain !== null && piState.iShift !== null) {
+                document.getElementById("pi-i").textContent =
+                    piState.iGain + " >> " + piState.iShift;
+            }
+            if (piState.pGain !== null && piState.pShift !== null) {
+                document.getElementById("pi-p").textContent =
+                    piState.pGain + " >> " + piState.pShift;
+            }
+        }
+
+        function renderLock(which) {
+            // 'which' is "f1" or "f2"
+            var locked = (which === "f1") ? lockState.f1Locked : lockState.f2Locked;
+            var time   = (which === "f1") ? lockState.f1Time   : lockState.f2Time;
+
+            var stateEl   = document.getElementById(which + "-lock-state");
+            var timeEl    = document.getElementById(which + "-lock-time");
+            var meaningEl = document.getElementById(which + "-lock-meaning");
+            var card      = document.getElementById("card-" + which + "-lock");
+
+            // Update time field whenever it arrives
+            if (time !== null) {
+                timeEl.textContent = time;
+            }
+
+            // Update state and meaning based on lock status
+            if (locked === true) {
+                stateEl.textContent = "LOCKED";
+                meaningEl.textContent = " (to first lock)";
+                card.classList.remove("alert");
+                card.classList.add("ok");
+            } else if (locked === false) {
+                stateEl.textContent = "seeking";
+                meaningEl.textContent = " (elapsed, no lock yet)";
+                card.classList.remove("ok");
+                card.classList.remove("alert");
+            }
+            // If locked is null (haven't received status yet), leave display as-is
+        }
+
+        function connect() {
+            client.connect({
+                onSuccess: function () {
+                    setConnectionStatus(true);
+                    client.subscribe("pluto/status/ovp/#");
+                },
+                onFailure: function (err) {
+                    console.log("Connection failed:", err);
+                    setConnectionStatus(false);
+                    setTimeout(connect, 5000);
+                }
+            });
+        }
+
+        connect();
+    </script>
+</body>
+</html>
