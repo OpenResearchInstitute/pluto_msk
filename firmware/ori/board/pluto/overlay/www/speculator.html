@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speculator — OVP Telemetry</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+    <title>Speculator ? OVP Telemetry</title>
+    <!-- Paho MQTT client served locally so dashboard works on isolated
+         lab networks with no internet access. The library file lives at
+         /www/mqttws31.min.js on the LibreSDR. If updating, fetch from
+         https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js
+         on a machine with internet, then scp to the SDR. -->
+    <script src="mqttws31.min.js"></script>
     <style>
         /* ============================================================
-           Speculator — OVP technical telemetry dashboard
+           Speculator ? OVP technical telemetry dashboard
            Visual style inspired by Interlocutor (sister application).
            Uses Atkinson Hyperlegible font for accessibility.
            ============================================================ */
@@ -255,7 +260,7 @@
             }
         }
 
-        /* Focus styling — matches Interlocutor */
+        /* Focus styling ? matches Interlocutor */
         *:focus {
             outline: 2px solid #00ff88;
             outline-offset: 2px;
@@ -283,25 +288,25 @@
             <div class="grid">
                 <div class="card" id="card-rxpower">
                     <div class="card-label">RX Power</div>
-                    <div class="card-value" id="rx-power-dbfs">— dBFS</div>
+                    <div class="card-value" id="rx-power-dbfs">? dBFS</div>
                     <div class="card-meta" id="rx-power-time">awaiting data</div>
                 </div>
 
                 <div class="card" id="card-saturated">
                     <div class="card-label">Saturation State</div>
-                    <div class="card-value" id="rx-saturated">—</div>
-                    <div class="card-meta">threshold: −1 dBFS</div>
+                    <div class="card-value" id="rx-saturated">?</div>
+                    <div class="card-meta">threshold: ?1 dBFS</div>
                 </div>
 
                 <div class="card">
                     <div class="card-label">Frame Sync</div>
-                    <div class="card-value" id="frame-sync">—</div>
+                    <div class="card-value" id="frame-sync">?</div>
                     <div class="card-meta">register 0x9C</div>
                 </div>
 
                 <div class="card">
                     <div class="card-label">Heartbeat</div>
-                    <div class="card-value" id="heartbeat">—</div>
+                    <div class="card-value" id="heartbeat">?</div>
                     <div class="card-meta">publisher liveness</div>
                 </div>
             </div>
@@ -312,25 +317,25 @@
             <div class="grid">
                 <div class="card">
                     <div class="card-label">AGC Mode</div>
-                    <div class="card-value" id="agc-mode">—</div>
+                    <div class="card-value" id="agc-mode">?</div>
                     <div class="card-meta">gain control mode</div>
                 </div>
 
                 <div class="card">
                     <div class="card-label">Hardware Gain</div>
-                    <div class="card-value" id="agc-gain">—</div>
+                    <div class="card-value" id="agc-gain">?</div>
                     <div class="card-meta">AD9361 LNA + mixer</div>
                 </div>
 
                 <div class="card">
                     <div class="card-label">Chip RSSI</div>
-                    <div class="card-value" id="agc-rssi">—</div>
+                    <div class="card-value" id="agc-rssi">?</div>
                     <div class="card-meta">AD9361 internal measurement</div>
                 </div>
 
                 <div class="card">
                     <div class="card-label">ENSM State</div>
-                    <div class="card-value" id="ensm-mode">—</div>
+                    <div class="card-value" id="ensm-mode">?</div>
                     <div class="card-meta">enable state machine</div>
                 </div>
             </div>
@@ -341,31 +346,31 @@
             <div class="grid">
                 <div class="card" id="card-f1-lock">
                     <div class="card-label">F1 Lock State</div>
-                    <div class="card-value" id="f1-lock-state">—</div>
+                    <div class="card-value" id="f1-lock-state">?</div>
                     <div class="card-meta">
-                        <span id="f1-lock-time">—</span> symbols
+                        <span id="f1-lock-time">?</span> symbols
                         <span id="f1-lock-meaning"></span>
                     </div>
                 </div>
 
                 <div class="card" id="card-f2-lock">
                     <div class="card-label">F2 Lock State</div>
-                    <div class="card-value" id="f2-lock-state">—</div>
+                    <div class="card-value" id="f2-lock-state">?</div>
                     <div class="card-meta">
-                        <span id="f2-lock-time">—</span> symbols
+                        <span id="f2-lock-time">?</span> symbols
                         <span id="f2-lock-meaning"></span>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-label">F1 Error</div>
-                    <div class="card-value" id="f1-error">—</div>
+                    <div class="card-value" id="f1-error">?</div>
                     <div class="card-meta">register 0x74</div>
                 </div>
 
                 <div class="card">
                     <div class="card-label">F2 Error</div>
-                    <div class="card-value" id="f2-error">—</div>
+                    <div class="card-value" id="f2-error">?</div>
                     <div class="card-meta">register 0x78</div>
                 </div>
             </div>
@@ -376,14 +381,14 @@
             <div class="grid">
                 <div class="card">
                     <div class="card-label">Integral Gain</div>
-                    <div class="card-value" id="pi-i">—</div>
-                    <div class="card-meta">i_gain × 2<sup>−i_shift</sup></div>
+                    <div class="card-value" id="pi-i">?</div>
+                    <div class="card-meta">i_gain × 2<sup>?i_shift</sup></div>
                 </div>
 
                 <div class="card">
                     <div class="card-label">Proportional Gain</div>
-                    <div class="card-value" id="pi-p">—</div>
-                    <div class="card-meta">p_gain × 2<sup>−p_shift</sup></div>
+                    <div class="card-value" id="pi-p">?</div>
+                    <div class="card-meta">p_gain × 2<sup>?p_shift</sup></div>
                 </div>
             </div>
         </section>
@@ -431,7 +436,7 @@
                 text.textContent = "connected to " + brokerHost;
             } else {
                 el.classList.remove("connected");
-                text.textContent = "disconnected — retrying";
+                text.textContent = "disconnected ? retrying";
             }
         }
 
