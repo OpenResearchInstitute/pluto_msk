@@ -178,6 +178,7 @@ package msk_top_regs_pkg is
 
     type \msk_top_regs.frame_sync_status.frame_sync_locked_in_t\ is record
         next_q : std_logic;
+        we : std_logic;
     end record;
 
     type \msk_top_regs.frame_sync_status.frame_buffer_overflow_in_t\ is record
@@ -204,14 +205,17 @@ package msk_top_regs_pkg is
 
     type \msk_top_regs.symbol_lock_status.f1f2_in_t\ is record
         next_q : std_logic;
+        we : std_logic;
     end record;
 
     type \msk_top_regs.symbol_lock_status.f1_in_t\ is record
         next_q : std_logic;
+        we : std_logic;
     end record;
 
     type \msk_top_regs.symbol_lock_status.f2_in_t\ is record
         next_q : std_logic;
+        we : std_logic;
     end record;
 
     type \msk_top_regs.symbol_lock_status.unlock_f1_in_t\ is record
@@ -234,10 +238,12 @@ package msk_top_regs_pkg is
 
     type \msk_top_regs.symbol_lock_time.f1_in_t\ is record
         next_q : std_logic_vector(15 downto 0);
+        we : std_logic;
     end record;
 
     type \msk_top_regs.symbol_lock_time.f2_in_t\ is record
         next_q : std_logic_vector(15 downto 0);
+        we : std_logic;
     end record;
 
     type \msk_top_regs.symbol_lock_time_in_t\ is record
@@ -306,28 +312,22 @@ package msk_top_regs_pkg is
         value : std_logic;
     end record;
 
+    type \msk_top_regs.msk_ctrl.reserved_out_t\ is record
+        value : std_logic_vector(2 downto 0);
+    end record;
+
+    type \msk_top_regs.msk_ctrl.tx_shift_out_t\ is record
+        value : std_logic_vector(2 downto 0);
+    end record;
+
     type \msk_top_regs.msk_ctrl_out_t\ is record
         ptt : \msk_top_regs.msk_ctrl.ptt_out_t\;
         loopback_ena : \msk_top_regs.msk_ctrl.loopback_ena_out_t\;
         rx_invert : \msk_top_regs.msk_ctrl.rx_invert_out_t\;
         clear_counts : \msk_top_regs.msk_ctrl.clear_counts_out_t\;
         diff_encoder_loopback : \msk_top_regs.msk_ctrl.diff_encoder_loopback_out_t\;
-    end record;
-
-    type \msk_top_regs.msk_stat_1.data_out_t\ is record
-        swmod : std_logic;
-    end record;
-
-    type \msk_top_regs.msk_stat_1_out_t\ is record
-        data : \msk_top_regs.msk_stat_1.data_out_t\;
-    end record;
-
-    type \msk_top_regs.msk_stat_2.data_out_t\ is record
-        swmod : std_logic;
-    end record;
-
-    type \msk_top_regs.msk_stat_2_out_t\ is record
-        data : \msk_top_regs.msk_stat_2.data_out_t\;
+        reserved : \msk_top_regs.msk_ctrl.reserved_out_t\;
+        tx_shift : \msk_top_regs.msk_ctrl.tx_shift_out_t\;
     end record;
 
     type \msk_top_regs.config_nco_fw_desc_c4924cc6_name_0c494469.config_data_out_t\ is record
@@ -479,46 +479,6 @@ package msk_top_regs_pkg is
         config_data : \msk_top_regs.config_prbs_errmask.config_data_out_t\;
     end record;
 
-    type \msk_top_regs.stat_32_bits.data_out_t\ is record
-        swmod : std_logic;
-    end record;
-
-    type \msk_top_regs.stat_32_bits_out_t\ is record
-        data : \msk_top_regs.stat_32_bits.data_out_t\;
-    end record;
-
-    type \msk_top_regs.stat_32_errs.data_out_t\ is record
-        swmod : std_logic;
-    end record;
-
-    type \msk_top_regs.stat_32_errs_out_t\ is record
-        data : \msk_top_regs.stat_32_errs.data_out_t\;
-    end record;
-
-    type \msk_top_regs.stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670.data_out_t\ is record
-        swmod : std_logic;
-    end record;
-
-    type \msk_top_regs.stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_out_t\ is record
-        data : \msk_top_regs.stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670.data_out_t\;
-    end record;
-
-    type \msk_top_regs.stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce.data_out_t\ is record
-        swmod : std_logic;
-    end record;
-
-    type \msk_top_regs.stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce_out_t\ is record
-        data : \msk_top_regs.stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce.data_out_t\;
-    end record;
-
-    type \msk_top_regs.msk_stat_3.data_out_t\ is record
-        swmod : std_logic;
-    end record;
-
-    type \msk_top_regs.msk_stat_3_out_t\ is record
-        data : \msk_top_regs.msk_stat_3.data_out_t\;
-    end record;
-
     type \msk_top_regs.rx_sample_discard.rx_sample_discard_out_t\ is record
         value : std_logic_vector(7 downto 0);
     end record;
@@ -614,14 +574,6 @@ package msk_top_regs_pkg is
         alpha : \msk_top_regs.lowpass_ema_alpha.alpha_out_t\;
     end record;
 
-    type \msk_top_regs.rx_power.data_out_t\ is record
-        swmod : std_logic;
-    end record;
-
-    type \msk_top_regs.rx_power_out_t\ is record
-        data : \msk_top_regs.rx_power.data_out_t\;
-    end record;
-
     type \msk_top_regs.status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676.data_desc_a6882ec4_out_t\ is record
         swmod : std_logic;
     end record;
@@ -636,19 +588,6 @@ package msk_top_regs_pkg is
 
     type \msk_top_regs.status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_out_t\ is record
         data : \msk_top_regs.status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1.data_desc_a6882ec4_out_t\;
-    end record;
-
-    type \msk_top_regs.frame_sync_status.frames_received_out_t\ is record
-        swmod : std_logic;
-    end record;
-
-    type \msk_top_regs.frame_sync_status.frame_sync_errors_out_t\ is record
-        swmod : std_logic;
-    end record;
-
-    type \msk_top_regs.frame_sync_status_out_t\ is record
-        frames_received : \msk_top_regs.frame_sync_status.frames_received_out_t\;
-        frame_sync_errors : \msk_top_regs.frame_sync_status.frame_sync_errors_out_t\;
     end record;
 
     type \msk_top_regs.symbol_lock_control.symbol_lock_count_out_t\ is record
@@ -667,8 +606,6 @@ package msk_top_regs_pkg is
     type msk_top_regs_out_t is record
         MSK_Init : \msk_top_regs.msk_init_out_t\;
         MSK_Control : \msk_top_regs.msk_ctrl_out_t\;
-        Tx_Bit_Count : \msk_top_regs.msk_stat_1_out_t\;
-        Tx_Enable_Count : \msk_top_regs.msk_stat_2_out_t\;
         Fb_FreqWord : \msk_top_regs.config_nco_fw_desc_c4924cc6_name_0c494469_out_t\;
         TX_F1_FreqWord : \msk_top_regs.config_nco_fw_desc_94d7aaf5_name_84dd0c1c_out_t\;
         TX_F2_FreqWord : \msk_top_regs.config_nco_fw_desc_42134a4f_name_d97dbd51_out_t\;
@@ -682,11 +619,6 @@ package msk_top_regs_pkg is
         PRBS_Initial_State : \msk_top_regs.config_prbs_seed_out_t\;
         PRBS_Polynomial : \msk_top_regs.config_prbs_poly_out_t\;
         PRBS_Error_Mask : \msk_top_regs.config_prbs_errmask_out_t\;
-        PRBS_Bit_Count : \msk_top_regs.stat_32_bits_out_t\;
-        PRBS_Error_Count : \msk_top_regs.stat_32_errs_out_t\;
-        LPF_Accum_F1 : \msk_top_regs.stat_32_lpf_acc_desc_8cebc7dc_name_f20c6670_out_t\;
-        LPF_Accum_F2 : \msk_top_regs.stat_32_lpf_acc_desc_dea6bd99_name_758fd0ce_out_t\;
-        axis_xfer_count : \msk_top_regs.msk_stat_3_out_t\;
         Rx_Sample_Discard : \msk_top_regs.rx_sample_discard_out_t\;
         LPF_Config_2 : \msk_top_regs.lpf_config_2_out_t\;
         f1_nco_adjust : \msk_top_regs.status_reg_data_f53978c8_name_d8ad3b25_out_t\;
@@ -698,10 +630,8 @@ package msk_top_regs_pkg is
         Tx_Sync_Pat : \msk_top_regs.tx_sync_pat_out_t\;
         lowpass_ema_alpha1 : \msk_top_regs.lowpass_ema_alpha_out_t\;
         lowpass_ema_alpha2 : \msk_top_regs.lowpass_ema_alpha_out_t\;
-        rx_power : \msk_top_regs.rx_power_out_t\;
         tx_async_fifo_rd_wr_ptr : \msk_top_regs.status_reg_data_8a67e1fe_desc_aa4ec676_name_aa4ec676_out_t\;
         rx_async_fifo_rd_wr_ptr : \msk_top_regs.status_reg_data_8a67e1fe_desc_8a90eed1_name_8a90eed1_out_t\;
-        rx_frame_sync_status : \msk_top_regs.frame_sync_status_out_t\;
         symbol_lock_control : \msk_top_regs.symbol_lock_control_out_t\;
     end record;
 end package;

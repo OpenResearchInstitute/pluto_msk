@@ -179,6 +179,7 @@ ENTITY msk_top_csr IS
 		tx_sync_f2			: out std_logic;
 		pd_alpha1			: out std_logic_vector(17 DOWNTO 0);
 		pd_alpha2			: out std_logic_vector(17 DOWNTO 0);
+		tx_shift 			: out std_logic_vector( 2 DOWNTO 0);
 
                 -- Debug signals for TX path
                 tx_debug_encoder_tvalid  : IN std_logic;
@@ -373,7 +374,7 @@ BEGIN
     ----------------------------------------------------------------------
     -- Status inputs — direct connection (same clock domain)
     ----------------------------------------------------------------------
-    hwif_in.MSK_Status.demod_sync_lock.next_q	<= '0';
+    hwif_in.MSK_Status.demod_sync_lock.next_q	<= demod_sync_lock; -- was '0'
     hwif_in.MSK_Status.tx_enable.next_q			<= tx_enable;
     hwif_in.MSK_Status.rx_enable.next_q			<= rx_enable;
     hwif_in.MSK_Status.tx_axis_valid.next_q		<= tx_axis_valid;
@@ -451,6 +452,13 @@ BEGIN
 	hwif_in.symbol_lock_time.f1.next_q			<= cst_lock_time_f1;
 	hwif_in.symbol_lock_time.f2.next_q			<= cst_lock_time_f2;
 
+	-- Experiment to get lock status and lock time working in Dialogus Abraxas3d
+	hwif_in.symbol_lock_status.f1f2.we     <= '1';
+	hwif_in.symbol_lock_status.f1.we       <= '1';
+	hwif_in.symbol_lock_status.f2.we       <= '1';
+	hwif_in.symbol_lock_time.f1.we         <= '1';
+	hwif_in.symbol_lock_time.f2.we         <= '1';
+
     -- commented out by Abraxas3d to add more bits to the register to investigate receive failures
     --hwif_in.rx_async_fifo_rd_wr_ptr.data.next_q <= std_logic_vector(resize(unsigned(rx_async_fifo_wr_ptr), 16) & resize(unsigned(rx_async_fifo_rd_ptr), 16));
 
@@ -511,6 +519,7 @@ hwif_in.tx_async_fifo_rd_wr_ptr.data.next_q <=
     prbs_manual_sync    <= hwif_out.PRBS_Control.prbs_manual_sync.value;
     tx_sync_ena         <= hwif_out.Tx_Sync_Ctrl.tx_sync_ena.value;
     tx_sync_force       <= hwif_out.Tx_Sync_Ctrl.tx_sync_force.value;
+	tx_shift 			<= hwif_out.MSK_Control.tx_shift.value;
 
     -- Static config signals (same clock domain — no CDC needed)
     freq_word_ft		<= hwif_out.Fb_FreqWord.config_data.value;

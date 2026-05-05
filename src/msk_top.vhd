@@ -98,7 +98,9 @@ ENTITY msk_top IS
 		C_S_AXI_ADDR_WIDTH	: NATURAL := 32;
 		SYNC_CNT_W 			: NATURAL := 24;
 		SYNC_PAT_W 			: NATURAL := 16;
-		FIFO_ADDR_WIDTH 	: NATURAL := 9  -- 512 byte FIFO (used in both tx and rx)
+		FIFO_ADDR_WIDTH 	: NATURAL := 9;  -- 512 byte FIFO (used in both tx and rx)
+		HUNTING_THRESHOLD	: INTEGER := 60000; -- calibrated in libre SDR hardware
+		LOCKED_THRESHOLD	: INTEGER := 36000  -- calibrated in libre SDR hardware
 	);
 	PORT (
 		clk 			: IN  std_logic;
@@ -196,7 +198,26 @@ ENTITY msk_top IS
 		dbg_rx_soft_quantized   : OUT std_logic_vector(2 DOWNTO 0);
 		dbg_rx_bit_count        : OUT std_logic_vector(31 DOWNTO 0);
 		dbg_rx_output_byte      : OUT std_logic_vector(7 DOWNTO 0);
-		dbg_rx_output_valid     : OUT std_logic
+		dbg_rx_output_valid     : OUT std_logic;
+		dbg_decoder_state	: OUT std_logic_vector(3 DOWNTO 0); 
+
+		-- Symbol lock and Costas loop investigation debug (for ILA)
+		dbg_cst_lock_f1      : OUT std_logic;
+		dbg_cst_lock_f2      : OUT std_logic;
+		dbg_cst_unlock_f1    : OUT std_logic;
+		dbg_cst_unlock_f2    : OUT std_logic;
+		dbg_cst_lock_time_f1 : OUT std_logic_vector(15 DOWNTO 0);
+		dbg_cst_lock_time_f2 : OUT std_logic_vector(15 DOWNTO 0);
+		dbg_symbol_lock_count     : OUT std_logic_vector(9 DOWNTO 0);
+		dbg_symbol_lock_threshold : OUT std_logic_vector(15 DOWNTO 0);
+		dbg_rx_samples_dec_out    : OUT std_logic_vector(11 DOWNTO 0);
+		dbg_rx_samples_I_raw_out  : OUT std_logic_vector(15 DOWNTO 0);
+
+		-- Ports added for ILA in order to calibrate symbol lock threshold
+		dbg_acc_i_f1		: OUT std_logic_vector(31 DOWNTO 0);
+		dbg_acc_q_f1		: OUT std_logic_vector(31 DOWNTO 0);
+		dbg_acc_iq_delta_f1	: OUT std_logic_vector(31 DOWNTO 0)
+
 
 	);
 
@@ -420,6 +441,8 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL tx_sync_f1			: std_logic;
 	SIGNAL tx_sync_f2			: std_logic;
 
+	SIGNAL tx_shift 			: std_logic_vector(2 DOWNTO 0);
+
 	SIGNAL pd_alpha1			: std_logic_vector(17 DOWNTO 0);
 	SIGNAL pd_alpha2			: std_logic_vector(17 DOWNTO 0);
 	SIGNAL pd_power 			: std_logic_vector(22 DOWNTO 0);
@@ -432,6 +455,12 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL cst_lock_time_f2  	: std_logic_vector(15 DOWNTO 0);
 	SIGNAL cst_unlock_f1 		: std_logic;
 	SIGNAL cst_unlock_f2 		: std_logic;
+
+	-- Signals added for ILA in order to calibrate symbol lock threshold
+	SIGNAL cst_acc_i_f1        : std_logic_vector(31 DOWNTO 0);
+	SIGNAL cst_acc_q_f1        : std_logic_vector(31 DOWNTO 0);
+	SIGNAL cst_acc_iq_delta_f1 : std_logic_vector(31 DOWNTO 0);
+
 
 
         ATTRIBUTE dont_touch : STRING;
@@ -643,6 +672,8 @@ BEGIN
 	dbg_rx_sample_clk       <= rx_sample_clk;
 	dbg_rx_samples_dec      <= rx_samples_dec;
 	dbg_rx_samples_I_raw    <= rx_samples_I;
+        dbg_decoder_state	<= decoder_debug_state;
+
 
 
 	-- Debug output assignments for ILA probing (Randomizer)
@@ -665,8 +696,27 @@ BEGIN
 	dbg_rx_output_valid     <= sync_det_tvalid;
 	dbg_rx_soft_quantized <= rx_sync_soft_quantized;
 
+	-- Debug output assignments for ILA probing (symbol lock and Costas loop)
+	dbg_cst_lock_f1           <= cst_lock_f1;
+	dbg_cst_lock_f2           <= cst_lock_f2;
+	dbg_cst_unlock_f1         <= cst_unlock_f1;
+	dbg_cst_unlock_f2         <= cst_unlock_f2;
+	dbg_cst_lock_time_f1      <= cst_lock_time_f1;
+	dbg_cst_lock_time_f2      <= cst_lock_time_f2;
+	dbg_symbol_lock_count     <= symbol_lock_count;
+	dbg_symbol_lock_threshold <= symbol_lock_threshold;
+	dbg_rx_samples_dec_out    <= rx_samples_dec;
+	dbg_rx_samples_I_raw_out  <= rx_samples_I;
 
-	rx_samples_mux <= std_logic_vector(resize(signed(tx_samples_I_int), 16)) WHEN loopback_ena = '1' ELSE rx_samples_I;
+	-- Concurrent assignments for ILA probing (symbol lock threshold calibration)
+	dbg_acc_i_f1        <= cst_acc_i_f1;
+	dbg_acc_q_f1        <= cst_acc_q_f1;
+	dbg_acc_iq_delta_f1 <= cst_acc_iq_delta_f1;
+
+        -- original
+	--rx_samples_mux <= std_logic_vector(resize(signed(tx_samples_I_int), 16)) WHEN loopback_ena = '1' ELSE rx_samples_I;
+        -- 24 dB bug fix repercussion fix attempts
+        rx_samples_mux <= std_logic_vector(shift_right(signed(tx_samples_I_int), to_integer(unsigned(tx_shift)))) WHEN loopback_ena = '1' ELSE rx_samples_I;
 
 	-- Delay pipeline for tx_data_bit
 	tx_delay_proc : PROCESS (clk)
@@ -742,6 +792,8 @@ BEGIN
 			tx_sync_force	=> tx_sync_force,
 			tx_sync_pat 	=> tx_sync_pat,
 
+			tx_shift 		=> tx_shift,
+
 			tx_data 		=> prbs_data_bit,
 			tx_req 			=> tx_req,
 
@@ -762,10 +814,10 @@ BEGIN
         GENERIC MAP (
             SYNC_WORD           => x"02B8DB",  -- MSB-first sync word (same as TX!)
             PAYLOAD_BYTES       => 268,
-            HUNTING_THRESHOLD   => 3500,      -- adjust after observing, soft decisions
-            -- HUNTING_THRESHOLD   => 3,          -- Strict threshold when searching, hard decisions
-            LOCKED_THRESHOLD    => 1500,      -- adjust after observing, soft decisions
-            --LOCKED_THRESHOLD    => 5,          -- Relaxed threshold when locked, hard decisions
+
+            HUNTING_THRESHOLD => HUNTING_THRESHOLD,
+            LOCKED_THRESHOLD  => LOCKED_THRESHOLD,
+
             FLYWHEEL_TOLERANCE  => 2,          -- Tolerate 2 missed syncs
             LOCK_FRAMES         => 3,          -- Need 3 consecutive good frames
             BUFFER_DEPTH        => 11,         -- 2048 bytes
@@ -777,6 +829,7 @@ BEGIN
             
             rx_bit          => rx_bit_corr,
             rx_bit_valid    => rx_bit_valid,
+            demod_sync_lock   => demod_sync_lock,
             --s_axis_soft_tdata => (OTHERS => '0'),  -- tied to zero for hard decisions
             s_axis_soft_tdata => rx_data_soft,  -- Connect rx_data_soft for soft decisions
 
@@ -916,21 +969,6 @@ BEGIN
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         rx_bit_corr <= rx_bit WHEN rx_invert = '0' ELSE NOT rx_bit;
 
 ------------------------------------------------------------------------------------------------------
@@ -1009,7 +1047,12 @@ BEGIN
 			cst_lock_time_f1  		=> cst_lock_time_f1,
 			cst_lock_time_f2  		=> cst_lock_time_f2,
 			cst_unlock_f1 			=> cst_unlock_f1,
-			cst_unlock_f2 			=> cst_unlock_f2
+			cst_unlock_f2 			=> cst_unlock_f2, 
+
+			-- Port map for symbol lock calibration ILA
+			dbg_acc_i_f1        => cst_acc_i_f1,
+			dbg_acc_q_f1        => cst_acc_q_f1,
+			dbg_acc_iq_delta_f1 => cst_acc_iq_delta_f1
 
 		);
 
@@ -1056,8 +1099,15 @@ BEGIN
 			init 			=> rxinit,
 			alpha1			=> pd_alpha1,
 			alpha2			=> pd_alpha2,
-			data_I 			=> rx_samples_I(15 DOWNTO 4),
-			data_Q 			=> rx_samples_Q(15 DOWNTO 4),
+			-- Note about data_I/Q: 
+			-- AD9361 RX is right-justified. The meaningful 12-bit signed
+			-- value lives in [11:0] with bit 11 as the sign bit. Bits [15:12] are
+			-- redundant sign extension generated by the chip and are discarded here.
+			-- The slice width matches DATA_W=12, and power_detector casts to signed()
+			-- internally before squaring, so no explicit sign extension is needed
+			-- at this boundary.
+			data_I			=> rx_samples_I(11 DOWNTO 0),
+			data_Q			=> rx_samples_Q(11 DOWNTO 0),
 			data_ena		=> rx_svalid,
 			power_squared 	=> pd_power
 		);
@@ -1066,7 +1116,9 @@ BEGIN
 -- CONFIG/STATUS (preserved)
 ------------------------------------------------------------------------------------------------------
 
-	demod_sync_lock <= '0';
+	-- demod_sync_lock <= '0'; -- frame sync lock doesn't wait on anything
+	demod_sync_lock <= cst_lock_f1 AND cst_lock_f2; -- frame sync lock waits for symbol lock
+
 	ptt_start <= ptt AND NOT ptt_d;
 
 	stats_proc : PROCESS (clk)
@@ -1197,6 +1249,7 @@ BEGIN
 		tx_sync_pat 		=> tx_sync_pat,
 		tx_sync_f1			=> tx_sync_f1,
 		tx_sync_f2			=> tx_sync_f2,
+		tx_shift 			=> tx_shift,
 		pd_alpha1			=> pd_alpha1,
 		pd_alpha2			=> pd_alpha2,
 

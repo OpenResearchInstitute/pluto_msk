@@ -258,11 +258,13 @@ ARCHITECTURE rtl OF viterbi_decoder_k7_soft IS
     ATTRIBUTE ram_style OF g1_soft_sr : SIGNAL IS "block";
     ATTRIBUTE ram_style OF g2_soft_sr : SIGNAL IS "block";
     ATTRIBUTE ram_style OF out_buf : SIGNAL IS "block";
+    ATTRIBUTE ram_style OF metrics_current : SIGNAL IS "distributed";
+    ATTRIBUTE ram_style OF metrics_next    : SIGNAL IS "distributed";
 
     ATTRIBUTE dont_touch : STRING;
     ATTRIBUTE dont_touch OF state : SIGNAL IS "true";
-    ATTRIBUTE dont_touch OF metrics_current : SIGNAL IS "true";
-    ATTRIBUTE dont_touch OF metrics_next : SIGNAL IS "true";
+    --ATTRIBUTE dont_touch OF metrics_current : SIGNAL IS "true";
+    --ATTRIBUTE dont_touch OF metrics_next : SIGNAL IS "true";
     
     ----------------------------------------------------------------------------
     -- Compute expected encoder output for given state and input bit
@@ -381,6 +383,7 @@ BEGIN
             time_step <= 0;                              
             state_idx <= 0;                                
             metrics_next <= (OTHERS => (OTHERS => '0'));
+            metrics_current <= (OTHERS => (OTHERS => '0'));
             g1_soft_sr <= (OTHERS => '0');
             g2_soft_sr <= (OTHERS => '0');
             best_metric <= (OTHERS => '1');

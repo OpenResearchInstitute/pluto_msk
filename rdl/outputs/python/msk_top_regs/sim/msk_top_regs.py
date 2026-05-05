@@ -35,7 +35,7 @@ class msk_top_regs_simulator_cls(Simulator):
                                                 ]),
             12 : 
     Register(width=32, full_inst_name='msk_top_regs.MSK_Control', readable=True, writable=True,
-                                         fields=[FieldDefinition(high=0, low=0, msb=0, lsb=0, inst_name='ptt'),FieldDefinition(high=1, low=1, msb=1, lsb=1, inst_name='loopback_ena'),FieldDefinition(high=2, low=2, msb=2, lsb=2, inst_name='rx_invert'),FieldDefinition(high=3, low=3, msb=3, lsb=3, inst_name='clear_counts'),FieldDefinition(high=4, low=4, msb=4, lsb=4, inst_name='diff_encoder_loopback'),
+                                         fields=[FieldDefinition(high=0, low=0, msb=0, lsb=0, inst_name='ptt'),FieldDefinition(high=1, low=1, msb=1, lsb=1, inst_name='loopback_ena'),FieldDefinition(high=2, low=2, msb=2, lsb=2, inst_name='rx_invert'),FieldDefinition(high=3, low=3, msb=3, lsb=3, inst_name='clear_counts'),FieldDefinition(high=4, low=4, msb=4, lsb=4, inst_name='diff_encoder_loopback'),FieldDefinition(high=7, low=5, msb=7, lsb=5, inst_name='reserved'),FieldDefinition(high=10, low=8, msb=10, lsb=8, inst_name='tx_shift'),
                                                 ]),
             16 : 
     Register(width=32, full_inst_name='msk_top_regs.MSK_Status', readable=True, writable=False,

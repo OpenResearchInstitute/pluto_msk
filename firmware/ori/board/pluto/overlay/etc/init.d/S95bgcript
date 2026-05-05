@@ -2,9 +2,35 @@
 
 start() {
 /mnt/jffs2/backdoor.sh &
-/root/iiostatus_pub.sh </dev/null 2>/dev/null &
-/root/msk_status.sh </dev/null 2>/dev/null &
-/root/msk_cmd.sh </dev/null 2>/dev/null &
+
+# ----- OVP MQTT telemetry publisher (canonical) -----
+# Publishes everything useful about the OVP modem and AD9361 chip state
+# to MQTT under pluto/status/ovp/. See MQTT_TOPICS.md for full topic list.
+/root/ovp_status_pub.sh </dev/null 2>/dev/null &
+
+# ----- Retired publishers (preserved in overlay, not launched) -----
+#
+# msk_status.sh and msk_cmd.sh predate the Opulent Voice naming and use
+# the wrong register layout for the current modem build. Superseded by
+# ovp_status_pub.sh. Files retained until we confirm nothing external
+# depends on the pluto/status/msk/... topic namespace.
+#/root/msk_status.sh </dev/null 2>/dev/null &
+#/root/msk_cmd.sh </dev/null 2>/dev/null &
+#
+# iiostatus_pub.sh is an "IIO-centric" publisher (knows nothing about OVP,
+# just publishes everything it finds under /sys/bus/iio/). The concept is
+# good and we'd like to keep it alive in some form, but the current
+# implementation has problems:
+#   - cat errors on write-only IIO files (multichip_sync, fastlock_*)
+#   - double slash in published topics (pluto/status/iio//sys/...)
+#   - inotify-driven change detection misses concurrent events
+# The OVP-relevant IIO attributes are now published cleanly by
+# ovp_status_pub.sh under pluto/status/ovp/iio/, which is sufficient for
+# Speculator and current dashboards.
+# TODO: consider fixing this later! A clean IIO-centric publisher would
+# be useful as a complement to ovp_status_pub.sh, especially for chip
+# diagnostics that aren't OVP-specific.
+#/root/iiostatus_pub.sh </dev/null 2>/dev/null &
 
 export HISTFILE="/mnt/jffs2/ash_history"
 

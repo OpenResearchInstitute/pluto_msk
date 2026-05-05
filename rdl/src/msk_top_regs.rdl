@@ -115,34 +115,51 @@ addrmap msk_top_regs {
     
         name = "MSK Modem Control";
         desc = "MSK Modem Configuration and Control";
+        regwidth = 32;
     
         field { 
             name = "Push-to-Talk Enable";
             desc = "0 -> PTT Disabled
+
                     1 -> PTT Enabled";
+            fieldwidth = 1;
         } ptt = 0;
         field { 
             name = "Modem Digital Tx -> Rx Loopback Enable";
             desc = "0 -> Modem loopback disabled
 
                     1 -> Modem loopback enabled";
+            fieldwidth = 1;
         } loopback_ena = 0;
         field { 
             name = "Rx Data Invert Enable";
             desc = "0 -> Rx data normal
+
                     1 -> Rx data inverted";
+            fieldwidth = 1;
         } rx_invert = 0;
         field { 
             desc = "Clear Tx Bit Counter and Tx Enable Counter";
             name = "Clear Status Counters";
             singlepulse = true; 
+            fieldwidth = 1;
         } clear_counts = 0;
         field { 
             name = "Differential Encoder -> Decoder Loopback Enable";
             desc = "0 -> Differential Encoder -> Decoder loopback disabled
 
                     1 -> Differential Encoder -> Decoder loopback enabled";
+            fieldwidth = 1;
         } diff_encoder_loopback = 0;
+        field {
+            desc = "Reserved";
+            fieldwidth = 3;
+        } reserved = 0;
+        field {
+            name = "Tx Sample Shoift";
+            desc = "Shift left from 0 to 4 bits";
+            fieldwidth = 3;
+        } tx_shift = 0;
     };
 
     reg msk_stat_0 {
@@ -151,7 +168,8 @@ addrmap msk_top_regs {
         regwidth = 32;
         field { 
             name = "Demodulator Sync Status";
-            desc = "Demodulator Sync Status - not currently implemented";
+            desc = "Demodulator Sync Status - asserted when cst_lock_f1 AND cst_lock_f2, gates frame sync HUNTING state";
+            --desc = "Demodulator Sync Status - not currently implemented";
             sw = r; 
             hw = w; 
         } demod_sync_lock = 0;
@@ -198,6 +216,7 @@ addrmap msk_top_regs {
                     2 - Read the register";
             sw = rw; 
             hw = w; 
+            we;
         } data[31:0] = 0;
     };
 
@@ -218,6 +237,7 @@ addrmap msk_top_regs {
             name = "Tx Enable Count";
             sw = rw; 
             hw = w; 
+            we;
         } data[31:0] = 0;
     };
 
@@ -403,6 +423,7 @@ addrmap msk_top_regs {
                     2 - Read the register";
             sw = rw; 
             hw = w; 
+            we;
         } data[31:0] = 0;
     };
 
@@ -424,6 +445,7 @@ addrmap msk_top_regs {
                     2 - Read the register";
             sw = rw; 
             hw = w; 
+            we;
         } data[31:0] = 0;
     };
 
@@ -442,6 +464,7 @@ addrmap msk_top_regs {
                     2 - Read the register";
             sw = rw; 
             hw = w; 
+            we;
         } data[31:0] = 0;
     };
 
@@ -462,6 +485,7 @@ addrmap msk_top_regs {
                     2 - Read the register";
             sw = rw; 
             hw = w; 
+            we;
         } data[31:0] = 0;
     };
 
@@ -536,6 +560,7 @@ addrmap msk_top_regs {
                     [/list]";
             sw = rw; 
             hw = w; 
+            we;
         } data[22:0] = 0;
     };
 
@@ -547,6 +572,8 @@ addrmap msk_top_regs {
             fieldwidth = 32;
             sw = rw; 
             hw = w; 
+            we;
+            swmod;
         } data[31:0] = 0;
     };
 
@@ -561,6 +588,7 @@ addrmap msk_top_regs {
             fieldwidth = 1;
             sw = r; 
             hw = w; 
+            we;
         } frame_sync_locked = 0;
         field {
             name = "Frame Buffer Overflow";
@@ -569,6 +597,7 @@ addrmap msk_top_regs {
             fieldwidth = 1;
             sw = r; 
             hw = w; 
+            we;
         } frame_buffer_overflow = 0;
         field {
             name = "Frames Received";
@@ -576,6 +605,7 @@ addrmap msk_top_regs {
             fieldwidth = 24;
             sw = rw; 
             hw = w; 
+            we;
         } frames_received = 0;
         field {
             name = "Frames Sync Errors";
@@ -583,6 +613,7 @@ addrmap msk_top_regs {
             fieldwidth = 6;
             sw = rw; 
             hw = w; 
+            we;
         } frame_sync_errors = 0;
     };
 
@@ -617,6 +648,7 @@ addrmap msk_top_regs {
             fieldwidth = 1;
             sw = r; 
             hw = w; 
+            we;
         } f1f2 = 0;
         field {
             name = "Symbol Lock F1";
@@ -625,6 +657,7 @@ addrmap msk_top_regs {
             fieldwidth = 1;
             sw = r; 
             hw = w; 
+            we;
         } f1 = 0;
         field {
             name = "Symbol Lock F2";
@@ -633,6 +666,7 @@ addrmap msk_top_regs {
             fieldwidth = 1;
             sw = r; 
             hw = w; 
+            we;
         } f2 = 0;
         field {
             name = "F1 unlocked since last read";
@@ -641,6 +675,7 @@ addrmap msk_top_regs {
             fieldwidth = 1;
             sw = r; 
             hw = w; 
+            we;
         } unlock_f1 = 0;
         field {
             name = "F2 unlocked since last read";
@@ -649,6 +684,7 @@ addrmap msk_top_regs {
             fieldwidth = 1;
             sw = r; 
             hw = w; 
+            we;
         } unlock_f2 = 0;
     };
 
@@ -662,6 +698,7 @@ addrmap msk_top_regs {
             fieldwidth = 16;
             sw = r; 
             hw = w; 
+            we;
         } f1 = 0;
         field {
             name = "F2 Symbol Lock Time";
@@ -669,6 +706,7 @@ addrmap msk_top_regs {
             fieldwidth = 16;
             sw = r; 
             hw = w; 
+            we;
         } f2 = 0;
     };
 
