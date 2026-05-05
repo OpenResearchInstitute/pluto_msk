@@ -94,6 +94,15 @@ ln -sf ../../wpa_supplicant/ifupdown.sh ${TARGET_DIR}/etc/network/if-pre-up.d/wp
 ln -sf ../../wpa_supplicant/ifupdown.sh ${TARGET_DIR}/etc/network/if-post-down.d/wpasupplicant
 
 ln -sf device_reboot ${TARGET_DIR}/usr/sbin/pluto_reboot
+
+# Ensure OVP overlay scripts are executable. Permissions on files copied
+# via the overlay mechanism (BR2_ROOTFS_OVERLAY) are not always reliably
+# preserved across git, zip, and rsync round-trips. This is the
+# build-system-level guarantee that the publishers and init script will
+# actually be runnable at boot.
+[ -f ${TARGET_DIR}/root/ovp_status_pub.sh ]    && chmod 0755 ${TARGET_DIR}/root/ovp_status_pub.sh
+[ -f ${TARGET_DIR}/etc/init.d/S95bgcript ]     && chmod 0755 ${TARGET_DIR}/etc/init.d/S95bgcript
+
 #rm -rf ${TARGET_DIR}/usr/share/satdump/resources
 #Remove not needed srt applictations
 rm -rf ${TARGET_DIR}/usr/bin/srt-file-transmit
