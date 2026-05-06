@@ -259,7 +259,8 @@ endif
 	mkimage -A arm -T ramdisk -C gzip -d $(SDIMGDIR)/ramdisk.image.gz $(SDIMGDIR)/uramdisk.image.gz
 	touch 	$(SDIMGDIR)/boot.bif
 	echo "img : {[bootloader] $(SDIMGDIR)/fsbl.elf  $(SDIMGDIR)/system_top.bit  $(SDIMGDIR)/u-boot.elf}" >  $(SDIMGDIR)/boot.bif
-	bootgen -image $(SDIMGDIR)/boot.bif -w -o i $(SDIMGDIR)/BOOT.bin
+	rm -f $(SDIMGDIR)/BOOT.bin
+	bash -c "source $(VIVADO_SETTINGS) && bootgen -image $(SDIMGDIR)/boot.bif -w -o $(SDIMGDIR)/BOOT.bin"
 	#rm $(SDIMGDIR)/fsbl.elf
 	#rm $(SDIMGDIR)/system_top.bit
 	#rm $(SDIMGDIR)/u-boot.elf
