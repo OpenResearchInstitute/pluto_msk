@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speculator ? OVP Telemetry</title>
+    <title>Speculator — OVP Telemetry</title>
     <!-- Paho MQTT client served locally so dashboard works on isolated
          lab networks with no internet access. The library file lives at
          /www/mqttws31.min.js on the LibreSDR. If updating, fetch from
@@ -12,7 +12,7 @@
     <script src="mqttws31.min.js"></script>
     <style>
         /* ============================================================
-           Speculator ? OVP technical telemetry dashboard
+           Speculator — OVP technical telemetry dashboard
            Visual style inspired by Interlocutor (sister application).
            Uses Atkinson Hyperlegible font for accessibility.
            ============================================================ */
@@ -260,7 +260,7 @@
             }
         }
 
-        /* Focus styling ? matches Interlocutor */
+        /* Focus styling — matches Interlocutor */
         *:focus {
             outline: 2px solid #00ff88;
             outline-offset: 2px;
@@ -288,25 +288,28 @@
             <div class="grid">
                 <div class="card" id="card-rxpower">
                     <div class="card-label">RX Power</div>
-                    <div class="card-value" id="rx-power-dbfs">? dBFS</div>
+                    <div class="card-value" id="rx-power-dbfs">— dBFS</div>
                     <div class="card-meta" id="rx-power-time">awaiting data</div>
                 </div>
 
                 <div class="card" id="card-saturated">
                     <div class="card-label">Saturation State</div>
-                    <div class="card-value" id="rx-saturated">?</div>
-                    <div class="card-meta">threshold: ?1 dBFS</div>
+                    <div class="card-value" id="rx-saturated">—</div>
+                    <div class="card-meta">threshold: −1 dBFS</div>
                 </div>
 
-                <div class="card">
+                <div class="card" id="card-frame-sync">
                     <div class="card-label">Frame Sync</div>
-                    <div class="card-value" id="frame-sync">?</div>
-                    <div class="card-meta">register 0x9C</div>
+                    <div class="card-value" id="frame-sync">—</div>
+                    <div class="card-meta">
+                        <span id="frames-received">0</span> frames received
+                        / <span id="sync-errors">0</span> errors
+                    </div>
                 </div>
 
                 <div class="card">
                     <div class="card-label">Heartbeat</div>
-                    <div class="card-value" id="heartbeat">?</div>
+                    <div class="card-value" id="heartbeat">—</div>
                     <div class="card-meta">publisher liveness</div>
                 </div>
             </div>
@@ -317,25 +320,25 @@
             <div class="grid">
                 <div class="card">
                     <div class="card-label">AGC Mode</div>
-                    <div class="card-value" id="agc-mode">?</div>
+                    <div class="card-value" id="agc-mode">—</div>
                     <div class="card-meta">gain control mode</div>
                 </div>
 
                 <div class="card">
                     <div class="card-label">Hardware Gain</div>
-                    <div class="card-value" id="agc-gain">?</div>
+                    <div class="card-value" id="agc-gain">—</div>
                     <div class="card-meta">AD9361 LNA + mixer</div>
                 </div>
 
                 <div class="card">
                     <div class="card-label">Chip RSSI</div>
-                    <div class="card-value" id="agc-rssi">?</div>
+                    <div class="card-value" id="agc-rssi">—</div>
                     <div class="card-meta">AD9361 internal measurement</div>
                 </div>
 
                 <div class="card">
                     <div class="card-label">ENSM State</div>
-                    <div class="card-value" id="ensm-mode">?</div>
+                    <div class="card-value" id="ensm-mode">—</div>
                     <div class="card-meta">enable state machine</div>
                 </div>
             </div>
@@ -346,31 +349,31 @@
             <div class="grid">
                 <div class="card" id="card-f1-lock">
                     <div class="card-label">F1 Lock State</div>
-                    <div class="card-value" id="f1-lock-state">?</div>
+                    <div class="card-value" id="f1-lock-state">—</div>
                     <div class="card-meta">
-                        <span id="f1-lock-time">?</span> symbols
+                        <span id="f1-lock-time">—</span> symbols
                         <span id="f1-lock-meaning"></span>
                     </div>
                 </div>
 
                 <div class="card" id="card-f2-lock">
                     <div class="card-label">F2 Lock State</div>
-                    <div class="card-value" id="f2-lock-state">?</div>
+                    <div class="card-value" id="f2-lock-state">—</div>
                     <div class="card-meta">
-                        <span id="f2-lock-time">?</span> symbols
+                        <span id="f2-lock-time">—</span> symbols
                         <span id="f2-lock-meaning"></span>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-label">F1 Error</div>
-                    <div class="card-value" id="f1-error">?</div>
+                    <div class="card-value" id="f1-error">—</div>
                     <div class="card-meta">register 0x74</div>
                 </div>
 
                 <div class="card">
                     <div class="card-label">F2 Error</div>
-                    <div class="card-value" id="f2-error">?</div>
+                    <div class="card-value" id="f2-error">—</div>
                     <div class="card-meta">register 0x78</div>
                 </div>
             </div>
@@ -381,14 +384,14 @@
             <div class="grid">
                 <div class="card">
                     <div class="card-label">Integral Gain</div>
-                    <div class="card-value" id="pi-i">?</div>
-                    <div class="card-meta">i_gain × 2<sup>?i_shift</sup></div>
+                    <div class="card-value" id="pi-i">—</div>
+                    <div class="card-meta">i_gain × 2<sup>−i_shift</sup></div>
                 </div>
 
                 <div class="card">
                     <div class="card-label">Proportional Gain</div>
-                    <div class="card-value" id="pi-p">?</div>
-                    <div class="card-meta">p_gain × 2<sup>?p_shift</sup></div>
+                    <div class="card-value" id="pi-p">—</div>
+                    <div class="card-meta">p_gain × 2<sup>−p_shift</sup></div>
                 </div>
             </div>
         </section>
@@ -428,6 +431,17 @@
             f1Time: null, f2Time: null
         };
 
+        // Frame sync state — track counter changes to detect active reception.
+        // The frame_sync_locked bit (HDL-asserted) is rarely sustained in
+        // practice; the frames_received counter is more reliable as an
+        // "are we currently receiving" indicator. If counter increases
+        // between polls, frames are arriving.
+        var frameState = {
+            framesReceived: null,    // most recent counter value
+            lastUpdate: null,        // timestamp when counter last changed
+            errors: null             // most recent error count
+        };
+
         function setConnectionStatus(connected) {
             var el = document.getElementById("connection-status");
             var text = el.querySelector(".text");
@@ -436,7 +450,7 @@
                 text.textContent = "connected to " + brokerHost;
             } else {
                 el.classList.remove("connected");
-                text.textContent = "disconnected ? retrying";
+                text.textContent = "disconnected — retrying";
             }
         }
 
@@ -503,9 +517,39 @@
                     break;
 
                 // ---- Frame sync ----
+                // We track the frames_received counter rather than the
+                // locked bit because the counter incrementing is the
+                // ground truth of "frames are arriving." Compare counter
+                // values across polls to determine activity state.
+                case "pluto/status/ovp/derived/frame_sync/frames_received":
+                    var newCount = parseInt(payload, 10);
+                    var card = document.getElementById("card-frame-sync");
+                    var stateEl = document.getElementById("frame-sync");
+                    if (frameState.framesReceived !== null && newCount !== frameState.framesReceived) {
+                        // Counter changed — frames are arriving
+                        stateEl.textContent = "RECEIVING";
+                        card.classList.remove("alert");
+                        card.classList.add("ok");
+                        frameState.lastUpdate = Date.now();
+                    } else if (frameState.framesReceived !== null && newCount === frameState.framesReceived) {
+                        // Counter unchanged — no new frames since last poll
+                        stateEl.textContent = "no sync";
+                        card.classList.remove("ok");
+                    }
+                    frameState.framesReceived = newCount;
+                    document.getElementById("frames-received").textContent = newCount;
+                    break;
+
+                case "pluto/status/ovp/derived/frame_sync/sync_errors":
+                    document.getElementById("sync-errors").textContent = payload;
+                    frameState.errors = payload;
+                    break;
+
+                // We still receive the locked bit but no longer use it for
+                // primary display. Could be exposed in a future "diagnostic"
+                // section if useful.
                 case "pluto/status/ovp/derived/frame_sync/locked":
-                    document.getElementById("frame-sync").textContent =
-                        (payload === "1") ? "LOCKED" : "no sync";
+                    // intentionally not displayed — see frames_received above
                     break;
 
                 // ---- Heartbeat ----
