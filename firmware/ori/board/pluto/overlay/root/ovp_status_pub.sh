@@ -245,8 +245,16 @@ publish_registers() {
                 fi
                 ;;
             rx_frame_sync_status)
-                # bit 0: frame_sync_locked (works after Item 2 fix in HDL)
-                pub_derived "frame_sync/locked" "$((VAL_DEC & 1))"
+                # Bit 0:    frame_sync_locked (HDL-asserted "sync acquired",
+                #           but in practice rarely sustained — frame arrival
+                #           is better tracked via the counter below)
+                # Bit 1:    frame_buffer_overflow (sticky)
+                # Bits 2-25: frames_received (24-bit, rolls over at ~16M)
+                # Bits 26-31: frame_sync_errors (6-bit, rolls over at 64)
+                pub_derived "frame_sync/locked"           "$((VAL_DEC & 1))"
+                pub_derived "frame_sync/buffer_overflow"  "$(((VAL_DEC >> 1) & 1))"
+                pub_derived "frame_sync/frames_received"  "$(((VAL_DEC >> 2) & 0xFFFFFF))"
+                pub_derived "frame_sync/sync_errors"      "$(((VAL_DEC >> 26) & 0x3F))"
                 ;;
             symbol_lock_status)
                 # bit 0: f1f2 (both locked)
