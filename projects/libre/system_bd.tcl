@@ -1031,7 +1031,7 @@ ad_connect msk_top/dbg_rx_samples_I_raw ila_rx_soft/probe10
 
 
 
-if {0} {
+if {1} {
 
 ##############################################################################
 # THRESHOLD CALIBRATION QUICK REFERENCE
@@ -1094,7 +1094,7 @@ if {0} {
 create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_msk_rx
 set_property -dict [list \
     CONFIG.C_MONITOR_TYPE {Native} \
-    CONFIG.C_NUM_OF_PROBES {15} \
+    CONFIG.C_NUM_OF_PROBES {16} \
     CONFIG.C_PROBE0_WIDTH {3} \
     CONFIG.C_PROBE1_WIDTH {4} \
     CONFIG.C_PROBE2_WIDTH {4} \
@@ -1110,6 +1110,9 @@ set_property -dict [list \
     CONFIG.C_PROBE12_WIDTH {1} \
     CONFIG.C_PROBE13_WIDTH {3} \
     CONFIG.C_PROBE14_WIDTH {4} \
+    CONFIG.C_PROBE15_WIDTH {1} \
+    #CONFIG.C_PROBE16_WIDTH {5} \
+    #CONFIG.C_PROBE17_WIDTH {1} \
     CONFIG.C_DATA_DEPTH {16384} \
     CONFIG.C_TRIGIN_EN {false} \
     CONFIG.C_EN_STRG_QUAL {1} \
@@ -1167,6 +1170,28 @@ ad_connect msk_top/dbg_rx_soft_quantized ila_msk_rx/probe13
 # Probe 14: dbg_decoder_state[3:0] Decoder State Machine 
 # state now visible. Helps catch stalls in the machine.
 ad_connect msk_top/dbg_decoder_state ila_msk_rx/probe14
+
+# Probe 15: frame_sync_locked output bit (1 bit) - the indicator we're investigating
+#   This is the same signal that gets routed to the CSR register field and 
+#   that Speculator displays as "HDL lock bit". Captured here so we can 
+#   correlate the bit's behavior with the state machine internals 
+#   (Probes 0, 2, 3) at clock-cycle granularity.
+ad_connect msk_top/frame_sync_locked ila_msk_rx/probe15
+
+# Probe 16: sync_bit_count (5 bits) - VERIFYING_SYNC bit position counter
+#   Resets to 0 when entering VERIFYING_SYNC. Increments each rx_bit_valid_r
+#   cycle. The IF sync_bit_count = 23 test at line 661 of frame_sync_detector_soft
+#   determines whether correlation is evaluated. If this never reaches 23
+#   while in VERIFYING_SYNC (Probe 0 = 3), that's the bug.
+#ad_connect msk_top/u_rx_frame_sync/sync_bit_count ila_msk_rx/probe16
+
+# Probe 17: demod_sync_lock input (1 bit) - the AND of cst_lock_f1 and cst_lock_f2
+#   The frame sync detector requires this high in HUNTING (lines 546-547 of
+#   frame_sync_detector_soft) to permit the HUNTING -> LOCKED transition.
+#   If this is glitchy or only intermittently high, frame acquisition could
+#   work intermittently in ways that confuse the lock state machine.
+#ad_connect msk_top/u_rx_frame_sync/demod_sync_lock ila_msk_rx/probe17
+
 }
 
 
@@ -1203,7 +1228,7 @@ ad_connect msk_top/dbg_rx_data_soft ila_msk_rx/probe5
 }
 
 
-if {1} {
+if {0} {
 
 ##############################################################################
 # ILA: Symbol Lock and Costas Loop Behavior

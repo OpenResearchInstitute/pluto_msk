@@ -305,6 +305,12 @@
                         <span id="frames-received">0</span> frames received
                         / <span id="sync-errors">0</span> errors
                     </div>
+<<<<<<< HEAD
+=======
+                    <div class="card-meta">
+                        HDL lock bit: <span id="frame-sync-lock-bit">—</span>
+                    </div>
+>>>>>>> 5c5cc14 (csr: drive frame_sync_locked.we to capture HDL lock state in register)
                 </div>
 
                 <div class="card">
@@ -545,11 +551,22 @@
                     frameState.errors = payload;
                     break;
 
+<<<<<<< HEAD
                 // We still receive the locked bit but no longer use it for
                 // primary display. Could be exposed in a future "diagnostic"
                 // section if useful.
                 case "pluto/status/ovp/derived/frame_sync/locked":
                     // intentionally not displayed — see frames_received above
+=======
+                // We still receive the locked bit and now display it as
+                // a "second opinion" alongside the counter-based detection.
+                // When the bit is 0 but counter is incrementing, the system
+                // is in a "frames flowing without formal HDL lock" state,
+                // which is itself diagnostic information about signal quality
+                // vs. the LOCKED_THRESHOLD in frame_sync_detector_soft.vhd.
+                case "pluto/status/ovp/derived/frame_sync/locked":
+                    document.getElementById("frame-sync-lock-bit").textContent = payload;
+>>>>>>> 5c5cc14 (csr: drive frame_sync_locked.we to capture HDL lock state in register)
                     break;
 
                 // ---- Heartbeat ----

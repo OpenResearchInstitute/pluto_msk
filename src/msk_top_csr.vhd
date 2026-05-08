@@ -379,6 +379,7 @@ BEGIN
     hwif_in.MSK_Status.rx_enable.next_q			<= rx_enable;
     hwif_in.MSK_Status.tx_axis_valid.next_q		<= tx_axis_valid;
     hwif_in.rx_frame_sync_status.frame_sync_locked.next_q    <= rx_frame_sync;
+    hwif_in.rx_frame_sync_status.frame_sync_locked.we        <= '1';  -- drive the write enable so the lock state is captured
     hwif_in.rx_frame_sync_status.frame_buffer_overflow.we    <= rx_frame_buffer_ovf;
 
 	hwif_in.Tx_Bit_Count.data.next_q    					<= tx_bit_counter;
