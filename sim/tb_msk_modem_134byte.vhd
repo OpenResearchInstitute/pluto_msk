@@ -134,6 +134,7 @@ ARCHITECTURE behavior OF tb_msk_modem_134byte IS
 
     CONSTANT PREAMBLE_BYTE  : std_logic_vector(7 DOWNTO 0) := X"CC";
     CONSTANT PREAMBLE_BYTES : NATURAL := FRAME_BYTES;  -- 134 bytes, same as data frame
+    CONSTANT DATA_START : NATURAL := 16#AA#;   -- data begins at 0xAA, distinct from 0xCC preamble & 0x00
     
     -- MSK Register Addresses (from working testbench!)
     CONSTANT MSK_INIT_ADDR          : std_logic_vector(31 DOWNTO 0) := X"43C00008";
@@ -558,7 +559,9 @@ BEGIN
                    to_hstring(std_logic_vector(to_unsigned((frame_idx*128) MOD 256, 8))) & ")";
             
             FOR byte_idx IN 0 TO FRAME_BYTES-1 LOOP
-                byte_val := (frame_idx * 128 + byte_idx) MOD 256;
+                --byte_val := (frame_idx * 128 + byte_idx) MOD 256; --original
+                --byte_val := (frame_idx + byte_idx) MOD 256; -- single stride, should make unique payloads, starting at frame_idx
+                byte_val := (DATA_START + frame_idx + byte_idx) MOD 256; -- start at something other than 0x00 in payload data
                 tx_frames(frame_idx)(byte_idx) <= std_logic_vector(to_unsigned(byte_val, 8));
                 
                 s_axis_tdata(7 DOWNTO 0)  <= std_logic_vector(to_unsigned(byte_val, 8));
