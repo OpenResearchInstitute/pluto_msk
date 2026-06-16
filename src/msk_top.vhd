@@ -251,6 +251,8 @@ ARCHITECTURE struct OF msk_top IS
 	SIGNAL tx_samples_Q_int	: std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 	SIGNAL rx_samples_mux	: std_logic_vector(SAMPLE_W -1 DOWNTO 0);
 	SIGNAL rx_samples_dec 	: std_logic_vector(11 DOWNTO 0);
+        SIGNAL rx_samples_q_mux	: std_logic_vector(SAMPLE_W -1 DOWNTO 0);
+	SIGNAL rx_samples_q_dec	: std_logic_vector(11 DOWNTO 0);
 	SIGNAL tx_req 		 	: std_logic;
 	SIGNAL tclk 			: std_logic;
 	SIGNAL tx_data_bit 		: std_logic;
@@ -718,6 +720,8 @@ BEGIN
         -- 24 dB bug fix repercussion fix attempts
         rx_samples_mux <= std_logic_vector(shift_right(signed(tx_samples_I_int), to_integer(unsigned(tx_shift)))) WHEN loopback_ena = '1' ELSE rx_samples_I;
 
+        rx_samples_q_mux <= std_logic_vector(shift_right(signed(tx_samples_Q_int), to_integer(unsigned(tx_shift)))) WHEN loopback_ena = '1' ELSE rx_samples_Q;
+
 	-- Delay pipeline for tx_data_bit
 	tx_delay_proc : PROCESS (clk)
 	BEGIN
@@ -981,10 +985,12 @@ BEGIN
 			IF rxinit = '1' THEN
 				discard_count 	<= (OTHERS => '0');
 				rx_samples_dec	<= (OTHERS => '0');
+                                rx_samples_q_dec	<= (OTHERS => '0');
 			ELSE
 				IF to_integer(discard_count) = 0 AND (rx_svalid = '1' OR loopback_ena = '1') THEN 
 					discard_count 	<= unsigned(discard_rxsamples);
 					rx_samples_dec 	<= rx_samples_mux(11 DOWNTO 0);
+                                        rx_samples_q_dec 	<= rx_samples_q_mux(11 DOWNTO 0);
 					rx_sample_clk 	<= '1';
 				ELSE
 					discard_count 	<= discard_count -1;
@@ -1034,7 +1040,9 @@ BEGIN
 
 			rx_enable 		=> rx_enable OR loopback_ena,
 			rx_svalid 		=> rx_sample_clk,
-			rx_samples 		=> rx_samples_dec(11 DOWNTO 0),
+			--rx_samples 		=> rx_samples_dec(11 DOWNTO 0),
+                        rx_i_samples 	=> rx_samples_dec(11 DOWNTO 0),
+			rx_q_samples 	=> rx_samples_q_dec,
 
 			rx_data 		=> rx_bit, -- hard decision
 			rx_data_soft 	=> rx_data_soft,     -- soft decision

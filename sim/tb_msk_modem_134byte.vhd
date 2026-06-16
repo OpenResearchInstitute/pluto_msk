@@ -276,8 +276,8 @@ BEGIN
     DUT: msk_top
         GENERIC MAP (
             S_AXIS_DATA_W => 32,
-            HUNTING_THRESHOLD => 200000,
-            LOCKED_THRESHOLD => 120000
+            HUNTING_THRESHOLD => 420000,
+            LOCKED_THRESHOLD =>  370000
         )
         PORT MAP (
             clk                   => clk,

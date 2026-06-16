@@ -336,17 +336,17 @@ add_wave -into {Stage_4b:_Encoder_FEC} /tb_msk_modem_134byte/DUT/u_ov_encoder/en
 add_wave_group {Stage_5:_Encoder_to_Deserializer}
 add_wave -into {Stage_5:_Encoder_to_Deserializer} /tb_msk_modem_134byte/DUT/encoder_tvalid
 add_wave -into {Stage_5:_Encoder_to_Deserializer} /tb_msk_modem_134byte/DUT/encoder_tready
-add_wave -into {Stage_5:_Encoder_to_Deserializer} -radix hex /tb_msk_modem_134byte/DUT/encoder_tdata
+add_wave -into {Stage_5:_Encoder_to_Deserializer} /tb_msk_modem_134byte/DUT/encoder_tdata
 add_wave -into {Stage_5:_Encoder_to_Deserializer} /tb_msk_modem_134byte/DUT/encoder_tlast
 add_wave -into {Stage_5:_Encoder_to_Deserializer} /tb_msk_modem_134byte/DUT/tx_encoder_active
-add_wave -into {Stage_5:_Encoder_to_Deserializer} -radix unsigned /tb_msk_modem_134byte/DUT/tx_frames_encoded
+add_wave -into {Stage_5:_Encoder_to_Deserializer} /tb_msk_modem_134byte/DUT/tx_frames_encoded
 
 # Deserializer (Stage 6)
 add_wave_group {Stage_6:_Deserializer}
 add_wave -into {Stage_6:_Deserializer} /tb_msk_modem_134byte/DUT/u_deserializer/state
 add_wave -into {Stage_6:_Deserializer} /tb_msk_modem_134byte/DUT/u_deserializer/bit_counter
 add_wave -into {Stage_6:_Deserializer} /tb_msk_modem_134byte/DUT/u_deserializer/ready_int
-add_wave -into {Stage_6:_Deserializer} -radix hex /tb_msk_modem_134byte/DUT/u_deserializer/shift_reg
+add_wave -into {Stage_6:_Deserializer} /tb_msk_modem_134byte/DUT/u_deserializer/shift_reg
 add_wave -into {Stage_6:_Deserializer} /tb_msk_modem_134byte/DUT/u_deserializer/tx_data_int
 add_wave -into {Stage_6:_Deserializer} /tb_msk_modem_134byte/DUT/tx_data_bit
 add_wave -into {Stage_6:_Deserializer} /tb_msk_modem_134byte/DUT/tx_req
@@ -371,6 +371,8 @@ add_wave -into {Stage_8:_Demodulator} /tb_msk_modem_134byte/DUT/rx_bit
 add_wave -into {Stage_8:_Demodulator} /tb_msk_modem_134byte/DUT/rx_bit_valid
 add_wave -into {Stage_8:_Demodulator} /tb_msk_modem_134byte/DUT/rx_bit_corr
 add_wave -into {Stage_8:_Demodulator} /tb_msk_modem_134byte/DUT/demod_sync_lock
+add_wave -into {Stage_8:_Demodulator} /tb_msk_modem_134byte/DUT/u_dem/rx_i_samples
+add_wave -into {Stage_8:_Demodulator} /tb_msk_modem_134byte/DUT/u_dem/rx_q_samples
 
 # F1 Costas Lock Detection (Stage 8a)
 add_wave_group {Stage_8a:_Costas_Lock_F1}
@@ -418,8 +420,8 @@ add_wave -into {Stage_8d:_Lock_Detect_F2_Internals} /tb_msk_modem_134byte/DUT/u_
 add_wave -into {Stage_8d:_Lock_Detect_F2_Internals} /tb_msk_modem_134byte/DUT/u_dem/U_f2/u_lock_detect/acc_i
 add_wave -into {Stage_8d:_Lock_Detect_F2_Internals} /tb_msk_modem_134byte/DUT/u_dem/U_f2/u_lock_detect/acc_q
 add_wave -into {Stage_8d:_Lock_Detect_F2_Internals} /tb_msk_modem_134byte/DUT/u_dem/U_f2/u_lock_detect/acc_iq_delta
-add_wave -into {Stage_8d:_Lock_Detect_F2_Internals} -radix unsigned /tb_msk_modem_134byte/DUT/u_dem/U_f2/u_lock_detect/icntr
-add_wave -into {Stage_8d:_Lock_Detect_F2_Internals} -radix unsigned /tb_msk_modem_134byte/DUT/u_dem/U_f2/u_lock_detect/tcntr
+add_wave -into {Stage_8d:_Lock_Detect_F2_Internals} /tb_msk_modem_134byte/DUT/u_dem/U_f2/u_lock_detect/icntr
+add_wave -into {Stage_8d:_Lock_Detect_F2_Internals} /tb_msk_modem_134byte/DUT/u_dem/U_f2/u_lock_detect/tcntr
 add_wave -into {Stage_8d:_Lock_Detect_F2_Internals} /tb_msk_modem_134byte/DUT/u_dem/U_f2/u_lock_detect/lock
 add_wave -into {Stage_8d:_Lock_Detect_F2_Internals} /tb_msk_modem_134byte/DUT/u_dem/U_f2/u_lock_detect/lock_d
 add_wave -into {Stage_8d:_Lock_Detect_F2_Internals} /tb_msk_modem_134byte/DUT/u_dem/U_f2/u_lock_detect/lock_once
@@ -428,12 +430,35 @@ add_wave -into {Stage_8d:_Lock_Detect_F2_Internals} /tb_msk_modem_134byte/DUT/u_
 add_wave_group {Stage_8e:_Lock_Status_Summary}
 add_wave -into {Stage_8e:_Lock_Status_Summary} /tb_msk_modem_134byte/DUT/cst_lock_f1
 add_wave -into {Stage_8e:_Lock_Status_Summary} /tb_msk_modem_134byte/DUT/cst_unlock_f1
-add_wave -into {Stage_8e:_Lock_Status_Summary} -radix unsigned /tb_msk_modem_134byte/DUT/cst_lock_time_f1
+add_wave -into {Stage_8e:_Lock_Status_Summary} /tb_msk_modem_134byte/DUT/cst_lock_time_f1
 add_wave -into {Stage_8e:_Lock_Status_Summary} /tb_msk_modem_134byte/DUT/cst_lock_f2
 add_wave -into {Stage_8e:_Lock_Status_Summary} /tb_msk_modem_134byte/DUT/cst_unlock_f2
-add_wave -into {Stage_8e:_Lock_Status_Summary} -radix unsigned /tb_msk_modem_134byte/DUT/cst_lock_time_f2
-add_wave -into {Stage_8e:_Lock_Status_Summary} -radix unsigned /tb_msk_modem_134byte/DUT/symbol_lock_count
-add_wave -into {Stage_8e:_Lock_Status_Summary} -radix hex /tb_msk_modem_134byte/DUT/symbol_lock_threshold
+add_wave -into {Stage_8e:_Lock_Status_Summary} /tb_msk_modem_134byte/DUT/cst_lock_time_f2
+add_wave -into {Stage_8e:_Lock_Status_Summary} /tb_msk_modem_134byte/DUT/symbol_lock_count
+add_wave -into {Stage_8e:_Lock_Status_Summary} /tb_msk_modem_134byte/DUT/symbol_lock_threshold
+
+# Shared Carrier Loop (Stage 8f) -- the coupled-loop fix
+add_wave_group {Stage_8f:_Shared_Carrier_Loop}
+add_wave -into {Stage_8f:_Shared_Carrier_Loop} /tb_msk_modem_134byte/DUT/u_dem/common_adjust
+add_wave -into {Stage_8f:_Shared_Carrier_Loop} /tb_msk_modem_134byte/DUT/u_dem/common_adj_valid
+add_wave -into {Stage_8f:_Shared_Carrier_Loop} /tb_msk_modem_134byte/DUT/u_dem/common_err
+add_wave -into {Stage_8f:_Shared_Carrier_Loop} /tb_msk_modem_134byte/DUT/u_dem/common_err_valid
+add_wave -into {Stage_8f:_Shared_Carrier_Loop} /tb_msk_modem_134byte/DUT/u_dem/ev_f1_d
+add_wave -into {Stage_8f:_Shared_Carrier_Loop} /tb_msk_modem_134byte/DUT/u_dem/ev_f2_d
+# old per-loop integrators -- should now be FLAT (proof the freeze took)
+add_wave -into {Stage_8f:_Shared_Carrier_Loop} /tb_msk_modem_134byte/DUT/u_dem/f1_nco_adjust
+add_wave -into {Stage_8f:_Shared_Carrier_Loop} /tb_msk_modem_134byte/DUT/u_dem/f2_nco_adjust
+add_wave -into {Stage_8f:_Shared_Carrier_Loop} /tb_msk_modem_134byte/DUT/u_dem/lpf_accum_f1
+add_wave -into {Stage_8f:_Shared_Carrier_Loop} /tb_msk_modem_134byte/DUT/u_dem/lpf_accum_f2
+
+# Symbol Clock Recovery (Stage 8g) -- did the clock stop wobbling?
+add_wave_group {Stage_8g:_Symbol_Clock_Recovery}
+add_wave -into {Stage_8g:_Symbol_Clock_Recovery} /tb_msk_modem_134byte/DUT/u_dem/dclk_slv
+add_wave -into {Stage_8g:_Symbol_Clock_Recovery} /tb_msk_modem_134byte/DUT/u_dem/dclk
+add_wave -into {Stage_8g:_Symbol_Clock_Recovery} /tb_msk_modem_134byte/DUT/u_dem/cclk
+add_wave -into {Stage_8g:_Symbol_Clock_Recovery} /tb_msk_modem_134byte/DUT/u_dem/tclk
+add_wave -into {Stage_8g:_Symbol_Clock_Recovery} /tb_msk_modem_134byte/DUT/u_dem/error_valid_f1
+add_wave -into {Stage_8g:_Symbol_Clock_Recovery} /tb_msk_modem_134byte/DUT/u_dem/error_valid_f2
 
 # Frame Sync Detector (Stage 9)
 add_wave_group {Stage_9:_Frame_Sync_Detector}
@@ -442,7 +467,7 @@ add_wave -into {Stage_9:_Frame_Sync_Detector} /tb_msk_modem_134byte/DUT/u_rx_fra
 add_wave -into {Stage_9:_Frame_Sync_Detector} /tb_msk_modem_134byte/DUT/u_rx_frame_sync/frame_byte_count
 add_wave -into {Stage_9:_Frame_Sync_Detector} /tb_msk_modem_134byte/DUT/u_rx_frame_sync/frame_ready
 add_wave -into {Stage_9:_Frame_Sync_Detector} /tb_msk_modem_134byte/DUT/u_rx_frame_sync/frame_ack
-add_wave -into {Stage_9:_Frame_Sync_Detector} -radix unsigned /tb_msk_modem_134byte/DUT/u_rx_frame_sync/consecutive_good
+add_wave -into {Stage_9:_Frame_Sync_Detector} /tb_msk_modem_134byte/DUT/u_rx_frame_sync/consecutive_good
 
 # Correlator Debug (Stage 9b)
 add_wave_group {Stage_9b:_Correlator_Debug}
