@@ -724,8 +724,12 @@ BEGIN
                     END CASE;
 
                     -- Update corr_prev at end of every valid bit for peak detection.
-                    corr_prev <= corr_v;
-
+                    -- Gated on the demod_sync_lock signal
+                    IF demod_sync_lock = '1' AND demod_sync_lock_d = '1' THEN
+                        corr_prev <= corr_v;
+                    ELSE
+                        corr_prev <= (OTHERS => '0');
+                    END IF;
                 END IF;
             END IF;
         END IF;
