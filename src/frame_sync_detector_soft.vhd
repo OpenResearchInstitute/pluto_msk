@@ -182,6 +182,8 @@ ENTITY frame_sync_detector_soft IS
 
         -- Control
         demod_sync_lock       : IN std_logic;
+        hunting_threshold_i   : IN std_logic_vector(31 DOWNTO 0) := std_logic_vector(to_signed(HUNTING_THRESHOLD, 32));
+        locked_threshold_i    : IN std_logic_vector(31 DOWNTO 0) := std_logic_vector(to_signed(LOCKED_THRESHOLD, 32));
 
         -- Debug
         debug_state           : OUT std_logic_vector(2 DOWNTO 0);
@@ -545,7 +547,8 @@ BEGIN
                             acquiring_lock <= '1';
                             IF demod_sync_lock = '1' AND
                                 demod_sync_lock_d = '1' AND
-                                corr_prev >= to_signed(HUNTING_THRESHOLD, 32) AND
+                                --corr_prev >= to_signed(HUNTING_THRESHOLD, 32) AND --generic
+                                corr_prev >= signed(hunting_threshold_i) AND --register value
                                 corr_v    <=  corr_prev THEN
                                 state <= LOCKED;
 
@@ -660,7 +663,8 @@ BEGIN
 
                             IF sync_bit_count = 23 THEN
                                 -- corr_v already computed above for this clock.
-                                IF corr_v >= to_signed(LOCKED_THRESHOLD, 32) THEN
+                                -- IF corr_v >= to_signed(LOCKED_THRESHOLD, 32) THEN -- previously a generic
+                                IF corr_v >= signed(locked_threshold_i) THEN -- now a register write
                                     -- Sync found at expected position.
                                     missed_sync_count <= 0;
 
