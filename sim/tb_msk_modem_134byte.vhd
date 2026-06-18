@@ -139,11 +139,13 @@ ARCHITECTURE behavior OF tb_msk_modem_134byte IS
     -- MSK Register Addresses (from working testbench!)
     CONSTANT MSK_INIT_ADDR          : std_logic_vector(31 DOWNTO 0) := X"43C00008";
     CONSTANT MSK_CONTROL_ADDR       : std_logic_vector(31 DOWNTO 0) := X"43C0000C";
+
     CONSTANT FB_FREQWORD_ADDR       : std_logic_vector(31 DOWNTO 0) := X"43C0001C";
     CONSTANT TX_F1_FREQWORD_ADDR    : std_logic_vector(31 DOWNTO 0) := X"43C00020";
     CONSTANT TX_F2_FREQWORD_ADDR    : std_logic_vector(31 DOWNTO 0) := X"43C00024";
     CONSTANT RX_F1_FREQWORD_ADDR    : std_logic_vector(31 DOWNTO 0) := X"43C00028";
     CONSTANT RX_F2_FREQWORD_ADDR    : std_logic_vector(31 DOWNTO 0) := X"43C0002C";
+
     CONSTANT LPF_CONFIG_0_ADDR      : std_logic_vector(31 DOWNTO 0) := X"43C00030";
     CONSTANT LPF_CONFIG_1_ADDR      : std_logic_vector(31 DOWNTO 0) := X"43C00034";
     CONSTANT LPF_CONFIG_2_ADDR      : std_logic_vector(31 DOWNTO 0) := X"43C00068";
@@ -373,16 +375,16 @@ BEGIN
                   FB_FREQWORD_ADDR, X"0039D037");
         axi_write(s_axi_awaddr, s_axi_awvalid, s_axi_wdata, s_axi_wvalid,
                   s_axi_aclk, s_axi_awready, s_axi_wready, s_axi_bvalid,
-                  TX_F1_FREQWORD_ADDR, X"01C00DA7");
+                  TX_F1_FREQWORD_ADDR, X"FFF18BF2");
         axi_write(s_axi_awaddr, s_axi_awvalid, s_axi_wdata, s_axi_wvalid,
                   s_axi_aclk, s_axi_awready, s_axi_wready, s_axi_bvalid,
-                  TX_F2_FREQWORD_ADDR, X"01DCF5C3");
+                  TX_F2_FREQWORD_ADDR, X"000E740E");
         axi_write(s_axi_awaddr, s_axi_awvalid, s_axi_wdata, s_axi_wvalid,
                   s_axi_aclk, s_axi_awready, s_axi_wready, s_axi_bvalid,
-                  RX_F1_FREQWORD_ADDR, X"01C00DA7");
+                  RX_F1_FREQWORD_ADDR, X"FFF18BF2");
         axi_write(s_axi_awaddr, s_axi_awvalid, s_axi_wdata, s_axi_wvalid,
                   s_axi_aclk, s_axi_awready, s_axi_wready, s_axi_bvalid,
-                  RX_F2_FREQWORD_ADDR, X"01DCF5C3");
+                  RX_F2_FREQWORD_ADDR, X"000E740E");
         
         REPORT "Step 3: Configuring PI loop filters...";
         axi_write(s_axi_awaddr, s_axi_awvalid, s_axi_wdata, s_axi_wvalid,
