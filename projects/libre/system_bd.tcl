@@ -520,7 +520,7 @@ if {0} {
 # At 61 MHz with 32768 samples, we get more time fails to place (over on BRAM)
 # Look for patterns at byte boundaries (every 8 tx_req pulses).
 ##############################################################################
-create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_msk_tx
+create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_msk_txx
 set_property -dict [list \
     CONFIG.C_PROBE0_WIDTH {1} \
     CONFIG.C_PROBE1_WIDTH {1} \
@@ -533,28 +533,28 @@ set_property -dict [list \
     CONFIG.C_TRIGIN_EN {false} \
     CONFIG.C_EN_STRG_QUAL {1} \
     CONFIG.ALL_PROBE_SAME_MU_CNT {2} \
-] [get_bd_cells ila_msk_tx]
+] [get_bd_cells ila_msk_txx]
 # Clock ILA with clk_div4 (61 MHz) - deserializer clock domain
-ad_connect clk_divider/clk_out ila_msk_tx/clk
+ad_connect clk_divider/clk_out ila_msk_txx/clk
 # Probe 0: tx_data_bit - the bit going to modulator
-ad_connect msk_top/dbg_tx_data_bit ila_msk_tx/probe0
+ad_connect msk_top/dbg_tx_data_bit ila_msk_txx/probe0
 # Probe 1: tx_req - when modulator requests a bit
-ad_connect msk_top/dbg_tx_req ila_msk_tx/probe1
+ad_connect msk_top/dbg_tx_req ila_msk_txx/probe1
 # Probe 2: encoder_tvalid - data available from encoder
-ad_connect msk_top/dbg_encoder_tvalid ila_msk_tx/probe2
+ad_connect msk_top/dbg_encoder_tvalid ila_msk_txx/probe2
 # Probe 3: encoder_tready - deserializer ready for data
-ad_connect msk_top/dbg_encoder_tready ila_msk_tx/probe3
+ad_connect msk_top/dbg_encoder_tready ila_msk_txx/probe3
 # Probe 4: frame_complete - end of frame marker
-ad_connect msk_top/dbg_frame_complete ila_msk_tx/probe4
+ad_connect msk_top/dbg_frame_complete ila_msk_txx/probe4
 # Probe 5: encoder_tdata - 8-bit data from encoder to deserializer
-ad_connect msk_top/dbg_encoder_tdata ila_msk_tx/probe5
+ad_connect msk_top/dbg_encoder_tdata ila_msk_txx/probe5
 }
 
 
 
 
 
-if {0} {
+if {1} {
 
 
 ##############################################################################
@@ -1091,7 +1091,7 @@ if {1} {
 ##############################################################################
 
 
-create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_msk_rx
+create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_msk_rxx
 set_property -dict [list \
     CONFIG.C_MONITOR_TYPE {Native} \
     CONFIG.C_NUM_OF_PROBES {16} \
@@ -1117,80 +1117,80 @@ set_property -dict [list \
     CONFIG.C_TRIGIN_EN {false} \
     CONFIG.C_EN_STRG_QUAL {1} \
     CONFIG.ALL_PROBE_SAME_MU_CNT {2} \
-] [get_bd_cells ila_msk_rx]
+] [get_bd_cells ila_msk_rxx]
 
 # Clock with divided clock (61.44 MHz) - modem clock domain
-ad_connect clk_divider/clk_out ila_msk_rx/clk
+ad_connect clk_divider/clk_out ila_msk_rxx/clk
 
 # Probe 0: Frame sync state (3 bits) - HUNTING=1, LOCKED=2, VERIFYING=3
-ad_connect msk_top/dbg_rx_sync_state ila_msk_rx/probe0
+ad_connect msk_top/dbg_rx_sync_state ila_msk_rxx/probe0
 
 # Probe 1: Missed sync count (4 bits) - flywheel counter
-ad_connect msk_top/dbg_rx_missed_syncs ila_msk_rx/probe1
+ad_connect msk_top/dbg_rx_missed_syncs ila_msk_rxx/probe1
 
 # Probe 2: Consecutive good frames (4 bits) - lock acquisition counter
-ad_connect msk_top/dbg_rx_consecutive_good ila_msk_rx/probe2
+ad_connect msk_top/dbg_rx_consecutive_good ila_msk_rxx/probe2
 
 # Probe 3: Current correlation (32 bits signed)
-ad_connect msk_top/dbg_rx_sync_correlation ila_msk_rx/probe3
+ad_connect msk_top/dbg_rx_sync_correlation ila_msk_rxx/probe3
 
 # Probe 4: Peak correlation (32 bits)
-ad_connect msk_top/dbg_rx_sync_corr_peak ila_msk_rx/probe4
+ad_connect msk_top/dbg_rx_sync_corr_peak ila_msk_rxx/probe4
 
 # Probe 5: Current soft value input (16 bits signed)
-ad_connect msk_top/dbg_rx_soft_current ila_msk_rx/probe5
+ad_connect msk_top/dbg_rx_soft_current ila_msk_rxx/probe5
 
 # Probe 6: Bit counter (32 bits) - total bits received
-ad_connect msk_top/dbg_rx_bit_count ila_msk_rx/probe6
+ad_connect msk_top/dbg_rx_bit_count ila_msk_rxx/probe6
 
 # Probe 7: Output byte from frame sync (8 bits)
-ad_connect msk_top/dbg_rx_output_byte ila_msk_rx/probe7
+ad_connect msk_top/dbg_rx_output_byte ila_msk_rxx/probe7
 
 # Probe 8: Output byte valid
-ad_connect msk_top/dbg_rx_output_valid ila_msk_rx/probe8
+ad_connect msk_top/dbg_rx_output_valid ila_msk_rxx/probe8
 
 # Probe 9: Frame sync errors (32 bits)
-ad_connect msk_top/frame_sync_errors ila_msk_rx/probe9
+ad_connect msk_top/frame_sync_errors ila_msk_rxx/probe9
 
 # Probe 10: rx_bit_valid from demodulator
-ad_connect msk_top/dbg_rx_bit_valid ila_msk_rx/probe10
+ad_connect msk_top/dbg_rx_bit_valid ila_msk_rxx/probe10
 
 # Probe 11: rx_data_soft from demodulator (16 bits)
-ad_connect msk_top/dbg_rx_data_soft ila_msk_rx/probe11
+ad_connect msk_top/dbg_rx_data_soft ila_msk_rxx/probe11
 
 # Probe 12: rx_bit_corr hard decision bit
-ad_connect msk_top/dbg_rx_bit_corr ila_msk_rx/probe12
+ad_connect msk_top/dbg_rx_bit_corr ila_msk_rxx/probe12
 
 # Probe 13: Quantized soft value (3 bits) - verify threshold calibration
 #   Watch distribution: should see mix of 000-111 codes
 #   Too many 011 (erasure)? -> Signal weak or thresholds too tight
 #   All 000/111 (strong)? -> Thresholds may be too loose
-ad_connect msk_top/dbg_rx_soft_quantized ila_msk_rx/probe13
+ad_connect msk_top/dbg_rx_soft_quantized ila_msk_rxx/probe13
 
 # Probe 14: dbg_decoder_state[3:0] Decoder State Machine 
 # state now visible. Helps catch stalls in the machine.
-ad_connect msk_top/dbg_decoder_state ila_msk_rx/probe14
+ad_connect msk_top/dbg_decoder_state ila_msk_rxx/probe14
 
 # Probe 15: frame_sync_locked output bit (1 bit) - the indicator we're investigating
 #   This is the same signal that gets routed to the CSR register field and 
 #   that Speculator displays as "HDL lock bit". Captured here so we can 
 #   correlate the bit's behavior with the state machine internals 
 #   (Probes 0, 2, 3) at clock-cycle granularity.
-ad_connect msk_top/frame_sync_locked ila_msk_rx/probe15
+ad_connect msk_top/frame_sync_locked ila_msk_rxx/probe15
 
 # Probe 16: sync_bit_count (5 bits) - VERIFYING_SYNC bit position counter
 #   Resets to 0 when entering VERIFYING_SYNC. Increments each rx_bit_valid_r
 #   cycle. The IF sync_bit_count = 23 test at line 661 of frame_sync_detector_soft
 #   determines whether correlation is evaluated. If this never reaches 23
 #   while in VERIFYING_SYNC (Probe 0 = 3), that's the bug.
-#ad_connect msk_top/u_rx_frame_sync/sync_bit_count ila_msk_rx/probe16
+#ad_connect msk_top/u_rx_frame_sync/sync_bit_count ila_msk_rxx/probe16
 
 # Probe 17: demod_sync_lock input (1 bit) - the AND of cst_lock_f1 and cst_lock_f2
 #   The frame sync detector requires this high in HUNTING (lines 546-547 of
 #   frame_sync_detector_soft) to permit the HUNTING -> LOCKED transition.
 #   If this is glitchy or only intermittently high, frame acquisition could
 #   work intermittently in ways that confuse the lock state machine.
-#ad_connect msk_top/u_rx_frame_sync/demod_sync_lock ila_msk_rx/probe17
+#ad_connect msk_top/u_rx_frame_sync/demod_sync_lock ila_msk_rxx/probe17
 
 }
 
