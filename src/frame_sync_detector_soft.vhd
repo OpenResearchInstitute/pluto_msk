@@ -185,6 +185,14 @@ ENTITY frame_sync_detector_soft IS
         hunting_threshold_i   : IN std_logic_vector(31 DOWNTO 0) := std_logic_vector(to_signed(HUNTING_THRESHOLD, 32));
         locked_threshold_i    : IN std_logic_vector(31 DOWNTO 0) := std_logic_vector(to_signed(LOCKED_THRESHOLD, 32));
 
+        -- Soft quantizer bin edges (positive magnitudes, applied symmetrically).
+        -- Defaults reproduce the previously-hardcoded quantize() literals exactly,
+        -- so behavior is bit-identical until a register overrides them. Live-tunable
+        -- against the real hardware soft distribution (was the -12 dBFS sim calibration).
+        quant_thr_1_i         : IN std_logic_vector(15 DOWNTO 0) := std_logic_vector(to_signed(500, 16));
+        quant_thr_2_i         : IN std_logic_vector(15 DOWNTO 0) := std_logic_vector(to_signed(1400, 16));
+        quant_thr_3_i         : IN std_logic_vector(15 DOWNTO 0) := std_logic_vector(to_signed(2800, 16));
+
         -- Debug
         debug_state           : OUT std_logic_vector(2 DOWNTO 0);
         debug_correlation     : OUT signed(31 DOWNTO 0);
@@ -355,15 +363,22 @@ ARCHITECTURE rtl OF frame_sync_detector_soft IS
     --ELSE                    RETURN "000";
     ----------------------------------------------------------------------------
 
-    -- Thresholds for -12 dBFS (+/- 3340 nominal soft range)
-    FUNCTION quantize(soft : signed(15 DOWNTO 0)) RETURN std_logic_vector IS
+    -- Soft quantizer. Bin edges are now ARGUMENTS (was hardcoded ±500/1400/2800,
+    -- the -12 dBFS / ±3340 sim calibration). Pass the live register values so the
+    -- edges track the real hardware soft distribution. With thr1/2/3 = 500/1400/2800
+    -- this is bit-identical to the original function.
+    --   thr1 = innermost (erasure edge), thr3 = outermost (strong edge).
+    FUNCTION quantize(soft : signed(15 DOWNTO 0);
+                      thr1 : signed(15 DOWNTO 0);
+                      thr2 : signed(15 DOWNTO 0);
+                      thr3 : signed(15 DOWNTO 0)) RETURN std_logic_vector IS
     BEGIN
-        IF    soft < -2800 THEN RETURN "111";
-        ELSIF soft < -1400 THEN RETURN "101";
-        ELSIF soft < -500 THEN RETURN "100";
-        ELSIF soft <  500 THEN RETURN "011";
-        ELSIF soft <  1400 THEN RETURN "010";
-        ELSIF soft <  2800 THEN RETURN "001";
+        IF    soft < -thr3 THEN RETURN "111";
+        ELSIF soft < -thr2 THEN RETURN "101";
+        ELSIF soft < -thr1 THEN RETURN "100";
+        ELSIF soft <  thr1 THEN RETURN "011";
+        ELSIF soft <  thr2 THEN RETURN "010";
+        ELSIF soft <  thr3 THEN RETURN "001";
         ELSE                    RETURN "000";
         END IF;
     END FUNCTION;
@@ -391,7 +406,7 @@ BEGIN
     debug_missed_syncs      <= std_logic_vector(to_unsigned(missed_sync_count, 4));
     debug_consecutive_good  <= std_logic_vector(to_unsigned(consecutive_good, 4));
     debug_soft_current      <= soft_r;
-    debug_soft_quantized    <= quantize(soft_r);
+    debug_soft_quantized    <= quantize(soft_r, signed(quant_thr_1_i), signed(quant_thr_2_i), signed(quant_thr_3_i));
     debug_byte_v            <= debug_byte_v_reg;
 
     ----------------------------------------------------------------------------
@@ -605,7 +620,7 @@ BEGIN
 
                             -- Soft value capture (arrival order; decoder handles ordering)
                             IF frame_soft_idx < PAYLOAD_BITS THEN
-                                soft_frame_buf(frame_soft_idx) <= quantize(soft_r);
+                                soft_frame_buf(frame_soft_idx) <= quantize(soft_r, signed(quant_thr_1_i), signed(quant_thr_2_i), signed(quant_thr_3_i));
                                 frame_soft_idx <= frame_soft_idx + 1;
                             END IF;
 
