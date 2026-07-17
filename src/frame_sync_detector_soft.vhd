@@ -3,12 +3,12 @@
 -- frame_sync_detector_soft.vhd
 ------------------------------------------------------------------------------------------------------
 -- Open Research Institute - Opulent Voice Protocol
--- 
+--
 -- ROLE IN RECEIVE CHAIN:
 --   This module sits between the MSK demodulator and the OV frame decoder. Inputs are a stream of
 --   hard decision bits along with the soft decision data. There is a soft correlator, formed by a
 --   24-tap finite impulse response filter. There is a byte buffer, a state machine, a soft quantizer,
---   and handshaking for frame delivery. The frame sync word is discarded after detection. 
+--   and handshaking for frame delivery. The frame sync word is discarded after detection.
 --
 ------------------------------------------------------------------------------------------------------
 -- WHY SOFT DECISIONS MATTER:
@@ -18,14 +18,14 @@
 --
 --   The MSK demodulator outputs rx_data_soft = F1_energy - F2_energy:
 --     - Large positive is confident '0'
---     - Large negative is confident '1'  
+--     - Large negative is confident '1'
 --     - Near zero is an uncertain value (this is often set to be an erasure)
 --
 --   By preserving this confidence through to the Viterbi decoder, we gain
 --   approximately 2-3 dB in effective SNR. In D&D terms: instead of the
 --   demodulator making a DC 15 check and accepting the result as a success
 --   or a failure, the Viterbi gets to see the die roll in advance of the decision
---   and can use additional information from other characters in order to decide 
+--   and can use additional information from other characters in order to decide
 --   what to do in battle.
 --
 ------------------------------------------------------------------------------------------------------
@@ -86,7 +86,7 @@
 --   (accounting for demodulator polarity: negative soft is '1')
 --
 --   Result: Sharp correlation peak when sync word aligns, with sidelobes
---   suppressed by 8:1 ratio. The Opulent Voice sync word was exhaustively searched for 
+--   suppressed by 8:1 ratio. The Opulent Voice sync word was exhaustively searched for
 --   and has an optimal Peak-to-Sidelobe Ratio. Much better detection at low SNR than hard decision.
 --
 ------------------------------------------------------------------------------------------------------
@@ -114,7 +114,7 @@
 --
 --   CALIBRATION PROCEDURE:
 --   1. Monitor debug_corr_peak via ILA or CSR
---   2. Transmit known frames and observe peak correlation  
+--   2. Transmit known frames and observe peak correlation
 --   3. Set HUNTING_THRESHOLD to 70-80% of peak (conservative)
 --   4. Set LOCKED_THRESHOLD to 40-50% of peak (allow flywheel margin)
 --
@@ -146,8 +146,36 @@ ENTITY frame_sync_detector_soft IS
     GENERIC (
         SYNC_WORD          : std_logic_vector(23 DOWNTO 0) := x"02B8DB";
         PAYLOAD_BYTES      : NATURAL := 268;
-        HUNTING_THRESHOLD  : INTEGER := 60000;
-        LOCKED_THRESHOLD   : INTEGER := 36000;
+        -- PERCENTAGES now, 0..100, not absolute correlation counts.
+        -- 85 -> 4.2 sigma against random data;  70 -> 3.4 sigma.
+        -- 0.85 admits one wrong-signed sync symbol of 24 (ratio 1 - 2p/24 = 0.917);
+        -- 0.70 admits three (0.750). Hunt strictly, hold loosely.
+        HUNTING_THRESHOLD  : INTEGER := 85;
+        LOCKED_THRESHOLD   : INTEGER := 70;
+
+        -- Minimum sum|soft| over the 24-tap window for the normalised
+        -- correlation to mean anything. A ratio is undefined when its
+        -- denominator is ~0: on a dead or squelched channel, 24 near-zero softs
+        -- give corr/energy = 1.0 and the detector would hunt on nothing.
+        --
+        -- DERIVATION. Measured mean|soft| at the normalised operating point
+        -- (GAIN_TARGET = 16000, SOFT_SHIFT = 21):
+        --      21879 noiseless,  17740 at Eb/N0 = 8 dB
+        -- so energy = 24 * mean|soft| = 425,760 .. 525,096.
+        -- 24 * 512 = 12288 requires mean|soft| >= 512: 30.8 dB of margin.
+        --
+        -- ONE FLOOR IS ENOUGH. Acceptance requires corr >= 0.85*energy, so
+        -- energy >= MIN implies corr >= 0.85*MIN = 10,444. The raw-correlation
+        -- floor is subsumed. opv_demod.hpp carries two constants
+        -- (MIN_SYNC_ENERGY = 100, RAW_SYNC_HUNTING_THRESHOLD = 5000) only
+        -- because the first is mis-scaled: 100 implies a raw floor of 85, so
+        -- 5000 does the real work. One properly-scaled floor replaces both.
+        --
+        -- Normalising a matched-filter output by the received energy is the
+        -- GLRT for a signal of unknown amplitude and is CFAR in amplitude.
+        -- (Robey, Fuhrmann, Kelly & Nitzberg, "A CFAR adaptive matched filter
+        -- detector", IEEE Trans. AES 28(1), 1992.)
+        MIN_SYNC_ENERGY    : INTEGER := 24*512;
         FLYWHEEL_TOLERANCE : NATURAL := 2;
         LOCK_FRAMES        : NATURAL := 3;
         BUFFER_DEPTH       : NATURAL := 11;
@@ -208,7 +236,14 @@ ENTITY frame_sync_detector_soft IS
         -- simulation waveforms. This register captures byte_v at the moment
         -- bit_count = 7, giving the waveform viewer a visible proxy.
         -- Updates once per byte (every 8 valid bits in LOCKED state).
-        debug_byte_v          : OUT std_logic_vector(7 DOWNTO 0)
+        debug_byte_v          : OUT std_logic_vector(7 DOWNTO 0);
+
+        -- Correlator fill: number of real (post-clear) taps in the window that
+        -- corr_prev/energy_prev describe. HUNTING is gated on this reaching
+        -- SYNC_BITS, so during the partial-fill window after a demod_sync_lock
+        -- clear this reads < SYNC_BITS and no lock can be declared. Diagnostic
+        -- for the insta-lock defect: it reads 1 at the moment the old code fired.
+        debug_sync_fill       : OUT std_logic_vector(4 DOWNTO 0)
     );
 END ENTITY frame_sync_detector_soft;
 
@@ -235,6 +270,41 @@ ARCHITECTURE rtl OF frame_sync_detector_soft IS
     -- Correlation
     ----------------------------------------------------------------------------
     SIGNAL corr       : signed(31 DOWNTO 0) := (OTHERS => '0');
+    -- energy = sum|soft| over the same 24 taps. corr/energy is bounded [-1,+1].
+    -- 24 * 32767 = 786,408 fits in 21 bits; 100 * that fits in 27. No overflow
+    -- in the 32-bit comparison below.
+    SIGNAL energy      : signed(31 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL energy_prev : signed(31 DOWNTO 0) := (OTHERS => '0');
+    CONSTANT MIN_ENERGY : signed(31 DOWNTO 0) := to_signed(MIN_SYNC_ENERGY, 32);
+
+    -- SYNC_BITS: taps in the correlation window = width of the sync word.
+    -- The normalised correlation corr/energy is only defined over a FULL window;
+    -- over a partially-filled window (single non-zero tap) it is trivially 1.0.
+    -- The C++ golden reference guards this: "if (total_symbols_ < SYNC_BITS)".
+    CONSTANT SYNC_BITS : natural := SYNC_WORD'length;
+
+    -- fill_prev: real-tap count of the window corr_prev/energy_prev summarise,
+    -- registered in lockstep with them so all three describe the SAME window.
+    -- HUNTING requires fill_prev = SYNC_BITS before it may declare a lock.
+    SIGNAL fill_prev : unsigned(4 DOWNTO 0) := (OTHERS => '0');
+
+    -- Sync-quality divider. debug_corr_peak used to be an UNGATED running
+    -- maximum of the RAW correlation, so against noise (rms|soft| ~ 20000,
+    -- corr std = sqrt(24)*rms = 98,000) it latched a 4-sigma excursion and
+    -- reported it as a peak. It is the number a human reads.
+    --
+    -- It now reports the NORMALISED quality of the last ACCEPTED sync, in
+    -- percent: floor(100*corr/energy), 85..100. That is opv_demod.hpp's
+    --      sync_quality_ = prev_norm_corr_;   // quality of the PEAK
+    --
+    -- 7-iteration restoring divide; quotient <= 100 so 7 bits suffice. A symbol
+    -- is 1845 clocks at 100 MHz; this takes 7. It is the ONLY divide in the
+    -- block, it is debug-only, and it never gates a decision.
+    SIGNAL dv_busy : std_logic := '0';
+    SIGNAL dv_num  : signed(33 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL dv_den  : signed(33 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL dv_q    : unsigned(6 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL dv_i    : integer RANGE 0 TO 6 := 6;
     SIGNAL corr_prev  : signed(31 DOWNTO 0) := (OTHERS => '0');
     SIGNAL corr_peak  : signed(31 DOWNTO 0) := (OTHERS => '0');
 
@@ -337,6 +407,60 @@ ARCHITECTURE rtl OF frame_sync_detector_soft IS
     END FUNCTION;
 
     ----------------------------------------------------------------------------
+    -- calc_energy: sum of |soft| over the SAME 24 taps calc_corr uses.
+    --
+    -- WHY THIS EXISTS
+    --   corr = sum(soft * pattern) is an ABSOLUTE number. It scales with the
+    --   signal level AND with the SNR, so a fixed threshold cannot be right at
+    --   more than one operating point. Measured on real frames at Eb/N0 = 8 dB:
+    --
+    --     five consecutive sync peaks: 463464 352119 350869 477890 369486
+    --     spread 32% frame to frame.
+    --
+    --   Only the FIRST peak has to clear HUNT; once LOCKED the detector verifies
+    --   at the expected position. FS_HUNT = 425554 demanded a ratio of 0.918 --
+    --   ZERO wrong-signed sync symbols out of 24. At Eb/N0 = 8 dB (raw BER 3.8%)
+    --   that is 39% of sync words, so acquisition took 2.5 frames instead of the
+    --   1.3 that 0.85 gives. Every PTT pays that, twice over.
+    --
+    --   Dividing by the energy normalises the NOISE as well as the peak:
+    --
+    --     at perfect alignment   corr = sum|soft| = energy      -> ratio = 1.0
+    --     against random data    E[corr] = 0, std = energy/sqrt(24)
+    --
+    --   so a threshold expressed as a FRACTION of the energy is a constant
+    --   number of sigma at every signal level and every SNR:
+    --
+    --     0.85 -> 4.2 sigma -> 0.20 false alarms per 13,000-offset frame
+    --     0.70 -> 3.4 sigma
+    --
+    --   These are exactly opv_demod.hpp's SOFT_SYNC_HUNTING_THRESHOLD and
+    --   SOFT_SYNC_LOCKED_THRESHOLD, and they are why the C++ demodulator locks
+    --   over 65 dB of attenuation with no threshold ever being retuned.
+    --
+    -- NO DIVIDER IS NEEDED. corr >= k*energy is a comparison:
+    --     100 * corr  >=  PCT * energy
+    ----------------------------------------------------------------------------
+    FUNCTION calc_energy(sr : soft_array_t; newest : signed(15 DOWNTO 0)) RETURN signed IS
+        VARIABLE sum    : signed(31 DOWNTO 0) := (OTHERS => '0');
+        VARIABLE sample : signed(15 DOWNTO 0);
+    BEGIN
+        FOR i IN 0 TO 23 LOOP
+            IF i = 0 THEN
+                sample := newest;
+            ELSE
+                sample := sr(i-1);
+            END IF;
+            IF sample < 0 THEN
+                sum := sum - resize(sample, 32);
+            ELSE
+                sum := sum + resize(sample, 32);
+            END IF;
+        END LOOP;
+        RETURN sum;
+    END FUNCTION;
+
+    ----------------------------------------------------------------------------
     -- quantize: 16-bit signed soft -> 3-bit unsigned for Viterbi decoder
     --
     -- Polarity: negative soft = '1', positive soft = '0'.
@@ -373,13 +497,14 @@ ARCHITECTURE rtl OF frame_sync_detector_soft IS
                       thr2 : signed(15 DOWNTO 0);
                       thr3 : signed(15 DOWNTO 0)) RETURN std_logic_vector IS
     BEGIN
-        IF    soft < -thr3 THEN RETURN "111";
-        ELSIF soft < -thr2 THEN RETURN "101";
-        ELSIF soft < -thr1 THEN RETURN "100";
-        ELSIF soft <  thr1 THEN RETURN "011";
-        ELSIF soft <  thr2 THEN RETURN "010";
-        ELSIF soft <  thr3 THEN RETURN "001";
-        ELSE                    RETURN "000";
+        IF    soft <= -thr3 THEN RETURN "111";   -- 7
+        ELSIF soft <= -thr2 THEN RETURN "110";   -- 6  (was 5; 6 was unreachable)
+        ELSIF soft <= -thr1 THEN RETURN "101";   -- 5  (was 4)
+        ELSIF soft <=  0    THEN RETURN "100";   -- 4  (was 3 -- WRONG SIGN)
+        ELSIF soft <   thr1 THEN RETURN "011";   -- 3
+        ELSIF soft <   thr2 THEN RETURN "010";   -- 2
+        ELSIF soft <   thr3 THEN RETURN "001";   -- 1
+        ELSE                     RETURN "000";   -- 0
         END IF;
     END FUNCTION;
 
@@ -408,6 +533,7 @@ BEGIN
     debug_soft_current      <= soft_r;
     debug_soft_quantized    <= quantize(soft_r, signed(quant_thr_1_i), signed(quant_thr_2_i), signed(quant_thr_3_i));
     debug_byte_v            <= debug_byte_v_reg;
+    debug_sync_fill         <= std_logic_vector(fill_prev);
 
     ----------------------------------------------------------------------------
     -- Stage 1: Input registration
@@ -492,13 +618,48 @@ BEGIN
     ----------------------------------------------------------------------------
     fsm_proc : PROCESS(clk)
         VARIABLE corr_v : signed(31 DOWNTO 0);
+        VARIABLE engy_v   : signed(31 DOWNTO 0);   -- sum|soft| over the same 24 taps
         -- byte_v: local shift register for byte assembly.
         -- MSB-first: newest bit enters at bit 0, oldest is at bit 7.
         -- After 8 shifts, byte_v(7) = first received bit (MSB), byte_v(0) = last.
         -- Variable persists between process executions (retains value across clocks).
         VARIABLE byte_v : std_logic_vector(7 DOWNTO 0) := (OTHERS => '0');
+        VARIABLE dv_t   : signed(33 DOWNTO 0);
+        -- fill_v: real taps in THIS clock's corr_v window (includes soft_r).
+        -- Persists across clocks (like byte_v). Reset to 0 on the clear event;
+        -- saturates at SYNC_BITS. fill_prev is registered from this.
+        VARIABLE fill_v : natural range 0 TO 24 := 0;
     BEGIN
         IF rising_edge(clk) THEN
+            ------------------------------------------------------------------
+            -- Sync-quality divider: corr_peak <= floor(100*corr/energy), 0..100.
+            -- Started only on an ACCEPTED sync. Debug only; gates nothing.
+            -- It lives in this process because corr_peak may have one driver.
+            ------------------------------------------------------------------
+            IF reset = '1' THEN
+                dv_busy <= '0';
+                dv_i    <= 6;
+                dv_q    <= (OTHERS => '0');
+            ELSIF dv_busy = '1' THEN
+                dv_t := dv_num - shift_left(dv_den, dv_i);
+                IF dv_t >= 0 THEN
+                    dv_num     <= dv_t;
+                    dv_q(dv_i) <= '1';
+                END IF;
+                IF dv_i = 0 THEN
+                    dv_busy <= '0';
+                    -- dv_q(0) was just written by the loop body above on this same
+                    -- clock if dv_t >= 0, so the finished quotient is simply dv_q.
+                    IF dv_t >= 0 THEN
+                        corr_peak <= resize(signed('0' & (dv_q(6 DOWNTO 1) & '1')), 32);
+                    ELSE
+                        corr_peak <= resize(signed('0' & dv_q), 32);
+                    END IF;
+                ELSE
+                    dv_i <= dv_i - 1;
+                END IF;
+            END IF;
+
             IF reset = '1' THEN
                 state            <= HUNTING;
                 bit_count        <= (OTHERS => '0');
@@ -519,13 +680,20 @@ BEGIN
                 corr_peak        <= (OTHERS => '0');
                 frame_buffer_overflow <= '0';
                 byte_v           := (OTHERS => '0');  -- variable initialisation on reset
+                fill_v           := 0;
+                fill_prev        <= (OTHERS => '0');
             ELSE
                 frame_buffer_overflow <= '0';
                 demod_sync_lock_d <= demod_sync_lock;
                 IF demod_sync_lock = '1' AND demod_sync_lock_d = '0' THEN
-                    corr_prev <= (OTHERS => '0'); 
+                    corr_prev   <= (OTHERS => '0');
+                    energy_prev <= (OTHERS => '0');
                     corr <= (OTHERS => '0');
                     corr_peak <= (OTHERS => '0');
+                    -- Correlator window (soft_sr) is zeroed by shift_proc on this
+                    -- same edge; the real-tap count must restart with it.
+                    fill_v      := 0;
+                    fill_prev   <= (OTHERS => '0');
                 END IF;
                 IF frame_ack = '1' THEN
                     frame_ready <= '0';
@@ -535,10 +703,37 @@ BEGIN
 
                     -- Correlation over settled soft_sr + current soft_r
                     corr_v := calc_corr(soft_sr, soft_r);
+                    engy_v := calc_energy(soft_sr, soft_r);
                     corr   <= corr_v;
+                    energy <= engy_v;
 
-                    IF corr_v > corr_peak THEN
-                        corr_peak <= corr_v;
+                    -- Account this sample in the window fill. soft_r is tap 0 of
+                    -- corr_v, so after this increment fill_v is exactly the real
+                    -- tap count of corr_v. Skip on the clear edge (soft_sr was
+                    -- just zeroed and fill_v reset to 0 above).
+                    IF NOT (demod_sync_lock = '1' AND demod_sync_lock_d = '0') THEN
+                        IF fill_v < SYNC_BITS THEN
+                            fill_v := fill_v + 1;
+                        END IF;
+                    END IF;
+
+                    -- Start the sync-quality divide ONLY on a genuine accept, and
+                    -- ONLY once the demodulator is symbol-locked. corr_peak is the
+                    -- quality of an ACCEPTED sync; before symbol lock there is no
+                    -- sync to have quality, and letting the divider free-run on
+                    -- preamble noise pins it at 100 from t=0 (debug lies, gates
+                    -- nothing, but lies). This mirrors the lock decision, which
+                    -- reads corr_prev/energy_prev -- both gated to zero unless
+                    -- demod_sync_lock has been high for two clocks.
+                    IF dv_busy = '0' AND demod_sync_lock = '1' AND demod_sync_lock_d = '1' AND
+                       fill_v = SYNC_BITS AND
+                       engy_v >= MIN_ENERGY AND
+                       to_signed(100, 32) * corr_v >= signed(hunting_threshold_i) * engy_v THEN
+                        dv_num  <= resize(to_signed(100, 32) * corr_v, 34);
+                        dv_den  <= resize(engy_v, 34);
+                        dv_q    <= (OTHERS => '0');
+                        dv_i    <= 6;
+                        dv_busy <= '1';
                     END IF;
 
                     CASE state IS
@@ -562,8 +757,21 @@ BEGIN
                             acquiring_lock <= '1';
                             IF demod_sync_lock = '1' AND
                                 demod_sync_lock_d = '1' AND
-                                --corr_prev >= to_signed(HUNTING_THRESHOLD, 32) AND --generic
-                                corr_prev >= signed(hunting_threshold_i) AND --register value
+                                -- FILL GUARD: corr_prev/energy_prev are only a valid
+                                -- normalised statistic over a FULL window. After a
+                                -- demod_sync_lock clear the window refills one tap per
+                                -- symbol; a single-tap window gives corr_prev =
+                                -- energy_prev = |soft|, ratio 1.0, and would insta-lock
+                                -- on noise 34 ms before the real sync word. Mirrors the
+                                -- C++ reference: if (total_symbols_ < SYNC_BITS) break.
+                                fill_prev = SYNC_BITS AND
+                                -- NORMALISED: corr_prev >= (PCT/100) * energy_prev.
+                                -- hunting_threshold_i is now a PERCENT (0..100), not a
+                                -- count. 85 = 4.2 sigma against random data, at every
+                                -- signal level and every SNR. See calc_energy above.
+                                energy_prev >= MIN_ENERGY AND
+                                to_signed(100, 32) * corr_prev >=
+                                    signed(hunting_threshold_i) * energy_prev AND
                                 corr_v    <=  corr_prev THEN
                                 state <= LOCKED;
 
@@ -679,7 +887,11 @@ BEGIN
                             IF sync_bit_count = 23 THEN
                                 -- corr_v already computed above for this clock.
                                 -- IF corr_v >= to_signed(LOCKED_THRESHOLD, 32) THEN -- previously a generic
-                                IF corr_v >= signed(locked_threshold_i) THEN -- now a register write
+                                -- NORMALISED: corr_v >= (PCT/100) * engy_v.
+                                -- locked_threshold_i is now a PERCENT (0..100). 70 = 3.4 sigma.
+                                IF engy_v >= MIN_ENERGY AND
+                                   to_signed(100, 32) * corr_v >=
+                                       signed(locked_threshold_i) * engy_v THEN
                                     -- Sync found at expected position.
                                     missed_sync_count <= 0;
 
@@ -715,6 +927,16 @@ BEGIN
                                             bit_count         <= (OTHERS => '0');
                                             frame_byte_count  <= 0;
                                             frame_soft_idx    <= 0;
+                                            -- FLYWHEEL FIX: re-anchor the frame start.
+                                            -- Every other LOCKED entry sets frame_start_ptr;
+                                            -- this branch did not, so the byte-path frame
+                                            -- delivered after a flywheel was a verbatim
+                                            -- REPLAY of the previous frame (frame_rd_ptr
+                                            -- still pointed at the old region). The soft
+                                            -- path (indexed from 0 each frame) was correct,
+                                            -- which is why opv-decode -3 never saw it.
+                                            -- Found by tb_fsync flywheel regression.
+                                            frame_start_ptr   <= wr_ptr;
                                             errors_count      <= errors_count + 1;
                                         ELSE
                                             -- Too many misses; lose lock.
@@ -741,9 +963,13 @@ BEGIN
                     -- Update corr_prev at end of every valid bit for peak detection.
                     -- Gated on the demod_sync_lock signal
                     IF demod_sync_lock = '1' AND demod_sync_lock_d = '1' THEN
-                        corr_prev <= corr_v;
+                        corr_prev   <= corr_v;
+                        energy_prev <= engy_v;
+                        fill_prev   <= to_unsigned(fill_v, fill_prev'length);
                     ELSE
-                        corr_prev <= (OTHERS => '0');
+                        corr_prev   <= (OTHERS => '0');
+                        energy_prev <= (OTHERS => '0');
+                        fill_prev   <= (OTHERS => '0');
                     END IF;
                 END IF;
             END IF;
